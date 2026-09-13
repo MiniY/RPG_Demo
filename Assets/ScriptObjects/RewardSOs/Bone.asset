@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fbd8556aa9d8d2438670400c7fc340e, type: 3}
+  m_Name: Bone
+  m_EditorClassIdentifier: 
+  rewardName: "\u9AA8\u5934"
+  itemIcon: {fileID: 21300000, guid: 75d2a11fe71490142b01dd9dfa2cf0ac, type: 3}
+  description: "普通的骨头，可以作为材料使用，也可以出售换取金币。"
+  rewardPrefab: {fileID: 1695109851868983876, guid: f23395906ce8a0640bad691603b07eba, type: 3}

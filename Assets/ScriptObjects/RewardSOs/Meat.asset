@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fbd8556aa9d8d2438670400c7fc340e, type: 3}
+  m_Name: Meat
+  m_EditorClassIdentifier: 
+  rewardName: "\u8089"
+  itemIcon: {fileID: 21300000, guid: 177b7edd08c027e418c94e1e020c104e, type: 3}
+  description: "可以食用的肉，未来可以用于恢复生命值或完成相关任务。"
+  rewardPrefab: {fileID: 8777220424329205880, guid: e50210d108ac7b042a08649caabd1092, type: 3}

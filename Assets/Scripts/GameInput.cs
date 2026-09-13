@@ -2,6 +2,9 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+/// <summary>
+/// 统一管理玩家的移动、控制切换和攻击输入。
+/// </summary>
 public class GameInput : MonoBehaviour
 {//单例模式
     public static GameInput Instance { get; private set; }
@@ -12,6 +15,9 @@ public class GameInput : MonoBehaviour
     public bool IsControlActive { get; private set; } // 左 Shift 当前是否处于开启状态。
     public Vector2 MoveInput { get; private set; }
 
+    /// <summary>
+    /// Unity Input System（Unity 输入系统）生成的输入控制对象。
+    /// </summary>
     private GameControls gameControls;
 
     private void Awake()

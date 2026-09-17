@@ -8,7 +8,7 @@ using UnityEngine.Serialization;
 public class PlayerAction : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 5f; // 玩家移动速度。
-    [SerializeField] private float speedBoostAmount = 2f; // 左 Shift 开启时额外增加的速度。
+    [SerializeField] private float speedBoostAmount = 2f; // 左 Ctrl 开启时额外增加的速度。
     [FormerlySerializedAs("monsterSearchRange")]
     [SerializeField] private float damageableSearchRange = 2f; // 攻击时搜索可破坏对象的半径。
     [SerializeField] private float attackDamage = 20f; // 每次攻击造成的伤害。
@@ -22,7 +22,7 @@ public class PlayerAction : MonoBehaviour
     private Vector2 facingDirection = Vector2.down; // 玩家当前面对方向。
     private float facingX = 1f; // 玩家横向朝向，1 向右，-1 向左。
     private int attackDirectionIndex = 1; // 攻击方向编号：Up = 0，Down = 1，Left = 2，Right = 3。
-    private bool isSpeedBoostActive; // 左 Shift 是否处于加速状态。
+    private bool isSpeedBoostActive; // 左 Ctrl 是否处于加速状态。
 
     public event Action<int> OnAttackPerformed; // 玩家执行攻击时通知动画系统。
 
@@ -149,7 +149,7 @@ public class PlayerAction : MonoBehaviour
             return;
 
         gameInput = GameInput.Instance;
-        // 先同步当前左 Shift 状态，再监听后续切换。
+        // 先同步当前左 Ctrl 状态，再监听后续切换。
         ApplyControlState(gameInput.IsControlActive);
         gameInput.OnControlToggled += HandleControlToggled;
         gameInput.OnAttackPressed += HandleAttackPressed;
@@ -166,13 +166,13 @@ public class PlayerAction : MonoBehaviour
         gameInput = null;
     }
 
-    // 处理左 Shift 的切换事件。
+    // 处理左 Ctrl 的切换事件。
     private void HandleControlToggled(bool isActive)
     {
         ApplyControlState(isActive);
     }
 
-    // 应用左 Shift 的当前状态。
+    // 应用左 Ctrl 的当前状态。
     private void ApplyControlState(bool isActive)
     {
         isSpeedBoostActive = isActive;

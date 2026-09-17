@@ -1,18 +1,29 @@
 using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 /// <summary>
-/// 控制单个背包物品格子的显示、点击和选中状态。
+/// 控制单个背包物品格子的显示、点击、悬浮提示和选中状态。
 /// </summary>
-public class PackageSlotUI : MonoBehaviour, IPointerClickHandler
+public class PackageSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     /// <summary>
     /// 当前格子被点击选中时发出的通知。
     /// </summary>
     public event Action<PackageSlotUI> OnSlotSelected;
+
+    /// <summary>
+    /// 当前格子请求显示奖励说明时发出的通知。
+    /// </summary>
+    public event Action<PackageSlotUI> OnTooltipRequested;
+
+    /// <summary>
+    /// 当前格子请求隐藏奖励说明时发出的通知。
+    /// </summary>
+    public event Action<PackageSlotUI> OnTooltipHidden;
 
     /// <summary>
     /// 用来显示奖励图标的图片组件。
@@ -30,6 +41,11 @@ public class PackageSlotUI : MonoBehaviour, IPointerClickHandler
     [SerializeField] private GameObject selectedObject; // 选中状态对象。
 
     /// <summary>
+    /// 鼠标悬浮多久后显示奖励说明。
+    /// </summary>
+    [SerializeField, Min(0f)] private float hoverTooltipDelay = 3f; // 悬浮提示延迟。
+
+    /// <summary>
     /// 当前格子显示的奖励数据。
     /// </summary>
     private RewardSO currentReward; // 当前奖励数据。
@@ -38,6 +54,11 @@ public class PackageSlotUI : MonoBehaviour, IPointerClickHandler
     /// 当前格子显示的奖励数量。
     /// </summary>
     private int currentAmount; // 当前奖励数量。
+
+    /// <summary>
+    /// 当前悬浮提示协程。
+    /// </summary>
+    private Coroutine hoverTooltipCoroutine; // 悬浮提示协程。
 
     /// <summary>
     /// 当前格子显示的奖励数据，只允许外部读取。
@@ -55,6 +76,15 @@ public class PackageSlotUI : MonoBehaviour, IPointerClickHandler
     private void Awake()
     {
         SetSelected(false);
+    }
+
+    /// <summary>
+    /// 脚本禁用时停止悬浮计时并隐藏提示。
+    /// </summary>
+    private void OnDisable()
+    {
+        StopHoverTooltipTimer();
+        OnTooltipHidden?.Invoke(this);
     }
 
     /// <summary>
@@ -102,7 +132,7 @@ public class PackageSlotUI : MonoBehaviour, IPointerClickHandler
     }
 
     /// <summary>
-    /// 鼠标点击当前格子时，显示选中状态并通知外部。
+    /// 鼠标点击当前格子时，显示选中状态并立即请求显示说明。
     /// </summary>
     /// <param name="eventData">鼠标点击事件数据。</param>
     public void OnPointerClick(PointerEventData eventData)
@@ -112,6 +142,54 @@ public class PackageSlotUI : MonoBehaviour, IPointerClickHandler
 
         SetSelected(true);
         OnSlotSelected?.Invoke(this);
+        OnTooltipRequested?.Invoke(this);
+    }
+
+    /// <summary>
+    /// 鼠标进入格子时，开始悬浮计时。
+    /// </summary>
+    /// <param name="eventData">鼠标悬浮事件数据。</param>
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (currentReward == null)
+            return;
+
+        StopHoverTooltipTimer();
+        hoverTooltipCoroutine = StartCoroutine(ShowTooltipAfterDelay());
+    }
+
+    /// <summary>
+    /// 鼠标离开格子时，停止悬浮计时并隐藏说明。
+    /// </summary>
+    /// <param name="eventData">鼠标离开事件数据。</param>
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        StopHoverTooltipTimer();
+        OnTooltipHidden?.Invoke(this);
+    }
+
+    /// <summary>
+    /// 等待悬浮延迟后请求显示奖励说明。
+    /// </summary>
+    private IEnumerator ShowTooltipAfterDelay()
+    {
+        yield return new WaitForSecondsRealtime(hoverTooltipDelay);
+        hoverTooltipCoroutine = null;
+
+        if (currentReward != null)
+            OnTooltipRequested?.Invoke(this);
+    }
+
+    /// <summary>
+    /// 停止当前悬浮提示计时。
+    /// </summary>
+    private void StopHoverTooltipTimer()
+    {
+        if (hoverTooltipCoroutine == null)
+            return;
+
+        StopCoroutine(hoverTooltipCoroutine);
+        hoverTooltipCoroutine = null;
     }
 
     /// <summary>

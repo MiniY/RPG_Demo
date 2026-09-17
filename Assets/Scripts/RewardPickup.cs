@@ -44,7 +44,8 @@ public class RewardPickup : MonoBehaviour
             return;
 
         hasBeenPickedUp = true;
-        OnRewardPickedUp?.Invoke(reward, amount);
+        int finalAmount = reward == null ? amount : reward.GetPickupAmount(amount); // 最终加入背包的数量。
+        OnRewardPickedUp?.Invoke(reward, finalAmount);
 
         if (rewardVisualController != null)
             rewardVisualController.MarkCollected();

@@ -96,3 +96,65 @@
 - 已检查主要脚本逻辑和工作区改动范围。
 - 本地编译检查通过。
 - 本条记录随本次提交一起推送到远程仓库。
+
+## 2026-09-26
+
+### Add merchant shop and persistent save system（新增商人商店与持久化存档系统）
+
+- Commit Hash（提交编号）：本条记录随本提交一起生成，具体编号见 Git 历史记录
+- Branch（分支）：`main（主分支）`
+- Remote（远程仓库）：`origin/main（远程主分支）`
+- Push Status（推送状态）：随本提交推送
+
+#### Changed Files（改动文件）
+
+- `Assets/Scripts/NPC/MerchantInteractionController.cs（商人交互控制器）`
+- `Assets/Scripts/Shop/ShopCatalogSO.cs（商店目录配置）`
+- `Assets/Scripts/Shop/ShopTradeController.cs（商店交易控制器）`
+- `Assets/Scripts/UI/Shop/ShopGridUI.cs（商店商品网格界面）`
+- `Assets/Scripts/UI/Shop/ShopModeTabButtonUI.cs（商店分类标签按钮界面）`
+- `Assets/Scripts/UI/Shop/ShopPanelController.cs（商店面板控制器）`
+- `Assets/Scripts/UI/Shop/ShopPurchaseFlyEffect.cs（购买物品飞入效果）`
+- `Assets/Scripts/UI/Shop/ShopSlotUI.cs（商店商品格子界面）`
+- `Assets/Scripts/GameSaveService.cs（游戏存档服务）`
+- `Assets/Scripts/ScriptableObject/RewardRegistrySO.cs（奖励注册表配置）`
+- `Assets/Scripts/PlayerInventory.cs（玩家背包）`
+- `Assets/Scripts/ScriptableObject/RewardSO.cs（奖励数据）`
+- `Assets/Scripts/RewardPickup.cs（奖励拾取）`
+- `Assets/Scripts/GameInput.cs（游戏输入管理）`
+- `Assets/Scripts/Player/PlayerAction.cs（玩家行为）`
+- `Assets/ScriptObjects/RewardRegistry.asset（奖励注册表数据）`
+- `Assets/ScriptObjects/Shop/ShopCatalog_Merchant.asset（商人商品目录）`
+- `Assets/Prefabs/NPC/Merchant_Pawn.prefab（商人角色预制体）`
+- `Assets/Prefabs/UI/ShopSlot.prefab（商店商品格子预制体）`
+- `Assets/Animations/MerchantSign（商人交互标识动画资源）`
+- `Assets/Animations/MerchantVisual（商人角色动画资源）`
+- `Assets/GameControls.inputactions（输入动作配置）` 与 `Assets/GameControls.cs（输入动作生成代码）`
+- `Assets/Scenes/SampleScene.unity（示例场景）`、`Assets/Prefabs/Players/Warrior_Blue.prefab（玩家角色预制体）`
+- 奖励数据、TextMeshPro 字体字符表及 UI 图标资源
+
+#### Summary（内容总结）
+
+- 新增商人交互逻辑：玩家靠近商人后可按 F（交互键）打开商店；交互行为脚本与商人待机、头顶交互标识动画资源分开管理，减少行为逻辑与动画表现之间的耦合。
+- 新增商店目录配置与购买流程，支持食品、武器、技能、材料和其他分类，以及价格、库存、单次购买数量和稳定商品编号等配置。
+- 商店交易会校验商品、金币、库存和背包状态；失败时恢复交易前状态，并以存档写入成功作为确认交易的条件。
+- 新增商店分类标签、商品网格、库存与售罄状态、商品提示、错误提示和购买飞入背包效果。打开商店时锁定玩法输入，按 Escape（退出键）关闭商店。
+- 新增版本化 JSON（JavaScript 对象表示法）存档，将背包和商店库存写入本地存档，并使用正式文件、备份文件和临时文件管理写入与恢复。
+- 新增 RewardRegistrySO（奖励注册表配置），用稳定的 RewardId（奖励唯一编号）将存档中的奖励记录映射回 Unity 奖励资源。
+- 扩展背包的存档加载、数量增减和交易快照回滚；拾取物品只有在背包确认成功保存后才会从场景中回收。
+- 更新输入动作：将原 Controls（控制动作）和 Attack（攻击动作）调整为 Interact（交互动作）和 Battle（战斗动作），并加入 F（交互键）交互绑定。
+- 当前商人目录仅配置一个食品商品；武器和技能分类尚无已配置商品。本次实现的是购买流程，尚未实现出售流程。
+
+#### Impact（影响范围）
+
+- 影响商人交互、商店购买、背包与奖励、输入管理、游戏存档、示例场景及相关 UI 和美术资源。
+- 背包拾取与商店交易都接入统一存档服务，减少奖励、金币和库存状态在异常或重新启动后不一致的风险。
+- 商店界面打开时暂停玩家玩法输入，避免 UI 操作期间角色继续移动或攻击。
+
+#### Verification（验证结果）
+
+- 已检查本次新增商店、商人、存档与奖励注册相关文件，并核对工作区新增、修改和删除内容。
+- `dotnet build Assembly-CSharp.csproj --no-restore` 和 `dotnet build Assembly-CSharp-Editor.csproj --no-restore` 分别构建通过：两个程序集成功生成，0 个警告，0 个错误。
+- `dotnet build RPG_Demo.sln --no-restore` 在解决方案包装层返回失败，但没有输出编译错误；两个实际 Unity 项目分别构建成功。
+- 尚未在 Unity 编辑器中运行场景或执行 Play Mode（播放模式）测试。
+- 本条记录随本次提交一起推送到远程仓库。

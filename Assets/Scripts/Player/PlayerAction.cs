@@ -152,7 +152,7 @@ public class PlayerAction : MonoBehaviour
         // 先同步当前左 Ctrl 状态，再监听后续切换。
         ApplyControlState(gameInput.IsControlActive);
         gameInput.OnControlToggled += HandleControlToggled;
-        gameInput.OnAttackPressed += HandleAttackPressed;
+        gameInput.OnBattlePressed += HandleBattlePressed;
     }
 
     // 解绑攻击输入事件。
@@ -162,7 +162,7 @@ public class PlayerAction : MonoBehaviour
             return;
 
         gameInput.OnControlToggled -= HandleControlToggled;
-        gameInput.OnAttackPressed -= HandleAttackPressed;
+        gameInput.OnBattlePressed -= HandleBattlePressed;
         gameInput = null;
     }
 
@@ -179,7 +179,7 @@ public class PlayerAction : MonoBehaviour
     }
 
     // 处理玩家按下攻击键。
-    private void HandleAttackPressed()
+    private void HandleBattlePressed()
     {
         int preparedDirectionIndex = PrepareAttackDirection();
         BaseDamageable attackTarget = preparedAttackTarget;
@@ -292,3 +292,4 @@ public class PlayerAction : MonoBehaviour
         attackHitDelay = Mathf.Max(0f, attackHitDelay);
     }
 }
+

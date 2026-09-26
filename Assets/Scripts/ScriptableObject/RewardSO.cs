@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -6,6 +7,13 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Reward_", menuName = "RPG/Reward")]
 public class RewardSO : ScriptableObject
 {
+    // 存档使用稳定字符串 ID，避免依赖 Unity 资产对象引用。
+    /// <summary>
+    /// 奖励数据资产的稳定唯一 ID，存档只保存这个字符串而不是 Unity 对象引用。
+    /// </summary>
+    [SerializeField, Tooltip("奖励的稳定唯一 ID，创建后不要随意修改。")]
+    private string rewardId; // 奖励唯一 ID。
+
     /// <summary>
     /// 奖励在界面中显示的名称。
     /// </summary>
@@ -37,13 +45,31 @@ public class RewardSO : ScriptableObject
     public GameObject rewardPrefab; // 奖励地面预制体。
 
     /// <summary>
+    /// 对外提供奖励稳定唯一 ID，只允许读取。
+    /// </summary>
+    public string RewardId => rewardId;
+
+    /// <summary>
+    /// 确保奖励数据资产拥有稳定 ID。
+    /// </summary>
+    internal void EnsureRewardId()
+    {
+        if (string.IsNullOrWhiteSpace(rewardId))
+            rewardId = Guid.NewGuid().ToString("N");
+    }
+
+    /// <summary>
     /// 根据奖励配置换算最终加入背包的数量。
     /// </summary>
     /// <param name="sourceAmount">掉落或预制体传入的原始数量。</param>
     /// <returns>最终加入玩家背包的数量。</returns>
     public int GetPickupAmount(int sourceAmount)
     {
-        return Mathf.Max(1, sourceAmount) * Mathf.Max(1, pickupAmountMultiplier);
+        long safeSourceAmount = Math.Max(1L, (long)sourceAmount); // 安全的原始数量。
+        long safeMultiplier = Math.Max(1L, (long)pickupAmountMultiplier); // 安全的拾取倍率。
+        long multipliedAmount = safeSourceAmount * safeMultiplier; // 使用 long 避免 int 溢出。
+
+        return (int)Math.Min((long)GameSaveService.MaxQuantity, multipliedAmount);
     }
 
     /// <summary>
@@ -51,6 +77,7 @@ public class RewardSO : ScriptableObject
     /// </summary>
     private void OnValidate()
     {
+        EnsureRewardId();
         pickupAmountMultiplier = Mathf.Max(1, pickupAmountMultiplier);
     }
 }

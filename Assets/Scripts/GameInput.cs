@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 /// <summary>
-/// 统一管理玩家的移动、控制切换、背包和攻击输入。
+/// 统一管理玩家的移动、交互、背包和战斗输入。
 /// </summary>
 public class GameInput : MonoBehaviour
 {
@@ -23,9 +23,14 @@ public class GameInput : MonoBehaviour
     public event Action OnPackagePressed;
 
     /// <summary>
-    /// 攻击按键被按下时发出的事件。
+    /// F 交互按键被按下时发出的事件。
     /// </summary>
-    public event Action OnAttackPressed;
+    public event Action OnInteractPressed;
+
+    /// <summary>
+    /// Battle（战斗）按键被按下时发出的事件。
+    /// </summary>
+    public event Action OnBattlePressed;
 
     /// <summary>
     /// 左 Ctrl 当前是否处于开启状态。
@@ -60,8 +65,8 @@ public class GameInput : MonoBehaviour
 
         Instance = this;
         gameControls = new GameControls();
-        gameControls.Player.Controls.performed += Controls_performed;
-        gameControls.Player.Attack.performed += Attack_performed;
+        gameControls.Player.Interact.performed += Interact_performed;
+        gameControls.Player.Battle.performed += Battle_performed;
     }
 
     /// <summary>
@@ -87,8 +92,8 @@ public class GameInput : MonoBehaviour
     {
         if (gameControls != null)
         {
-            gameControls.Player.Controls.performed -= Controls_performed;
-            gameControls.Player.Attack.performed -= Attack_performed;
+            gameControls.Player.Interact.performed -= Interact_performed;
+            gameControls.Player.Battle.performed -= Battle_performed;
             gameControls.Dispose();
         }
 
@@ -111,7 +116,7 @@ public class GameInput : MonoBehaviour
     }
 
     /// <summary>
-    /// 设置是否允许玩家使用移动、攻击和加速等玩法输入。
+    /// 设置是否允许玩家使用移动、控制切换、交互和战斗等玩法输入。
     /// </summary>
     /// <param name="isEnabled">是否允许玩法输入。</param>
     public void SetGameplayInputEnabled(bool isEnabled)
@@ -127,10 +132,10 @@ public class GameInput : MonoBehaviour
     }
 
     /// <summary>
-    /// 处理 Controls（控制动作）中的左 Ctrl 和 Tab 输入。
+    /// 处理 Interact（交互动作）中的左 Ctrl、Tab 和 F 输入。
     /// </summary>
     /// <param name="context">输入系统传入的按键事件数据。</param>
-    private void Controls_performed(InputAction.CallbackContext context)
+    private void Interact_performed(InputAction.CallbackContext context)
     {
         // Tab 属于背包界面控制键，即使背包打开，也必须继续响应。
         if (IsPackageKey(context))
@@ -142,6 +147,12 @@ public class GameInput : MonoBehaviour
         // 背包打开后，其他玩法输入全部忽略。
         if (!IsGameplayInputEnabled)
             return;
+
+        if (IsInteractKey(context))
+        {
+            OnInteractPressed?.Invoke();
+            return;
+        }
 
         IsControlActive = !IsControlActive;
         OnControlToggled?.Invoke(IsControlActive);
@@ -161,14 +172,27 @@ public class GameInput : MonoBehaviour
     }
 
     /// <summary>
-    /// 处理攻击按键输入；背包打开时忽略攻击。
+    /// 判断当前输入是否来自 F 交互按键。
     /// </summary>
     /// <param name="context">输入系统传入的按键事件数据。</param>
-    private void Attack_performed(InputAction.CallbackContext context)
+    /// <returns>来自 F 时返回 true，否则返回 false。</returns>
+    private bool IsInteractKey(InputAction.CallbackContext context)
+    {
+        if (Keyboard.current != null && context.control == Keyboard.current.fKey)
+            return true;
+
+        return context.control != null && context.control.name == "f";
+    }
+
+    /// <summary>
+    /// 处理 Battle（战斗动作）输入；背包打开时忽略战斗。
+    /// </summary>
+    /// <param name="context">输入系统传入的按键事件数据。</param>
+    private void Battle_performed(InputAction.CallbackContext context)
     {
         if (!IsGameplayInputEnabled)
             return;
 
-        OnAttackPressed?.Invoke();
+        OnBattlePressed?.Invoke();
     }
 }

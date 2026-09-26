@@ -56,7 +56,10 @@ public class PackageGridUI : MonoBehaviour
         ResolveRewardTooltip();
 
         if (playerInventory != null)
+        {
+            playerInventory.EnsureInitializedForRuntime();
             playerInventory.OnInventoryChanged += Refresh;
+        }
 
         Refresh();
     }
@@ -89,11 +92,11 @@ public class PackageGridUI : MonoBehaviour
         {
             InventoryItemStack itemStack = itemStacks[i]; // 当前要显示的物品堆叠。
 
-            if (itemStack == null || itemStack.reward == null || itemStack.amount <= 0)
+            if (itemStack == null || itemStack.Reward == null || itemStack.Amount <= 0)
                 continue;
 
             PackageSlotUI slot = Instantiate(slotPrefab, contentRoot); // 新生成的背包格子。
-            slot.SetData(itemStack.reward, itemStack.amount);
+            slot.SetData(itemStack.Reward, itemStack.Amount);
             slot.OnSlotSelected += HandleSlotSelected;
             slot.OnTooltipRequested += HandleTooltipRequested;
             slot.OnTooltipHidden += HandleTooltipHidden;
@@ -167,7 +170,7 @@ public class PackageGridUI : MonoBehaviour
     /// </summary>
     private void ResolvePlayerInventory()
     {
-        if (playerInventory != null)
+        if (playerInventory != null && playerInventory.gameObject.scene.IsValid())
             return;
 
 #pragma warning disable CS0618

@@ -60,8 +60,15 @@ public class CurrencyHudUI : BaseRedDot
         if (goldAmountText == null)
             goldAmountText = GetComponentInChildren<TMP_Text>();
 
-        if (playerInventory == null)
+        if (playerInventory == null || !playerInventory.gameObject.scene.IsValid())
             playerInventory = FindObjectOfType<PlayerInventory>();
+
+        if (playerInventory != null)
+        {
+            playerInventory.EnsureInitializedForRuntime();
+
+            goldReward = playerInventory.GoldReward;
+        }
     }
 
     /// <summary>

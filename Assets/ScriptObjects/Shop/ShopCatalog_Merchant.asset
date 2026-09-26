@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2787ba91f7460e04283c32107579f910, type: 3}
+  m_Name: ShopCatalog_Merchant
+  m_EditorClassIdentifier: 
+  catalogId: 7a5766ab799c438d86a405d2db8df2a7
+  shopDisplayName: "\u6751\u5E84\u5546\u5E97"
+  categories:
+  - categoryType: 0
+    displayName: "\u98DF\u7269"
+    icon: {fileID: 0}
+    products:
+    - productId: 762f41302f8b484f87042277651b8692
+      reward: {fileID: 11400000, guid: 094de4af97cb0b04cbc1cc111a653441, type: 2}
+      unitPrice: 5
+      initialStock: 3
+      purchaseAmount: 1
+      infiniteStock: 0
+      descriptionOverride: 
+  - categoryType: 1
+    displayName: "\u6B66\u5668"
+    icon: {fileID: 0}
+    products: []
+  - categoryType: 2
+    displayName: "\u6280\u80FD"
+    icon: {fileID: 0}
+    products: []

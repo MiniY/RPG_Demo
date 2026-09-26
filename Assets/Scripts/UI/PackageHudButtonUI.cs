@@ -84,8 +84,15 @@ public class PackageHudButtonUI : BaseRedDot
         if (packagePanelController == null)
             packagePanelController = FindObjectOfType<PackagePanelController>();
 
-        if (playerInventory == null)
+        if (playerInventory == null || !playerInventory.gameObject.scene.IsValid())
             playerInventory = FindObjectOfType<PlayerInventory>();
+
+        if (playerInventory != null)
+        {
+            playerInventory.EnsureInitializedForRuntime();
+
+            goldReward = playerInventory.GoldReward;
+        }
     }
 
     /// <summary>

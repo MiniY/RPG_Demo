@@ -158,3 +158,54 @@
 - `dotnet build RPG_Demo.sln --no-restore` 在解决方案包装层返回失败，但没有输出编译错误；两个实际 Unity 项目分别构建成功。
 - 尚未在 Unity 编辑器中运行场景或执行 Play Mode（播放模式）测试。
 - 本条记录随本次提交一起推送到远程仓库。
+
+## 2026-09-26
+
+### Add player progression and stamina system（新增玩家成长与体力系统）
+
+- Commit Hash（提交编号）：本条记录随本提交一起生成，具体编号见 Git 历史记录
+- Branch（分支）：`main（主分支）`
+- Remote（远程仓库）：`origin/main（远程主分支）`
+- Push Status（推送状态）：随本提交推送
+
+#### Changed Files（改动文件）
+
+- `Assets/Scripts/GameSession.cs（游戏会话）`
+- `Assets/Scripts/PlayerStatsRuntime.cs（玩家属性运行时数据）`
+- `Assets/Scripts/PlayerProgressionService.cs（玩家成长服务）`
+- `Assets/Scripts/PlayerStaminaController.cs（玩家体力控制器）`
+- `Assets/Scripts/UI/PlayerStatsUpgradeUI.cs（玩家属性升级界面）`
+- `Assets/Scripts/UI/PlayerStatusPanelUI.cs（玩家状态面板界面）`
+- `Assets/Scripts/GameSaveService.cs（游戏存档服务）`
+- `Assets/Scripts/GameInput.cs（游戏输入管理）`
+- `Assets/Scripts/Player/PlayerAction.cs（玩家行为）`
+- `Assets/Scenes/SampleScene.unity（示例场景）`
+- `Assets/Prefabs/UI/PackageSlot.prefab（背包格子预制体）`
+
+#### Summary（内容总结）
+
+- 新增 GameSession（游戏会话）单例，在首个场景加载前自动创建，并通过 DontDestroyOnLoad（跨场景不销毁）保存玩家属性和成长服务。
+- 新增 PlayerStatsRuntime（玩家属性运行时数据），统一管理生命值、魔法值和体力值的最大值、当前值、范围限制、变更通知和属性快照。
+- 新增 PlayerProgressionService（玩家成长服务），支持通过金币增加或减少生命值、魔法值和体力值上限。默认每个属性点消耗或返还 10 金币，且交易写入失败时会恢复金币和属性快照。
+- 新增 PlayerStatsUpgradeUI（玩家属性升级界面），为生命值、魔法值和体力值提供加点、减点按钮，显示“当前值 / 最大值”，并在金币不足、达到上限或保存失败时显示原因。
+- 重构 PlayerStatusPanelUI（玩家状态面板界面），从独立管理体力条改为只负责显示生命值、魔法值和体力值三个状态条及对应文本，属性修改交由运行时数据和成长服务处理。
+- 新增 PlayerStaminaController（玩家体力控制器），支持冲刺时按时间消耗体力，停止冲刺或攻击后经过恢复延迟自动恢复体力；默认冲刺消耗速率为每秒 2 点、恢复速率为每秒 5 点、恢复延迟为 1 秒。
+- 更新 PlayerAction（玩家行为），普通攻击开始时取消冲刺状态，并按配置消耗体力；体力不足时不会播放攻击流程或造成伤害，成功消耗后立即保存运行时状态。
+- 更新 GameInput（游戏输入管理），新增 CancelControlState（取消加速状态）接口，在界面禁用玩法输入或开始攻击时清理左 Ctrl（加速键）的切换状态。
+- 扩展 GameSaveService（游戏存档服务），将存档版本升级到 v2，新增玩家名称和生命、魔法、体力属性字段，并为旧版本存档补充默认属性、规范化数值和自动迁移保存逻辑。
+- 更新 SampleScene（示例场景）中的角色面板、状态文本、状态条和按钮绑定，并调整 PackageSlot（背包格子）文本自动缩放及悬浮提示延迟配置。
+
+#### Impact（影响范围）
+
+- 影响玩家状态 HUD（游戏主界面）、角色属性面板、攻击和冲刺行为、金币背包、统一存档及场景初始化流程。
+- 玩家属性数据与 UI（用户界面）显示、属性成长交易、攻击/冲刺消耗之间通过事件和服务接口协作，减少 UI 直接修改核心属性数据造成的耦合。
+- 旧版商店和背包存档仍可迁移到 v2 格式；新增的玩家属性会使用默认值初始化，不会因旧存档缺少字段而读取失败。
+
+#### Verification（验证结果）
+
+- 已读取并核对本次新增脚本、既有脚本差异、场景配置和预制体配置。
+- `dotnet build Assembly-CSharp.csproj --no-restore` 构建通过：0 个警告，0 个错误。
+- `dotnet build Assembly-CSharp-Editor.csproj --no-restore` 构建通过：0 个警告，0 个错误。
+- `git diff --check` 仅报告 Unity 场景序列化文件中的两个空字段行尾空白，没有发现 C# 代码格式错误。
+- 尚未在 Unity 编辑器中运行场景或执行 Play Mode（播放模式）测试。
+- 本条记录随本次提交一起推送到远程仓库。

@@ -56,7 +56,44 @@ public sealed class GameSaveShopData
 }
 
 /// <summary>
-/// 游戏完整存档，统一保存玩家背包和所有商店库存。
+/// 玩家生命、魔法和体力的存档数据。
+/// </summary>
+[Serializable]
+public sealed class PlayerStatsSaveData
+{
+    /// <summary>
+    /// 最大生命值。
+    /// </summary>
+    public int maxHealth = 100;
+
+    /// <summary>
+    /// 当前生命值。
+    /// </summary>
+    public float currentHealth = 100f;
+
+    /// <summary>
+    /// 最大魔法值。
+    /// </summary>
+    public int maxMana = 100;
+
+    /// <summary>
+    /// 当前魔法值。
+    /// </summary>
+    public float currentMana = 100f;
+
+    /// <summary>
+    /// 最大体力值。
+    /// </summary>
+    public int maxStamina = 100;
+
+    /// <summary>
+    /// 当前体力值。
+    /// </summary>
+    public float currentStamina = 100f;
+}
+
+/// <summary>
+/// 游戏完整存档，统一保存玩家档案、背包和所有商店库存。
 /// </summary>
 [Serializable]
 public sealed class GameSaveData
@@ -65,6 +102,16 @@ public sealed class GameSaveData
     /// 当前存档格式版本。
     /// </summary>
     public int version = GameSaveService.CurrentVersion;
+
+    /// <summary>
+    /// 玩家名称。
+    /// </summary>
+    public string playerName = "玩家";
+
+    /// <summary>
+    /// 玩家属性存档数据。
+    /// </summary>
+    public PlayerStatsSaveData playerStats = new PlayerStatsSaveData();
 
     /// <summary>
     /// 玩家背包物品列表。
@@ -85,7 +132,7 @@ public static class GameSaveService
     /// <summary>
     /// 当前支持的存档格式版本。
     /// </summary>
-    public const int CurrentVersion = 1;
+    public const int CurrentVersion = 2;
 
     /// <summary>
     /// 新游戏和存档数据允许保存的最大数量。
@@ -202,6 +249,8 @@ public static class GameSaveService
         return new GameSaveData
         {
             version = CurrentVersion,
+            playerName = "玩家",
+            playerStats = new PlayerStatsSaveData(),
             inventory = new List<GameSaveInventoryEntry>(),
             shops = new List<GameSaveShopData>()
         };
@@ -220,6 +269,20 @@ public static class GameSaveService
             return clone;
 
         clone.version = source.version;
+        clone.playerName = source.playerName;
+
+        if (source.playerStats != null)
+        {
+            clone.playerStats = new PlayerStatsSaveData
+            {
+                maxHealth = source.playerStats.maxHealth,
+                currentHealth = source.playerStats.currentHealth,
+                maxMana = source.playerStats.maxMana,
+                currentMana = source.playerStats.currentMana,
+                maxStamina = source.playerStats.maxStamina,
+                currentStamina = source.playerStats.currentStamina
+            };
+        }
 
         if (source.inventory != null)
         {
@@ -343,18 +406,26 @@ public static class GameSaveService
         hasLoaded = true;
         HasLoadedExistingSave = false;
 
-        if (TryRead(SavePath, out GameSaveData formalData))
+        if (TryRead(SavePath, out GameSaveData formalData, out bool formalDataMigrated))
         {
             cachedData = formalData;
             HasLoadedExistingSave = true;
+
+            if (formalDataMigrated)
+                TrySave(cachedData);
+
             return;
         }
 
-        if (TryRead(BackupPath, out GameSaveData backupData))
+        if (TryRead(BackupPath, out GameSaveData backupData, out bool backupDataMigrated))
         {
             cachedData = backupData;
             HasLoadedExistingSave = true;
             Debug.LogWarning("正式游戏存档不可用，已从备份存档恢复。");
+
+            if (backupDataMigrated)
+                TrySave(cachedData);
+
             return;
         }
 
@@ -367,9 +438,10 @@ public static class GameSaveService
     /// <param name="path">存档文件路径。</param>
     /// <param name="data">读取到的存档数据。</param>
     /// <returns>读取并校验成功返回 true。</returns>
-    private static bool TryRead(string path, out GameSaveData data)
+    private static bool TryRead(string path, out GameSaveData data, out bool migrated)
     {
         data = null;
+        migrated = false;
 
         if (!File.Exists(path))
             return false;
@@ -385,6 +457,8 @@ public static class GameSaveService
                 return false;
             }
 
+            migrated = parsedData.version < CurrentVersion;
+            Migrate(parsedData);
             Normalize(parsedData);
             data = parsedData;
             return true;
@@ -418,8 +492,55 @@ public static class GameSaveService
             return;
 
         data.version = CurrentVersion;
+        NormalizePlayerProfile(data);
+        NormalizePlayerStats(data);
         NormalizeInventory(data);
         NormalizeShops(data);
+    }
+
+    /// <summary>
+    /// 把旧版本存档补充为当前版本需要的字段。
+    /// </summary>
+    /// <param name="data">需要迁移的存档。</param>
+    private static void Migrate(GameSaveData data)
+    {
+        if (data == null)
+            return;
+
+        if (data.version < 2)
+            data.playerStats = new PlayerStatsSaveData();
+
+        if (string.IsNullOrWhiteSpace(data.playerName))
+            data.playerName = "玩家";
+    }
+
+    /// <summary>
+    /// 规范化玩家档案字段。
+    /// </summary>
+    /// <param name="data">需要规范化的存档。</param>
+    private static void NormalizePlayerProfile(GameSaveData data)
+    {
+        if (string.IsNullOrWhiteSpace(data.playerName))
+            data.playerName = "玩家";
+
+        data.playerName = data.playerName.Trim();
+    }
+
+    /// <summary>
+    /// 规范化生命、魔法和体力，确保当前值不会超出最大值。
+    /// </summary>
+    /// <param name="data">需要规范化的存档。</param>
+    private static void NormalizePlayerStats(GameSaveData data)
+    {
+        if (data.playerStats == null)
+            data.playerStats = new PlayerStatsSaveData();
+
+        data.playerStats.maxHealth = Math.Max(10, Math.Min(999, data.playerStats.maxHealth));
+        data.playerStats.maxMana = Math.Max(10, Math.Min(999, data.playerStats.maxMana));
+        data.playerStats.maxStamina = Math.Max(10, Math.Min(999, data.playerStats.maxStamina));
+        data.playerStats.currentHealth = Mathf.Clamp(data.playerStats.currentHealth, 0f, data.playerStats.maxHealth);
+        data.playerStats.currentMana = Mathf.Clamp(data.playerStats.currentMana, 0f, data.playerStats.maxMana);
+        data.playerStats.currentStamina = Mathf.Clamp(data.playerStats.currentStamina, 0f, data.playerStats.maxStamina);
     }
 
     /// <summary>

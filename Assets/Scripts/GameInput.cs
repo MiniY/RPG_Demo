@@ -124,11 +124,20 @@ public class GameInput : MonoBehaviour
         IsGameplayInputEnabled = isEnabled;
         MoveInput = Vector2.zero;
 
-        if (!isEnabled && IsControlActive)
-        {
-            IsControlActive = false;
-            OnControlToggled?.Invoke(false);
-        }
+        if (!isEnabled)
+            CancelControlState();
+    }
+
+    /// <summary>
+    /// 取消左 Ctrl 的切换状态，并通知玩家行为脚本停止加速。
+    /// </summary>
+    public void CancelControlState()
+    {
+        if (!IsControlActive)
+            return;
+
+        IsControlActive = false;
+        OnControlToggled?.Invoke(false);
     }
 
     /// <summary>

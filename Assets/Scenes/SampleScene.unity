@@ -974,12 +974,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b10f60df48f40ff40bf5d7aba92addda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  healthFill: {fileID: 0}
+  manaFill: {fileID: 0}
   staminaFill: {fileID: 2050721541}
-  maxStamina: 100
-  staminaDrainPerSecond: 2
-  staminaRecoveryPerSecond: 5
-  requirePlayerMoving: 1
-  playerAction: {fileID: 244025298}
+  healthText: {fileID: 0}
+  manaText: {fileID: 0}
+  staminaText: {fileID: 0}
 --- !u!1 &176738224
 GameObject:
   m_ObjectHideFlags: 0
@@ -989,6 +989,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 176738225}
+  - component: {fileID: 176738226}
   m_Layer: 5
   m_Name: CharacterPanelUI
   m_TagString: Untagged
@@ -1016,6 +1017,28 @@ RectTransform:
   m_AnchoredPosition: {x: -518, y: -23}
   m_SizeDelta: {x: 500, y: 700}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &176738226
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 176738224}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c3e8a1f5d7b4e209a2c6f8d1b3e4a75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  healthNumber: {fileID: 360291826}
+  manaNumber: {fileID: 835781934}
+  staminaNumber: {fileID: 1650996701}
+  healthAddButton: {fileID: 1507080769}
+  healthSubtractButton: {fileID: 1584901309}
+  manaAddButton: {fileID: 1255701603}
+  manaSubtractButton: {fileID: 1035290188}
+  staminaAddButton: {fileID: 1232631706}
+  staminaSubtractButton: {fileID: 41862414}
+  warningText: {fileID: 478388707}
 --- !u!1 &181609484
 GameObject:
   m_ObjectHideFlags: 0
@@ -1515,17 +1538,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2180519952813177409, guid: fb3dcb88ab3d20d419a062b6783b2d3c, type: 3}
   m_PrefabInstance: {fileID: 244025296}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &244025298 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4780514237665499374, guid: fb3dcb88ab3d20d419a062b6783b2d3c, type: 3}
-  m_PrefabInstance: {fileID: 244025296}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 18d82ca5efff11a47a5bf74b4d3c03a5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &244025300 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1954689602303086776, guid: fb3dcb88ab3d20d419a062b6783b2d3c, type: 3}
@@ -3292,8 +3304,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 96.65007, y: 0.000015258789}
-  m_SizeDelta: {x: 280, y: 100}
+  m_AnchoredPosition: {x: 14.555801, y: 0.000015258789}
+  m_SizeDelta: {x: 140.9694, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &360291826
 MonoBehaviour:
@@ -3315,7 +3327,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 100
+  m_text: 100/100
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 18feaf95d90fd2545a36fb4b573dbe0a, type: 2}
   m_sharedMaterial: {fileID: -8937974051545817200, guid: 18feaf95d90fd2545a36fb4b573dbe0a, type: 2}
@@ -3342,10 +3354,10 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 50
+  m_fontSize: 34.25
   m_fontSizeBase: 50
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
@@ -3358,7 +3370,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -4063,7 +4075,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 47.1
+  m_fontSize: 47.15
   m_fontSizeBase: 50
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -4511,7 +4523,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 5.7500076, y: -210.65}
+  m_AnchoredPosition: {x: 5.7500076, y: -218.9}
   m_SizeDelta: {x: 480.09998, y: 105.5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &519420028
@@ -4677,7 +4689,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 5.75, y: -264.35}
+  m_AnchoredPosition: {x: 5.75, y: -291.6}
   m_SizeDelta: {x: 480.1, y: 102.29999}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &555378753
@@ -6677,8 +6689,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 96.65, y: 2.75}
-  m_SizeDelta: {x: 280, y: 100}
+  m_AnchoredPosition: {x: 14.5558, y: 2.75}
+  m_SizeDelta: {x: 147.59, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &835781934
 MonoBehaviour:
@@ -6727,10 +6739,10 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 50
+  m_fontSize: 72
   m_fontSizeBase: 50
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
@@ -6743,7 +6755,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -8925,7 +8937,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1215944940
 RectTransform:
   m_ObjectHideFlags: 0
@@ -37753,8 +37765,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 96.650055, y: -1.1500244}
-  m_SizeDelta: {x: 280, y: 100}
+  m_AnchoredPosition: {x: 17.2039, y: -0.000015259}
+  m_SizeDelta: {x: 148.914, y: 102.3}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1650996701
 MonoBehaviour:
@@ -37803,10 +37815,10 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 50
+  m_fontSize: 72
   m_fontSizeBase: 50
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
@@ -37819,7 +37831,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}

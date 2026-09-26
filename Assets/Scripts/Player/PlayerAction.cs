@@ -13,10 +13,12 @@ public class PlayerAction : MonoBehaviour
     [SerializeField] private float damageableSearchRange = 2f; // 攻击时搜索可破坏对象的半径。
     [SerializeField] private float attackDamage = 20f; // 每次攻击造成的伤害。
     [SerializeField, Min(0f)] private float attackHitDelay = 0.24f; // 攻击动画开始后延迟多久才真正造成伤害。
+    [SerializeField, Min(0f)] private float attackStaminaCost = 5f; // 每次普通攻击消耗的体力。
     [SerializeField] private bool showAttackDebugLog = false; // 是否显示攻击调试信息。
 
     private Rigidbody2D rb; // 玩家刚体组件。
     private GameInput gameInput; // 输入管理器。
+    private PlayerStatsRuntime playerStatsRuntime; // 玩家属性运行时数据。
     private BaseDamageable preparedAttackTarget; // 本次攻击准备命中的目标。
     private Vector2 moveInput; // 当前移动输入。
     private Vector2 facingDirection = Vector2.down; // 玩家当前面对方向。
@@ -155,6 +157,16 @@ public class PlayerAction : MonoBehaviour
         gameInput.OnBattlePressed += HandleBattlePressed;
     }
 
+    // 查找统一玩家属性数据。
+    private void ResolvePlayerStats()
+    {
+        if (playerStatsRuntime != null)
+            return;
+
+        if (GameSession.Instance != null)
+            playerStatsRuntime = GameSession.Instance.PlayerStats;
+    }
+
     // 解绑攻击输入事件。
     private void UnbindInput()
     {
@@ -181,6 +193,22 @@ public class PlayerAction : MonoBehaviour
     // 处理玩家按下攻击键。
     private void HandleBattlePressed()
     {
+        // 攻击开始时立即停止冲刺，避免行为状态和输入状态不一致。
+        gameInput?.CancelControlState();
+        ResolvePlayerStats();
+
+        // 属性系统未准备好或体力不足时，不播放攻击动画，也不造成伤害。
+        if (playerStatsRuntime == null)
+            return;
+
+        playerStatsRuntime.EnsureInitializedForRuntime();
+
+        if (attackStaminaCost > 0f && !playerStatsRuntime.TryConsumeStamina(attackStaminaCost))
+            return;
+
+        // 攻击消耗的当前体力在成功发起攻击后立即写入本地存档。
+        GameSession.Instance?.SaveRuntimeState();
+
         int preparedDirectionIndex = PrepareAttackDirection();
         BaseDamageable attackTarget = preparedAttackTarget;
 
@@ -290,6 +318,7 @@ public class PlayerAction : MonoBehaviour
         damageableSearchRange = Mathf.Max(0f, damageableSearchRange);
         attackDamage = Mathf.Max(0f, attackDamage);
         attackHitDelay = Mathf.Max(0f, attackHitDelay);
+        attackStaminaCost = Mathf.Max(0f, attackStaminaCost);
     }
 }
 

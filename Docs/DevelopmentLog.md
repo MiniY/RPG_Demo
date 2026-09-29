@@ -209,3 +209,43 @@
 - `git diff --check` 仅报告 Unity 场景序列化文件中的两个空字段行尾空白，没有发现 C# 代码格式错误。
 - 尚未在 Unity 编辑器中运行场景或执行 Play Mode（播放模式）测试。
 - 本条记录随本次提交一起推送到远程仓库。
+
+## 2026-09-29
+
+### Add bridge tiles and update sprite import data（新增桥梁瓦片并更新精灵导入数据）
+
+- Commit Hash（提交编号）：本条记录随本提交一起生成，具体编号见 Git 历史记录
+- Branch（分支）：`main（主分支）`
+- Remote（远程仓库）：`origin/main（远程主分支）`
+- Push Status（推送状态）：随本提交推送
+
+#### Changed Files（改动文件）
+
+- `Assets/Sprites/GrassTiles.prefab（草地瓦片调色板预制体）`
+- `Assets/Sprites/GrassTiles/Bridge_All_*.asset（桥梁瓦片资源）`
+- `Assets/Sprites/GrassTiles/Bridge_All_*.asset.meta（桥梁瓦片资源元数据）`
+- `Assets/_Resources/TinySwords/Terrain/Bridge/Bridge_All.png.meta（桥梁精灵导入配置）`
+- `Assets/_Resources/TinySwords/Resources/Gold Mine/GoldMine_Active.png.meta（金矿激活状态精灵导入配置）`
+- `Assets/_Resources/TinySwords/Resources/Gold Mine/GoldMine_Destroyed.png.meta（金矿摧毁状态精灵导入配置）`
+- `Assets/_Resources/TinySwords/Resources/Gold Mine/GoldMine_Inactive.png.meta（金矿未激活状态精灵导入配置）`
+
+#### Summary（内容总结）
+
+- 新增 12 个 Bridge_All（桥梁合集）瓦片资源，按 4 行 3 列命名为 `Bridge_All_0_0` 到 `Bridge_All_3_2`，用于后续 Tilemap（瓦片地图）场景绘制。
+- 更新 GrassTiles（草地瓦片调色板）预制体，将新桥梁瓦片纳入已有瓦片绘制资源集合。
+- 更新 Bridge_All.png（桥梁合集精灵图）的 Unity 导入元数据，使桥梁精灵切片和瓦片资源引用保持一致。
+- 更新 GoldMine_Active、GoldMine_Destroyed 和 GoldMine_Inactive（金矿三种状态）精灵导入元数据，为后续资源采集或地图物件表现保持导入配置一致。
+- 保留 `learn/tilemap-minimap/course-state.md（学习进度记录）` 在工作区中，不纳入本次提交。
+
+#### Impact（影响范围）
+
+- 影响 Tilemap（瓦片地图）绘制资源、草地瓦片调色板、桥梁地图元素和金矿地图物件的 Sprite Import Settings（精灵导入设置）。
+- 为后续在场景中绘制桥梁通路、制作地图连通区域或接入小地图/地形系统打基础。
+- 本次主要是 Unity 资源和元数据更新，没有新增或修改 C# 运行时代码。
+
+#### Verification（验证结果）
+
+- 已核对工作区状态，确认本次 Unity 资源变更包含桥梁瓦片资源、草地瓦片预制体以及桥梁/金矿精灵导入元数据。
+- 本次未修改 C# 脚本，因此未重新执行 C# 编译检查。
+- 尚未在 Unity 编辑器中运行场景或执行 Tile Palette（瓦片调色板）绘制验证。
+- 本条记录随本次提交一起推送到远程仓库。

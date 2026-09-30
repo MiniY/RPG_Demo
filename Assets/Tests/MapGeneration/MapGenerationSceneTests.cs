@@ -30,6 +30,13 @@ public class MapGenerationSceneTests
             Assert.That(controller.TilemapRenderer, Is.Not.Null, "测试场景缺少 MapTilemapRenderer 引用。");
             Assert.That(controller.Player, Is.Not.Null, "测试场景缺少玩家引用。");
 
+            MapMinimapController minimapController =
+                FindComponentInScene<MapMinimapController>(testScene);
+            Assert.That(minimapController, Is.Not.Null, "测试场景缺少 MapMinimapController。");
+            Assert.That(minimapController.MapController, Is.EqualTo(controller));
+            Assert.That(minimapController.TilemapRenderer, Is.EqualTo(controller.TilemapRenderer));
+            Assert.That(minimapController.Player, Is.EqualTo(controller.Player));
+
             controller.GenerateMap();
 
             MapData mapData = controller.LastGeneratedMap;

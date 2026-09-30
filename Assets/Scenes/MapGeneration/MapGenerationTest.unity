@@ -164,8 +164,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 278a15c87d7c1db4a82a3ae89c6a207e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
 --- !u!1 &1000000010
 GameObject:
   m_ObjectHideFlags: 0
@@ -685,6 +685,7 @@ GameObject:
   - component: {fileID: 1000000051}
   - component: {fileID: 1000000052}
   - component: {fileID: 1000000053}
+  - component: {fileID: 1000000054}
   m_Layer: 0
   m_Name: MapGenerationController
   m_TagString: Untagged
@@ -739,6 +740,34 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   groundTilemap: {fileID: 1000000023}
   collisionTilemap: {fileID: 1000000033}
+--- !u!114 &1000000054
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000000050}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5a9b2c74d1f46f8a03e6c9b27584102, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  mapController: {fileID: 1000000052}
+  tilemapRenderer: {fileID: 1000000053}
+  player: {fileID: 6000000002}
+  minimapImage: {fileID: 0}
+  playerMarker: {fileID: 0}
+  createRuntimeView: 1
+  minimapSize: 192
+  screenMargin: 16
+  contentPadding: 6
+  markerSize: 10
+  grassColor: {r: 76, g: 148, b: 78, a: 255}
+  waterColor: {r: 47, g: 112, b: 166, a: 255}
+  pathColor: {r: 201, g: 174, b: 105, a: 255}
+  fallbackColor: {r: 128, g: 128, b: 128, a: 255}
+  panelColor: {r: 0.04, g: 0.06, b: 0.08, a: 0.9}
+  markerColor: {r: 1, g: 0.9, b: 0.2, a: 1}
 --- !u!1001 &6000000001
 PrefabInstance:
   m_ObjectHideFlags: 0

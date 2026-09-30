@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -39,6 +40,16 @@ public class MapGenerationController : MonoBehaviour
     /// 最近一次生成的运行时地图数据。
     /// </summary>
     private MapData lastGeneratedMap;
+
+    /// <summary>
+    /// 地图生成完成后通知小地图和其他观察者。
+    /// </summary>
+    public event Action<MapData> MapGenerated;
+
+    /// <summary>
+    /// 地图被清空后通知小地图和其他观察者。
+    /// </summary>
+    public event Action MapCleared;
 
     /// <summary>
     /// 获取当前地图配置。
@@ -85,6 +96,8 @@ public class MapGenerationController : MonoBehaviour
             if (movePlayerToSpawn)
                 MovePlayerToSpawn(lastGeneratedMap);
 
+            MapGenerated?.Invoke(lastGeneratedMap);
+
             if (logGenerationSummary)
             {
                 Debug.Log(
@@ -108,6 +121,7 @@ public class MapGenerationController : MonoBehaviour
             tilemapRenderer.Clear();
 
         lastGeneratedMap = null;
+        MapCleared?.Invoke();
     }
 
     /// <summary>

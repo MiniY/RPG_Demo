@@ -35,6 +35,27 @@ public sealed class MapMinimapController : MonoBehaviour
     [SerializeField] private RectTransform playerMarker;
 
     /// <summary>
+    /// 表示玩家出生点位置的 UI 标记。
+    /// </summary>
+    [Header("Map Markers（地图标记）")]
+    [SerializeField] private RectTransform spawnMarker;
+
+    /// <summary>
+    /// 表示道路出口位置的 UI 标记。
+    /// </summary>
+    [SerializeField] private RectTransform exitMarker;
+
+    /// <summary>
+    /// 是否显示出生点标记。
+    /// </summary>
+    [SerializeField] private bool showSpawnMarker = true;
+
+    /// <summary>
+    /// 是否显示出口标记。
+    /// </summary>
+    [SerializeField] private bool showExitMarker = true;
+
+    /// <summary>
     /// 没有手动配置 UI 时，是否在运行时自动创建小地图界面。
     /// </summary>
     [SerializeField] private bool createRuntimeView = true;
@@ -91,6 +112,16 @@ public sealed class MapMinimapController : MonoBehaviour
     [SerializeField] private Color markerColor = new Color(1f, 0.9f, 0.2f, 1f);
 
     /// <summary>
+    /// 出生点标记使用的颜色。
+    /// </summary>
+    [SerializeField] private Color spawnMarkerColor = new Color(0.3f, 1f, 0.45f, 1f);
+
+    /// <summary>
+    /// 出口标记使用的颜色。
+    /// </summary>
+    [SerializeField] private Color exitMarkerColor = new Color(1f, 0.35f, 0.3f, 1f);
+
+    /// <summary>
     /// 当前生成的小地图纹理。
     /// </summary>
     private Texture2D minimapTexture;
@@ -129,6 +160,16 @@ public sealed class MapMinimapController : MonoBehaviour
     /// 获取当前显示位置所使用的玩家对象。
     /// </summary>
     public Transform Player => player;
+
+    /// <summary>
+    /// 获取出生点 UI 标记引用。
+    /// </summary>
+    public RectTransform SpawnMarker => spawnMarker;
+
+    /// <summary>
+    /// 获取出口 UI 标记引用。
+    /// </summary>
+    public RectTransform ExitMarker => exitMarker;
 
     /// <summary>
     /// 获取当前生成的小地图纹理，便于调试和测试。
@@ -258,6 +299,7 @@ public sealed class MapMinimapController : MonoBehaviour
 
         displayedMap = mapData;
         UpdateAspectRatio(mapData);
+        UpdateMapMarkers();
         UpdatePlayerMarker();
     }
 
@@ -277,6 +319,12 @@ public sealed class MapMinimapController : MonoBehaviour
 
         if (playerMarker != null)
             playerMarker.gameObject.SetActive(false);
+
+        if (spawnMarker != null)
+            spawnMarker.gameObject.SetActive(false);
+
+        if (exitMarker != null)
+            exitMarker.gameObject.SetActive(false);
     }
 
     /// <summary>
@@ -395,6 +443,47 @@ public sealed class MapMinimapController : MonoBehaviour
         markerImage.texture = Texture2D.whiteTexture;
         markerImage.color = markerColor;
         markerImage.raycastTarget = false;
+
+        spawnMarker = CreateRuntimeMarker(
+            "SpawnMarker",
+            spawnMarkerColor,
+            Quaternion.identity);
+        exitMarker = CreateRuntimeMarker(
+            "ExitMarker",
+            exitMarkerColor,
+            Quaternion.identity);
+    }
+
+    /// <summary>
+    /// 创建一个运行时位置标记，并把它放在小地图图像上。
+    /// </summary>
+    /// <param name="markerName">标记对象名称。</param>
+    /// <param name="color">标记颜色。</param>
+    /// <param name="rotation">标记旋转。</param>
+    /// <returns>创建好的标记矩形变换组件。</returns>
+    private RectTransform CreateRuntimeMarker(
+        string markerName,
+        Color color,
+        Quaternion rotation)
+    {
+        GameObject markerObject = new GameObject(
+            markerName,
+            typeof(RectTransform),
+            typeof(RawImage));
+        markerObject.transform.SetParent(minimapImage.transform, false);
+
+        RectTransform markerRect = markerObject.GetComponent<RectTransform>();
+        markerRect.anchorMin = new Vector2(0.5f, 0.5f);
+        markerRect.anchorMax = new Vector2(0.5f, 0.5f);
+        markerRect.pivot = new Vector2(0.5f, 0.5f);
+        markerRect.sizeDelta = new Vector2(markerSize, markerSize);
+        markerRect.localRotation = rotation;
+
+        RawImage markerImage = markerObject.GetComponent<RawImage>();
+        markerImage.texture = Texture2D.whiteTexture;
+        markerImage.color = color;
+        markerImage.raycastTarget = false;
+        return markerRect;
     }
 
     /// <summary>
@@ -429,6 +518,69 @@ public sealed class MapMinimapController : MonoBehaviour
 
         if (aspectRatioFitter != null)
             aspectRatioFitter.aspectRatio = (float)mapData.Width / mapData.Height;
+    }
+
+    /// <summary>
+    /// 根据当前地图数据更新出生点和出口标记的位置与可见状态。
+    /// </summary>
+    private void UpdateMapMarkers()
+    {
+        if (displayedMap == null)
+            return;
+
+        UpdateStaticMarker(
+            spawnMarker,
+            displayedMap.SpawnCell,
+            showSpawnMarker,
+            spawnMarkerColor);
+        UpdateStaticMarker(
+            exitMarker,
+            displayedMap.ExitCell,
+            showExitMarker,
+            exitMarkerColor);
+    }
+
+    /// <summary>
+    /// 设置一个固定地图标记的归一化位置、颜色和可见状态。
+    /// </summary>
+    /// <param name="marker">待更新的 UI 标记。</param>
+    /// <param name="cell">标记对应的地图网格坐标。</param>
+    /// <param name="shouldShow">是否允许显示该标记。</param>
+    /// <param name="color">标记颜色。</param>
+    private void UpdateStaticMarker(
+        RectTransform marker,
+        Vector2Int cell,
+        bool shouldShow,
+        Color color)
+    {
+        if (marker == null)
+            return;
+
+        bool isInsideMap = displayedMap.IsInside(cell);
+        marker.gameObject.SetActive(shouldShow && isInsideMap);
+
+        if (!shouldShow || !isInsideMap)
+            return;
+
+        Vector2 normalizedPosition = MapMinimapRasterizer.CellToNormalizedPosition(
+            displayedMap,
+            cell);
+        marker.anchorMin = normalizedPosition;
+        marker.anchorMax = normalizedPosition;
+        marker.anchoredPosition = Vector2.zero;
+        SetMarkerColor(marker, color);
+    }
+
+    /// <summary>
+    /// 修改 UI 标记上的 Graphic（图形）颜色，同时兼容 Image 和 RawImage。
+    /// </summary>
+    /// <param name="marker">待修改的 UI 标记。</param>
+    /// <param name="color">目标颜色。</param>
+    private static void SetMarkerColor(RectTransform marker, Color color)
+    {
+        Graphic graphic = marker.GetComponent<Graphic>();
+        if (graphic != null)
+            graphic.color = color;
     }
 
     /// <summary>

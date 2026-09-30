@@ -80,6 +80,46 @@ public class MapGenerationSceneTests
     }
 
     /// <summary>
+    /// 验证摄像机限制范围会把视口保持在地图边界内。
+    /// </summary>
+    [Test]
+    public void CameraLimitsKeepViewportInsideMapBounds()
+    {
+        Bounds mapBounds = new Bounds(
+            new Vector3(32f, 32f, 0f),
+            new Vector3(64f, 64f, 0f));
+
+        MapGenerationCameraFollow.CalculateCameraLimits(
+            mapBounds,
+            5f,
+            2f,
+            Vector2.zero,
+            out Vector2 minimumCameraPosition,
+            out Vector2 maximumCameraPosition);
+
+        Assert.That(minimumCameraPosition.x, Is.EqualTo(10f).Within(0.001f));
+        Assert.That(minimumCameraPosition.y, Is.EqualTo(5f).Within(0.001f));
+        Assert.That(maximumCameraPosition.x, Is.EqualTo(54f).Within(0.001f));
+        Assert.That(maximumCameraPosition.y, Is.EqualTo(59f).Within(0.001f));
+
+        Vector3 bottomLeft = MapGenerationCameraFollow.ClampPositionToBounds(
+            new Vector3(-10f, -10f, -7f),
+            minimumCameraPosition,
+            maximumCameraPosition);
+        Vector3 topRight = MapGenerationCameraFollow.ClampPositionToBounds(
+            new Vector3(100f, 100f, -7f),
+            minimumCameraPosition,
+            maximumCameraPosition);
+
+        Assert.That(bottomLeft.x, Is.EqualTo(10f).Within(0.001f));
+        Assert.That(bottomLeft.y, Is.EqualTo(5f).Within(0.001f));
+        Assert.That(bottomLeft.z, Is.EqualTo(-7f).Within(0.001f));
+        Assert.That(topRight.x, Is.EqualTo(54f).Within(0.001f));
+        Assert.That(topRight.y, Is.EqualTo(59f).Within(0.001f));
+        Assert.That(topRight.z, Is.EqualTo(-7f).Within(0.001f));
+    }
+
+    /// <summary>
     /// 统计 Tilemap 区域内非空瓦片的数量。
     /// </summary>
     /// <param name="tiles">待统计的瓦片数组。</param>

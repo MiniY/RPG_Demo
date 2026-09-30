@@ -97,6 +97,39 @@ public class MapTilemapRenderer : MonoBehaviour
     }
 
     /// <summary>
+    /// 获取当前地表 Tilemap（瓦片地图）在世界坐标中的边界。
+    /// </summary>
+    /// <param name="worldBounds">输出的世界坐标边界。</param>
+    /// <returns>地表存在有效瓦片时返回 true。</returns>
+    public bool TryGetWorldBounds(out Bounds worldBounds)
+    {
+        worldBounds = default;
+
+        if (groundTilemap == null)
+            return false;
+
+        BoundsInt cellBounds = groundTilemap.cellBounds;
+        if (cellBounds.size.x <= 0 || cellBounds.size.y <= 0)
+            return false;
+
+        int z = cellBounds.zMin;
+        Vector3 bottomLeft = groundTilemap.CellToWorld(
+            new Vector3Int(cellBounds.xMin, cellBounds.yMin, z));
+        Vector3 bottomRight = groundTilemap.CellToWorld(
+            new Vector3Int(cellBounds.xMax, cellBounds.yMin, z));
+        Vector3 topLeft = groundTilemap.CellToWorld(
+            new Vector3Int(cellBounds.xMin, cellBounds.yMax, z));
+        Vector3 topRight = groundTilemap.CellToWorld(
+            new Vector3Int(cellBounds.xMax, cellBounds.yMax, z));
+
+        worldBounds = new Bounds(bottomLeft, Vector3.zero);
+        worldBounds.Encapsulate(bottomRight);
+        worldBounds.Encapsulate(topLeft);
+        worldBounds.Encapsulate(topRight);
+        return worldBounds.size.x > 0f && worldBounds.size.y > 0f;
+    }
+
+    /// <summary>
     /// 获取指定地形的显示 Tile（瓦片）。
     /// </summary>
     /// <param name="terrainType">地形类型。</param>

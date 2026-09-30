@@ -35,6 +35,27 @@ public sealed class MapMinimapController : MonoBehaviour
     [SerializeField] private RectTransform playerMarker;
 
     /// <summary>
+    /// 覆盖在小地图上的战争迷雾 RawImage（原始图像）组件。
+    /// </summary>
+    [Header("Fog of War（战争迷雾）")]
+    [SerializeField] private RawImage fogOverlay;
+
+    /// <summary>
+    /// 是否启用战争迷雾。
+    /// </summary>
+    [SerializeField] private bool enableFogOfWar = true;
+
+    /// <summary>
+    /// 玩家每次探索的圆形半径，单位是地图网格数量。
+    /// </summary>
+    [SerializeField, Min(0)] private int explorationRadius = 5;
+
+    /// <summary>
+    /// 未探索区域使用的遮罩颜色和透明度。
+    /// </summary>
+    [SerializeField] private Color fogColor = new Color(0f, 0f, 0f, 0.92f);
+
+    /// <summary>
     /// 表示玩家出生点位置的 UI 标记。
     /// </summary>
     [Header("Map Markers（地图标记）")]
@@ -127,9 +148,34 @@ public sealed class MapMinimapController : MonoBehaviour
     private Texture2D minimapTexture;
 
     /// <summary>
+    /// 当前生成的战争迷雾纹理。
+    /// </summary>
+    private Texture2D fogTexture;
+
+    /// <summary>
+    /// 战争迷雾纹理的像素缓存，透明像素代表已探索区域。
+    /// </summary>
+    private Color32[] fogPixels;
+
+    /// <summary>
     /// 当前已经显示的小地图数据。
     /// </summary>
     private MapData displayedMap;
+
+    /// <summary>
+    /// 当前地图的逻辑探索状态。
+    /// </summary>
+    private MapExplorationState explorationState;
+
+    /// <summary>
+    /// 上一次触发探索更新时玩家所在的网格。
+    /// </summary>
+    private Vector2Int lastExplorationCell;
+
+    /// <summary>
+    /// 是否已经记录过上一次探索网格。
+    /// </summary>
+    private bool hasLastExplorationCell;
 
     /// <summary>
     /// 运行时自动创建的 Canvas（画布）对象。
@@ -177,6 +223,21 @@ public sealed class MapMinimapController : MonoBehaviour
     public Texture2D MinimapTexture => minimapTexture;
 
     /// <summary>
+    /// 获取当前生成的战争迷雾纹理，便于调试和测试。
+    /// </summary>
+    public Texture2D FogTexture => fogTexture;
+
+    /// <summary>
+    /// 获取当前地图的探索状态，便于测试和保存系统读取。
+    /// </summary>
+    public MapExplorationState ExplorationState => explorationState;
+
+    /// <summary>
+    /// 获取战争迷雾 UI 覆盖层引用。
+    /// </summary>
+    public RawImage FogOverlay => fogOverlay;
+
+    /// <summary>
     /// 缓存依赖并在运行时创建默认界面。
     /// </summary>
     private void Awake()
@@ -217,6 +278,7 @@ public sealed class MapMinimapController : MonoBehaviour
     /// </summary>
     private void LateUpdate()
     {
+        UpdateExplorationAroundPlayer();
         UpdatePlayerMarker();
     }
 
@@ -238,6 +300,7 @@ public sealed class MapMinimapController : MonoBehaviour
     private void OnDestroy()
     {
         ReleaseTexture();
+        ReleaseFogTexture();
 
         if (runtimeCanvasObject != null)
             Destroy(runtimeCanvasObject);
@@ -299,6 +362,7 @@ public sealed class MapMinimapController : MonoBehaviour
 
         displayedMap = mapData;
         UpdateAspectRatio(mapData);
+        ResetExploration(mapData);
         UpdateMapMarkers();
         UpdatePlayerMarker();
     }
@@ -309,7 +373,10 @@ public sealed class MapMinimapController : MonoBehaviour
     public void ClearMap()
     {
         displayedMap = null;
+        explorationState = null;
+        hasLastExplorationCell = false;
         ReleaseTexture();
+        ReleaseFogTexture();
 
         if (minimapImage != null)
         {
@@ -325,6 +392,12 @@ public sealed class MapMinimapController : MonoBehaviour
 
         if (exitMarker != null)
             exitMarker.gameObject.SetActive(false);
+
+        if (fogOverlay != null)
+        {
+            fogOverlay.texture = null;
+            fogOverlay.enabled = false;
+        }
     }
 
     /// <summary>
@@ -426,6 +499,8 @@ public sealed class MapMinimapController : MonoBehaviour
         aspectRatioFitter.aspectMode = AspectRatioFitter.AspectMode.FitInParent;
         aspectRatioFitter.aspectRatio = 1f;
 
+        fogOverlay = CreateRuntimeFogOverlay();
+
         GameObject markerObject = new GameObject(
             "PlayerMarker",
             typeof(RectTransform),
@@ -452,6 +527,31 @@ public sealed class MapMinimapController : MonoBehaviour
             "ExitMarker",
             exitMarkerColor,
             Quaternion.identity);
+    }
+
+    /// <summary>
+    /// 创建覆盖在地图底图上、但位于各种位置标记下方的战争迷雾图像。
+    /// </summary>
+    /// <returns>新建的战争迷雾 RawImage（原始图像）组件。</returns>
+    private RawImage CreateRuntimeFogOverlay()
+    {
+        GameObject fogObject = new GameObject(
+            "FogOverlay",
+            typeof(RectTransform),
+            typeof(RawImage));
+        fogObject.transform.SetParent(minimapImage.transform, false);
+
+        RectTransform fogRect = fogObject.GetComponent<RectTransform>();
+        fogRect.anchorMin = Vector2.zero;
+        fogRect.anchorMax = Vector2.one;
+        fogRect.offsetMin = Vector2.zero;
+        fogRect.offsetMax = Vector2.zero;
+
+        RawImage fogImage = fogObject.GetComponent<RawImage>();
+        fogImage.raycastTarget = false;
+        fogImage.color = Color.white;
+        fogImage.transform.SetAsFirstSibling();
+        return fogImage;
     }
 
     /// <summary>
@@ -518,6 +618,103 @@ public sealed class MapMinimapController : MonoBehaviour
 
         if (aspectRatioFitter != null)
             aspectRatioFitter.aspectRatio = (float)mapData.Width / mapData.Height;
+    }
+
+    /// <summary>
+    /// 为新地图重置逻辑探索状态和战争迷雾纹理。
+    /// </summary>
+    /// <param name="mapData">刚刚生成的地图数据。</param>
+    private void ResetExploration(MapData mapData)
+    {
+        explorationState = new MapExplorationState(mapData);
+        hasLastExplorationCell = false;
+        CreateOrResizeFogTexture(mapData.Width, mapData.Height);
+
+        if (fogOverlay != null)
+        {
+            fogOverlay.texture = fogTexture;
+            fogOverlay.color = Color.white;
+            fogOverlay.raycastTarget = false;
+            fogOverlay.transform.SetAsFirstSibling();
+            fogOverlay.enabled = enableFogOfWar;
+        }
+
+        ApplyFogTexture();
+
+        if (enableFogOfWar)
+            UpdateExplorationAroundPlayer();
+    }
+
+    /// <summary>
+    /// 在玩家进入新网格时揭示周围区域，并更新战争迷雾纹理。
+    /// </summary>
+    private void UpdateExplorationAroundPlayer()
+    {
+        if (displayedMap == null || explorationState == null || player == null)
+            return;
+
+        if (fogOverlay != null)
+            fogOverlay.enabled = enableFogOfWar;
+
+        if (!enableFogOfWar)
+            return;
+
+        Vector2Int playerCell = GetPlayerCell();
+        if (hasLastExplorationCell && playerCell == lastExplorationCell)
+            return;
+
+        explorationState.RevealAround(playerCell, explorationRadius);
+        lastExplorationCell = playerCell;
+        hasLastExplorationCell = true;
+        ApplyFogTexture();
+    }
+
+    /// <summary>
+    /// 根据逻辑探索状态重建战争迷雾像素。
+    /// </summary>
+    private void ApplyFogTexture()
+    {
+        if (fogTexture == null || explorationState == null || fogPixels == null)
+            return;
+
+        Color32 unexploredColor = fogColor;
+        Color32 exploredColor = new Color32(0, 0, 0, 0);
+
+        for (int localY = 0; localY < explorationState.Height; localY++)
+        {
+            for (int localX = 0; localX < explorationState.Width; localX++)
+            {
+                Vector2Int cell = explorationState.Origin + new Vector2Int(localX, localY);
+                int pixelIndex = localY * explorationState.Width + localX;
+                fogPixels[pixelIndex] = explorationState.IsExplored(cell)
+                    ? exploredColor
+                    : unexploredColor;
+            }
+        }
+
+        fogTexture.SetPixels32(fogPixels);
+        fogTexture.Apply(false, false);
+    }
+
+    /// <summary>
+    /// 创建或调整与地图尺寸一致的战争迷雾纹理。
+    /// </summary>
+    /// <param name="width">地图宽度。</param>
+    /// <param name="height">地图高度。</param>
+    private void CreateOrResizeFogTexture(int width, int height)
+    {
+        if (fogTexture != null && fogTexture.width == width && fogTexture.height == height)
+        {
+            fogPixels = new Color32[width * height];
+            return;
+        }
+
+        ReleaseFogTexture();
+        fogTexture = new Texture2D(width, height, TextureFormat.RGBA32, false);
+        fogTexture.name = "GeneratedFogTexture";
+        fogTexture.filterMode = FilterMode.Point;
+        fogTexture.wrapMode = TextureWrapMode.Clamp;
+        fogPixels = new Color32[width * height];
     }
 
     /// <summary>
@@ -640,6 +837,23 @@ public sealed class MapMinimapController : MonoBehaviour
     }
 
     /// <summary>
+    /// 销毁当前战争迷雾纹理，避免重新生成地图时积累纹理对象。
+    /// </summary>
+    private void ReleaseFogTexture()
+    {
+        if (fogTexture == null)
+            return;
+
+        if (Application.isPlaying)
+            Destroy(fogTexture);
+        else
+            DestroyImmediate(fogTexture);
+
+        fogTexture = null;
+        fogPixels = null;
+    }
+
+    /// <summary>
     /// 在 Inspector（检视面板）修改参数时修正 UI 配置。
     /// </summary>
     private void OnValidate()
@@ -648,5 +862,7 @@ public sealed class MapMinimapController : MonoBehaviour
         screenMargin = Mathf.Max(0f, screenMargin);
         contentPadding = Mathf.Clamp(contentPadding, 0f, minimapSize * 0.5f);
         markerSize = Mathf.Max(2f, markerSize);
+        explorationRadius = Mathf.Max(0, explorationRadius);
+        fogColor.a = Mathf.Clamp01(fogColor.a);
     }
 }

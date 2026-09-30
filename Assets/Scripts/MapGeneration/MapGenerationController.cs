@@ -17,6 +17,11 @@ public class MapGenerationController : MonoBehaviour
     [SerializeField] private MapTilemapRenderer tilemapRenderer;
 
     /// <summary>
+    /// 负责根据最终地图数据写入装饰 Tilemap 的渲染器。
+    /// </summary>
+    [SerializeField] private MapDecorationRenderer decorationRenderer;
+
+    /// <summary>
     /// 测试场景中的玩家 Transform（变换组件）。
     /// </summary>
     [SerializeField] private Transform player;
@@ -42,6 +47,11 @@ public class MapGenerationController : MonoBehaviour
     private MapData lastGeneratedMap;
 
     /// <summary>
+    /// 最近一次生成的装饰物数据。
+    /// </summary>
+    private MapDecorationData lastGeneratedDecorations;
+
+    /// <summary>
     /// 地图生成完成后通知小地图和其他观察者。
     /// </summary>
     public event Action<MapData> MapGenerated;
@@ -62,6 +72,11 @@ public class MapGenerationController : MonoBehaviour
     public MapTilemapRenderer TilemapRenderer => tilemapRenderer;
 
     /// <summary>
+    /// 获取装饰 Tilemap 渲染器。
+    /// </summary>
+    public MapDecorationRenderer DecorationRenderer => decorationRenderer;
+
+    /// <summary>
     /// 获取生成地图后需要移动到出生点的玩家变换组件。
     /// </summary>
     public Transform Player => player;
@@ -70,6 +85,11 @@ public class MapGenerationController : MonoBehaviour
     /// 获取最近一次生成的地图数据。
     /// </summary>
     public MapData LastGeneratedMap => lastGeneratedMap;
+
+    /// <summary>
+    /// 获取最近一次生成的装饰物数据。
+    /// </summary>
+    public MapDecorationData LastGeneratedDecorations => lastGeneratedDecorations;
 
     /// <summary>
     /// 根据配置生成并渲染地图。
@@ -93,6 +113,18 @@ public class MapGenerationController : MonoBehaviour
             lastGeneratedMap = RandomMapGenerator.Generate(settings);
             tilemapRenderer.Render(lastGeneratedMap, settings);
 
+            // 装饰物读取最终地图数据，但使用独立随机流，不改变基础地形结果。
+            lastGeneratedDecorations =
+                MapDecorationGenerator.Generate(lastGeneratedMap, settings);
+
+            if (decorationRenderer != null)
+            {
+                decorationRenderer.Render(
+                    lastGeneratedDecorations,
+                    lastGeneratedMap,
+                    settings);
+            }
+
             if (movePlayerToSpawn)
                 MovePlayerToSpawn(lastGeneratedMap);
 
@@ -102,7 +134,8 @@ public class MapGenerationController : MonoBehaviour
             {
                 Debug.Log(
                     $"地图生成完成：Seed={settings.seed}，尺寸={settings.mapWidth}x{settings.mapHeight}，" +
-                    $"出生点={lastGeneratedMap.SpawnCell}，道路终点={lastGeneratedMap.ExitCell}。",
+                    $"出生点={lastGeneratedMap.SpawnCell}，道路终点={lastGeneratedMap.ExitCell}，" +
+                    $"装饰物={lastGeneratedDecorations.Count}。",
                     this);
             }
         }
@@ -120,7 +153,11 @@ public class MapGenerationController : MonoBehaviour
         if (tilemapRenderer != null)
             tilemapRenderer.Clear();
 
+        if (decorationRenderer != null)
+            decorationRenderer.Clear();
+
         lastGeneratedMap = null;
+        lastGeneratedDecorations = null;
         MapCleared?.Invoke();
     }
 

@@ -9,12 +9,32 @@ public enum MapTerrainType
     Grass,
 
     /// <summary>
-    /// 不可行走的水域。
+    /// 不可行走的深水。
     /// </summary>
-    Water,
+    DeepWater,
+
+    /// <summary>
+    /// 旧版本使用的水域名称，保留它以兼容已有代码和测试。
+    /// </summary>
+    Water = DeepWater,
 
     /// <summary>
     /// 可行走的道路。
     /// </summary>
-    Path
+    Path,
+
+    /// <summary>
+    /// 不可行走的浅水。
+    /// </summary>
+    ShallowWater,
+
+    /// <summary>
+    /// 可行走的森林地表，树木等对象属于后续装饰层。
+    /// </summary>
+    Forest,
+
+    /// <summary>
+    /// 不可行走的山地。
+    /// </summary>
+    Mountain
 }

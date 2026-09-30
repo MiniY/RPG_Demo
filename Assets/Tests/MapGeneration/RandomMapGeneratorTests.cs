@@ -89,7 +89,7 @@ public class RandomMapGeneratorTests
     }
 
     /// <summary>
-    /// 验证地图外圈是水域，避免玩家从测试地图边界离开。
+    /// 验证地图外圈是深水，避免玩家从测试地图边界离开。
     /// </summary>
     [Test]
     public void BorderIsWater()
@@ -102,9 +102,59 @@ public class RandomMapGeneratorTests
             {
                 Vector2Int cell = new Vector2Int(x, y);
                 if (map.IsBorder(cell, settings.borderSize))
-                    Assert.That(map.GetCell(cell).terrainType, Is.EqualTo(MapTerrainType.Water));
+                    Assert.That(map.GetCell(cell).terrainType, Is.EqualTo(MapTerrainType.DeepWater));
             }
         }
+    }
+
+    /// <summary>
+    /// 验证浅水、森林、山地和道路遵循各自的可行走规则。
+    /// </summary>
+    [Test]
+    public void ExtendedTerrainWalkabilityMatchesDesign()
+    {
+        MapData map = new MapData(5, 1, Vector2Int.zero);
+        map.SetTerrain(new Vector2Int(0, 0), MapTerrainType.DeepWater);
+        map.SetTerrain(new Vector2Int(1, 0), MapTerrainType.ShallowWater);
+        map.SetTerrain(new Vector2Int(2, 0), MapTerrainType.Forest);
+        map.SetTerrain(new Vector2Int(3, 0), MapTerrainType.Mountain);
+        map.SetTerrain(new Vector2Int(4, 0), MapTerrainType.Path);
+
+        Assert.That(map.IsWalkable(new Vector2Int(0, 0)), Is.False);
+        Assert.That(map.IsWalkable(new Vector2Int(1, 0)), Is.False);
+        Assert.That(map.IsWalkable(new Vector2Int(2, 0)), Is.True);
+        Assert.That(map.IsWalkable(new Vector2Int(3, 0)), Is.False);
+        Assert.That(map.IsWalkable(new Vector2Int(4, 0)), Is.True);
+    }
+
+    /// <summary>
+    /// 验证默认 Seed（种子）会实际生成浅水、森林和山地，而不是只存在枚举定义。
+    /// </summary>
+    [Test]
+    public void DefaultConfigurationProducesExtendedTerrain()
+    {
+        MapData map = RandomMapGenerator.Generate(settings);
+        int shallowWaterCount = 0;
+        int forestCount = 0;
+        int mountainCount = 0;
+
+        for (int x = map.Origin.x; x < map.Origin.x + map.Width; x++)
+        {
+            for (int y = map.Origin.y; y < map.Origin.y + map.Height; y++)
+            {
+                MapTerrainType terrainType = map.GetCell(new Vector2Int(x, y)).terrainType;
+                if (terrainType == MapTerrainType.ShallowWater)
+                    shallowWaterCount++;
+                else if (terrainType == MapTerrainType.Forest)
+                    forestCount++;
+                else if (terrainType == MapTerrainType.Mountain)
+                    mountainCount++;
+            }
+        }
+
+        Assert.That(shallowWaterCount, Is.GreaterThan(0));
+        Assert.That(forestCount, Is.GreaterThan(0));
+        Assert.That(mountainCount, Is.GreaterThan(0));
     }
 
     /// <summary>

@@ -28,6 +28,7 @@ public class MapGenerationSceneTests
             Assert.That(controller, Is.Not.Null, "测试场景缺少 MapGenerationController。");
             Assert.That(controller.Settings, Is.Not.Null, "测试场景缺少 MapGenerationSettings 引用。");
             Assert.That(controller.TilemapRenderer, Is.Not.Null, "测试场景缺少 MapTilemapRenderer 引用。");
+            Assert.That(controller.DecorationRenderer, Is.Not.Null, "测试场景缺少 MapDecorationRenderer 引用。");
             Assert.That(controller.Player, Is.Not.Null, "测试场景缺少玩家引用。");
 
             MapMinimapController minimapController =
@@ -44,8 +45,10 @@ public class MapGenerationSceneTests
 
             Tilemap groundTilemap = controller.TilemapRenderer.GroundTilemap;
             Tilemap collisionTilemap = controller.TilemapRenderer.CollisionTilemap;
+            Tilemap decorationTilemap = controller.DecorationRenderer.DecorationTilemap;
             Assert.That(groundTilemap, Is.Not.Null, "缺少地表 Tilemap。");
             Assert.That(collisionTilemap, Is.Not.Null, "缺少碰撞 Tilemap。");
+            Assert.That(decorationTilemap, Is.Not.Null, "缺少装饰 Tilemap。");
 
             BoundsInt bounds = new BoundsInt(
                 mapData.Origin.x,
@@ -57,6 +60,12 @@ public class MapGenerationSceneTests
 
             Assert.That(CountTiles(groundTilemap.GetTilesBlock(bounds)), Is.EqualTo(mapData.Width * mapData.Height));
             Assert.That(CountTiles(collisionTilemap.GetTilesBlock(bounds)), Is.GreaterThan(0));
+            Assert.That(controller.LastGeneratedDecorations, Is.Not.Null, "没有生成装饰数据。");
+            Assert.That(controller.LastGeneratedDecorations.Count, Is.GreaterThan(0));
+            Assert.That(controller.DecorationRenderer.PlacementCount,
+                Is.EqualTo(controller.LastGeneratedDecorations.Count));
+            Assert.That(CountTiles(decorationTilemap.GetTilesBlock(bounds)),
+                Is.EqualTo(controller.DecorationRenderer.PlacementCount));
 
             TilemapCollider2D tilemapCollider = collisionTilemap.GetComponent<TilemapCollider2D>();
             CompositeCollider2D compositeCollider = collisionTilemap.GetComponent<CompositeCollider2D>();
@@ -75,6 +84,18 @@ public class MapGenerationSceneTests
             Assert.That(groundRenderer != null && groundRenderer.enabled, Is.True);
             Assert.That(collisionRenderer, Is.Not.Null, "碰撞 Tilemap 缺少 TilemapRenderer。");
             Assert.That(collisionRenderer != null && !collisionRenderer.enabled, Is.True);
+
+            Assert.That(decorationTilemap.GetComponent<TilemapCollider2D>(), Is.Null,
+                "装饰 Tilemap 不应默认参与物理碰撞。");
+            TilemapRenderer decorationRenderer = decorationTilemap.GetComponent<TilemapRenderer>();
+            Assert.That(decorationRenderer, Is.Not.Null, "装饰 Tilemap 缺少 TilemapRenderer。");
+            Assert.That(decorationRenderer != null && decorationRenderer.enabled, Is.True);
+
+            controller.ClearMap();
+            Assert.That(controller.LastGeneratedMap, Is.Null);
+            Assert.That(controller.LastGeneratedDecorations, Is.Null);
+            Assert.That(controller.DecorationRenderer.PlacementCount, Is.EqualTo(0));
+            Assert.That(CountTiles(decorationTilemap.GetTilesBlock(bounds)), Is.EqualTo(0));
 
             Vector3 expectedSpawnPosition = controller.TilemapRenderer.GetCellCenterWorld(mapData.SpawnCell);
             Assert.That(Vector2.Distance(controller.Player.position, expectedSpawnPosition), Is.LessThan(0.01f));

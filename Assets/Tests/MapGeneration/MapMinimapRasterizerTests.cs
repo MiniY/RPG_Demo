@@ -36,6 +36,40 @@ public class MapMinimapRasterizerTests
     }
 
     /// <summary>
+    /// 验证新增地形会在小地图中使用独立颜色，而不是落入备用颜色。
+    /// </summary>
+    [Test]
+    public void BuildColorBufferMapsExtendedTerrainToExpectedColors()
+    {
+        MapData mapData = new MapData(3, 1, Vector2Int.zero);
+        mapData.SetTerrain(new Vector2Int(0, 0), MapTerrainType.ShallowWater);
+        mapData.SetTerrain(new Vector2Int(1, 0), MapTerrainType.Forest);
+        mapData.SetTerrain(new Vector2Int(2, 0), MapTerrainType.Mountain);
+
+        Color32 grassColor = new Color32(1, 2, 3, 255);
+        Color32 waterColor = new Color32(4, 5, 6, 255);
+        Color32 pathColor = new Color32(7, 8, 9, 255);
+        Color32 shallowWaterColor = new Color32(10, 11, 12, 255);
+        Color32 forestColor = new Color32(13, 14, 15, 255);
+        Color32 mountainColor = new Color32(16, 17, 18, 255);
+        Color32 fallbackColor = new Color32(19, 20, 21, 255);
+
+        Color32[] pixels = MapMinimapRasterizer.BuildColorBuffer(
+            mapData,
+            grassColor,
+            waterColor,
+            pathColor,
+            shallowWaterColor,
+            forestColor,
+            mountainColor,
+            fallbackColor);
+
+        Assert.That(pixels[0], Is.EqualTo(shallowWaterColor));
+        Assert.That(pixels[1], Is.EqualTo(forestColor));
+        Assert.That(pixels[2], Is.EqualTo(mountainColor));
+    }
+
+    /// <summary>
     /// 验证不同地图原点下的网格中心能映射到正确归一化位置。
     /// </summary>
     [Test]

@@ -6,12 +6,15 @@ using UnityEngine;
 public static class MapMinimapRasterizer
 {
     /// <summary>
-    /// 根据地形类型生成从左下角开始排列的颜色缓冲区。
+    /// 根据完整地形颜色表生成从左下角开始排列的颜色缓冲区。
     /// </summary>
     /// <param name="mapData">待转换的地图数据。</param>
     /// <param name="grassColor">草地颜色。</param>
-    /// <param name="waterColor">水域颜色。</param>
+    /// <param name="waterColor">深水颜色。</param>
     /// <param name="pathColor">道路颜色。</param>
+    /// <param name="shallowWaterColor">浅水颜色。</param>
+    /// <param name="forestColor">森林颜色。</param>
+    /// <param name="mountainColor">山地颜色。</param>
     /// <param name="fallbackColor">未识别地形的备用颜色。</param>
     /// <returns>可以直接交给 Texture2D（二维纹理）的颜色数组。</returns>
     public static Color32[] BuildColorBuffer(
@@ -19,6 +22,69 @@ public static class MapMinimapRasterizer
         Color32 grassColor,
         Color32 waterColor,
         Color32 pathColor,
+        Color32 shallowWaterColor,
+        Color32 forestColor,
+        Color32 mountainColor,
+        Color32 fallbackColor)
+    {
+        return BuildColorBufferInternal(
+            mapData,
+            grassColor,
+            waterColor,
+            pathColor,
+            shallowWaterColor,
+            forestColor,
+            mountainColor,
+            fallbackColor);
+    }
+
+    /// <summary>
+    /// 保留旧版颜色参数重载，避免已有测试或外部调用立即失效。
+    /// </summary>
+    /// <param name="mapData">待转换的地图数据。</param>
+    /// <param name="grassColor">草地颜色。</param>
+    /// <param name="waterColor">深水颜色。</param>
+    /// <param name="pathColor">道路颜色。</param>
+    /// <param name="fallbackColor">备用颜色。</param>
+    /// <returns>可以直接交给 Texture2D（二维纹理）的颜色数组。</returns>
+    public static Color32[] BuildColorBuffer(
+        MapData mapData,
+        Color32 grassColor,
+        Color32 waterColor,
+        Color32 pathColor,
+        Color32 fallbackColor)
+    {
+        return BuildColorBufferInternal(
+            mapData,
+            grassColor,
+            waterColor,
+            pathColor,
+            waterColor,
+            grassColor,
+            fallbackColor,
+            fallbackColor);
+    }
+
+    /// <summary>
+    /// 使用完整的地形颜色表构建颜色缓冲区的内部实现。
+    /// </summary>
+    /// <param name="mapData">待转换的地图数据。</param>
+    /// <param name="grassColor">草地颜色。</param>
+    /// <param name="waterColor">深水颜色。</param>
+    /// <param name="pathColor">道路颜色。</param>
+    /// <param name="shallowWaterColor">浅水颜色。</param>
+    /// <param name="forestColor">森林颜色。</param>
+    /// <param name="mountainColor">山地颜色。</param>
+    /// <param name="fallbackColor">备用颜色。</param>
+    /// <returns>可以直接交给 Texture2D（二维纹理）的颜色数组。</returns>
+    private static Color32[] BuildColorBufferInternal(
+        MapData mapData,
+        Color32 grassColor,
+        Color32 waterColor,
+        Color32 pathColor,
+        Color32 shallowWaterColor,
+        Color32 forestColor,
+        Color32 mountainColor,
         Color32 fallbackColor)
     {
         if (mapData == null)
@@ -37,6 +103,9 @@ public static class MapMinimapRasterizer
                     grassColor,
                     waterColor,
                     pathColor,
+                    shallowWaterColor,
+                    forestColor,
+                    mountainColor,
                     fallbackColor);
             }
         }
@@ -65,8 +134,11 @@ public static class MapMinimapRasterizer
     /// </summary>
     /// <param name="terrainType">地形类型。</param>
     /// <param name="grassColor">草地颜色。</param>
-    /// <param name="waterColor">水域颜色。</param>
+    /// <param name="waterColor">深水颜色。</param>
     /// <param name="pathColor">道路颜色。</param>
+    /// <param name="shallowWaterColor">浅水颜色。</param>
+    /// <param name="forestColor">森林颜色。</param>
+    /// <param name="mountainColor">山地颜色。</param>
     /// <param name="fallbackColor">备用颜色。</param>
     /// <returns>对应的像素颜色。</returns>
     private static Color32 GetTerrainColor(
@@ -74,14 +146,23 @@ public static class MapMinimapRasterizer
         Color32 grassColor,
         Color32 waterColor,
         Color32 pathColor,
+        Color32 shallowWaterColor,
+        Color32 forestColor,
+        Color32 mountainColor,
         Color32 fallbackColor)
     {
         switch (terrainType)
         {
-            case MapTerrainType.Water:
+            case MapTerrainType.DeepWater:
                 return waterColor;
+            case MapTerrainType.ShallowWater:
+                return shallowWaterColor;
             case MapTerrainType.Path:
                 return pathColor;
+            case MapTerrainType.Forest:
+                return forestColor;
+            case MapTerrainType.Mountain:
+                return mountainColor;
             case MapTerrainType.Grass:
                 return grassColor;
             default:

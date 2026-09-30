@@ -8,7 +8,7 @@ using UnityEngine;
 public static class RandomMapGenerator
 {
     /// <summary>
-    /// 根据配置生成一张包含草地、水域和道路的地图。
+    /// 根据配置生成一张包含多通道生物群系和道路的地图。
     /// </summary>
     /// <param name="settings">地图生成配置。</param>
     /// <returns>生成完成的地图数据。</returns>
@@ -28,8 +28,10 @@ public static class RandomMapGenerator
         Vector2Int spawnCell = ClampToPlayableArea(settings.GetSpawnCell(), mapData, settings);
         mapData.SpawnCell = spawnCell;
 
-        Vector2 noiseOffset = CreateNoiseOffset(random);
-        FillWithNoise(mapData, settings, noiseOffset);
+        Vector2 heightOffset = CreateNoiseOffset(random);
+        Vector2 moistureOffset = CreateNoiseOffset(random);
+        Vector2 temperatureOffset = CreateNoiseOffset(random);
+        FillWithNoise(mapData, settings, heightOffset, moistureOffset, temperatureOffset);
         ApplyMapBorder(mapData, settings.borderSize);
         ProtectSpawnArea(mapData, spawnCell, settings);
 
@@ -61,6 +63,29 @@ public static class RandomMapGenerator
         if (settings.waterThreshold < 0f || settings.waterThreshold > 1f)
             throw new InvalidOperationException("水域阈值必须位于 0 到 1 之间。");
 
+        if (settings.shallowWaterThreshold <= settings.waterThreshold ||
+            settings.shallowWaterThreshold > 1f)
+        {
+            throw new InvalidOperationException("浅水阈值必须大于深水阈值且不超过 1。");
+        }
+
+        if (settings.biomeNoiseScale <= 0f)
+            throw new InvalidOperationException("生物群系噪声缩放必须大于 0。");
+
+        if (settings.forestMoistureThreshold < 0f || settings.forestMoistureThreshold > 1f ||
+            settings.forestTemperatureThreshold < 0f || settings.forestTemperatureThreshold > 1f)
+        {
+            throw new InvalidOperationException("森林湿度和温度阈值必须位于 0 到 1 之间。");
+        }
+
+        if (settings.mountainHeightThreshold < settings.shallowWaterThreshold ||
+            settings.mountainHeightThreshold > 1f ||
+            settings.mountainTemperatureThreshold < 0f ||
+            settings.mountainTemperatureThreshold > 1f)
+        {
+            throw new InvalidOperationException("山地高度阈值必须不低于浅水阈值，温度阈值必须位于 0 到 1 之间。");
+        }
+
         if (settings.spawnProtectionRadius < 1)
             throw new InvalidOperationException("出生点保护半径必须至少为 1。");
 
@@ -88,23 +113,56 @@ public static class RandomMapGenerator
     }
 
     /// <summary>
-    /// 使用柏林噪声为地图填充初始草地和水域。
+    /// 使用高度、湿度和温度三个独立噪声通道分类地图地形。
     /// </summary>
     /// <param name="mapData">待填充的地图数据。</param>
     /// <param name="settings">地图生成配置。</param>
-    /// <param name="noiseOffset">噪声采样偏移量。</param>
-    private static void FillWithNoise(MapData mapData, MapGenerationSettings settings, Vector2 noiseOffset)
+    /// <param name="heightOffset">高度通道使用的二维偏移量。</param>
+    /// <param name="moistureOffset">湿度通道使用的二维偏移量。</param>
+    /// <param name="temperatureOffset">温度通道使用的二维偏移量。</param>
+    private static void FillWithNoise(
+        MapData mapData,
+        MapGenerationSettings settings,
+        Vector2 heightOffset,
+        Vector2 moistureOffset,
+        Vector2 temperatureOffset)
     {
         for (int x = mapData.Origin.x; x < mapData.Origin.x + mapData.Width; x++)
         {
             for (int y = mapData.Origin.y; y < mapData.Origin.y + mapData.Height; y++)
             {
-                float sampleX = (x - mapData.Origin.x + noiseOffset.x) * settings.noiseScale;
-                float sampleY = (y - mapData.Origin.y + noiseOffset.y) * settings.noiseScale;
-                float noiseValue = Mathf.PerlinNoise(sampleX, sampleY);
-                MapTerrainType terrainType = noiseValue < settings.waterThreshold
-                    ? MapTerrainType.Water
-                    : MapTerrainType.Grass;
+                float localX = x - mapData.Origin.x;
+                float localY = y - mapData.Origin.y;
+                float heightValue = SampleNoise(localX, localY, heightOffset, settings.noiseScale);
+                MapTerrainType terrainType;
+
+                if (heightValue < settings.waterThreshold)
+                {
+                    terrainType = MapTerrainType.DeepWater;
+                }
+                else if (heightValue < settings.shallowWaterThreshold)
+                {
+                    terrainType = MapTerrainType.ShallowWater;
+                }
+                else
+                {
+                    float moistureValue = SampleNoise(
+                        localX,
+                        localY,
+                        moistureOffset,
+                        settings.biomeNoiseScale);
+                    float temperatureValue = SampleNoise(
+                        localX,
+                        localY,
+                        temperatureOffset,
+                        settings.biomeNoiseScale);
+
+                    terrainType = ClassifyLandTerrain(
+                        heightValue,
+                        moistureValue,
+                        temperatureValue,
+                        settings);
+                }
 
                 mapData.SetTerrain(new Vector2Int(x, y), terrainType);
             }
@@ -112,7 +170,51 @@ public static class RandomMapGenerator
     }
 
     /// <summary>
-    /// 把地图外圈设置为不可行走的水域，形成测试地图边界。
+    /// 对一个噪声通道采样，保证各通道使用统一的坐标规则。
+    /// </summary>
+    /// <param name="localX">相对于地图原点的局部 X 坐标。</param>
+    /// <param name="localY">相对于地图原点的局部 Y 坐标。</param>
+    /// <param name="offset">当前噪声通道的独立偏移量。</param>
+    /// <param name="scale">当前噪声通道的采样缩放。</param>
+    /// <returns>范围约为 0 到 1 的噪声值。</returns>
+    private static float SampleNoise(float localX, float localY, Vector2 offset, float scale)
+    {
+        float sampleX = (localX + offset.x) * scale;
+        float sampleY = (localY + offset.y) * scale;
+        return Mathf.PerlinNoise(sampleX, sampleY);
+    }
+
+    /// <summary>
+    /// 使用湿度、温度和高度把陆地分类为草地、森林或山地。
+    /// </summary>
+    /// <param name="heightValue">当前单元的高度通道值。</param>
+    /// <param name="moistureValue">当前单元的湿度通道值。</param>
+    /// <param name="temperatureValue">当前单元的温度通道值。</param>
+    /// <param name="settings">地图分类阈值配置。</param>
+    /// <returns>分类后的陆地地形。</returns>
+    private static MapTerrainType ClassifyLandTerrain(
+        float heightValue,
+        float moistureValue,
+        float temperatureValue,
+        MapGenerationSettings settings)
+    {
+        if (heightValue >= settings.mountainHeightThreshold &&
+            temperatureValue <= settings.mountainTemperatureThreshold)
+        {
+            return MapTerrainType.Mountain;
+        }
+
+        if (moistureValue >= settings.forestMoistureThreshold &&
+            temperatureValue >= settings.forestTemperatureThreshold)
+        {
+            return MapTerrainType.Forest;
+        }
+
+        return MapTerrainType.Grass;
+    }
+
+    /// <summary>
+    /// 把地图外圈设置为不可行走的深水，形成测试地图边界。
     /// </summary>
     /// <param name="mapData">地图数据。</param>
     /// <param name="borderSize">边界宽度。</param>
@@ -127,7 +229,7 @@ public static class RandomMapGenerator
             {
                 Vector2Int cell = new Vector2Int(x, y);
                 if (mapData.IsBorder(cell, borderSize))
-                    mapData.SetTerrain(cell, MapTerrainType.Water);
+                    mapData.SetTerrain(cell, MapTerrainType.DeepWater);
             }
         }
     }
@@ -319,7 +421,7 @@ public static class RandomMapGenerator
             {
                 Vector2Int cell = new Vector2Int(x, y);
                 if (mapData.IsWalkable(cell) && !reachableCells.Contains(cell))
-                    mapData.SetTerrain(cell, MapTerrainType.Water);
+                    mapData.SetTerrain(cell, MapTerrainType.DeepWater);
             }
         }
     }

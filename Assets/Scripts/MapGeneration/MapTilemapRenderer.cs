@@ -55,7 +55,7 @@ public class MapTilemapRenderer : MonoBehaviour
                 MapTerrainType terrainType = mapData.GetCell(cell).terrainType;
 
                 groundTiles[index] = GetVisualTile(terrainType, settings);
-                collisionTiles[index] = terrainType == MapTerrainType.Water
+                collisionTiles[index] = !mapData.GetCell(cell).IsWalkable
                     ? settings.collisionMarkerTile
                     : null;
             }
@@ -139,10 +139,16 @@ public class MapTilemapRenderer : MonoBehaviour
     {
         switch (terrainType)
         {
-            case MapTerrainType.Water:
+            case MapTerrainType.DeepWater:
                 return settings.waterTile;
+            case MapTerrainType.ShallowWater:
+                return settings.shallowWaterTile;
             case MapTerrainType.Path:
                 return settings.pathTile;
+            case MapTerrainType.Forest:
+                return settings.forestTile;
+            case MapTerrainType.Mountain:
+                return settings.mountainTile;
             default:
                 return settings.grassTile;
         }
@@ -167,7 +173,7 @@ public class MapTilemapRenderer : MonoBehaviour
     }
 
     /// <summary>
-    /// 检查地表、碰撞 Tilemap 和四类 Tile 引用是否完整。
+    /// 检查地表、碰撞 Tilemap 和所有地形 Tile 引用是否完整。
     /// </summary>
     /// <param name="settings">地图配置。</param>
     private void ValidateReferences(MapGenerationSettings settings)
@@ -182,10 +188,13 @@ public class MapTilemapRenderer : MonoBehaviour
             throw new MissingReferenceException("MapTilemapRenderer 缺少 MapGenerationSettings 引用。");
 
         if (settings.grassTile == null || settings.waterTile == null ||
-            settings.pathTile == null || settings.collisionMarkerTile == null)
+            settings.shallowWaterTile == null || settings.pathTile == null ||
+            settings.forestTile == null || settings.mountainTile == null ||
+            settings.collisionMarkerTile == null)
         {
             throw new MissingReferenceException(
-                "MapGenerationSettings 必须配置 grassTile、waterTile、pathTile 和 collisionMarkerTile。");
+                "MapGenerationSettings 必须配置 grassTile、waterTile、shallowWaterTile、pathTile、" +
+                "forestTile、mountainTile 和 collisionMarkerTile。");
         }
     }
 }

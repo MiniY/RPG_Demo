@@ -21,11 +21,33 @@ MonoBehaviour:
   seed: -1631670606
   noiseScale: 0.08
   waterThreshold: 0.32
+  shallowWaterThreshold: 0.42
+  biomeNoiseScale: 0.055
+  forestMoistureThreshold: 0.58
+  forestTemperatureThreshold: 0.45
+  mountainHeightThreshold: 0.72
+  mountainTemperatureThreshold: 0.55
   spawnProtectionRadius: 5
   roadWidth: 2
   roadTurnChance: 0.3
+  decorationSeedOffset: 7919
+  decorationNoiseScale: 0.12
+  grassDecorationDensity: 0.04
+  forestDecorationDensity: 0.38
+  decorationMinimumSpacing: 2
+  decorationSpawnClearRadius: 6
+  decorationExitClearRadius: 2
   grassTile: {fileID: 11400000, guid: 5944a8e3d462a864abd21b53eaa46101, type: 2}
   waterTile: {fileID: 11400000, guid: 2d1a884b7f4d97b4eb955ba339f87f5f, type: 2}
+  shallowWaterTile: {fileID: 11400000, guid: 8f5d3a1c7e2b4f6890a1d6c3b7e5f204, type: 2}
   pathTile: {fileID: 11400000, guid: e926d6fe12ad6234b99fa860071efd15, type: 2}
+  forestTile: {fileID: 11400000, guid: 10aa4e8d89f03f74180a6858bda94b35, type: 2}
+  mountainTile: {fileID: 11400000, guid: 0c703bb727db11b46bdbf609cf28fb70, type: 2}
+  treeTiles:
+  - {fileID: 11400000, guid: d39f8dd5f2be6b44c90c83088dd64cc7, type: 2}
+  - {fileID: 11400000, guid: e4601a6ef080cf34dacc1a2a6024cc8e, type: 2}
+  - {fileID: 11400000, guid: 94f8747cec2b05a418c2018113c098a6, type: 2}
+  - {fileID: 11400000, guid: bade9066f09e1ce4f8d1e86b1398a67c, type: 2}
   collisionMarkerTile: {fileID: 11400000, guid: 1e63b7c9d2f04a1b8e5c6079f2345678, type: 2}
   groundSortingOrder: 0
+  decorationSortingOrder: 4

@@ -55,6 +55,36 @@ public class MapGenerationSettings : ScriptableObject
     [Range(0f, 1f)] public float waterThreshold = 0.32f;
 
     /// <summary>
+    /// 高于深水阈值且低于此值时生成浅水。
+    /// </summary>
+    [Range(0f, 1f)] public float shallowWaterThreshold = 0.42f;
+
+    /// <summary>
+    /// 湿度、温度和地形分类共用的噪声采样缩放。
+    /// </summary>
+    [Min(0.001f)] public float biomeNoiseScale = 0.055f;
+
+    /// <summary>
+    /// 湿度高于此值时，非山地单元倾向生成森林。
+    /// </summary>
+    [Range(0f, 1f)] public float forestMoistureThreshold = 0.58f;
+
+    /// <summary>
+    /// 森林温度通道高于此值时，湿润区域才会生成森林。
+    /// </summary>
+    [Range(0f, 1f)] public float forestTemperatureThreshold = 0.45f;
+
+    /// <summary>
+    /// 高度高于此值且温度较低时生成山地。
+    /// </summary>
+    [Range(0f, 1f)] public float mountainHeightThreshold = 0.72f;
+
+    /// <summary>
+    /// 温度低于此值时，高地才会被分类为山地。
+    /// </summary>
+    [Range(0f, 1f)] public float mountainTemperatureThreshold = 0.55f;
+
+    /// <summary>
     /// 出生点周围强制保留为草地的半径。
     /// </summary>
     [Min(1)] public int spawnProtectionRadius = 5;
@@ -71,6 +101,42 @@ public class MapGenerationSettings : ScriptableObject
     [Range(0f, 1f)] public float roadTurnChance = 0.3f;
 
     /// <summary>
+    /// 装饰物阶段使用的派生随机种子偏移，避免装饰随机流影响地形随机流。
+    /// </summary>
+    [Header("Decoration（装饰物）")]
+    public int decorationSeedOffset = 7919;
+
+    /// <summary>
+    /// 装饰物密度噪声的采样缩放，数值越小越容易形成装饰物簇。
+    /// </summary>
+    [Min(0.001f)] public float decorationNoiseScale = 0.12f;
+
+    /// <summary>
+    /// 普通草地放置树木的基础概率。
+    /// </summary>
+    [Range(0f, 1f)] public float grassDecorationDensity = 0.04f;
+
+    /// <summary>
+    /// 森林地表放置树木的基础概率。
+    /// </summary>
+    [Range(0f, 1f)] public float forestDecorationDensity = 0.38f;
+
+    /// <summary>
+    /// 两个装饰物之间至少间隔的网格距离。
+    /// </summary>
+    [Min(1)] public int decorationMinimumSpacing = 2;
+
+    /// <summary>
+    /// 出生点周围不放置装饰物的安全半径。
+    /// </summary>
+    [Min(0)] public int decorationSpawnClearRadius = 6;
+
+    /// <summary>
+    /// 出口周围不放置装饰物的净空半径。
+    /// </summary>
+    [Min(0)] public int decorationExitClearRadius = 2;
+
+    /// <summary>
     /// 地表层显示用的草地 Tile（瓦片）。
     /// </summary>
     [Header("Tile References（瓦片引用）")]
@@ -82,9 +148,29 @@ public class MapGenerationSettings : ScriptableObject
     public TileBase waterTile;
 
     /// <summary>
+    /// 地表层显示用的浅水 Tile（瓦片）。
+    /// </summary>
+    public TileBase shallowWaterTile;
+
+    /// <summary>
     /// 地表层显示用的道路 Tile（瓦片）。
     /// </summary>
     public TileBase pathTile;
+
+    /// <summary>
+    /// 地表层显示用的森林地表 Tile（瓦片）。
+    /// </summary>
+    public TileBase forestTile;
+
+    /// <summary>
+    /// 地表层显示用的山地 Tile（瓦片）。
+    /// </summary>
+    public TileBase mountainTile;
+
+    /// <summary>
+    /// 装饰层随机选择的树木 Tile（瓦片）集合。
+    /// </summary>
+    public TileBase[] treeTiles = new TileBase[0];
 
     /// <summary>
     /// 碰撞层使用的不可见碰撞标记 Tile（瓦片）。
@@ -96,6 +182,11 @@ public class MapGenerationSettings : ScriptableObject
     /// </summary>
     [Header("Rendering（渲染）")]
     public int groundSortingOrder = 0;
+
+    /// <summary>
+    /// 装饰 Tilemap（瓦片地图）的 Sorting Order（排序顺序）。
+    /// </summary>
+    public int decorationSortingOrder = 4;
 
     /// <summary>
     /// 根据当前配置计算出生点网格坐标。
@@ -120,8 +211,23 @@ public class MapGenerationSettings : ScriptableObject
         mapHeight = Mathf.Max(8, mapHeight);
         borderSize = Mathf.Clamp(borderSize, 1, Mathf.Min(mapWidth, mapHeight) / 2 - 1);
         noiseScale = Mathf.Max(0.001f, noiseScale);
+        waterThreshold = Mathf.Clamp01(waterThreshold);
+        shallowWaterThreshold = Mathf.Clamp01(shallowWaterThreshold);
+        if (shallowWaterThreshold <= waterThreshold)
+            shallowWaterThreshold = Mathf.Min(1f, waterThreshold + 0.01f);
+        biomeNoiseScale = Mathf.Max(0.001f, biomeNoiseScale);
+        forestMoistureThreshold = Mathf.Clamp01(forestMoistureThreshold);
+        forestTemperatureThreshold = Mathf.Clamp01(forestTemperatureThreshold);
+        mountainHeightThreshold = Mathf.Clamp01(mountainHeightThreshold);
+        mountainTemperatureThreshold = Mathf.Clamp01(mountainTemperatureThreshold);
         spawnProtectionRadius = Mathf.Max(1, spawnProtectionRadius);
         roadWidth = Mathf.Max(1, roadWidth);
         roadTurnChance = Mathf.Clamp01(roadTurnChance);
+        decorationNoiseScale = Mathf.Max(0.001f, decorationNoiseScale);
+        grassDecorationDensity = Mathf.Clamp01(grassDecorationDensity);
+        forestDecorationDensity = Mathf.Clamp01(forestDecorationDensity);
+        decorationMinimumSpacing = Mathf.Max(1, decorationMinimumSpacing);
+        decorationSpawnClearRadius = Mathf.Max(0, decorationSpawnClearRadius);
+        decorationExitClearRadius = Mathf.Max(0, decorationExitClearRadius);
     }
 }

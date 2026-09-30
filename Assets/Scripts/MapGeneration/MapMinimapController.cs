@@ -118,9 +118,24 @@ public sealed class MapMinimapController : MonoBehaviour
     [SerializeField] private Color32 waterColor = new Color32(47, 112, 166, 255);
 
     /// <summary>
+    /// 小地图中浅水使用的颜色。
+    /// </summary>
+    [SerializeField] private Color32 shallowWaterColor = new Color32(82, 174, 195, 255);
+
+    /// <summary>
     /// 小地图中道路使用的颜色。
     /// </summary>
     [SerializeField] private Color32 pathColor = new Color32(201, 174, 105, 255);
+
+    /// <summary>
+    /// 小地图中森林使用的颜色。
+    /// </summary>
+    [SerializeField] private Color32 forestColor = new Color32(38, 112, 62, 255);
+
+    /// <summary>
+    /// 小地图中山地使用的颜色。
+    /// </summary>
+    [SerializeField] private Color32 mountainColor = new Color32(111, 103, 96, 255);
 
     /// <summary>
     /// 小地图中未识别地形使用的颜色。
@@ -356,6 +371,9 @@ public sealed class MapMinimapController : MonoBehaviour
             grassColor,
             waterColor,
             pathColor,
+            shallowWaterColor,
+            forestColor,
+            mountainColor,
             fallbackColor);
 
         CreateOrResizeTexture(mapData.Width, mapData.Height);

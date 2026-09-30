@@ -14,5 +14,7 @@ public struct MapCell
     /// <summary>
     /// 根据地形类型判断该单元是否允许玩家行走。
     /// </summary>
-    public bool IsWalkable => terrainType != MapTerrainType.Water;
+    public bool IsWalkable => terrainType != MapTerrainType.DeepWater &&
+                               terrainType != MapTerrainType.ShallowWater &&
+                               terrainType != MapTerrainType.Mountain;
 }

@@ -77,6 +77,11 @@ public sealed class MapMinimapController : MonoBehaviour
     [SerializeField] private bool showExitMarker = true;
 
     /// <summary>
+    /// 是否允许出生点和出口标记显示在未探索区域上方。
+    /// </summary>
+    [SerializeField] private bool showMarkersThroughFog = true;
+
+    /// <summary>
     /// 没有手动配置 UI 时，是否在运行时自动创建小地图界面。
     /// </summary>
     [SerializeField] private bool createRuntimeView = true;
@@ -667,6 +672,7 @@ public sealed class MapMinimapController : MonoBehaviour
         lastExplorationCell = playerCell;
         hasLastExplorationCell = true;
         ApplyFogTexture();
+        UpdateMapMarkers();
     }
 
     /// <summary>
@@ -754,9 +760,13 @@ public sealed class MapMinimapController : MonoBehaviour
             return;
 
         bool isInsideMap = displayedMap.IsInside(cell);
-        marker.gameObject.SetActive(shouldShow && isInsideMap);
+        bool isExplored = explorationState == null ||
+                          !enableFogOfWar ||
+                          explorationState.IsExplored(cell);
+        bool canShowThroughFog = showMarkersThroughFog || isExplored;
+        marker.gameObject.SetActive(shouldShow && isInsideMap && canShowThroughFog);
 
-        if (!shouldShow || !isInsideMap)
+        if (!shouldShow || !isInsideMap || !canShowThroughFog)
             return;
 
         Vector2 normalizedPosition = MapMinimapRasterizer.CellToNormalizedPosition(

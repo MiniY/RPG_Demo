@@ -45,6 +45,9 @@ public static class RandomMapGenerator
         mapData.ExitCell = exitCell;
         RemoveUnreachableWalkableCells(mapData, spawnCell);
 
+        // 最终统一建立沙岸和高地过渡带，允许山体形成具有完整层次的景观孤岛。
+        MapTerrainNestingEnforcer.Enforce(mapData);
+
         return mapData;
     }
 
@@ -421,7 +424,8 @@ public static class RandomMapGenerator
     }
 
     /// <summary>
-    /// 删除出生点无法到达的可行走孤岛，保证所有可行走区域属于同一连通区域。
+    /// 在视觉嵌套处理前移除出生点无法到达的原始可行走区域。
+    /// 后续嵌套处理仍可从保留山体边缘生成沙地和草地景观孤岛。
     /// </summary>
     /// <param name="mapData">地图数据。</param>
     /// <param name="spawnCell">出生点网格坐标。</param>

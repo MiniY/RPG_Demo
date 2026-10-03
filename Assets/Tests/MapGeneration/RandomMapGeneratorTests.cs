@@ -8,6 +8,21 @@ using UnityEngine;
 public class RandomMapGeneratorTests
 {
     /// <summary>
+    /// 检查可见地形过渡带时使用的八方向邻居偏移。
+    /// </summary>
+    private static readonly Vector2Int[] SurroundingDirections =
+    {
+        new Vector2Int(-1, 1),
+        Vector2Int.up,
+        new Vector2Int(1, 1),
+        Vector2Int.left,
+        Vector2Int.right,
+        new Vector2Int(-1, -1),
+        Vector2Int.down,
+        new Vector2Int(1, -1)
+    };
+
+    /// <summary>
     /// 当前测试使用的临时地图配置。
     /// </summary>
     private MapGenerationSettings settings;
@@ -192,6 +207,67 @@ public class RandomMapGeneratorTests
             () => RandomMapGenerator.Generate(settings));
 
         Assert.That(exception.Message, Does.Contain("water < shallowWater < sand < mountain"));
+    }
+
+    /// <summary>
+    /// 验证问题种子中的岛屿始终保留可见沙岸，并在高地外围保留草地过渡带。
+    /// </summary>
+    [Test]
+    public void ReportedSeedPreservesVisibleSandAndGrassBands()
+    {
+        settings.seed = -1391545000;
+
+        MapData map = RandomMapGenerator.Generate(settings);
+        List<string> violations = FindTerrainNestingViolations(map);
+
+        Assert.That(
+            violations,
+            Is.Empty,
+            "发现破坏 Water -> Sand -> Grass -> Mountain 可见嵌套关系的单元：\n" +
+            string.Join("\n", violations));
+    }
+
+    /// <summary>
+    /// 查找草地直接接触水域或高地缺少草地过渡带的单元。
+    /// </summary>
+    /// <param name="map">待检查的最终地图。</param>
+    /// <returns>所有违反可见地形嵌套关系的诊断文本。</returns>
+    private static List<string> FindTerrainNestingViolations(MapData map)
+    {
+        List<string> violations = new List<string>();
+
+        for (int x = map.Origin.x; x < map.Origin.x + map.Width; x++)
+        {
+            for (int y = map.Origin.y; y < map.Origin.y + map.Height; y++)
+            {
+                Vector2Int cell = new Vector2Int(x, y);
+                MapTerrainType terrainType = map.GetCell(cell).terrainType;
+
+                foreach (Vector2Int direction in SurroundingDirections)
+                {
+                    Vector2Int neighborCell = cell + direction;
+                    if (!map.IsInside(neighborCell))
+                        continue;
+
+                    MapTerrainType neighborType = map.GetCell(neighborCell).terrainType;
+                    if (TerrainTopology.UsesGrassOverlay(terrainType) &&
+                        TerrainTopology.IsWater(neighborType))
+                    {
+                        violations.Add($"{cell} 的 {terrainType} 直接接触 {neighborCell} 的 {neighborType}。");
+                        break;
+                    }
+
+                    if (terrainType == MapTerrainType.Mountain &&
+                        !TerrainTopology.UsesGrassOverlay(neighborType))
+                    {
+                        violations.Add($"{cell} 的 Mountain 缺少草地过渡带，邻居 {neighborCell} 是 {neighborType}。");
+                        break;
+                    }
+                }
+            }
+        }
+
+        return violations;
     }
 
     /// <summary>

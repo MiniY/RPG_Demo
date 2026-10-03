@@ -10,7 +10,7 @@ public class MapGenerationSettings : ScriptableObject
     /// <summary>
     /// 当前随机地图算法的数据版本。
     /// </summary>
-    public const int CurrentGeneratorVersion = 2;
+    public const int CurrentGeneratorVersion = 3;
 
     /// <summary>
     /// 保存本次配置对应的生成器版本，供未来存档兼容检查使用。

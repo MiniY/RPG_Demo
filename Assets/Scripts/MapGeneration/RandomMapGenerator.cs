@@ -32,6 +32,12 @@ public static class RandomMapGenerator
         Vector2 moistureOffset = CreateNoiseOffset(random);
         Vector2 temperatureOffset = CreateNoiseOffset(random);
         FillWithNoise(mapData, settings, heightOffset, moistureOffset, temperatureOffset);
+        MapTerrainRegionCleaner.Clean(
+            mapData,
+            settings.minimumNaturalRegionSize,
+            settings.borderSize,
+            spawnCell,
+            settings.spawnProtectionRadius);
         ApplyMapBorder(mapData, settings.borderSize);
         ProtectSpawnArea(mapData, spawnCell, settings);
 
@@ -64,9 +70,12 @@ public static class RandomMapGenerator
             throw new InvalidOperationException("水域阈值必须位于 0 到 1 之间。");
 
         if (settings.shallowWaterThreshold <= settings.waterThreshold ||
-            settings.shallowWaterThreshold > 1f)
+            settings.sandHeightThreshold <= settings.shallowWaterThreshold ||
+            settings.mountainHeightThreshold <= settings.sandHeightThreshold ||
+            settings.mountainHeightThreshold > 1f)
         {
-            throw new InvalidOperationException("浅水阈值必须大于深水阈值且不超过 1。");
+            throw new InvalidOperationException(
+                "地形阈值必须满足 water < shallowWater < sand < mountain <= 1。");
         }
 
         if (settings.biomeNoiseScale <= 0f)
@@ -78,13 +87,14 @@ public static class RandomMapGenerator
             throw new InvalidOperationException("森林湿度和温度阈值必须位于 0 到 1 之间。");
         }
 
-        if (settings.mountainHeightThreshold < settings.shallowWaterThreshold ||
-            settings.mountainHeightThreshold > 1f ||
-            settings.mountainTemperatureThreshold < 0f ||
+        if (settings.mountainTemperatureThreshold < 0f ||
             settings.mountainTemperatureThreshold > 1f)
         {
-            throw new InvalidOperationException("山地高度阈值必须不低于浅水阈值，温度阈值必须位于 0 到 1 之间。");
+            throw new InvalidOperationException("山地温度阈值必须位于 0 到 1 之间。");
         }
+
+        if (settings.minimumNaturalRegionSize < 1)
+            throw new InvalidOperationException("自然区域最小面积必须至少为 1。");
 
         if (settings.spawnProtectionRadius < 1)
             throw new InvalidOperationException("出生点保护半径必须至少为 1。");
@@ -143,6 +153,10 @@ public static class RandomMapGenerator
                 else if (heightValue < settings.shallowWaterThreshold)
                 {
                     terrainType = MapTerrainType.ShallowWater;
+                }
+                else if (heightValue < settings.sandHeightThreshold)
+                {
+                    terrainType = MapTerrainType.Sand;
                 }
                 else
                 {

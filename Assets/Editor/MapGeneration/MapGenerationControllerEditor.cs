@@ -45,7 +45,7 @@ public class MapGenerationControllerEditor : Editor
         }
 
         EditorGUILayout.HelpBox(
-            "生成和清空会修改当前测试场景中的两个 Tilemap。请保存场景前确认结果。",
+            "生成和清空会修改当前测试场景中的五个分层 Tilemap。请保存场景前确认结果。",
             MessageType.Info);
     }
 
@@ -62,11 +62,11 @@ public class MapGenerationControllerEditor : Editor
     {
         if (controller.TilemapRenderer != null)
         {
-            if (controller.TilemapRenderer.GroundTilemap != null)
-                Undo.RegisterCompleteObjectUndo(controller.TilemapRenderer.GroundTilemap, undoName);
-
-            if (controller.TilemapRenderer.CollisionTilemap != null)
-                Undo.RegisterCompleteObjectUndo(controller.TilemapRenderer.CollisionTilemap, undoName);
+            RegisterTilemapUndo(controller.TilemapRenderer.WaterBaseTilemap, undoName);
+            RegisterTilemapUndo(controller.TilemapRenderer.SandBaseTilemap, undoName);
+            RegisterTilemapUndo(controller.TilemapRenderer.GrassOverlayTilemap, undoName);
+            RegisterTilemapUndo(controller.TilemapRenderer.ElevationTilemap, undoName);
+            RegisterTilemapUndo(controller.TilemapRenderer.TerrainCollisionTilemap, undoName);
         }
 
         if (controller.Player != null)
@@ -76,6 +76,19 @@ public class MapGenerationControllerEditor : Editor
         action.Invoke();
         EditorUtility.SetDirty(controller);
         EditorSceneManager.MarkSceneDirty(controller.gameObject.scene);
+    }
+
+    /// <summary>
+    /// 在引用有效时为一个 Tilemap（瓦片地图）登记完整撤销记录。
+    /// </summary>
+    /// <param name="tilemap">将被生成或清空的瓦片地图。</param>
+    /// <param name="undoName">Unity Undo（撤销）记录名称。</param>
+    private static void RegisterTilemapUndo(
+        UnityEngine.Tilemaps.Tilemap tilemap,
+        string undoName)
+    {
+        if (tilemap != null)
+            Undo.RegisterCompleteObjectUndo(tilemap, undoName);
     }
 
     /// <summary>

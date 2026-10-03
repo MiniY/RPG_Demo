@@ -8,6 +8,22 @@ using UnityEngine.Tilemaps;
 public class MapGenerationSettings : ScriptableObject
 {
     /// <summary>
+    /// 当前随机地图算法的数据版本。
+    /// </summary>
+    public const int CurrentGeneratorVersion = 2;
+
+    /// <summary>
+    /// 保存本次配置对应的生成器版本，供未来存档兼容检查使用。
+    /// </summary>
+    [Header("Versioning（版本信息）")]
+    [Min(1)] public int generatorVersion = CurrentGeneratorVersion;
+
+    /// <summary>
+    /// 标识当前配置使用的地形调色板。
+    /// </summary>
+    public string terrainPaletteId = "tiny-swords-grass-sand-rock-v1";
+
+    /// <summary>
     /// 地图的宽度，单位是 Tile（瓦片）数量。
     /// </summary>
     [Header("Map Size（地图尺寸）")]
@@ -60,6 +76,11 @@ public class MapGenerationSettings : ScriptableObject
     [Range(0f, 1f)] public float shallowWaterThreshold = 0.42f;
 
     /// <summary>
+    /// 高于浅水阈值且低于此值时生成自然沙地。
+    /// </summary>
+    [Range(0f, 1f)] public float sandHeightThreshold = 0.48f;
+
+    /// <summary>
     /// 湿度、温度和地形分类共用的噪声采样缩放。
     /// </summary>
     [Min(0.001f)] public float biomeNoiseScale = 0.055f;
@@ -83,6 +104,12 @@ public class MapGenerationSettings : ScriptableObject
     /// 温度低于此值时，高地才会被分类为山地。
     /// </summary>
     [Range(0f, 1f)] public float mountainTemperatureThreshold = 0.55f;
+
+    /// <summary>
+    /// 四方向连通区域小于此面积时，将其替换为周围占多数的自然地形。
+    /// </summary>
+    [Header("Natural Region Cleanup（自然区域清理）")]
+    [Min(1)] public int minimumNaturalRegionSize = 3;
 
     /// <summary>
     /// 出生点周围强制保留为草地的半径。
@@ -137,10 +164,20 @@ public class MapGenerationSettings : ScriptableObject
     [Min(0)] public int decorationExitClearRadius = 2;
 
     /// <summary>
-    /// 地表层显示用的草地 Tile（瓦片）。
+    /// Sand Base（沙地底层）使用的 16 状态自动瓦片集合。
     /// </summary>
-    [Header("Tile References（瓦片引用）")]
-    public TileBase grassTile;
+    [Header("Layered Terrain Tiles（分层地形瓦片）")]
+    public TerrainAutotileSet sandAutotileSet;
+
+    /// <summary>
+    /// Grass Overlay（草地覆盖层）使用的 16 状态自动瓦片集合。
+    /// </summary>
+    public TerrainAutotileSet grassAutotileSet;
+
+    /// <summary>
+    /// Elevation（高地层）使用的顶面和南侧崖面自动瓦片集合。
+    /// </summary>
+    public TerrainAutotileSet elevationAutotileSet;
 
     /// <summary>
     /// 地表层显示用的水域 Tile（瓦片）。
@@ -153,19 +190,24 @@ public class MapGenerationSettings : ScriptableObject
     public TileBase shallowWaterTile;
 
     /// <summary>
+    /// 旧版固定草地瓦片引用，仅为已有资产的序列化兼容保留。
+    /// </summary>
+    [HideInInspector] public TileBase grassTile;
+
+    /// <summary>
     /// 地表层显示用的道路 Tile（瓦片）。
     /// </summary>
-    public TileBase pathTile;
+    [HideInInspector] public TileBase pathTile;
 
     /// <summary>
     /// 地表层显示用的森林地表 Tile（瓦片）。
     /// </summary>
-    public TileBase forestTile;
+    [HideInInspector] public TileBase forestTile;
 
     /// <summary>
     /// 地表层显示用的山地 Tile（瓦片）。
     /// </summary>
-    public TileBase mountainTile;
+    [HideInInspector] public TileBase mountainTile;
 
     /// <summary>
     /// 装饰层随机选择的树木 Tile（瓦片）集合。
@@ -178,10 +220,30 @@ public class MapGenerationSettings : ScriptableObject
     public TileBase collisionMarkerTile;
 
     /// <summary>
-    /// 地表 Tilemap（瓦片地图）的 Sorting Order（排序顺序）。
+    /// Water Base（水体底层）的 Sorting Order（排序顺序）。
     /// </summary>
     [Header("Rendering（渲染）")]
-    public int groundSortingOrder = 0;
+    public int waterBaseSortingOrder = -20;
+
+    /// <summary>
+    /// Sand Base（沙地底层）的 Sorting Order（排序顺序）。
+    /// </summary>
+    public int sandBaseSortingOrder = -10;
+
+    /// <summary>
+    /// Grass Overlay（草地覆盖层）的 Sorting Order（排序顺序）。
+    /// </summary>
+    public int grassOverlaySortingOrder = 0;
+
+    /// <summary>
+    /// Elevation（高地层）的 Sorting Order（排序顺序）。
+    /// </summary>
+    public int elevationSortingOrder = 2;
+
+    /// <summary>
+    /// 旧版地表排序值，仅为已有配置资产的序列化兼容保留。
+    /// </summary>
+    [HideInInspector] public int groundSortingOrder = 0;
 
     /// <summary>
     /// 装饰 Tilemap（瓦片地图）的 Sorting Order（排序顺序）。
@@ -207,19 +269,32 @@ public class MapGenerationSettings : ScriptableObject
     /// </summary>
     private void OnValidate()
     {
+        generatorVersion = Mathf.Max(1, generatorVersion);
+        if (string.IsNullOrWhiteSpace(terrainPaletteId))
+            terrainPaletteId = "tiny-swords-grass-sand-rock-v1";
+
         mapWidth = Mathf.Max(8, mapWidth);
         mapHeight = Mathf.Max(8, mapHeight);
         borderSize = Mathf.Clamp(borderSize, 1, Mathf.Min(mapWidth, mapHeight) / 2 - 1);
         noiseScale = Mathf.Max(0.001f, noiseScale);
-        waterThreshold = Mathf.Clamp01(waterThreshold);
-        shallowWaterThreshold = Mathf.Clamp01(shallowWaterThreshold);
-        if (shallowWaterThreshold <= waterThreshold)
-            shallowWaterThreshold = Mathf.Min(1f, waterThreshold + 0.01f);
+        waterThreshold = Mathf.Clamp(waterThreshold, 0f, 0.97f);
+        shallowWaterThreshold = Mathf.Clamp(
+            shallowWaterThreshold,
+            waterThreshold + 0.01f,
+            0.98f);
+        sandHeightThreshold = Mathf.Clamp(
+            sandHeightThreshold,
+            shallowWaterThreshold + 0.01f,
+            0.99f);
         biomeNoiseScale = Mathf.Max(0.001f, biomeNoiseScale);
         forestMoistureThreshold = Mathf.Clamp01(forestMoistureThreshold);
         forestTemperatureThreshold = Mathf.Clamp01(forestTemperatureThreshold);
-        mountainHeightThreshold = Mathf.Clamp01(mountainHeightThreshold);
+        mountainHeightThreshold = Mathf.Clamp(
+            mountainHeightThreshold,
+            sandHeightThreshold + 0.01f,
+            1f);
         mountainTemperatureThreshold = Mathf.Clamp01(mountainTemperatureThreshold);
+        minimumNaturalRegionSize = Mathf.Max(1, minimumNaturalRegionSize);
         spawnProtectionRadius = Mathf.Max(1, spawnProtectionRadius);
         roadWidth = Mathf.Max(1, roadWidth);
         roadTurnChance = Mathf.Clamp01(roadTurnChance);

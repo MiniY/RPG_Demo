@@ -123,6 +123,11 @@ public sealed class MapMinimapController : MonoBehaviour
     [SerializeField] private Color32 shallowWaterColor = new Color32(82, 174, 195, 255);
 
     /// <summary>
+    /// 小地图中自然沙地使用的颜色。
+    /// </summary>
+    [SerializeField] private Color32 sandColor = new Color32(225, 204, 126, 255);
+
+    /// <summary>
     /// 小地图中道路使用的颜色。
     /// </summary>
     [SerializeField] private Color32 pathColor = new Color32(201, 174, 105, 255);
@@ -370,6 +375,7 @@ public sealed class MapMinimapController : MonoBehaviour
             mapData,
             grassColor,
             waterColor,
+            sandColor,
             pathColor,
             shallowWaterColor,
             forestColor,

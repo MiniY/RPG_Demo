@@ -15,10 +15,10 @@ public class MapGenerationSceneTests
     private const string TestScenePath = "Assets/Scenes/MapGeneration/MapGenerationTest.unity";
 
     /// <summary>
-    /// 验证测试场景能生成地表、碰撞瓦片，并把玩家移动到出生点。
+    /// 验证测试场景能生成四层地形、碰撞瓦片，并把玩家移动到出生点。
     /// </summary>
     [Test]
-    public void TestSceneGeneratesGroundAndCollisionTilemaps()
+    public void TestSceneGeneratesLayeredTerrainAndCollisionTilemaps()
     {
         Scene testScene = EditorSceneManager.OpenScene(TestScenePath, OpenSceneMode.Additive);
 
@@ -45,10 +45,30 @@ public class MapGenerationSceneTests
 
             Tilemap groundTilemap = controller.TilemapRenderer.GroundTilemap;
             Tilemap collisionTilemap = controller.TilemapRenderer.CollisionTilemap;
+            Tilemap waterBaseTilemap = controller.TilemapRenderer.WaterBaseTilemap;
+            Tilemap sandBaseTilemap = controller.TilemapRenderer.SandBaseTilemap;
+            Tilemap grassOverlayTilemap = controller.TilemapRenderer.GrassOverlayTilemap;
+            Tilemap elevationTilemap = controller.TilemapRenderer.ElevationTilemap;
             Tilemap decorationTilemap = controller.DecorationRenderer.DecorationTilemap;
             Assert.That(groundTilemap, Is.Not.Null, "缺少地表 Tilemap。");
             Assert.That(collisionTilemap, Is.Not.Null, "缺少碰撞 Tilemap。");
+            Assert.That(waterBaseTilemap, Is.EqualTo(groundTilemap));
+            Assert.That(controller.TilemapRenderer.TerrainCollisionTilemap,
+                Is.EqualTo(collisionTilemap));
+            Assert.That(sandBaseTilemap, Is.Not.Null, "缺少 Sand Base Tilemap。");
+            Assert.That(grassOverlayTilemap, Is.Not.Null, "缺少 Grass Overlay Tilemap。");
+            Assert.That(elevationTilemap, Is.Not.Null, "缺少 Elevation Tilemap。");
             Assert.That(decorationTilemap, Is.Not.Null, "缺少装饰 Tilemap。");
+
+            Assert.That(controller.Settings.generatorVersion,
+                Is.EqualTo(MapGenerationSettings.CurrentGeneratorVersion));
+            Assert.That(controller.Settings.sandAutotileSet, Is.Not.Null);
+            Assert.That(controller.Settings.grassAutotileSet, Is.Not.Null);
+            Assert.That(controller.Settings.elevationAutotileSet, Is.Not.Null);
+            Assert.That(controller.Settings.sandAutotileSet.HasCompleteTopology, Is.True);
+            Assert.That(controller.Settings.grassAutotileSet.HasCompleteTopology, Is.True);
+            Assert.That(controller.Settings.elevationAutotileSet.HasCompleteTopology, Is.True);
+            Assert.That(controller.Settings.elevationAutotileSet.HasCompleteSouthFaces, Is.True);
 
             BoundsInt bounds = new BoundsInt(
                 mapData.Origin.x,
@@ -58,7 +78,12 @@ public class MapGenerationSceneTests
                 mapData.Height,
                 1);
 
-            Assert.That(CountTiles(groundTilemap.GetTilesBlock(bounds)), Is.EqualTo(mapData.Width * mapData.Height));
+            Assert.That(
+                CountTiles(waterBaseTilemap.GetTilesBlock(bounds)),
+                Is.EqualTo(mapData.Width * mapData.Height));
+            Assert.That(CountTiles(sandBaseTilemap.GetTilesBlock(bounds)), Is.GreaterThan(0));
+            Assert.That(CountTiles(grassOverlayTilemap.GetTilesBlock(bounds)), Is.GreaterThan(0));
+            Assert.That(CountTiles(elevationTilemap.GetTilesBlock(bounds)), Is.GreaterThan(0));
             Assert.That(CountTiles(collisionTilemap.GetTilesBlock(bounds)), Is.GreaterThan(0));
             Assert.That(controller.LastGeneratedDecorations, Is.Not.Null, "没有生成装饰数据。");
             Assert.That(controller.LastGeneratedDecorations.Count, Is.GreaterThan(0));
@@ -71,6 +96,9 @@ public class MapGenerationSceneTests
             CompositeCollider2D compositeCollider = collisionTilemap.GetComponent<CompositeCollider2D>();
             Rigidbody2D collisionBody = collisionTilemap.GetComponent<Rigidbody2D>();
             TilemapRenderer groundRenderer = groundTilemap.GetComponent<TilemapRenderer>();
+            TilemapRenderer sandRenderer = sandBaseTilemap.GetComponent<TilemapRenderer>();
+            TilemapRenderer grassRenderer = grassOverlayTilemap.GetComponent<TilemapRenderer>();
+            TilemapRenderer elevationRenderer = elevationTilemap.GetComponent<TilemapRenderer>();
             TilemapRenderer collisionRenderer = collisionTilemap.GetComponent<TilemapRenderer>();
 
             Assert.That(tilemapCollider, Is.Not.Null, "碰撞 Tilemap 缺少 TilemapCollider2D。");
@@ -82,6 +110,20 @@ public class MapGenerationSceneTests
             Assert.That(collisionBody.bodyType, Is.EqualTo(RigidbodyType2D.Static));
             Assert.That(groundRenderer, Is.Not.Null, "地表 Tilemap 缺少 TilemapRenderer。");
             Assert.That(groundRenderer != null && groundRenderer.enabled, Is.True);
+            Assert.That(groundRenderer.sortingOrder,
+                Is.EqualTo(controller.Settings.waterBaseSortingOrder));
+            Assert.That(sandRenderer, Is.Not.Null);
+            Assert.That(sandRenderer.enabled, Is.True);
+            Assert.That(sandRenderer.sortingOrder,
+                Is.EqualTo(controller.Settings.sandBaseSortingOrder));
+            Assert.That(grassRenderer, Is.Not.Null);
+            Assert.That(grassRenderer.enabled, Is.True);
+            Assert.That(grassRenderer.sortingOrder,
+                Is.EqualTo(controller.Settings.grassOverlaySortingOrder));
+            Assert.That(elevationRenderer, Is.Not.Null);
+            Assert.That(elevationRenderer.enabled, Is.True);
+            Assert.That(elevationRenderer.sortingOrder,
+                Is.EqualTo(controller.Settings.elevationSortingOrder));
             Assert.That(collisionRenderer, Is.Not.Null, "碰撞 Tilemap 缺少 TilemapRenderer。");
             Assert.That(collisionRenderer != null && !collisionRenderer.enabled, Is.True);
 
@@ -96,6 +138,11 @@ public class MapGenerationSceneTests
             Assert.That(controller.LastGeneratedDecorations, Is.Null);
             Assert.That(controller.DecorationRenderer.PlacementCount, Is.EqualTo(0));
             Assert.That(CountTiles(decorationTilemap.GetTilesBlock(bounds)), Is.EqualTo(0));
+            Assert.That(CountTiles(waterBaseTilemap.GetTilesBlock(bounds)), Is.EqualTo(0));
+            Assert.That(CountTiles(sandBaseTilemap.GetTilesBlock(bounds)), Is.EqualTo(0));
+            Assert.That(CountTiles(grassOverlayTilemap.GetTilesBlock(bounds)), Is.EqualTo(0));
+            Assert.That(CountTiles(elevationTilemap.GetTilesBlock(bounds)), Is.EqualTo(0));
+            Assert.That(CountTiles(collisionTilemap.GetTilesBlock(bounds)), Is.EqualTo(0));
 
             Vector3 expectedSpawnPosition = controller.TilemapRenderer.GetCellCenterWorld(mapData.SpawnCell);
             Assert.That(Vector2.Distance(controller.Player.position, expectedSpawnPosition), Is.LessThan(0.01f));

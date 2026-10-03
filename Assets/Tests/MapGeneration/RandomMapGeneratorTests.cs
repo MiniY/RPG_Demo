@@ -26,6 +26,10 @@ public class RandomMapGeneratorTests
         settings.seed = 20260929;
         settings.noiseScale = 0.08f;
         settings.waterThreshold = 0.32f;
+        settings.shallowWaterThreshold = 0.42f;
+        settings.sandHeightThreshold = 0.48f;
+        settings.mountainHeightThreshold = 0.72f;
+        settings.minimumNaturalRegionSize = 3;
         settings.spawnProtectionRadius = 5;
         settings.roadWidth = 2;
         settings.roadTurnChance = 0.3f;
@@ -113,28 +117,31 @@ public class RandomMapGeneratorTests
     [Test]
     public void ExtendedTerrainWalkabilityMatchesDesign()
     {
-        MapData map = new MapData(5, 1, Vector2Int.zero);
+        MapData map = new MapData(6, 1, Vector2Int.zero);
         map.SetTerrain(new Vector2Int(0, 0), MapTerrainType.DeepWater);
         map.SetTerrain(new Vector2Int(1, 0), MapTerrainType.ShallowWater);
         map.SetTerrain(new Vector2Int(2, 0), MapTerrainType.Forest);
         map.SetTerrain(new Vector2Int(3, 0), MapTerrainType.Mountain);
         map.SetTerrain(new Vector2Int(4, 0), MapTerrainType.Path);
+        map.SetTerrain(new Vector2Int(5, 0), MapTerrainType.Sand);
 
         Assert.That(map.IsWalkable(new Vector2Int(0, 0)), Is.False);
         Assert.That(map.IsWalkable(new Vector2Int(1, 0)), Is.False);
         Assert.That(map.IsWalkable(new Vector2Int(2, 0)), Is.True);
         Assert.That(map.IsWalkable(new Vector2Int(3, 0)), Is.False);
         Assert.That(map.IsWalkable(new Vector2Int(4, 0)), Is.True);
+        Assert.That(map.IsWalkable(new Vector2Int(5, 0)), Is.True);
     }
 
     /// <summary>
-    /// 验证默认 Seed（种子）会实际生成浅水、森林和山地，而不是只存在枚举定义。
+    /// 验证默认 Seed（种子）会实际生成浅水、沙地、森林和山地，而不是只存在枚举定义。
     /// </summary>
     [Test]
     public void DefaultConfigurationProducesExtendedTerrain()
     {
         MapData map = RandomMapGenerator.Generate(settings);
         int shallowWaterCount = 0;
+        int sandCount = 0;
         int forestCount = 0;
         int mountainCount = 0;
 
@@ -145,6 +152,8 @@ public class RandomMapGeneratorTests
                 MapTerrainType terrainType = map.GetCell(new Vector2Int(x, y)).terrainType;
                 if (terrainType == MapTerrainType.ShallowWater)
                     shallowWaterCount++;
+                else if (terrainType == MapTerrainType.Sand)
+                    sandCount++;
                 else if (terrainType == MapTerrainType.Forest)
                     forestCount++;
                 else if (terrainType == MapTerrainType.Mountain)
@@ -153,6 +162,7 @@ public class RandomMapGeneratorTests
         }
 
         Assert.That(shallowWaterCount, Is.GreaterThan(0));
+        Assert.That(sandCount, Is.GreaterThan(0));
         Assert.That(forestCount, Is.GreaterThan(0));
         Assert.That(mountainCount, Is.GreaterThan(0));
     }
@@ -168,6 +178,20 @@ public class RandomMapGeneratorTests
 
         Assert.That(map.IsWalkable(map.ExitCell), Is.True);
         Assert.That(reachableCells.Contains(map.ExitCell), Is.True);
+    }
+
+    /// <summary>
+    /// 验证地形高度阈值没有严格递增时会立即报告配置错误。
+    /// </summary>
+    [Test]
+    public void TerrainThresholdsMustBeStrictlyIncreasing()
+    {
+        settings.sandHeightThreshold = settings.shallowWaterThreshold;
+
+        System.InvalidOperationException exception = Assert.Throws<System.InvalidOperationException>(
+            () => RandomMapGenerator.Generate(settings));
+
+        Assert.That(exception.Message, Does.Contain("water < shallowWater < sand < mountain"));
     }
 
     /// <summary>

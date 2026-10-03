@@ -36,5 +36,10 @@ public enum MapTerrainType
     /// <summary>
     /// 不可行走的山地。
     /// </summary>
-    Mountain
+    Mountain,
+
+    /// <summary>
+    /// 可行走的自然沙地，与道路共同露出 Sand Base（沙地底层）。
+    /// </summary>
+    Sand
 }

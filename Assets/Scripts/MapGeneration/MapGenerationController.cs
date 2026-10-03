@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 /// <summary>
 /// 协调地图数据生成、Tilemap 渲染和玩家出生点定位。
@@ -17,9 +18,10 @@ public class MapGenerationController : MonoBehaviour
     [SerializeField] private MapTilemapRenderer tilemapRenderer;
 
     /// <summary>
-    /// 负责根据最终地图数据写入装饰 Tilemap 的渲染器。
+    /// 负责根据最终地图数据写入简单装饰 Tilemap 的渲染器。
     /// </summary>
-    [SerializeField] private MapDecorationRenderer decorationRenderer;
+    [FormerlySerializedAs("decorationRenderer")]
+    [SerializeField] private MapSimpleDecorationRenderer simpleDecorationRenderer;
 
     /// <summary>
     /// 测试场景中的玩家 Transform（变换组件）。
@@ -47,9 +49,9 @@ public class MapGenerationController : MonoBehaviour
     private MapData lastGeneratedMap;
 
     /// <summary>
-    /// 最近一次生成的装饰物数据。
+    /// 最近一次生成的简单装饰物数据。
     /// </summary>
-    private MapDecorationData lastGeneratedDecorations;
+    private MapSimpleDecorationData lastGeneratedSimpleDecorations;
 
     /// <summary>
     /// 地图生成完成后通知小地图和其他观察者。
@@ -72,9 +74,10 @@ public class MapGenerationController : MonoBehaviour
     public MapTilemapRenderer TilemapRenderer => tilemapRenderer;
 
     /// <summary>
-    /// 获取装饰 Tilemap 渲染器。
+    /// 获取简单装饰 Tilemap 渲染器。
     /// </summary>
-    public MapDecorationRenderer DecorationRenderer => decorationRenderer;
+    public MapSimpleDecorationRenderer SimpleDecorationRenderer =>
+        simpleDecorationRenderer;
 
     /// <summary>
     /// 获取生成地图后需要移动到出生点的玩家变换组件。
@@ -87,9 +90,10 @@ public class MapGenerationController : MonoBehaviour
     public MapData LastGeneratedMap => lastGeneratedMap;
 
     /// <summary>
-    /// 获取最近一次生成的装饰物数据。
+    /// 获取最近一次生成的简单装饰物数据。
     /// </summary>
-    public MapDecorationData LastGeneratedDecorations => lastGeneratedDecorations;
+    public MapSimpleDecorationData LastGeneratedSimpleDecorations =>
+        lastGeneratedSimpleDecorations;
 
     /// <summary>
     /// 根据配置生成并渲染地图。
@@ -113,14 +117,14 @@ public class MapGenerationController : MonoBehaviour
             lastGeneratedMap = RandomMapGenerator.Generate(settings);
             tilemapRenderer.Render(lastGeneratedMap, settings);
 
-            // 装饰物读取最终地图数据，但使用独立随机流，不改变基础地形结果。
-            lastGeneratedDecorations =
-                MapDecorationGenerator.Generate(lastGeneratedMap, settings);
+            // 简单装饰读取最终地图数据，并使用独立随机流保持地形结果稳定。
+            lastGeneratedSimpleDecorations =
+                MapSimpleDecorationGenerator.Generate(lastGeneratedMap, settings);
 
-            if (decorationRenderer != null)
+            if (simpleDecorationRenderer != null)
             {
-                decorationRenderer.Render(
-                    lastGeneratedDecorations,
+                simpleDecorationRenderer.Render(
+                    lastGeneratedSimpleDecorations,
                     lastGeneratedMap,
                     settings);
             }
@@ -135,7 +139,10 @@ public class MapGenerationController : MonoBehaviour
                 Debug.Log(
                     $"地图生成完成：Seed={settings.seed}，尺寸={settings.mapWidth}x{settings.mapHeight}，" +
                     $"出生点={lastGeneratedMap.SpawnCell}，道路终点={lastGeneratedMap.ExitCell}，" +
-                    $"装饰物={lastGeneratedDecorations.Count}。",
+                    $"简单装饰={lastGeneratedSimpleDecorations.Count}，" +
+                    $"树木={lastGeneratedSimpleDecorations.CountByType(MapSimpleDecorationType.Tree)}，" +
+                    $"灌木={lastGeneratedSimpleDecorations.CountByType(MapSimpleDecorationType.Bush)}，" +
+                    $"散落岩石={lastGeneratedSimpleDecorations.CountByType(MapSimpleDecorationType.ScatteredRock)}。",
                     this);
             }
         }
@@ -153,11 +160,11 @@ public class MapGenerationController : MonoBehaviour
         if (tilemapRenderer != null)
             tilemapRenderer.Clear();
 
-        if (decorationRenderer != null)
-            decorationRenderer.Clear();
+        if (simpleDecorationRenderer != null)
+            simpleDecorationRenderer.Clear();
 
         lastGeneratedMap = null;
-        lastGeneratedDecorations = null;
+        lastGeneratedSimpleDecorations = null;
         MapCleared?.Invoke();
     }
 

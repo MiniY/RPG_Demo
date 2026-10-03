@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a0c5d2f3b4e6a96d1c8f5b0e2345678, type: 3}
   m_Name: MapGenerationSettings_Default
   m_EditorClassIdentifier: 
-  generatorVersion: 3
+  generatorVersion: 4
   terrainPaletteId: tiny-swords-grass-sand-rock-v1
   mapWidth: 64
   mapHeight: 64
@@ -34,13 +34,18 @@ MonoBehaviour:
   spawnProtectionRadius: 5
   roadWidth: 2
   roadTurnChance: 0.3
-  decorationSeedOffset: 7919
-  decorationNoiseScale: 0.12
-  grassDecorationDensity: 0.04
-  forestDecorationDensity: 0.38
-  decorationMinimumSpacing: 2
-  decorationSpawnClearRadius: 6
-  decorationExitClearRadius: 2
+  simpleDecorationSeedOffset: 7919
+  simpleDecorationNoiseScale: 0.12
+  grassTreeDensity: 0.018
+  forestTreeDensity: 0.1
+  grassBushDensity: 0.025
+  forestBushDensity: 0.06
+  sandRockDensity: 0.025
+  grassRockDensity: 0.012
+  forestRockDensity: 0.008
+  simpleDecorationMinimumSpacing: 2
+  simpleDecorationSpawnClearRadius: 6
+  simpleDecorationExitClearRadius: 2
   sandAutotileSet: {fileID: 11400000, guid: 5d7ca507d1f3f1d4880742ac9f78ec9f, type: 2}
   grassAutotileSet: {fileID: 11400000, guid: 4fd0d04a8af37b8428fe9f82046dcb08, type: 2}
   elevationAutotileSet: {fileID: 11400000, guid: 8f3603d9339e2b54c89b04c8c8a4fc30, type: 2}
@@ -50,6 +55,7 @@ MonoBehaviour:
   pathTile: {fileID: 11400000, guid: e926d6fe12ad6234b99fa860071efd15, type: 2}
   forestTile: {fileID: 11400000, guid: 10aa4e8d89f03f74180a6858bda94b35, type: 2}
   mountainTile: {fileID: 11400000, guid: 0c703bb727db11b46bdbf609cf28fb70, type: 2}
+  simpleDecorationPalette: {fileID: 11400000, guid: 82edab8a460dcd34fb9c6674b7bc307c, type: 2}
   treeTiles:
   - {fileID: 11400000, guid: d39f8dd5f2be6b44c90c83088dd64cc7, type: 2}
   - {fileID: 11400000, guid: e4601a6ef080cf34dacc1a2a6024cc8e, type: 2}
@@ -61,4 +67,5 @@ MonoBehaviour:
   grassOverlaySortingOrder: 0
   elevationSortingOrder: 2
   groundSortingOrder: 0
-  decorationSortingOrder: 4
+  simpleDecorationGroundSortingOrder: 4
+  simpleDecorationCanopySortingOrder: 6

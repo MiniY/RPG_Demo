@@ -15,7 +15,7 @@ public class MapGenerationSceneTests
     private const string TestScenePath = "Assets/Scenes/MapGeneration/MapGenerationTest.unity";
 
     /// <summary>
-    /// 验证测试场景能生成四层地形、碰撞瓦片，并把玩家移动到出生点。
+    /// 验证测试场景能生成分层地形、分层简单装饰、碰撞瓦片并移动玩家。
     /// </summary>
     [Test]
     public void TestSceneGeneratesLayeredTerrainAndCollisionTilemaps()
@@ -28,7 +28,8 @@ public class MapGenerationSceneTests
             Assert.That(controller, Is.Not.Null, "测试场景缺少 MapGenerationController。");
             Assert.That(controller.Settings, Is.Not.Null, "测试场景缺少 MapGenerationSettings 引用。");
             Assert.That(controller.TilemapRenderer, Is.Not.Null, "测试场景缺少 MapTilemapRenderer 引用。");
-            Assert.That(controller.DecorationRenderer, Is.Not.Null, "测试场景缺少 MapDecorationRenderer 引用。");
+            Assert.That(controller.SimpleDecorationRenderer, Is.Not.Null,
+                "测试场景缺少 MapSimpleDecorationRenderer 引用。");
             Assert.That(controller.Player, Is.Not.Null, "测试场景缺少玩家引用。");
 
             MapMinimapController minimapController =
@@ -49,7 +50,12 @@ public class MapGenerationSceneTests
             Tilemap sandBaseTilemap = controller.TilemapRenderer.SandBaseTilemap;
             Tilemap grassOverlayTilemap = controller.TilemapRenderer.GrassOverlayTilemap;
             Tilemap elevationTilemap = controller.TilemapRenderer.ElevationTilemap;
-            Tilemap decorationTilemap = controller.DecorationRenderer.DecorationTilemap;
+            Tilemap groundDecorationTilemap =
+                controller.SimpleDecorationRenderer.GroundDecorationTilemap;
+            Tilemap canopyDecorationTilemap =
+                controller.SimpleDecorationRenderer.CanopyDecorationTilemap;
+            Tilemap decorationCollisionTilemap =
+                controller.SimpleDecorationRenderer.DecorationCollisionTilemap;
             Assert.That(groundTilemap, Is.Not.Null, "缺少地表 Tilemap。");
             Assert.That(collisionTilemap, Is.Not.Null, "缺少碰撞 Tilemap。");
             Assert.That(waterBaseTilemap, Is.EqualTo(groundTilemap));
@@ -58,7 +64,9 @@ public class MapGenerationSceneTests
             Assert.That(sandBaseTilemap, Is.Not.Null, "缺少 Sand Base Tilemap。");
             Assert.That(grassOverlayTilemap, Is.Not.Null, "缺少 Grass Overlay Tilemap。");
             Assert.That(elevationTilemap, Is.Not.Null, "缺少 Elevation Tilemap。");
-            Assert.That(decorationTilemap, Is.Not.Null, "缺少装饰 Tilemap。");
+            Assert.That(groundDecorationTilemap, Is.Not.Null, "缺少低层简单装饰 Tilemap。");
+            Assert.That(canopyDecorationTilemap, Is.Not.Null, "缺少树冠简单装饰 Tilemap。");
+            Assert.That(decorationCollisionTilemap, Is.Not.Null, "缺少简单装饰碰撞 Tilemap。");
 
             Assert.That(controller.Settings.generatorVersion,
                 Is.EqualTo(MapGenerationSettings.CurrentGeneratorVersion));
@@ -85,12 +93,40 @@ public class MapGenerationSceneTests
             Assert.That(CountTiles(grassOverlayTilemap.GetTilesBlock(bounds)), Is.GreaterThan(0));
             Assert.That(CountTiles(elevationTilemap.GetTilesBlock(bounds)), Is.GreaterThan(0));
             Assert.That(CountTiles(collisionTilemap.GetTilesBlock(bounds)), Is.GreaterThan(0));
-            Assert.That(controller.LastGeneratedDecorations, Is.Not.Null, "没有生成装饰数据。");
-            Assert.That(controller.LastGeneratedDecorations.Count, Is.GreaterThan(0));
-            Assert.That(controller.DecorationRenderer.PlacementCount,
-                Is.EqualTo(controller.LastGeneratedDecorations.Count));
-            Assert.That(CountTiles(decorationTilemap.GetTilesBlock(bounds)),
-                Is.EqualTo(controller.DecorationRenderer.PlacementCount));
+            Assert.That(controller.Settings.simpleDecorationPalette, Is.Not.Null);
+            Assert.That(controller.Settings.simpleDecorationPalette.HasCompleteBasicSet, Is.True);
+            Assert.That(controller.LastGeneratedSimpleDecorations, Is.Not.Null,
+                "没有生成简单装饰数据。");
+            Assert.That(controller.LastGeneratedSimpleDecorations.Count, Is.GreaterThan(0));
+            int treeCount = controller.LastGeneratedSimpleDecorations.CountByType(
+                MapSimpleDecorationType.Tree);
+            int bushCount = controller.LastGeneratedSimpleDecorations.CountByType(
+                MapSimpleDecorationType.Bush);
+            int rockCount = controller.LastGeneratedSimpleDecorations.CountByType(
+                MapSimpleDecorationType.ScatteredRock);
+            Assert.That(treeCount, Is.GreaterThan(0));
+            Assert.That(bushCount, Is.GreaterThan(0));
+            Assert.That(rockCount, Is.GreaterThan(0));
+            Assert.That(controller.SimpleDecorationRenderer.PlacementCount,
+                Is.EqualTo(controller.LastGeneratedSimpleDecorations.Count));
+            Assert.That(CountTiles(groundDecorationTilemap.GetTilesBlock(bounds)),
+                Is.EqualTo(controller.SimpleDecorationRenderer.GroundTileCount));
+            Assert.That(CountTiles(canopyDecorationTilemap.GetTilesBlock(bounds)),
+                Is.EqualTo(controller.SimpleDecorationRenderer.CanopyTileCount));
+            Assert.That(CountTiles(decorationCollisionTilemap.GetTilesBlock(bounds)),
+                Is.EqualTo(controller.SimpleDecorationRenderer.CollisionCellCount));
+            Assert.That(controller.SimpleDecorationRenderer.GroundTileCount,
+                Is.GreaterThan(0));
+            Assert.That(controller.SimpleDecorationRenderer.CanopyTileCount,
+                Is.GreaterThan(0));
+            Assert.That(controller.SimpleDecorationRenderer.CollisionCellCount,
+                Is.GreaterThan(0));
+            Assert.That(controller.SimpleDecorationRenderer.GroundTileCount,
+                Is.EqualTo(treeCount * 3 + bushCount + rockCount));
+            Assert.That(controller.SimpleDecorationRenderer.CanopyTileCount,
+                Is.EqualTo(treeCount * 4));
+            Assert.That(controller.SimpleDecorationRenderer.CollisionCellCount,
+                Is.EqualTo(treeCount + rockCount));
 
             TilemapCollider2D tilemapCollider = collisionTilemap.GetComponent<TilemapCollider2D>();
             CompositeCollider2D compositeCollider = collisionTilemap.GetComponent<CompositeCollider2D>();
@@ -100,6 +136,12 @@ public class MapGenerationSceneTests
             TilemapRenderer grassRenderer = grassOverlayTilemap.GetComponent<TilemapRenderer>();
             TilemapRenderer elevationRenderer = elevationTilemap.GetComponent<TilemapRenderer>();
             TilemapRenderer collisionRenderer = collisionTilemap.GetComponent<TilemapRenderer>();
+            TilemapRenderer groundDecorationRenderer =
+                groundDecorationTilemap.GetComponent<TilemapRenderer>();
+            TilemapRenderer canopyDecorationRenderer =
+                canopyDecorationTilemap.GetComponent<TilemapRenderer>();
+            TilemapRenderer decorationCollisionRenderer =
+                decorationCollisionTilemap.GetComponent<TilemapRenderer>();
 
             Assert.That(tilemapCollider, Is.Not.Null, "碰撞 Tilemap 缺少 TilemapCollider2D。");
             Assert.That(tilemapCollider.enabled, Is.True);
@@ -127,17 +169,44 @@ public class MapGenerationSceneTests
             Assert.That(collisionRenderer, Is.Not.Null, "碰撞 Tilemap 缺少 TilemapRenderer。");
             Assert.That(collisionRenderer != null && !collisionRenderer.enabled, Is.True);
 
-            Assert.That(decorationTilemap.GetComponent<TilemapCollider2D>(), Is.Null,
-                "装饰 Tilemap 不应默认参与物理碰撞。");
-            TilemapRenderer decorationRenderer = decorationTilemap.GetComponent<TilemapRenderer>();
-            Assert.That(decorationRenderer, Is.Not.Null, "装饰 Tilemap 缺少 TilemapRenderer。");
-            Assert.That(decorationRenderer != null && decorationRenderer.enabled, Is.True);
+            Assert.That(groundDecorationTilemap.GetComponent<TilemapCollider2D>(), Is.Null,
+                "低层可视装饰 Tilemap 不应直接参与物理碰撞。");
+            Assert.That(canopyDecorationTilemap.GetComponent<TilemapCollider2D>(), Is.Null,
+                "树冠可视 Tilemap 不应直接参与物理碰撞。");
+            Assert.That(groundDecorationRenderer, Is.Not.Null);
+            Assert.That(groundDecorationRenderer.enabled, Is.True);
+            Assert.That(groundDecorationRenderer.sortingOrder,
+                Is.EqualTo(controller.Settings.simpleDecorationGroundSortingOrder));
+            Assert.That(canopyDecorationRenderer, Is.Not.Null);
+            Assert.That(canopyDecorationRenderer.enabled, Is.True);
+            Assert.That(canopyDecorationRenderer.sortingOrder,
+                Is.EqualTo(controller.Settings.simpleDecorationCanopySortingOrder));
+            Assert.That(controller.Settings.simpleDecorationGroundSortingOrder,
+                Is.LessThan(controller.Settings.simpleDecorationCanopySortingOrder));
+
+            TilemapCollider2D decorationTilemapCollider =
+                decorationCollisionTilemap.GetComponent<TilemapCollider2D>();
+            CompositeCollider2D decorationCompositeCollider =
+                decorationCollisionTilemap.GetComponent<CompositeCollider2D>();
+            Rigidbody2D decorationCollisionBody =
+                decorationCollisionTilemap.GetComponent<Rigidbody2D>();
+            Assert.That(decorationTilemapCollider, Is.Not.Null);
+            Assert.That(decorationTilemapCollider.enabled, Is.True);
+            Assert.That(decorationTilemapCollider.usedByComposite, Is.True);
+            Assert.That(decorationCompositeCollider, Is.Not.Null);
+            Assert.That(decorationCompositeCollider.enabled, Is.True);
+            Assert.That(decorationCollisionBody, Is.Not.Null);
+            Assert.That(decorationCollisionBody.bodyType, Is.EqualTo(RigidbodyType2D.Static));
+            Assert.That(decorationCollisionRenderer, Is.Not.Null);
+            Assert.That(decorationCollisionRenderer.enabled, Is.False);
 
             controller.ClearMap();
             Assert.That(controller.LastGeneratedMap, Is.Null);
-            Assert.That(controller.LastGeneratedDecorations, Is.Null);
-            Assert.That(controller.DecorationRenderer.PlacementCount, Is.EqualTo(0));
-            Assert.That(CountTiles(decorationTilemap.GetTilesBlock(bounds)), Is.EqualTo(0));
+            Assert.That(controller.LastGeneratedSimpleDecorations, Is.Null);
+            Assert.That(controller.SimpleDecorationRenderer.PlacementCount, Is.EqualTo(0));
+            Assert.That(CountTiles(groundDecorationTilemap.GetTilesBlock(bounds)), Is.EqualTo(0));
+            Assert.That(CountTiles(canopyDecorationTilemap.GetTilesBlock(bounds)), Is.EqualTo(0));
+            Assert.That(CountTiles(decorationCollisionTilemap.GetTilesBlock(bounds)), Is.EqualTo(0));
             Assert.That(CountTiles(waterBaseTilemap.GetTilesBlock(bounds)), Is.EqualTo(0));
             Assert.That(CountTiles(sandBaseTilemap.GetTilesBlock(bounds)), Is.EqualTo(0));
             Assert.That(CountTiles(grassOverlayTilemap.GetTilesBlock(bounds)), Is.EqualTo(0));

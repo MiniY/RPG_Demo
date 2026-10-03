@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
 
 /// <summary>
@@ -10,7 +11,7 @@ public class MapGenerationSettings : ScriptableObject
     /// <summary>
     /// 当前随机地图算法的数据版本。
     /// </summary>
-    public const int CurrentGeneratorVersion = 3;
+    public const int CurrentGeneratorVersion = 4;
 
     /// <summary>
     /// 保存本次配置对应的生成器版本，供未来存档兼容检查使用。
@@ -128,40 +129,72 @@ public class MapGenerationSettings : ScriptableObject
     [Range(0f, 1f)] public float roadTurnChance = 0.3f;
 
     /// <summary>
-    /// 装饰物阶段使用的派生随机种子偏移，避免装饰随机流影响地形随机流。
+    /// 简单装饰阶段使用的派生随机种子偏移，避免装饰随机流影响地形随机流。
     /// </summary>
-    [Header("Decoration（装饰物）")]
-    public int decorationSeedOffset = 7919;
+    [Header("Simple Decoration（简单装饰）")]
+    [FormerlySerializedAs("decorationSeedOffset")]
+    public int simpleDecorationSeedOffset = 7919;
 
     /// <summary>
-    /// 装饰物密度噪声的采样缩放，数值越小越容易形成装饰物簇。
+    /// 简单装饰密度噪声的采样缩放，数值越小越容易形成装饰物簇。
     /// </summary>
-    [Min(0.001f)] public float decorationNoiseScale = 0.12f;
+    [FormerlySerializedAs("decorationNoiseScale")]
+    [Min(0.001f)] public float simpleDecorationNoiseScale = 0.12f;
 
     /// <summary>
-    /// 普通草地放置树木的基础概率。
+    /// 普通草地放置完整树木的基础概率。
     /// </summary>
-    [Range(0f, 1f)] public float grassDecorationDensity = 0.04f;
+    [FormerlySerializedAs("grassDecorationDensity")]
+    [Range(0f, 1f)] public float grassTreeDensity = 0.018f;
 
     /// <summary>
-    /// 森林地表放置树木的基础概率。
+    /// 森林地表放置完整树木的基础概率。
     /// </summary>
-    [Range(0f, 1f)] public float forestDecorationDensity = 0.38f;
+    [FormerlySerializedAs("forestDecorationDensity")]
+    [Range(0f, 1f)] public float forestTreeDensity = 0.1f;
 
     /// <summary>
-    /// 两个装饰物之间至少间隔的网格距离。
+    /// 普通草地放置灌木的基础概率。
     /// </summary>
-    [Min(1)] public int decorationMinimumSpacing = 2;
+    [Range(0f, 1f)] public float grassBushDensity = 0.025f;
 
     /// <summary>
-    /// 出生点周围不放置装饰物的安全半径。
+    /// 森林地表放置灌木的基础概率。
     /// </summary>
-    [Min(0)] public int decorationSpawnClearRadius = 6;
+    [Range(0f, 1f)] public float forestBushDensity = 0.06f;
 
     /// <summary>
-    /// 出口周围不放置装饰物的净空半径。
+    /// 自然沙地放置散落岩石的基础概率。
     /// </summary>
-    [Min(0)] public int decorationExitClearRadius = 2;
+    [Range(0f, 1f)] public float sandRockDensity = 0.025f;
+
+    /// <summary>
+    /// 普通草地放置散落岩石的基础概率。
+    /// </summary>
+    [Range(0f, 1f)] public float grassRockDensity = 0.012f;
+
+    /// <summary>
+    /// 森林地表放置散落岩石的基础概率。
+    /// </summary>
+    [Range(0f, 1f)] public float forestRockDensity = 0.008f;
+
+    /// <summary>
+    /// 两个简单装饰物占地之间至少间隔的网格距离。
+    /// </summary>
+    [FormerlySerializedAs("decorationMinimumSpacing")]
+    [Min(1)] public int simpleDecorationMinimumSpacing = 2;
+
+    /// <summary>
+    /// 出生点周围不放置简单装饰物的安全半径。
+    /// </summary>
+    [FormerlySerializedAs("decorationSpawnClearRadius")]
+    [Min(0)] public int simpleDecorationSpawnClearRadius = 6;
+
+    /// <summary>
+    /// 出口周围不放置简单装饰物的净空半径。
+    /// </summary>
+    [FormerlySerializedAs("decorationExitClearRadius")]
+    [Min(0)] public int simpleDecorationExitClearRadius = 2;
 
     /// <summary>
     /// Sand Base（沙地底层）使用的 16 状态自动瓦片集合。
@@ -210,9 +243,14 @@ public class MapGenerationSettings : ScriptableObject
     [HideInInspector] public TileBase mountainTile;
 
     /// <summary>
-    /// 装饰层随机选择的树木 Tile（瓦片）集合。
+    /// 树木、灌木和散落岩石使用的固定简单装饰调色板。
     /// </summary>
-    public TileBase[] treeTiles = new TileBase[0];
+    public MapSimpleDecorationPalette simpleDecorationPalette;
+
+    /// <summary>
+    /// 旧版单格树木 Tile（瓦片）集合，仅为已有配置的序列化兼容保留。
+    /// </summary>
+    [HideInInspector] public TileBase[] treeTiles = new TileBase[0];
 
     /// <summary>
     /// 碰撞层使用的不可见碰撞标记 Tile（瓦片）。
@@ -246,9 +284,15 @@ public class MapGenerationSettings : ScriptableObject
     [HideInInspector] public int groundSortingOrder = 0;
 
     /// <summary>
-    /// 装饰 Tilemap（瓦片地图）的 Sorting Order（排序顺序）。
+    /// 简单装饰地表 Tilemap（瓦片地图）的 Sorting Order（排序顺序）。
     /// </summary>
-    public int decorationSortingOrder = 4;
+    [FormerlySerializedAs("decorationSortingOrder")]
+    public int simpleDecorationGroundSortingOrder = 4;
+
+    /// <summary>
+    /// 简单装饰树冠 Tilemap（瓦片地图）的 Sorting Order（排序顺序）。
+    /// </summary>
+    public int simpleDecorationCanopySortingOrder = 6;
 
     /// <summary>
     /// 根据当前配置计算出生点网格坐标。
@@ -298,11 +342,16 @@ public class MapGenerationSettings : ScriptableObject
         spawnProtectionRadius = Mathf.Max(1, spawnProtectionRadius);
         roadWidth = Mathf.Max(1, roadWidth);
         roadTurnChance = Mathf.Clamp01(roadTurnChance);
-        decorationNoiseScale = Mathf.Max(0.001f, decorationNoiseScale);
-        grassDecorationDensity = Mathf.Clamp01(grassDecorationDensity);
-        forestDecorationDensity = Mathf.Clamp01(forestDecorationDensity);
-        decorationMinimumSpacing = Mathf.Max(1, decorationMinimumSpacing);
-        decorationSpawnClearRadius = Mathf.Max(0, decorationSpawnClearRadius);
-        decorationExitClearRadius = Mathf.Max(0, decorationExitClearRadius);
+        simpleDecorationNoiseScale = Mathf.Max(0.001f, simpleDecorationNoiseScale);
+        grassTreeDensity = Mathf.Clamp01(grassTreeDensity);
+        forestTreeDensity = Mathf.Clamp01(forestTreeDensity);
+        grassBushDensity = Mathf.Clamp01(grassBushDensity);
+        forestBushDensity = Mathf.Clamp01(forestBushDensity);
+        sandRockDensity = Mathf.Clamp01(sandRockDensity);
+        grassRockDensity = Mathf.Clamp01(grassRockDensity);
+        forestRockDensity = Mathf.Clamp01(forestRockDensity);
+        simpleDecorationMinimumSpacing = Mathf.Max(1, simpleDecorationMinimumSpacing);
+        simpleDecorationSpawnClearRadius = Mathf.Max(0, simpleDecorationSpawnClearRadius);
+        simpleDecorationExitClearRadius = Mathf.Max(0, simpleDecorationExitClearRadius);
     }
 }

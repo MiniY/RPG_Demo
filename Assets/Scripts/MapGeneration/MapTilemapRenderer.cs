@@ -231,6 +231,11 @@ public class MapTilemapRenderer : MonoBehaviour
         if (!mapData.IsInside(faceCell))
             return;
 
+        // 崖面只能落在具有沙地底层的陆地单元，避免岩石覆盖深水或浅水。
+        MapTerrainType faceTerrainType = mapData.GetCell(faceCell).terrainType;
+        if (!TerrainTopology.UsesSandBase(faceTerrainType))
+            return;
+
         int localX = faceCell.x - mapData.Origin.x;
         int localY = faceCell.y - mapData.Origin.y;
         int faceIndex = localY * mapData.Width + localX;

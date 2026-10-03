@@ -155,6 +155,83 @@ public class MapGenerationSceneTests
     }
 
     /// <summary>
+    /// 验证高地南侧崖面不会跨格写入逻辑水域。
+    /// </summary>
+    /// <param name="waterType">需要验证的深水或浅水类型。</param>
+    [TestCase(MapTerrainType.DeepWater)]
+    [TestCase(MapTerrainType.ShallowWater)]
+    public void ElevationFacesDoNotRenderOnWaterCells(MapTerrainType waterType)
+    {
+        Scene testScene = EditorSceneManager.OpenScene(TestScenePath, OpenSceneMode.Additive);
+
+        try
+        {
+            MapGenerationController controller = FindComponentInScene<MapGenerationController>(testScene);
+            Assert.That(controller, Is.Not.Null, "测试场景缺少 MapGenerationController。");
+            Assert.That(controller.Settings, Is.Not.Null, "测试场景缺少 MapGenerationSettings 引用。");
+            Assert.That(controller.TilemapRenderer, Is.Not.Null, "测试场景缺少 MapTilemapRenderer 引用。");
+
+            MapData mapData = CreateFilledMap(3, 3, MapTerrainType.Sand);
+            Vector2Int mountainCell = new Vector2Int(1, 1);
+            Vector2Int waterCell = mountainCell + Vector2Int.down;
+            mapData.SetTerrain(mountainCell, MapTerrainType.Mountain);
+            mapData.SetTerrain(waterCell, waterType);
+
+            controller.TilemapRenderer.Render(mapData, controller.Settings);
+
+            Tilemap elevationTilemap = controller.TilemapRenderer.ElevationTilemap;
+            Assert.That(
+                elevationTilemap.GetTile(new Vector3Int(mountainCell.x, mountainCell.y, 0)),
+                Is.Not.Null,
+                "山地单元必须保留高地顶面瓦片。");
+            Assert.That(
+                elevationTilemap.GetTile(new Vector3Int(waterCell.x, waterCell.y, 0)),
+                Is.Null,
+                "高地南侧崖面不得写入深水或浅水单元。");
+        }
+        finally
+        {
+            if (testScene.IsValid() && testScene.isLoaded)
+                EditorSceneManager.CloseScene(testScene, true);
+        }
+    }
+
+    /// <summary>
+    /// 验证沙地单元仍可承载高地南侧崖面，保留沙地岛屿上的岩石景观。
+    /// </summary>
+    [Test]
+    public void ElevationFacesStillRenderOnSandCells()
+    {
+        Scene testScene = EditorSceneManager.OpenScene(TestScenePath, OpenSceneMode.Additive);
+
+        try
+        {
+            MapGenerationController controller = FindComponentInScene<MapGenerationController>(testScene);
+            Assert.That(controller, Is.Not.Null, "测试场景缺少 MapGenerationController。");
+            Assert.That(controller.Settings, Is.Not.Null, "测试场景缺少 MapGenerationSettings 引用。");
+            Assert.That(controller.TilemapRenderer, Is.Not.Null, "测试场景缺少 MapTilemapRenderer 引用。");
+
+            MapData mapData = CreateFilledMap(3, 3, MapTerrainType.Sand);
+            Vector2Int mountainCell = new Vector2Int(1, 1);
+            Vector2Int sandCell = mountainCell + Vector2Int.down;
+            mapData.SetTerrain(mountainCell, MapTerrainType.Mountain);
+
+            controller.TilemapRenderer.Render(mapData, controller.Settings);
+
+            Tilemap elevationTilemap = controller.TilemapRenderer.ElevationTilemap;
+            Assert.That(
+                elevationTilemap.GetTile(new Vector3Int(sandCell.x, sandCell.y, 0)),
+                Is.Not.Null,
+                "具有沙地底层的单元必须继续允许显示高地南侧崖面。");
+        }
+        finally
+        {
+            if (testScene.IsValid() && testScene.isLoaded)
+                EditorSceneManager.CloseScene(testScene, true);
+        }
+    }
+
+    /// <summary>
     /// 验证摄像机限制范围会把视口保持在地图边界内。
     /// </summary>
     [Test]
@@ -210,6 +287,29 @@ public class MapGenerationSceneTests
         }
 
         return count;
+    }
+
+    /// <summary>
+    /// 创建并填充指定尺寸的测试地图。
+    /// </summary>
+    /// <param name="width">测试地图宽度。</param>
+    /// <param name="height">测试地图高度。</param>
+    /// <param name="terrainType">所有单元使用的初始地形。</param>
+    /// <returns>填充完成的测试地图。</returns>
+    private static MapData CreateFilledMap(
+        int width,
+        int height,
+        MapTerrainType terrainType)
+    {
+        MapData mapData = new MapData(width, height, Vector2Int.zero);
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+                mapData.SetTerrain(new Vector2Int(x, y), terrainType);
+        }
+
+        return mapData;
     }
 
     /// <summary>

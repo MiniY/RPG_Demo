@@ -13,6 +13,7 @@ public abstract class BaseDamageable : MonoBehaviour
     private bool isDefeated; // 是否已经被击败或被摧毁。
 
     [Header("奖励映射")]
+    [FormerlySerializedAs("monsterId")]
     [SerializeField] private string damageableId; // 用于查找奖励表的唯一编号。
     [SerializeField] private DamageableDieRewardListSO rewardList; // 所有可破坏对象的奖励表列表。
     [SerializeField] private Transform dropPoint; // 奖励生成位置，为空时使用对象位置。
@@ -25,7 +26,7 @@ public abstract class BaseDamageable : MonoBehaviour
 
     private Collider2D[] colliders; // 对象身上的碰撞体。
 
-    public event Action<BaseDamageable, float, Vector3?> OnDamaged; // 对象受到伤害时触发的事件。
+    public event Action<BaseDamageable, DamageInfo> OnDamaged; // 对象受到伤害时触发的事件。
     public event Action<BaseDamageable> OnDefeated; // 对象被击败或摧毁时触发的事件。
     public float MaxHealth => maxHealth; // 对外提供最大生命值。
     public float CurrentHealth => currentHealth; // 对外提供当前生命值。
@@ -51,23 +52,22 @@ public abstract class BaseDamageable : MonoBehaviour
     // 让对象受到伤害，不提供伤害来源。
     public void TakeDamage(float damage)
     {
-        ApplyDamage(damage, null);
+        ApplyDamage(new DamageInfo(damage, null));
     }
 
-    // 让对象受到伤害，并提供伤害来源用于受击方向计算。
+    // 让对象受到伤害，并提供伤害来源用于受击方向和目标判断。
     public void TakeDamage(float damage, Transform damageSource)
     {
-        Vector3? damageSourcePosition = damageSource != null ? damageSource.position : null;
-        ApplyDamage(damage, damageSourcePosition);
+        ApplyDamage(new DamageInfo(damage, damageSource));
     }
 
     // 执行扣血逻辑，并在未被击败时发出受击事件。
-    private void ApplyDamage(float damage, Vector3? damageSourcePosition)
+    private void ApplyDamage(DamageInfo damageInfo)
     {
-        if (isDefeated || damage <= 0f)
+        if (isDefeated || damageInfo.Amount <= 0f)
             return;
 
-        currentHealth = Mathf.Max(0f, currentHealth - damage);
+        currentHealth = Mathf.Max(0f, currentHealth - damageInfo.Amount);
 
         if (currentHealth <= 0f)
         {
@@ -75,7 +75,7 @@ public abstract class BaseDamageable : MonoBehaviour
             return;
         }
 
-        OnDamaged?.Invoke(this, damage, damageSourcePosition);
+        OnDamaged?.Invoke(this, damageInfo);
     }
 
     // 处理对象被击败或被摧毁后的流程。

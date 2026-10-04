@@ -53,9 +53,9 @@ public class PlantBehaviorController : MonoBehaviour
     }
 
     // 植物受到伤害时播放整体显隐闪烁。
-    private void HandlePlantDamaged(BaseDamageable damageable, float damage, Vector3? damageSourcePosition)
+    private void HandlePlantDamaged(BaseDamageable damageable, DamageInfo damageInfo)
     {
-        if (plant == null || damageable != plant || damage <= 0f || plant.IsDefeated)
+        if (plant == null || damageable != plant || damageInfo.Amount <= 0f || plant.IsDefeated)
             return;
 
         PlayFlash();

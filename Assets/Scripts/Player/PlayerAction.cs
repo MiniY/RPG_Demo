@@ -25,6 +25,7 @@ public class PlayerAction : MonoBehaviour
     private float facingX = 1f; // 玩家横向朝向，1 向右，-1 向左。
     private int attackDirectionIndex = 1; // 攻击方向编号：Up = 0，Down = 1，Left = 2，Right = 3。
     private bool isSpeedBoostActive; // 左 Ctrl 是否处于加速状态。
+    private bool isControlLocked; // 受击击退等外部行为是否正在临时接管玩家控制。
 
     public event Action<int> OnAttackPerformed; // 玩家执行攻击时通知动画系统。
 
@@ -33,6 +34,7 @@ public class PlayerAction : MonoBehaviour
     public float FacingX => facingX; // 对外提供横向朝向。
     public bool IsMoving => moveInput.sqrMagnitude > 0.001f; // 对外提供是否正在移动。
     public int AttackDirectionIndex => attackDirectionIndex; // 对外提供当前攻击方向编号。
+    public bool IsControlLocked => isControlLocked; // 对外提供玩家移动和攻击输入是否被临时锁定。
 
     // 初始化玩家组件引用。
     private void Awake()
@@ -52,6 +54,8 @@ public class PlayerAction : MonoBehaviour
     {
         UnbindInput();
         StopAllCoroutines();
+        isControlLocked = false;
+        moveInput = Vector2.zero;
     }
 
     // 每帧读取输入，并在输入管理器延迟创建时补绑事件。
@@ -70,6 +74,12 @@ public class PlayerAction : MonoBehaviour
     // 从 GameInput 读取移动输入。
     private void ReadMoveInput()
     {
+        if (isControlLocked)
+        {
+            moveInput = Vector2.zero;
+            return;
+        }
+
         if (GameInput.Instance == null)
         {
             moveInput = Vector2.zero;
@@ -112,6 +122,14 @@ public class PlayerAction : MonoBehaviour
     // 根据当前输入移动玩家。
     private void Move()
     {
+        if (isControlLocked)
+        {
+            if (rb != null)
+                rb.velocity = Vector2.zero;
+
+            return;
+        }
+
         float appliedMoveSpeed = moveSpeed + (isSpeedBoostActive ? speedBoostAmount : 0f);
         Vector2 nextPosition = rb.position + moveInput * appliedMoveSpeed * Time.fixedDeltaTime;
 
@@ -193,6 +211,9 @@ public class PlayerAction : MonoBehaviour
     // 处理玩家按下攻击键。
     private void HandleBattlePressed()
     {
+        if (isControlLocked)
+            return;
+
         // 攻击开始时立即停止冲刺，避免行为状态和输入状态不一致。
         gameInput?.CancelControlState();
         ResolvePlayerStats();
@@ -215,6 +236,21 @@ public class PlayerAction : MonoBehaviour
         OnAttackPerformed?.Invoke(preparedDirectionIndex);
         StartCoroutine(DealDamageAfterDelay(attackTarget));
         preparedAttackTarget = null;
+    }
+
+    // 设置玩家控制锁；锁定期间普通移动和攻击输入不会覆盖外部击退位移。
+    public void SetControlLocked(bool isLocked)
+    {
+        isControlLocked = isLocked;
+
+        if (!isControlLocked)
+            return;
+
+        moveInput = Vector2.zero;
+        gameInput?.CancelControlState();
+
+        if (rb != null)
+            rb.velocity = Vector2.zero;
     }
 
     // 等待攻击命中延迟后再结算伤害。

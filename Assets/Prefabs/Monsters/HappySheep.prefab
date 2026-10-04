@@ -133,7 +133,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1667176062245790154}
   - component: {fileID: 6264173753987898252}
-  - component: {fileID: 5982395592746697261}
   - component: {fileID: 1437032503070282723}
   - component: {fileID: 2423355493062762194}
   m_Layer: 6
@@ -205,25 +204,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.6591431, y: 0.49893367}
   m_EdgeRadius: 0
---- !u!114 &5982395592746697261
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4514154387538616384}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 84164bfdf7e1249449962d1081a34ae4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
-  monsterId: Sheep
-  rewardList: {fileID: 11400000, guid: 870207e83732c634b937c13f2b3f8a1b, type: 2}
-  dropPoint: {fileID: 9118154096967271353}
-  dropScatterRadius: 0.35
-  poolPrefab: {fileID: 4514154387538616384}
-  returnToPoolDelay: 0.5
 --- !u!114 &1437032503070282723
 MonoBehaviour:
   m_ObjectHideFlags: 0

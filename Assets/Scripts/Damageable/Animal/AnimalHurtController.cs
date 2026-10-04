@@ -42,13 +42,13 @@ public class AnimalHurtController : MonoBehaviour
     }
 
     // 动物受到伤害时启动受击位移。
-    private void HandleAnimalDamaged(BaseDamageable damageable, float damage, Vector3? damageSourcePosition)
+    private void HandleAnimalDamaged(BaseDamageable damageable, DamageInfo damageInfo)
     {
-        if (animal == null || damageable != animal || damage <= 0f || animal.IsDefeated)
+        if (animal == null || damageable != animal || damageInfo.Amount <= 0f || animal.IsDefeated)
             return;
 
-        if (damageSourcePosition.HasValue)
-            PlayHurt(damageSourcePosition.Value);
+        if (damageInfo.SourcePosition.HasValue)
+            PlayHurt(damageInfo.SourcePosition.Value);
         else
             PlayHurt(transform.position + Vector3.right);
     }

@@ -97,6 +97,63 @@
 - 本地编译检查通过。
 - 本条记录随本次提交一起推送到远程仓库。
 
+## 2026-10-04
+
+### Implement monster AI and damage reaction system（实现怪物 AI 与伤害受击系统）
+
+- Commit Hash（提交编号）：本条记录随本提交一起生成，具体编号见 Git 历史记录
+- Branch（分支）：`main（主分支）`
+- Remote（远程仓库）：`origin/main（远程主分支）`
+- Push Status（推送状态）：随本提交推送
+
+#### Changed Files（改动文件）
+
+- `Assets/Scripts/Damageable/DamageInfo.cs（伤害信息数据）` 及其 `.meta` 元数据
+- `Assets/Scripts/Damageable/BaseDamageable.cs（可受伤对象基类）`
+- `Assets/Scripts/Damageable/Animal/AnimalHurtController.cs（动物受击控制器）`
+- `Assets/Scripts/Damageable/Plant/PlantBehaviorController.cs（植物行为控制器）`
+- `Assets/Scripts/Damageable/Monster/BaseMonster.cs（怪物基类）`
+- `Assets/Scripts/Damageable/Monster/BaseMonsterState.cs（怪物状态基类）` 及其 `.meta` 元数据
+- `Assets/Scripts/Damageable/Monster/MonsterStateType.cs（怪物状态类型）` 及其 `.meta` 元数据
+- `Assets/Scripts/Damageable/Monster/MonsterAIController.cs（怪物 AI 控制器）` 及其 `.meta` 元数据
+- `Assets/Scripts/Damageable/Monster/MonsterPerceptionController.cs（怪物感知控制器）` 及其 `.meta` 元数据
+- `Assets/Scripts/Damageable/Monster/MonsterMovementController.cs（怪物移动控制器）` 及其 `.meta` 元数据
+- `Assets/Scripts/Damageable/Monster/MonsterAttackController.cs（怪物攻击控制器）` 及其 `.meta` 元数据
+- `Assets/Scripts/Damageable/Monster/MonsterAnimationController.cs（怪物动画控制器）`
+- `Assets/Scripts/Damageable/Monster/MonsterHurtController.cs（怪物受击控制器）`
+- `Assets/Scripts/Damageable/Monster/MonsterPatrolState.cs（怪物巡逻状态）`、`MonsterChaseState.cs（怪物追击状态）`、`MonsterSearchState.cs（怪物搜索状态）`、`MonsterReturnState.cs（怪物返回状态）`、`MonsterAttackState.cs（怪物攻击状态）` 及其 `.meta` 元数据
+- `Assets/Scripts/Player/PlayerDamageController.cs（玩家造成伤害控制器）` 及其 `.meta` 元数据
+- `Assets/Scripts/Player/PlayerHurtController.cs（玩家受击控制器）` 及其 `.meta` 元数据
+- `Assets/Scripts/Player/PlayerAction.cs（玩家行为脚本）`
+- `Assets/Prefabs/Monsters/Torch_Blue.prefab（蓝色火炬敌人预制体）` 及其 `.meta` 元数据
+- `Assets/Prefabs/Monsters/HappySheep.prefab（快乐绵羊预制体）`
+- `Assets/Prefabs/Players/Warrior_Blue.prefab（蓝色战士玩家预制体）`
+- `Assets/Scenes/SampleScene.unity（示例场景）`
+- `Assets/Animations/Monsters（怪物动画资源目录）` 及其 `.meta` 元数据
+- `Assets/_Resources/HomeMadeResources（自制资源目录）` 及其 `.meta` 元数据
+
+#### Summary（内容总结）
+
+- 新增 `DamageInfo（伤害信息）`，统一描述伤害数值、伤害来源及后续受击处理所需的数据，减少玩家、怪物和可破坏对象之间重复定义伤害参数的情况。
+- 扩展 `BaseDamageable（可受伤对象基类）`，并更新动物、植物、怪物和玩家相关控制器，使不同类型对象可以接入统一的 Damageable（可受伤对象）处理流程。
+- 新增 `MonsterAIController（怪物 AI 控制器）` 和 `MonsterStateType（怪物状态类型）`，以状态机（State Machine，状态机）组织 Patrol（巡逻）、Chase（追击）、Search（搜索）、Return（返回）和 Attack（攻击）等行为状态。
+- 将怪物行为职责拆分为 `MonsterPerceptionController（感知控制器）`、`MonsterMovementController（移动控制器）`、`MonsterAttackController（攻击控制器）` 和 `MonsterAnimationController（动画控制器）`，让行为决策、移动执行、攻击执行和动画表现彼此独立，降低耦合度。
+- 新增 `PlayerDamageController（玩家造成伤害控制器）` 和 `PlayerHurtController（玩家受击控制器）`，更新 `PlayerAction（玩家行为）`，接入玩家攻击、伤害判定和受击反馈流程。
+- 更新 `HappySheep（快乐绵羊）`、`Warrior_Blue（蓝色战士）` 和 `SampleScene（示例场景）` 的组件、引用和行为配置，并新增 `Torch_Blue（蓝色火炬敌人）` 预制体及怪物动画资源。
+
+#### Impact（影响范围）
+
+- 影响玩家战斗、怪物 AI、动物受击、植物行为、伤害传递、受击反馈、敌人预制体和示例场景配置。
+- 怪物的 Animation Control（动画控制逻辑）与 Behavior Control（行为控制逻辑）通过控制器职责分离，后续可以独立调整动画状态和 AI 决策，减少互相修改造成的回归风险。
+- 状态机为后续扩展警戒、受击硬直、死亡、技能和更复杂的敌人行为提供了统一扩展位置。
+
+#### Verification（验证结果）
+
+- 已读取并核对工作区状态，确认本次改动包含 C# 脚本、动画资源、预制体和场景配置。
+- `learn/tilemap-minimap/course-state.md（学习进度记录）` 及 `learn/（学习记录目录）` 保持在工作区中，不纳入本次提交。
+- 本次尚未在 Unity 编辑器中运行场景或执行 Play Mode（播放模式）测试；提交前仅进行 Git 文件范围核对。
+- 本条记录随本次提交一起推送到远程仓库。
+
 ## 2026-09-26
 
 ### Add merchant shop and persistent save system（新增商人商店与持久化存档系统）

@@ -11,12 +11,16 @@ public class MonsterHurtController : MonoBehaviour
     [SerializeField, Min(0.01f)] private float knockbackReturnDuration = 0.08f; // 回到原位的时间。
 
     private BaseMonster baseMonster; // 怪物逻辑组件。
+    private MonsterMovementController movementController; // 怪物普通移动控制器。
+    private Rigidbody2D body; // 执行受击位移的二维刚体。
     private Coroutine hurtCoroutine; // 当前受击协程。
 
     // 初始化怪物逻辑组件引用。
     private void Awake()
     {
         baseMonster = GetComponent<BaseMonster>();
+        movementController = GetComponent<MonsterMovementController>();
+        body = GetComponent<Rigidbody2D>();
     }
 
     // 启用时监听怪物受伤和被击败事件。
@@ -42,21 +46,21 @@ public class MonsterHurtController : MonoBehaviour
     }
 
     // 怪物受到伤害时启动受击位移。
-    private void HandleMonsterDamaged(BaseMonster monster, float damage, Vector3? damageSourcePosition)
+    private void HandleMonsterDamaged(BaseDamageable damageable, DamageInfo damageInfo)
     {
-        if (monster == null || monster != baseMonster || damage <= 0f || monster.IsDefeated)
+        if (baseMonster == null || damageable != baseMonster || damageInfo.Amount <= 0f || baseMonster.IsDefeated)
             return;
 
-        if (damageSourcePosition.HasValue)
-            PlayHurt(damageSourcePosition.Value);
+        if (damageInfo.SourcePosition.HasValue)
+            PlayHurt(damageInfo.SourcePosition.Value);
         else
             PlayHurt(transform.position + Vector3.right);
     }
 
     // 怪物被击败时停止普通受击位移，避免和死亡表现冲突。
-    private void HandleMonsterDefeated(BaseMonster monster)
+    private void HandleMonsterDefeated(BaseDamageable damageable)
     {
-        if (monster == null || monster != baseMonster)
+        if (baseMonster == null || damageable != baseMonster)
             return;
 
         StopHurtCoroutine();
@@ -69,35 +73,36 @@ public class MonsterHurtController : MonoBehaviour
             return;
 
         StopHurtCoroutine();
+        movementController?.SetMovementLocked(true);
         hurtCoroutine = StartCoroutine(PlayHurtCoroutine(damageSourcePosition));
     }
 
     // 执行后退再回到原位的完整位移过程。
     private IEnumerator PlayHurtCoroutine(Vector3 damageSourcePosition)
     {
-        Vector3 startPosition = transform.position; // 本次受击开始时的位置。
-        Vector3 knockbackDirection = (startPosition - damageSourcePosition);
-        knockbackDirection.z = 0f;
+        Vector2 startPosition = body != null ? body.position : (Vector2)transform.position; // 本次受击开始时的位置。
+        Vector2 knockbackDirection = startPosition - (Vector2)damageSourcePosition;
 
         if (knockbackDirection.sqrMagnitude <= 0.0001f)
             knockbackDirection = Vector3.left;
 
         knockbackDirection.Normalize();
 
-        Vector3 knockbackPosition = startPosition + knockbackDirection * knockbackDistance;
+        Vector2 knockbackPosition = startPosition + knockbackDirection * knockbackDistance;
 
         yield return MoveToPosition(startPosition, knockbackPosition, knockbackOutDuration);
         yield return MoveToPosition(knockbackPosition, startPosition, knockbackReturnDuration);
 
         hurtCoroutine = null;
+        movementController?.SetMovementLocked(false);
     }
 
     // 在指定时间内把怪物从一个位置移动到另一个位置。
-    private IEnumerator MoveToPosition(Vector3 from, Vector3 to, float duration)
+    private IEnumerator MoveToPosition(Vector2 from, Vector2 to, float duration)
     {
         if (duration <= 0f)
         {
-            transform.position = to;
+            SetPosition(to);
             yield break;
         }
 
@@ -105,14 +110,24 @@ public class MonsterHurtController : MonoBehaviour
 
         while (elapsed < duration)
         {
-            elapsed += Time.deltaTime;
+            yield return new WaitForFixedUpdate();
+
+            elapsed += Time.fixedDeltaTime;
             float progress = Mathf.Clamp01(elapsed / duration);
             progress = progress * progress * (3f - 2f * progress); // SmoothStep，让位移更顺。
-            transform.position = Vector3.LerpUnclamped(from, to, progress);
-            yield return null;
+            SetPosition(Vector2.LerpUnclamped(from, to, progress));
         }
 
-        transform.position = to;
+        SetPosition(to);
+    }
+
+    // 使用二维刚体设置位置，没有刚体时才回退为修改 Transform。
+    private void SetPosition(Vector2 position)
+    {
+        if (body != null)
+            body.MovePosition(position);
+        else
+            transform.position = new Vector3(position.x, position.y, transform.position.z);
     }
 
     // 停止当前正在播放的受击位移。
@@ -123,5 +138,7 @@ public class MonsterHurtController : MonoBehaviour
             StopCoroutine(hurtCoroutine);
             hurtCoroutine = null;
         }
+
+        movementController?.SetMovementLocked(false);
     }
 }

@@ -246,6 +246,26 @@ public class RandomMapGeneratorTests
     }
 
     /// <summary>
+    /// 验证用户报告的地图中，每条相邻可行走连接都属于至少一个完整的 2×2 净空块。
+    /// </summary>
+    /// <param name="seed">用户观察到错位单格通路的 Seed（种子）。</param>
+    [TestCase(613580675)]
+    [TestCase(839235445)]
+    public void ReportedSeedsContainNoUnsupportedWalkableEdges(int seed)
+    {
+        settings.seed = seed;
+
+        MapData map = RandomMapGenerator.Generate(settings);
+        List<string> violations = FindUnsupportedWalkableEdges(map);
+
+        Assert.That(
+            violations,
+            Is.Empty,
+            $"Seed={seed} 存在不属于任何 2×2 净空块的可行走连接：\n" +
+            string.Join("\n", violations));
+    }
+
+    /// <summary>
     /// 验证一组代表性 Seed（种子）同时满足可见地形嵌套和最小通路宽度约束。
     /// </summary>
     /// <param name="seed">本次回归测试使用的固定种子。</param>
@@ -275,6 +295,26 @@ public class RandomMapGeneratorTests
             Is.Empty,
             $"Seed={seed} 生成了现有玩家碰撞体无法穿过的单格通路：\n" +
             string.Join("\n", passageViolations));
+    }
+
+    /// <summary>
+    /// 扫描一组固定 Seed（种子），排查未被单个报告样本覆盖的错位可行走连接。
+    /// </summary>
+    [Test]
+    public void SeedSweepContainsNoUnsupportedWalkableEdges()
+    {
+        for (int index = 0; index < 64; index++)
+        {
+            settings.seed = unchecked(index * 7919 - 104729);
+            MapData map = RandomMapGenerator.Generate(settings);
+            List<string> violations = FindUnsupportedWalkableEdges(map);
+
+            Assert.That(
+                violations,
+                Is.Empty,
+                $"Seed={settings.seed} 生成了不属于任何 2×2 净空块的可行走连接：\n" +
+                string.Join("\n", violations));
+        }
     }
 
     /// <summary>
@@ -364,6 +404,140 @@ public class RandomMapGeneratorTests
         }
 
         return violations;
+    }
+
+    /// <summary>
+    /// 查找没有任何一侧形成完整 2×2 净空块的横向或竖向可行走连接。
+    /// </summary>
+    /// <param name="map">待检查的最终地图。</param>
+    /// <returns>全部错位单格连接的诊断文本。</returns>
+    private static List<string> FindUnsupportedWalkableEdges(MapData map)
+    {
+        List<string> violations = new List<string>();
+
+        for (int x = map.Origin.x; x < map.Origin.x + map.Width; x++)
+        {
+            for (int y = map.Origin.y; y < map.Origin.y + map.Height; y++)
+            {
+                Vector2Int cell = new Vector2Int(x, y);
+                if (!map.IsWalkable(cell))
+                    continue;
+
+                Vector2Int rightCell = cell + Vector2Int.right;
+                if (IsWalkableInside(map, rightCell))
+                {
+                    bool supportedAbove =
+                        IsWalkableInside(map, cell + Vector2Int.up) &&
+                        IsWalkableInside(map, rightCell + Vector2Int.up);
+                    bool supportedBelow =
+                        IsWalkableInside(map, cell + Vector2Int.down) &&
+                        IsWalkableInside(map, rightCell + Vector2Int.down);
+                    if (!supportedAbove && !supportedBelow)
+                    {
+                        violations.Add(
+                            $"横向连接 {cell} -> {rightCell} 缺少 2×2 净空块。\n" +
+                            DescribeNeighborhood(map, cell, rightCell));
+                    }
+                }
+
+                Vector2Int upperCell = cell + Vector2Int.up;
+                if (IsWalkableInside(map, upperCell))
+                {
+                    bool supportedLeft =
+                        IsWalkableInside(map, cell + Vector2Int.left) &&
+                        IsWalkableInside(map, upperCell + Vector2Int.left);
+                    bool supportedRight =
+                        IsWalkableInside(map, cell + Vector2Int.right) &&
+                        IsWalkableInside(map, upperCell + Vector2Int.right);
+                    if (!supportedLeft && !supportedRight)
+                    {
+                        violations.Add(
+                            $"竖向连接 {cell} -> {upperCell} 缺少 2×2 净空块。\n" +
+                            DescribeNeighborhood(map, cell, upperCell));
+                    }
+                }
+            }
+        }
+
+        return violations;
+    }
+
+    /// <summary>
+    /// 判断指定坐标位于地图内且对应地形可行走。
+    /// </summary>
+    /// <param name="map">待查询的地图。</param>
+    /// <param name="cell">待查询的网格坐标。</param>
+    /// <returns>坐标有效且可行走时返回 true。</returns>
+    private static bool IsWalkableInside(MapData map, Vector2Int cell)
+    {
+        return map.IsInside(cell) && map.IsWalkable(cell);
+    }
+
+    /// <summary>
+    /// 输出目标连接周围的五乘五地形，用于定位错位通路形态。
+    /// </summary>
+    /// <param name="map">待查询的地图。</param>
+    /// <param name="firstCell">连接的第一个单元。</param>
+    /// <param name="secondCell">连接的第二个单元。</param>
+    /// <returns>包含坐标、可行走状态和地形缩写的诊断文本。</returns>
+    private static string DescribeNeighborhood(
+        MapData map,
+        Vector2Int firstCell,
+        Vector2Int secondCell)
+    {
+        int minimumX = Mathf.Min(firstCell.x, secondCell.x) - 2;
+        int maximumX = Mathf.Max(firstCell.x, secondCell.x) + 2;
+        int minimumY = Mathf.Min(firstCell.y, secondCell.y) - 2;
+        int maximumY = Mathf.Max(firstCell.y, secondCell.y) + 2;
+        List<string> rows = new List<string>();
+
+        for (int y = maximumY; y >= minimumY; y--)
+        {
+            List<string> columns = new List<string>();
+            for (int x = minimumX; x <= maximumX; x++)
+            {
+                Vector2Int cell = new Vector2Int(x, y);
+                if (!map.IsInside(cell))
+                {
+                    columns.Add("OUT");
+                    continue;
+                }
+
+                MapTerrainType terrainType = map.GetCell(cell).terrainType;
+                string marker = cell == firstCell || cell == secondCell ? "*" : " ";
+                columns.Add($"{marker}{GetTerrainAbbreviation(terrainType)}");
+            }
+
+            rows.Add($"y={y}: " + string.Join(" ", columns));
+        }
+
+        return string.Join("\n", rows);
+    }
+
+    /// <summary>
+    /// 获取诊断输出使用的地形缩写。
+    /// </summary>
+    /// <param name="terrainType">待转换的地形类型。</param>
+    /// <returns>便于阅读的三字符地形缩写。</returns>
+    private static string GetTerrainAbbreviation(MapTerrainType terrainType)
+    {
+        switch (terrainType)
+        {
+            case MapTerrainType.DeepWater:
+                return "DWT";
+            case MapTerrainType.ShallowWater:
+                return "SWT";
+            case MapTerrainType.Sand:
+                return "SND";
+            case MapTerrainType.Path:
+                return "PTH";
+            case MapTerrainType.Forest:
+                return "FOR";
+            case MapTerrainType.Mountain:
+                return "MTN";
+            default:
+                return "GRS";
+        }
     }
 
     /// <summary>

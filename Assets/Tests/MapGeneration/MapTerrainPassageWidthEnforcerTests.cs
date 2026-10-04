@@ -22,7 +22,8 @@ public class MapTerrainPassageWidthEnforcerTests
             2,
             1);
 
-        Assert.That(changedCellCount, Is.EqualTo(3));
+        Assert.That(changedCellCount, Is.GreaterThan(0));
+        AssertAllWalkableEdgesHaveClearance(mapData);
         for (int y = 3; y <= 5; y++)
         {
             Assert.That(
@@ -50,7 +51,8 @@ public class MapTerrainPassageWidthEnforcerTests
             2,
             1);
 
-        Assert.That(changedCellCount, Is.EqualTo(3));
+        Assert.That(changedCellCount, Is.GreaterThan(0));
+        AssertAllWalkableEdgesHaveClearance(mapData);
         for (int x = 3; x <= 5; x++)
         {
             Assert.That(
@@ -60,6 +62,60 @@ public class MapTerrainPassageWidthEnforcerTests
                 mapData.GetCell(new Vector2Int(x, 4)).terrainType,
                 Is.EqualTo(MapTerrainType.Sand));
         }
+    }
+
+    /// <summary>
+    /// 验证上下区域错位连接形成的 S 形夹点会获得完整的 2×2 净空块。
+    /// </summary>
+    [Test]
+    public void StaggeredVerticalPassageReceivesTwoByTwoClearance()
+    {
+        MapData mapData = CreateFilledMap(9, 9, MapTerrainType.Mountain);
+        FillRectangle(mapData, 1, 3, 5, 7, MapTerrainType.Grass);
+        FillRectangle(mapData, 4, 6, 1, 3, MapTerrainType.Grass);
+        Vector2Int leftConnector = new Vector2Int(3, 4);
+        Vector2Int rightConnector = new Vector2Int(4, 4);
+        mapData.SetTerrain(leftConnector, MapTerrainType.Grass);
+        mapData.SetTerrain(rightConnector, MapTerrainType.Grass);
+
+        Assert.That(
+            HasClearanceSupport(mapData, leftConnector, rightConnector),
+            Is.False,
+            "测试夹具必须先形成用户报告的错位单格连接。");
+
+        MapTerrainPassageWidthEnforcer.Enforce(mapData, 2, 1);
+
+        Assert.That(
+            HasClearanceSupport(mapData, leftConnector, rightConnector),
+            Is.True,
+            "错位连接修复后必须属于至少一个完整的 2×2 净空块。");
+    }
+
+    /// <summary>
+    /// 验证左右区域错位连接形成的横向旋转形态也会获得完整的 2×2 净空块。
+    /// </summary>
+    [Test]
+    public void StaggeredHorizontalPassageReceivesTwoByTwoClearance()
+    {
+        MapData mapData = CreateFilledMap(9, 9, MapTerrainType.Mountain);
+        FillRectangle(mapData, 1, 3, 1, 3, MapTerrainType.Sand);
+        FillRectangle(mapData, 5, 7, 4, 6, MapTerrainType.Sand);
+        Vector2Int lowerConnector = new Vector2Int(4, 3);
+        Vector2Int upperConnector = new Vector2Int(4, 4);
+        mapData.SetTerrain(lowerConnector, MapTerrainType.Sand);
+        mapData.SetTerrain(upperConnector, MapTerrainType.Sand);
+
+        Assert.That(
+            HasClearanceSupport(mapData, lowerConnector, upperConnector),
+            Is.False,
+            "测试夹具必须先形成旋转后的错位单格连接。");
+
+        MapTerrainPassageWidthEnforcer.Enforce(mapData, 2, 1);
+
+        Assert.That(
+            HasClearanceSupport(mapData, lowerConnector, upperConnector),
+            Is.True,
+            "旋转后的错位连接修复后必须属于完整的 2×2 净空块。");
     }
 
     /// <summary>
@@ -97,7 +153,8 @@ public class MapTerrainPassageWidthEnforcerTests
             2,
             2);
 
-        Assert.That(changedCellCount, Is.EqualTo(2));
+        Assert.That(changedCellCount, Is.GreaterThan(0));
+        AssertAllWalkableEdgesHaveClearance(mapData);
         for (int y = 2; y <= 5; y++)
         {
             Assert.That(
@@ -198,6 +255,104 @@ public class MapTerrainPassageWidthEnforcerTests
     {
         for (int x = startX; x <= endX; x++)
             mapData.SetTerrain(new Vector2Int(x, y), terrainType);
+    }
+
+    /// <summary>
+    /// 用指定地形填充闭区间矩形。
+    /// </summary>
+    /// <param name="mapData">待修改的地图数据。</param>
+    /// <param name="minimumX">矩形最小横坐标。</param>
+    /// <param name="maximumX">矩形最大横坐标。</param>
+    /// <param name="minimumY">矩形最小纵坐标。</param>
+    /// <param name="maximumY">矩形最大纵坐标。</param>
+    /// <param name="terrainType">矩形使用的地形类型。</param>
+    private static void FillRectangle(
+        MapData mapData,
+        int minimumX,
+        int maximumX,
+        int minimumY,
+        int maximumY,
+        MapTerrainType terrainType)
+    {
+        for (int x = minimumX; x <= maximumX; x++)
+        {
+            for (int y = minimumY; y <= maximumY; y++)
+                mapData.SetTerrain(new Vector2Int(x, y), terrainType);
+        }
+    }
+
+    /// <summary>
+    /// 判断两个相邻单元是否至少在一侧形成完整的 2×2 净空块。
+    /// </summary>
+    /// <param name="mapData">待查询的地图数据。</param>
+    /// <param name="firstCell">连接的第一个单元。</param>
+    /// <param name="secondCell">连接的第二个单元。</param>
+    /// <returns>连接拥有完整净空块时返回 true。</returns>
+    private static bool HasClearanceSupport(
+        MapData mapData,
+        Vector2Int firstCell,
+        Vector2Int secondCell)
+    {
+        Vector2Int delta = secondCell - firstCell;
+        Assert.That(
+            Mathf.Abs(delta.x) + Mathf.Abs(delta.y),
+            Is.EqualTo(1),
+            "净空检查只接受横向或竖向相邻单元。");
+
+        Vector2Int firstSide = delta.x != 0
+            ? Vector2Int.up
+            : Vector2Int.right;
+        Vector2Int secondSide = -firstSide;
+        return IsWalkableInside(mapData, firstCell + firstSide) &&
+               IsWalkableInside(mapData, secondCell + firstSide) ||
+               IsWalkableInside(mapData, firstCell + secondSide) &&
+               IsWalkableInside(mapData, secondCell + secondSide);
+    }
+
+    /// <summary>
+    /// 验证地图中的每条轴向可行走连接都拥有完整的 2×2 净空块。
+    /// </summary>
+    /// <param name="mapData">待检查的地图数据。</param>
+    private static void AssertAllWalkableEdgesHaveClearance(MapData mapData)
+    {
+        for (int x = mapData.Origin.x; x < mapData.Origin.x + mapData.Width; x++)
+        {
+            for (int y = mapData.Origin.y; y < mapData.Origin.y + mapData.Height; y++)
+            {
+                Vector2Int cell = new Vector2Int(x, y);
+                if (!mapData.IsWalkable(cell))
+                    continue;
+
+                Vector2Int rightCell = cell + Vector2Int.right;
+                if (IsWalkableInside(mapData, rightCell))
+                {
+                    Assert.That(
+                        HasClearanceSupport(mapData, cell, rightCell),
+                        Is.True,
+                        $"横向连接 {cell} -> {rightCell} 缺少 2×2 净空块。");
+                }
+
+                Vector2Int upperCell = cell + Vector2Int.up;
+                if (IsWalkableInside(mapData, upperCell))
+                {
+                    Assert.That(
+                        HasClearanceSupport(mapData, cell, upperCell),
+                        Is.True,
+                        $"竖向连接 {cell} -> {upperCell} 缺少 2×2 净空块。");
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// 判断指定坐标位于地图内且可行走。
+    /// </summary>
+    /// <param name="mapData">待查询的地图数据。</param>
+    /// <param name="cell">待查询的网格坐标。</param>
+    /// <returns>坐标有效且可行走时返回 true。</returns>
+    private static bool IsWalkableInside(MapData mapData, Vector2Int cell)
+    {
+        return mapData.IsInside(cell) && mapData.IsWalkable(cell);
     }
 
     /// <summary>

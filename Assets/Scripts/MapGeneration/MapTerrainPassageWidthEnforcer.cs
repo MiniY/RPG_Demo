@@ -76,6 +76,11 @@ public static class MapTerrainPassageWidthEnforcer
                 }
             }
 
+            changedCellCount += EnforceWalkableEdgeClearance(
+                mapData,
+                excludedBorderSize,
+                ref changedInPass);
+
             if (passCount > maximumPassCount && changedInPass)
             {
                 throw new InvalidOperationException(
@@ -85,6 +90,276 @@ public static class MapTerrainPassageWidthEnforcer
         while (changedInPass);
 
         return changedCellCount;
+    }
+
+    /// <summary>
+    /// 检查每条横向和竖向可行走连接，保证连接至少属于一个完整的 2×2 净空块。
+    /// </summary>
+    /// <param name="mapData">待修正的地图数据。</param>
+    /// <param name="excludedBorderSize">不得侵入的地图边界保护带宽度。</param>
+    /// <param name="changedInPass">本次扫描是否发生过修改。</param>
+    /// <returns>本次扫描新增的可行走单元数量。</returns>
+    private static int EnforceWalkableEdgeClearance(
+        MapData mapData,
+        int excludedBorderSize,
+        ref bool changedInPass)
+    {
+        int changedCellCount = 0;
+
+        for (int x = mapData.Origin.x; x < mapData.Origin.x + mapData.Width; x++)
+        {
+            for (int y = mapData.Origin.y; y < mapData.Origin.y + mapData.Height; y++)
+            {
+                Vector2Int cell = new Vector2Int(x, y);
+                if (!mapData.IsWalkable(cell))
+                    continue;
+
+                Vector2Int rightCell = cell + Vector2Int.right;
+                if (mapData.IsInside(rightCell) && mapData.IsWalkable(rightCell))
+                {
+                    changedCellCount += EnsureEdgeClearance(
+                        mapData,
+                        cell,
+                        rightCell,
+                        Vector2Int.down,
+                        Vector2Int.up,
+                        excludedBorderSize,
+                        ref changedInPass);
+                }
+
+                Vector2Int upperCell = cell + Vector2Int.up;
+                if (mapData.IsInside(upperCell) && mapData.IsWalkable(upperCell))
+                {
+                    changedCellCount += EnsureEdgeClearance(
+                        mapData,
+                        cell,
+                        upperCell,
+                        Vector2Int.left,
+                        Vector2Int.right,
+                        excludedBorderSize,
+                        ref changedInPass);
+                }
+            }
+        }
+
+        return changedCellCount;
+    }
+
+    /// <summary>
+    /// 为一条可行走连接选择一侧，并补齐这一侧缺失的 2×2 净空单元。
+    /// </summary>
+    /// <param name="mapData">待修正的地图数据。</param>
+    /// <param name="firstCell">连接的第一个单元。</param>
+    /// <param name="secondCell">连接的第二个单元。</param>
+    /// <param name="negativeSide">连接截面的负方向。</param>
+    /// <param name="positiveSide">连接截面的正方向。</param>
+    /// <param name="excludedBorderSize">不得侵入的地图边界保护带宽度。</param>
+    /// <param name="changedInPass">本次扫描是否发生过修改。</param>
+    /// <returns>本次补齐的可行走单元数量。</returns>
+    private static int EnsureEdgeClearance(
+        MapData mapData,
+        Vector2Int firstCell,
+        Vector2Int secondCell,
+        Vector2Int negativeSide,
+        Vector2Int positiveSide,
+        int excludedBorderSize,
+        ref bool changedInPass)
+    {
+        if (HasCompleteClearanceSide(
+                mapData,
+                firstCell,
+                secondCell,
+                negativeSide) ||
+            HasCompleteClearanceSide(
+                mapData,
+                firstCell,
+                secondCell,
+                positiveSide))
+        {
+            return 0;
+        }
+
+        if (!TryChooseClearanceSide(
+                mapData,
+                firstCell,
+                secondCell,
+                negativeSide,
+                positiveSide,
+                excludedBorderSize,
+                out Vector2Int chosenSide))
+        {
+            return 0;
+        }
+
+        Vector2Int firstExpansionCell = firstCell + chosenSide;
+        Vector2Int secondExpansionCell = secondCell + chosenSide;
+        MapTerrainType passageTerrain = GetPassageTerrain(
+            mapData.GetCell(firstCell).terrainType,
+            mapData.GetCell(secondCell).terrainType);
+        int changedCellCount = 0;
+
+        if (!mapData.IsWalkable(firstExpansionCell))
+        {
+            mapData.SetTerrain(firstExpansionCell, passageTerrain);
+            changedCellCount++;
+        }
+
+        if (!mapData.IsWalkable(secondExpansionCell))
+        {
+            mapData.SetTerrain(secondExpansionCell, passageTerrain);
+            changedCellCount++;
+        }
+
+        if (changedCellCount > 0)
+            changedInPass = true;
+
+        return changedCellCount;
+    }
+
+    /// <summary>
+    /// 判断一条连接在指定侧是否已经形成完整的 2×2 净空块。
+    /// </summary>
+    /// <param name="mapData">待查询的地图数据。</param>
+    /// <param name="firstCell">连接的第一个单元。</param>
+    /// <param name="secondCell">连接的第二个单元。</param>
+    /// <param name="side">需要检查的连接截面方向。</param>
+    /// <returns>该侧两个截面单元都可行走时返回 true。</returns>
+    private static bool HasCompleteClearanceSide(
+        MapData mapData,
+        Vector2Int firstCell,
+        Vector2Int secondCell,
+        Vector2Int side)
+    {
+        return mapData.IsInside(firstCell + side) &&
+               mapData.IsInside(secondCell + side) &&
+               mapData.IsWalkable(firstCell + side) &&
+               mapData.IsWalkable(secondCell + side);
+    }
+
+    /// <summary>
+    /// 在连接两侧选择可补齐且代价较低的一侧。
+    /// </summary>
+    /// <param name="mapData">待查询的地图数据。</param>
+    /// <param name="firstCell">连接的第一个单元。</param>
+    /// <param name="secondCell">连接的第二个单元。</param>
+    /// <param name="negativeSide">连接截面的负方向。</param>
+    /// <param name="positiveSide">连接截面的正方向。</param>
+    /// <param name="excludedBorderSize">不得侵入的地图边界保护带宽度。</param>
+    /// <param name="chosenSide">选出的连接截面方向。</param>
+    /// <returns>存在可补齐的一侧时返回 true。</returns>
+    private static bool TryChooseClearanceSide(
+        MapData mapData,
+        Vector2Int firstCell,
+        Vector2Int secondCell,
+        Vector2Int negativeSide,
+        Vector2Int positiveSide,
+        int excludedBorderSize,
+        out Vector2Int chosenSide)
+    {
+        bool canUseNegative = TryEvaluateClearanceSide(
+            mapData,
+            firstCell,
+            secondCell,
+            negativeSide,
+            excludedBorderSize,
+            out int negativeMissingCount,
+            out int negativePriority);
+        bool canUsePositive = TryEvaluateClearanceSide(
+            mapData,
+            firstCell,
+            secondCell,
+            positiveSide,
+            excludedBorderSize,
+            out int positiveMissingCount,
+            out int positivePriority);
+
+        if (!canUseNegative && !canUsePositive)
+        {
+            chosenSide = default;
+            return false;
+        }
+
+        if (canUseNegative && !canUsePositive)
+        {
+            chosenSide = negativeSide;
+            return true;
+        }
+
+        if (!canUseNegative)
+        {
+            chosenSide = positiveSide;
+            return true;
+        }
+
+        bool chooseNegative =
+            negativeMissingCount < positiveMissingCount ||
+            (negativeMissingCount == positiveMissingCount &&
+             negativePriority <= positivePriority);
+        chosenSide = chooseNegative ? negativeSide : positiveSide;
+        return true;
+    }
+
+    /// <summary>
+    /// 评估一侧的两个单元是否可以被补齐，并计算修改代价。
+    /// </summary>
+    /// <param name="mapData">待查询的地图数据。</param>
+    /// <param name="firstCell">连接的第一个单元。</param>
+    /// <param name="secondCell">连接的第二个单元。</param>
+    /// <param name="side">连接截面方向。</param>
+    /// <param name="excludedBorderSize">不得侵入的地图边界保护带宽度。</param>
+    /// <param name="missingCount">需要新增的可行走单元数量。</param>
+    /// <param name="priority">候选地形的修改优先级。</param>
+    /// <returns>该侧可在不侵入边界的前提下补齐时返回 true。</returns>
+    private static bool TryEvaluateClearanceSide(
+        MapData mapData,
+        Vector2Int firstCell,
+        Vector2Int secondCell,
+        Vector2Int side,
+        int excludedBorderSize,
+        out int missingCount,
+        out int priority)
+    {
+        Vector2Int firstCandidate = firstCell + side;
+        Vector2Int secondCandidate = secondCell + side;
+        bool firstUsable = IsWalkableClearanceCell(mapData, firstCandidate, excludedBorderSize);
+        bool secondUsable = IsWalkableClearanceCell(mapData, secondCandidate, excludedBorderSize);
+        missingCount = 0;
+        priority = 0;
+
+        if (!firstUsable || !secondUsable)
+            return false;
+
+        if (!mapData.IsWalkable(firstCandidate))
+        {
+            missingCount++;
+            priority += GetExpansionPriority(mapData.GetCell(firstCandidate).terrainType);
+        }
+
+        if (!mapData.IsWalkable(secondCandidate))
+        {
+            missingCount++;
+            priority += GetExpansionPriority(mapData.GetCell(secondCandidate).terrainType);
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// 判断单元是否可作为 2×2 净空块的一部分。
+    /// </summary>
+    /// <param name="mapData">待查询的地图数据。</param>
+    /// <param name="cell">候选单元。</param>
+    /// <param name="excludedBorderSize">不得侵入的地图边界保护带宽度。</param>
+    /// <returns>单元在内部、非边界且可行走或可扩宽时返回 true。</returns>
+    private static bool IsWalkableClearanceCell(
+        MapData mapData,
+        Vector2Int cell,
+        int excludedBorderSize)
+    {
+        return mapData.IsInside(cell) &&
+               !mapData.IsBorder(cell, excludedBorderSize) &&
+               (mapData.IsWalkable(cell) ||
+                IsExpandableCell(mapData, cell, excludedBorderSize));
     }
 
     /// <summary>
@@ -255,7 +530,45 @@ public static class MapTerrainPassageWidthEnforcer
     /// <returns>候选优先级。</returns>
     private static int GetExpansionPriority(MapTerrainType terrainType)
     {
-        return TerrainTopology.IsWater(terrainType) ? 0 : 1;
+        if (TerrainTopology.IsWater(terrainType))
+            return 0;
+
+        return terrainType == MapTerrainType.Mountain ? 2 : 1;
+    }
+
+    /// <summary>
+    /// 根据连接两端的地形选择扩宽后使用的可行走地形。
+    /// </summary>
+    /// <param name="firstTerrain">连接第一个单元的地形。</param>
+    /// <param name="secondTerrain">连接第二个单元的地形。</param>
+    /// <returns>扩宽单元使用的地形类型。</returns>
+    private static MapTerrainType GetPassageTerrain(
+        MapTerrainType firstTerrain,
+        MapTerrainType secondTerrain)
+    {
+        if (firstTerrain == MapTerrainType.Path ||
+            secondTerrain == MapTerrainType.Path)
+        {
+            return MapTerrainType.Path;
+        }
+
+        if (IsPassageTerrain(firstTerrain))
+            return firstTerrain;
+
+        return GetPassageTerrain(secondTerrain);
+    }
+
+    /// <summary>
+    /// 判断地形是否可以作为通路扩宽来源。
+    /// </summary>
+    /// <param name="terrainType">待检查的地形类型。</param>
+    /// <returns>可行走地形返回 true。</returns>
+    private static bool IsPassageTerrain(MapTerrainType terrainType)
+    {
+        return terrainType == MapTerrainType.Path ||
+               terrainType == MapTerrainType.Sand ||
+               terrainType == MapTerrainType.Forest ||
+               terrainType == MapTerrainType.Grass;
     }
 
     /// <summary>

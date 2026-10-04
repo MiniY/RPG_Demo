@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a0c5d2f3b4e6a96d1c8f5b0e2345678, type: 3}
   m_Name: MapGenerationSettings_Default
   m_EditorClassIdentifier: 
-  generatorVersion: 4
+  generatorVersion: 5
   terrainPaletteId: tiny-swords-grass-sand-rock-v1
   mapWidth: 64
   mapHeight: 64
@@ -33,6 +33,7 @@ MonoBehaviour:
   minimumNaturalRegionSize: 3
   spawnProtectionRadius: 5
   roadWidth: 2
+  minimumPassageWidth: 2
   roadTurnChance: 0.3
   simpleDecorationSeedOffset: 7919
   simpleDecorationNoiseScale: 0.12
@@ -62,6 +63,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 94f8747cec2b05a418c2018113c098a6, type: 2}
   - {fileID: 11400000, guid: bade9066f09e1ce4f8d1e86b1398a67c, type: 2}
   collisionMarkerTile: {fileID: 11400000, guid: 1e63b7c9d2f04a1b8e5c6079f2345678, type: 2}
+  simpleDecorationCollisionMarkerTile: {fileID: 11400000, guid: 4b61ef14df2b34141b4f6c3ce228fada, type: 2}
   waterBaseSortingOrder: -20
   sandBaseSortingOrder: -10
   grassOverlaySortingOrder: 0

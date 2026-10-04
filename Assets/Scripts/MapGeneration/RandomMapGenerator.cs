@@ -47,6 +47,11 @@ public static class RandomMapGenerator
 
         // 最终统一建立沙岸和高地过渡带，允许山体形成具有完整层次的景观孤岛。
         MapTerrainNestingEnforcer.Enforce(mapData);
+        MapTerrainPassageWidthEnforcer.Enforce(
+            mapData,
+            settings.minimumPassageWidth,
+            settings.borderSize);
+        MapTerrainNestingEnforcer.Enforce(mapData);
 
         return mapData;
     }
@@ -102,8 +107,14 @@ public static class RandomMapGenerator
         if (settings.spawnProtectionRadius < 1)
             throw new InvalidOperationException("出生点保护半径必须至少为 1。");
 
-        if (settings.roadWidth < 1)
-            throw new InvalidOperationException("道路宽度必须至少为 1。");
+        if (settings.roadWidth < 2)
+            throw new InvalidOperationException("道路宽度必须至少为 2，才能容纳玩家碰撞体。");
+
+        if (settings.minimumPassageWidth < 2)
+        {
+            throw new InvalidOperationException(
+                "最小通路宽度必须至少为 2，才能容纳玩家碰撞体。");
+        }
 
         if (settings.roadTurnChance < 0f || settings.roadTurnChance > 1f)
             throw new InvalidOperationException("道路转向概率必须位于 0 到 1 之间。");

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -100,7 +101,9 @@ public static class MapGenerationStageTwoMigration
     {
         EnsureAssetFolders();
         MapSimpleDecorationPalette palette = CreateOrUpdatePalette();
-        UpgradeSettings(palette);
+        TileBase decorationCollisionMarker =
+            CreateOrUpdateDecorationCollisionMarkerTile();
+        UpgradeSettings(palette, decorationCollisionMarker);
         UpgradeTestScene();
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
@@ -142,10 +145,10 @@ public static class MapGenerationStageTwoMigration
                     new[] { 0, 4, 5, 6, 16, 17, 18 }),
                 CreateTreeVariant(
                     "tree-pine-02",
-                    new[] { 1, 8, 9, 10, 20, 21, 22 }),
+                    new[] { 1, 7, 8, 9, 19, 20, 21 }),
                 CreateTreeVariant(
                     "tree-pine-03",
-                    new[] { 2, 11, 12, 13, 23, 24, 25 })
+                    new[] { 2, 10, 11, 12, 22, 23, 24 })
             };
 
         for (int bushIndex = 1; bushIndex <= 4; bushIndex++)
@@ -342,14 +345,8 @@ public static class MapGenerationStageTwoMigration
         if (importer == null)
             throw new InvalidOperationException($"无法读取精灵图导入器：{targetPath}");
 
-        importer.textureType = TextureImporterType.Sprite;
-        importer.spriteImportMode = SpriteImportMode.Single;
-        importer.spritePixelsPerUnit = 64f;
-        importer.filterMode = FilterMode.Point;
-        importer.mipmapEnabled = false;
-        importer.alphaIsTransparency = true;
-        importer.textureCompression = TextureImporterCompression.Uncompressed;
-        importer.SaveAndReimport();
+        if (ConfigureSingleSpriteImporter(importer))
+            importer.SaveAndReimport();
 
         Sprite sprite = AssetDatabase.LoadAssetAtPath<Sprite>(targetPath);
         if (sprite == null)
@@ -364,7 +361,10 @@ public static class MapGenerationStageTwoMigration
     /// <param name="tilePath">目标瓦片资产路径。</param>
     /// <param name="sprite">瓦片需要显示的精灵图。</param>
     /// <returns>完成配置的可视瓦片资产。</returns>
-    private static TileBase CreateOrUpdateTile(string tilePath, Sprite sprite)
+    private static TileBase CreateOrUpdateTile(
+        string tilePath,
+        Sprite sprite,
+        Tile.ColliderType colliderType = Tile.ColliderType.None)
     {
         if (sprite == null)
             throw new ArgumentNullException(nameof(sprite));
@@ -376,20 +376,61 @@ public static class MapGenerationStageTwoMigration
             AssetDatabase.CreateAsset(tile, tilePath);
         }
 
-        tile.sprite = sprite;
-        tile.color = Color.white;
-        tile.transform = Matrix4x4.identity;
-        tile.flags = TileFlags.LockAll;
-        tile.colliderType = Tile.ColliderType.None;
-        EditorUtility.SetDirty(tile);
+        bool requiresUpdate =
+            tile.sprite != sprite ||
+            tile.color != Color.white ||
+            tile.transform != Matrix4x4.identity ||
+            tile.flags != TileFlags.LockAll ||
+            tile.colliderType != colliderType;
+        if (requiresUpdate)
+        {
+            tile.sprite = sprite;
+            tile.color = Color.white;
+            tile.transform = Matrix4x4.identity;
+            tile.flags = TileFlags.LockAll;
+            tile.colliderType = colliderType;
+            EditorUtility.SetDirty(tile);
+        }
+
         return tile;
+    }
+
+    /// <summary>
+    /// 按简单装饰资源标准配置 Single Sprite（单精灵）导入器。
+    /// </summary>
+    /// <param name="importer">待检查和更新的纹理导入器。</param>
+    /// <returns>导入器配置发生变化时返回 true。</returns>
+    private static bool ConfigureSingleSpriteImporter(TextureImporter importer)
+    {
+        bool requiresUpdate =
+            importer.textureType != TextureImporterType.Sprite ||
+            importer.spriteImportMode != SpriteImportMode.Single ||
+            !Mathf.Approximately(importer.spritePixelsPerUnit, 64f) ||
+            importer.filterMode != FilterMode.Point ||
+            importer.mipmapEnabled ||
+            !importer.alphaIsTransparency ||
+            importer.textureCompression != TextureImporterCompression.Uncompressed;
+        if (!requiresUpdate)
+            return false;
+
+        importer.textureType = TextureImporterType.Sprite;
+        importer.spriteImportMode = SpriteImportMode.Single;
+        importer.spritePixelsPerUnit = 64f;
+        importer.filterMode = FilterMode.Point;
+        importer.mipmapEnabled = false;
+        importer.alphaIsTransparency = true;
+        importer.textureCompression = TextureImporterCompression.Uncompressed;
+        return true;
     }
 
     /// <summary>
     /// 把简单装饰调色板、密度、间距和排序参数写入默认配置资产。
     /// </summary>
     /// <param name="palette">刚创建或更新的简单装饰调色板。</param>
-    private static void UpgradeSettings(MapSimpleDecorationPalette palette)
+    /// <param name="decorationCollisionMarker">简单装饰使用的较小碰撞标记瓦片。</param>
+    private static void UpgradeSettings(
+        MapSimpleDecorationPalette palette,
+        TileBase decorationCollisionMarker)
     {
         MapGenerationSettings settings =
             AssetDatabase.LoadAssetAtPath<MapGenerationSettings>(SettingsPath);
@@ -405,6 +446,10 @@ public static class MapGenerationStageTwoMigration
             serializedSettings,
             "simpleDecorationPalette",
             palette);
+        SetObjectProperty(
+            serializedSettings,
+            "simpleDecorationCollisionMarkerTile",
+            decorationCollisionMarker);
         SetIntegerProperty(serializedSettings, "simpleDecorationSeedOffset", 7919);
         SetFloatProperty(serializedSettings, "simpleDecorationNoiseScale", 0.12f);
         SetFloatProperty(serializedSettings, "grassTreeDensity", 0.018f);
@@ -417,10 +462,85 @@ public static class MapGenerationStageTwoMigration
         SetIntegerProperty(serializedSettings, "simpleDecorationMinimumSpacing", 2);
         SetIntegerProperty(serializedSettings, "simpleDecorationSpawnClearRadius", 6);
         SetIntegerProperty(serializedSettings, "simpleDecorationExitClearRadius", 2);
+        SetIntegerProperty(serializedSettings, "roadWidth", 2);
+        SetIntegerProperty(serializedSettings, "minimumPassageWidth", 2);
         SetIntegerProperty(serializedSettings, "simpleDecorationGroundSortingOrder", 4);
         SetIntegerProperty(serializedSettings, "simpleDecorationCanopySortingOrder", 6);
         serializedSettings.ApplyModifiedPropertiesWithoutUndo();
         EditorUtility.SetDirty(settings);
+    }
+
+    /// <summary>
+    /// 创建使用半格物理形状的简单装饰碰撞标记瓦片。
+    /// </summary>
+    /// <returns>配置完成的装饰碰撞标记瓦片。</returns>
+    private static TileBase CreateOrUpdateDecorationCollisionMarkerTile()
+    {
+        const string texturePath =
+            DecorationSpriteFolder + "/DecorationCollisionMarker.png";
+        const string tilePath =
+            DecorationTileFolder + "/DecorationCollisionMarker.asset";
+
+        EnsureDecorationCollisionMarkerTexture(texturePath);
+        AssetDatabase.ImportAsset(
+            texturePath,
+            ImportAssetOptions.ForceSynchronousImport);
+
+        TextureImporter importer =
+            AssetImporter.GetAtPath(texturePath) as TextureImporter;
+        if (importer == null)
+        {
+            throw new InvalidOperationException(
+                $"无法读取简单装饰碰撞标记精灵导入器：{texturePath}");
+        }
+
+        if (ConfigureSingleSpriteImporter(importer))
+            importer.SaveAndReimport();
+
+        Sprite sprite = AssetDatabase.LoadAssetAtPath<Sprite>(texturePath);
+        if (sprite == null)
+        {
+            throw new InvalidOperationException(
+                $"无法加载简单装饰碰撞标记精灵：{texturePath}");
+        }
+
+        return CreateOrUpdateTile(
+            tilePath,
+            sprite,
+            Tile.ColliderType.Sprite);
+    }
+
+    /// <summary>
+    /// 生成一张透明画布上的居中小矩形，供碰撞标记使用。
+    /// </summary>
+    /// <param name="texturePath">目标精灵纹理路径。</param>
+    private static void EnsureDecorationCollisionMarkerTexture(string texturePath)
+    {
+        if (AssetDatabase.LoadAssetAtPath<Texture2D>(texturePath) != null)
+            return;
+
+        Texture2D texture =
+            new Texture2D(64, 64, TextureFormat.RGBA32, false);
+        Color32[] pixels = new Color32[64 * 64];
+        for (int index = 0; index < pixels.Length; index++)
+            pixels[index] = new Color32(255, 255, 255, 0);
+
+        for (int x = 16; x < 48; x++)
+        {
+            for (int y = 20; y < 44; y++)
+                pixels[y * 64 + x] = new Color32(255, 255, 255, 255);
+        }
+
+        texture.SetPixels32(pixels);
+        texture.Apply();
+        string absolutePath = Path.Combine(
+            Directory.GetCurrentDirectory(),
+            texturePath.Replace('/', Path.DirectorySeparatorChar));
+        File.WriteAllBytes(absolutePath, texture.EncodeToPNG());
+        UnityEngine.Object.DestroyImmediate(texture);
+        AssetDatabase.ImportAsset(
+            texturePath,
+            ImportAssetOptions.ForceSynchronousImport);
     }
 
     /// <summary>

@@ -95,6 +95,14 @@ public class MapGenerationSceneTests
             Assert.That(CountTiles(collisionTilemap.GetTilesBlock(bounds)), Is.GreaterThan(0));
             Assert.That(controller.Settings.simpleDecorationPalette, Is.Not.Null);
             Assert.That(controller.Settings.simpleDecorationPalette.HasCompleteBasicSet, Is.True);
+            Assert.That(controller.Settings.simpleDecorationCollisionMarkerTile,
+                Is.Not.Null,
+                "缺少简单装饰专用碰撞标记瓦片。");
+            Tile decorationCollisionMarker =
+                controller.Settings.simpleDecorationCollisionMarkerTile as Tile;
+            Assert.That(decorationCollisionMarker, Is.Not.Null);
+            Assert.That(decorationCollisionMarker.colliderType,
+                Is.EqualTo(Tile.ColliderType.Sprite));
             Assert.That(controller.LastGeneratedSimpleDecorations, Is.Not.Null,
                 "没有生成简单装饰数据。");
             Assert.That(controller.LastGeneratedSimpleDecorations.Count, Is.GreaterThan(0));

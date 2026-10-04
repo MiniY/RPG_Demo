@@ -228,6 +228,56 @@ public class RandomMapGeneratorTests
     }
 
     /// <summary>
+    /// 验证用户报告的 Seed（种子）不会生成只能容纳单格的横向或竖向瓶颈。
+    /// </summary>
+    [Test]
+    public void ReportedSeedContainsNoSingleCellPassages()
+    {
+        settings.seed = 613580675;
+
+        MapData map = RandomMapGenerator.Generate(settings);
+        List<string> violations = FindSingleCellPassages(map);
+
+        Assert.That(
+            violations,
+            Is.Empty,
+            "发现现有玩家碰撞体无法穿过的单格通路：\n" +
+            string.Join("\n", violations));
+    }
+
+    /// <summary>
+    /// 验证一组代表性 Seed（种子）同时满足可见地形嵌套和最小通路宽度约束。
+    /// </summary>
+    /// <param name="seed">本次回归测试使用的固定种子。</param>
+    [TestCase(-1391545000)]
+    [TestCase(613580675)]
+    [TestCase(20260929)]
+    [TestCase(-1)]
+    [TestCase(0)]
+    [TestCase(1)]
+    [TestCase(int.MinValue)]
+    [TestCase(int.MaxValue)]
+    public void RepresentativeSeedsPreserveTerrainTopologyAndPassageWidth(int seed)
+    {
+        settings.seed = seed;
+
+        MapData map = RandomMapGenerator.Generate(settings);
+        List<string> nestingViolations = FindTerrainNestingViolations(map);
+        List<string> passageViolations = FindSingleCellPassages(map);
+
+        Assert.That(
+            nestingViolations,
+            Is.Empty,
+            $"Seed={seed} 破坏了 Water -> Sand -> Grass -> Mountain 可见嵌套关系：\n" +
+            string.Join("\n", nestingViolations));
+        Assert.That(
+            passageViolations,
+            Is.Empty,
+            $"Seed={seed} 生成了现有玩家碰撞体无法穿过的单格通路：\n" +
+            string.Join("\n", passageViolations));
+    }
+
+    /// <summary>
     /// 查找草地直接接触水域或高地缺少草地过渡带的单元。
     /// </summary>
     /// <param name="map">待检查的最终地图。</param>
@@ -263,6 +313,52 @@ public class RandomMapGeneratorTests
                         violations.Add($"{cell} 的 Mountain 缺少草地过渡带，邻居 {neighborCell} 是 {neighborType}。");
                         break;
                     }
+                }
+            }
+        }
+
+        return violations;
+    }
+
+    /// <summary>
+    /// 查找两侧均为阻挡地形、轴向仍然连通的单格宽瓶颈。
+    /// </summary>
+    /// <param name="map">待检查的最终地图。</param>
+    /// <returns>全部横向和竖向单格通路的诊断文本。</returns>
+    private static List<string> FindSingleCellPassages(MapData map)
+    {
+        List<string> violations = new List<string>();
+
+        for (int x = map.Origin.x + 1; x < map.Origin.x + map.Width - 1; x++)
+        {
+            for (int y = map.Origin.y + 1; y < map.Origin.y + map.Height - 1; y++)
+            {
+                Vector2Int cell = new Vector2Int(x, y);
+                if (!map.IsWalkable(cell))
+                    continue;
+
+                bool connectsVertically =
+                    map.IsWalkable(cell + Vector2Int.up) &&
+                    map.IsWalkable(cell + Vector2Int.down);
+                bool blockedHorizontally =
+                    !map.IsWalkable(cell + Vector2Int.left) &&
+                    !map.IsWalkable(cell + Vector2Int.right);
+                bool connectsHorizontally =
+                    map.IsWalkable(cell + Vector2Int.left) &&
+                    map.IsWalkable(cell + Vector2Int.right);
+                bool blockedVertically =
+                    !map.IsWalkable(cell + Vector2Int.up) &&
+                    !map.IsWalkable(cell + Vector2Int.down);
+
+                if (connectsVertically && blockedHorizontally)
+                {
+                    violations.Add(
+                        $"{cell} 是竖向单格通路，地形为 {map.GetCell(cell).terrainType}。");
+                }
+                else if (connectsHorizontally && blockedVertically)
+                {
+                    violations.Add(
+                        $"{cell} 是横向单格通路，地形为 {map.GetCell(cell).terrainType}。");
                 }
             }
         }

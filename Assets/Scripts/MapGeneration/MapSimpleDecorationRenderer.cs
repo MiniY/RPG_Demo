@@ -193,7 +193,7 @@ public sealed class MapSimpleDecorationRenderer : MonoBehaviour
 
             decorationCollisionTilemap.SetTile(
                 tileCell,
-                settings.collisionMarkerTile);
+                settings.simpleDecorationCollisionMarkerTile);
             CollisionCellCount++;
         }
     }
@@ -270,10 +270,10 @@ public sealed class MapSimpleDecorationRenderer : MonoBehaviour
                 "MapGenerationSettings 缺少 MapSimpleDecorationPalette 引用。");
         }
 
-        if (settings.collisionMarkerTile == null)
+        if (settings.simpleDecorationCollisionMarkerTile == null)
         {
             throw new MissingReferenceException(
-                "MapGenerationSettings 缺少 Collision Marker Tile 引用。");
+                "MapGenerationSettings 缺少 Simple Decoration Collision Marker Tile 引用。");
         }
     }
 }

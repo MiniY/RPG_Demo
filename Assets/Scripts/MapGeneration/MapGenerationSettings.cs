@@ -11,7 +11,7 @@ public class MapGenerationSettings : ScriptableObject
     /// <summary>
     /// 当前随机地图算法的数据版本。
     /// </summary>
-    public const int CurrentGeneratorVersion = 4;
+    public const int CurrentGeneratorVersion = 5;
 
     /// <summary>
     /// 保存本次配置对应的生成器版本，供未来存档兼容检查使用。
@@ -121,7 +121,12 @@ public class MapGenerationSettings : ScriptableObject
     /// 道路的宽度，单位是 Tile（瓦片）数量。
     /// </summary>
     [Header("Path（道路）")]
-    [Min(1)] public int roadWidth = 2;
+    [Min(2)] public int roadWidth = 2;
+
+    /// <summary>
+    /// 所有横向或竖向可行走通路允许的最小宽度。
+    /// </summary>
+    [Min(2)] public int minimumPassageWidth = 2;
 
     /// <summary>
     /// 随机道路每一步改变方向的概率。
@@ -258,6 +263,11 @@ public class MapGenerationSettings : ScriptableObject
     public TileBase collisionMarkerTile;
 
     /// <summary>
+    /// 树木和散落岩石使用的较小隐藏碰撞标记 Tile（瓦片）。
+    /// </summary>
+    public TileBase simpleDecorationCollisionMarkerTile;
+
+    /// <summary>
     /// Water Base（水体底层）的 Sorting Order（排序顺序）。
     /// </summary>
     [Header("Rendering（渲染）")]
@@ -340,7 +350,8 @@ public class MapGenerationSettings : ScriptableObject
         mountainTemperatureThreshold = Mathf.Clamp01(mountainTemperatureThreshold);
         minimumNaturalRegionSize = Mathf.Max(1, minimumNaturalRegionSize);
         spawnProtectionRadius = Mathf.Max(1, spawnProtectionRadius);
-        roadWidth = Mathf.Max(1, roadWidth);
+        roadWidth = Mathf.Max(2, roadWidth);
+        minimumPassageWidth = Mathf.Max(2, minimumPassageWidth);
         roadTurnChance = Mathf.Clamp01(roadTurnChance);
         simpleDecorationNoiseScale = Mathf.Max(0.001f, simpleDecorationNoiseScale);
         grassTreeDensity = Mathf.Clamp01(grassTreeDensity);

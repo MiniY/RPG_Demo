@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2dadde78fe25594a9506efc9cab4646, type: 3}
+  m_Name: ElevationAutotileSet
+  m_EditorClassIdentifier: 
+  setId: tiny-swords-elevation-v1
+  interior: {fileID: 11400000, guid: cbb52a5acc3493649bc09da13c2d8c4f, type: 2}
+  north: {fileID: 11400000, guid: 98f0432fcd8541e46bf49fc9e6af1d23, type: 2}
+  east: {fileID: 11400000, guid: 661ebfd9da31f6d4f956632ff48208e7, type: 2}
+  northEast: {fileID: 11400000, guid: f74e8e8374976ed45b77e6a632e7a02e, type: 2}
+  south: {fileID: 11400000, guid: efe071b19a5cbed4aa1db190932452e0, type: 2}
+  northSouth: {fileID: 11400000, guid: 015073dae11452f44a558d67039e2d28, type: 2}
+  eastSouth: {fileID: 11400000, guid: 98e1c77c8bc8dc5448f1e2be04b52360, type: 2}
+  northEastSouth: {fileID: 11400000, guid: 5bd48b811068abd4a9fa85b4293b24bb, type: 2}
+  west: {fileID: 11400000, guid: 067137183372ca744a2e3b44df8d68d1, type: 2}
+  northWest: {fileID: 11400000, guid: 0c703bb727db11b46bdbf609cf28fb70, type: 2}
+  eastWest: {fileID: 11400000, guid: 65d3dc7eb0a7b8c4abf459eed39870e6, type: 2}
+  northEastWest: {fileID: 11400000, guid: 7cf571e63bd5e3d418edc72270cdd3d3, type: 2}
+  southWest: {fileID: 11400000, guid: 4f6f6931044b9eb449e6aded15e17e95, type: 2}
+  northSouthWest: {fileID: 11400000, guid: 4a35c0e2f63e27b45bb1ed6224a3cf70, type: 2}
+  eastSouthWest: {fileID: 11400000, guid: 867a721dee58a11488377f9517847e2a, type: 2}
+  northEastSouthWest: {fileID: 11400000, guid: 2c71525fa8728a64ea43055728cc35e2, type: 2}
+  southFaceWest: {fileID: 11400000, guid: 3063396daa140f24d8d586ceb58ced7c, type: 2}
+  southFaceCenter: {fileID: 11400000, guid: 7332946b92041994bad8fdf0f18d4817, type: 2}
+  southFaceEast: {fileID: 11400000, guid: c890eaa9c25f77b41ad97a7466c6f3b5, type: 2}
+  southFaceWestEast: {fileID: 11400000, guid: 9385330bdb313f34fb961a42a1d624b5, type: 2}
+  enclosedSouthFaceWest: {fileID: 11400000, guid: d74db7e4cd0823140b67880e5d90bb57, type: 2}
+  enclosedSouthFaceCenter: {fileID: 11400000, guid: ae61eca386f64d8478dc2cecfca1ffd3, type: 2}
+  enclosedSouthFaceEast: {fileID: 11400000, guid: 843287d14fba94d4d98549c3b1d8b812, type: 2}
+  enclosedSouthFaceWestEast: {fileID: 11400000, guid: f091f6c089860734d932abf4df8c373e, type: 2}

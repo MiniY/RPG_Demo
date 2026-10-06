@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2dadde78fe25594a9506efc9cab4646, type: 3}
+  m_Name: GrassAutotileSet
+  m_EditorClassIdentifier: 
+  setId: tiny-swords-grass-v1
+  interior: {fileID: 11400000, guid: b9787f2f6b3af1e4cace9891f220ef61, type: 2}
+  north: {fileID: 11400000, guid: e0578debfe564c54a9ec77ce9d02de2b, type: 2}
+  east: {fileID: 11400000, guid: 27fcb43f18e0b5d469e463a1eb236d90, type: 2}
+  northEast: {fileID: 11400000, guid: 4a5e3a7d0b40c3d4ba7d6fd5a49ed2da, type: 2}
+  south: {fileID: 11400000, guid: e25cc112a4b98194ebc193f6b6ebe186, type: 2}
+  northSouth: {fileID: 11400000, guid: 316be5dd562c39743849b5935013eba0, type: 2}
+  eastSouth: {fileID: 11400000, guid: 244ae6a5931964148ba9231f4bf4029f, type: 2}
+  northEastSouth: {fileID: 11400000, guid: 83db89314bd078244952857731fbf38e, type: 2}
+  west: {fileID: 11400000, guid: 2dfb74b5b97b0aa4c9d2dfcf36e8c938, type: 2}
+  northWest: {fileID: 11400000, guid: b537576c004984243beec2fb8372dfd5, type: 2}
+  eastWest: {fileID: 11400000, guid: 0a3eafc5564de3940a93b118b381c7a6, type: 2}
+  northEastWest: {fileID: 11400000, guid: 9978d56d61895b24db0bb3e52f26101a, type: 2}
+  southWest: {fileID: 11400000, guid: 18f1316378305544db18718f5c93505d, type: 2}
+  northSouthWest: {fileID: 11400000, guid: 38d9bf760b31ee24298cd31259e18392, type: 2}
+  eastSouthWest: {fileID: 11400000, guid: 109aecb6688ab634e89156c9b2944146, type: 2}
+  northEastSouthWest: {fileID: 11400000, guid: 46b20b46cb043fd47895c47d64c9b40c, type: 2}
+  southFaceWest: {fileID: 0}
+  southFaceCenter: {fileID: 0}
+  southFaceEast: {fileID: 0}
+  southFaceWestEast: {fileID: 0}
+  enclosedSouthFaceWest: {fileID: 0}
+  enclosedSouthFaceCenter: {fileID: 0}
+  enclosedSouthFaceEast: {fileID: 0}
+  enclosedSouthFaceWestEast: {fileID: 0}

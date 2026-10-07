@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -16,10 +17,16 @@ public static class MapGenerationRpgIntegration
     private const string TargetScenePath = "Assets/Scenes/SampleScene.unity";
 
     /// <summary>
-    /// 保存完整随机地图运行时对象的源测试场景路径。
+    /// 保存随机地图开发与回归测试对象的场景路径。
     /// </summary>
-    private const string SourceScenePath =
+    private const string DevelopmentScenePath =
         "Assets/Scenes/MapGeneration/MapGenerationTest.unity";
+
+    /// <summary>
+    /// RPG 正常游戏流程使用的生产随机地图运行时预制体。
+    /// </summary>
+    private const string RuntimePrefabPath =
+        "Assets/Prefabs/MapGeneration/RandomMapRuntime.prefab";
 
     /// <summary>
     /// 接入主场景后的随机地图根对象名称。
@@ -32,12 +39,41 @@ public static class MapGenerationRpgIntegration
     private const string LegacyGridName = "Grid";
 
     /// <summary>
+    /// 需要从旧静态布局映射到随机地图的 Main 场景组件类型。
+    /// </summary>
+    private static readonly HashSet<string> MapAnchoredComponentTypeNames =
+        new HashSet<string>
+        {
+            "MonsterAIController",
+            "AnimalHurtController",
+            "PlantBehaviorController"
+        };
+
+    /// <summary>
+    /// 移动后需要重新启用、以新位置重建运行时状态的组件类型。
+    /// </summary>
+    private static readonly HashSet<string> RestartAfterPlacementTypeNames =
+        new HashSet<string>
+        {
+            "MonsterAIController"
+        };
+
+    /// <summary>
     /// 从 Unity 菜单执行 RPG 随机地图集成。
     /// </summary>
     [MenuItem("Tools/RPG Demo/Map Generation/Integrate Into RPG Scene")]
     public static void IntegrateFromMenu()
     {
         Integrate();
+    }
+
+    /// <summary>
+    /// 从开发场景重建生产运行时预制体；正式游戏运行不依赖开发场景。
+    /// </summary>
+    [MenuItem("Tools/RPG Demo/Map Generation/Rebuild Production Runtime Prefab")]
+    public static void RebuildRuntimePrefabFromMenu()
+    {
+        RebuildRuntimePrefabFromDevelopmentScene();
     }
 
     /// <summary>
@@ -59,7 +95,88 @@ public static class MapGenerationRpgIntegration
     }
 
     /// <summary>
-    /// 复制随机地图运行时子树、重新绑定玩家并停用旧静态地图。
+    /// 一次性重建生产预制体并重新接入 RPG 主场景。
+    /// </summary>
+    public static void RunBatchProductionMigration()
+    {
+        try
+        {
+            RebuildRuntimePrefabFromDevelopmentScene();
+            Integrate();
+            Debug.Log("生产随机地图预制体已重建并接入 RPG 主场景。");
+            EditorApplication.Exit(0);
+        }
+        catch (Exception exception)
+        {
+            Debug.LogException(exception);
+            EditorApplication.Exit(1);
+        }
+    }
+
+    /// <summary>
+    /// 把开发场景中已经验证的地图运行时对象固化为生产专用预制体。
+    /// </summary>
+    private static void RebuildRuntimePrefabFromDevelopmentScene()
+    {
+        Scene developmentScene = EditorSceneManager.OpenScene(
+            DevelopmentScenePath,
+            OpenSceneMode.Additive);
+
+        try
+        {
+            Grid sourceGrid = FindComponentInScene<Grid>(developmentScene);
+            MapGenerationController sourceController =
+                FindComponentInScene<MapGenerationController>(developmentScene);
+
+            if (sourceGrid == null || sourceController == null)
+            {
+                throw new InvalidOperationException(
+                    "MapGenerationTest 缺少 Grid 或 MapGenerationController。");
+            }
+
+            GameObject prefabRoot = new GameObject(IntegrationRootName);
+            SceneManager.MoveGameObjectToScene(prefabRoot, developmentScene);
+            sourceGrid.transform.SetParent(prefabRoot.transform, true);
+            sourceController.transform.SetParent(prefabRoot.transform, true);
+
+            ConfigureController(sourceController, null);
+            ConfigureMinimap(
+                sourceController.GetComponent<MapMinimapController>(),
+                sourceController,
+                null);
+
+            MapGeneratedObjectPlacementAdapter placementAdapter =
+                prefabRoot.AddComponent<MapGeneratedObjectPlacementAdapter>();
+            ConfigurePlacementAdapter(
+                placementAdapter,
+                sourceController,
+                null,
+                Array.Empty<Transform>(),
+                Array.Empty<GameObject>());
+
+            EnsureRuntimePrefabFolder();
+            GameObject prefabAsset = PrefabUtility.SaveAsPrefabAsset(
+                prefabRoot,
+                RuntimePrefabPath,
+                out bool success);
+
+            if (!success || prefabAsset == null)
+            {
+                throw new InvalidOperationException(
+                    $"无法保存生产随机地图预制体：{RuntimePrefabPath}");
+            }
+        }
+        finally
+        {
+            if (developmentScene.IsValid() && developmentScene.isLoaded)
+                EditorSceneManager.CloseScene(developmentScene, true);
+        }
+
+        AssetDatabase.SaveAssets();
+    }
+
+    /// <summary>
+    /// 实例化生产随机地图预制体、绑定 Main 游戏系统并停用旧静态地图。
     /// </summary>
     private static void Integrate()
     {
@@ -88,65 +205,58 @@ public static class MapGenerationRpgIntegration
         if (playerAction == null)
             throw new InvalidOperationException("SampleScene 缺少 PlayerAction 玩家对象。");
 
-        Scene sourceScene = default;
-
-        try
+        GameObject runtimePrefab = AssetDatabase.LoadAssetAtPath<GameObject>(
+            RuntimePrefabPath);
+        if (runtimePrefab == null)
         {
-            // 源场景只在内存中打开，不会被保存或修改到磁盘。
-            sourceScene = EditorSceneManager.OpenScene(
-                SourceScenePath,
-                OpenSceneMode.Additive);
-
-            Grid sourceGrid = FindComponentInScene<Grid>(sourceScene);
-            MapGenerationController sourceController =
-                FindComponentInScene<MapGenerationController>(sourceScene);
-
-            if (sourceGrid == null || sourceController == null)
-            {
-                throw new InvalidOperationException(
-                    "MapGenerationTest 缺少 Grid 或 MapGenerationController。");
-            }
-
-            // 临时父对象让 Grid 与控制器在一次克隆中保留彼此的序列化引用。
-            GameObject sourceContainer = new GameObject("RandomMapRuntimeSource");
-            SceneManager.MoveGameObjectToScene(sourceContainer, sourceScene);
-            sourceGrid.transform.SetParent(sourceContainer.transform, true);
-            sourceController.transform.SetParent(sourceContainer.transform, true);
-
-            // 克隆对象随后移入目标场景；测试场景原对象会随源场景关闭而丢弃。
-            GameObject integrationRoot = UnityEngine.Object.Instantiate(sourceContainer);
-            integrationRoot.name = IntegrationRootName;
-            SceneManager.MoveGameObjectToScene(integrationRoot, targetScene);
-
-            MapGenerationController targetController =
-                integrationRoot.GetComponentInChildren<MapGenerationController>(true);
-            MapMinimapController targetMinimap =
-                integrationRoot.GetComponentInChildren<MapMinimapController>(true);
-
-            if (targetController == null || targetController.TilemapRenderer == null)
-            {
-                throw new InvalidOperationException(
-                    "复制后的随机地图运行时对象缺少控制器或渲染器。");
-            }
-
-            ConfigureController(targetController, playerAction.transform);
-            ConfigureMinimap(targetMinimap, targetController, playerAction.transform);
-
-            legacyGrid.SetActive(false);
-            integrationRoot.SetActive(true);
-            EditorUtility.SetDirty(legacyGrid);
-            EditorUtility.SetDirty(integrationRoot);
-
-            EditorSceneManager.MarkSceneDirty(targetScene);
-            if (!EditorSceneManager.SaveScene(targetScene, TargetScenePath))
-                throw new InvalidOperationException("无法保存随机地图集成后的 SampleScene。");
+            throw new InvalidOperationException(
+                $"缺少生产随机地图预制体：{RuntimePrefabPath}");
         }
-        finally
+
+        GameObject integrationRoot = PrefabUtility.InstantiatePrefab(
+            runtimePrefab,
+            targetScene) as GameObject;
+        if (integrationRoot == null)
+            throw new InvalidOperationException("无法实例化生产随机地图预制体。");
+
+        integrationRoot.name = IntegrationRootName;
+
+        MapGenerationController targetController =
+            integrationRoot.GetComponentInChildren<MapGenerationController>(true);
+        MapMinimapController targetMinimap =
+            integrationRoot.GetComponentInChildren<MapMinimapController>(true);
+        MapGeneratedObjectPlacementAdapter placementAdapter =
+            integrationRoot.GetComponent<MapGeneratedObjectPlacementAdapter>();
+
+        if (targetController == null || targetController.TilemapRenderer == null ||
+            placementAdapter == null)
         {
-            // 丢弃源测试场景中的临时分组，确保测试场景文件保持原样。
-            if (sourceScene.IsValid() && sourceScene.isLoaded)
-                EditorSceneManager.CloseScene(sourceScene, true);
+            throw new InvalidOperationException(
+                "生产随机地图预制体缺少控制器、渲染器或场景对象适配器。");
         }
+
+        ConfigureController(targetController, playerAction.transform);
+        ConfigureMinimap(targetMinimap, targetController, playerAction.transform);
+        FindMapAnchoredObjects(
+            targetScene,
+            integrationRoot.transform,
+            out Transform[] mapAnchoredObjects,
+            out GameObject[] restartObjects);
+        ConfigurePlacementAdapter(
+            placementAdapter,
+            targetController,
+            playerAction.transform,
+            mapAnchoredObjects,
+            restartObjects);
+
+        legacyGrid.SetActive(false);
+        integrationRoot.SetActive(true);
+        EditorUtility.SetDirty(legacyGrid);
+        EditorUtility.SetDirty(integrationRoot);
+
+        EditorSceneManager.MarkSceneDirty(targetScene);
+        if (!EditorSceneManager.SaveScene(targetScene, TargetScenePath))
+            throw new InvalidOperationException("无法保存随机地图集成后的 SampleScene。");
 
         AssetDatabase.SaveAssets();
     }
@@ -194,6 +304,147 @@ public static class MapGenerationRpgIntegration
         SetBooleanProperty(serializedMinimap, "createRuntimeView", true);
         serializedMinimap.ApplyModifiedPropertiesWithoutUndo();
         EditorUtility.SetDirty(minimap);
+    }
+
+    /// <summary>
+    /// 绑定生产地图控制器、Main 玩家和需要重新定位的世界对象。
+    /// </summary>
+    private static void ConfigurePlacementAdapter(
+        MapGeneratedObjectPlacementAdapter adapter,
+        MapGenerationController controller,
+        Transform placementAnchor,
+        Transform[] mapAnchoredObjects,
+        GameObject[] restartObjects)
+    {
+        SerializedObject serializedAdapter = new SerializedObject(adapter);
+        SetObjectProperty(serializedAdapter, "mapController", controller);
+        SetObjectProperty(serializedAdapter, "placementAnchor", placementAnchor);
+        SetObjectArrayProperty(
+            serializedAdapter,
+            "mapAnchoredObjects",
+            mapAnchoredObjects);
+        SetVector2IntArrayProperty(
+            serializedAdapter,
+            "authoredCellOffsetValues",
+            CalculateAuthoredCellOffsets(
+                controller,
+                placementAnchor,
+                mapAnchoredObjects));
+        SetObjectArrayProperty(
+            serializedAdapter,
+            "restartAfterPlacement",
+            restartObjects);
+        serializedAdapter.ApplyModifiedPropertiesWithoutUndo();
+        EditorUtility.SetDirty(adapter);
+    }
+
+    /// <summary>
+    /// 记录 Main 世界对象相对玩家的原静态地图网格偏移。
+    /// </summary>
+    private static Vector2Int[] CalculateAuthoredCellOffsets(
+        MapGenerationController controller,
+        Transform placementAnchor,
+        Transform[] mapAnchoredObjects)
+    {
+        Vector2Int[] offsets = new Vector2Int[mapAnchoredObjects.Length];
+        if (controller == null || controller.TilemapRenderer == null ||
+            controller.TilemapRenderer.GroundTilemap == null || placementAnchor == null)
+        {
+            return offsets;
+        }
+
+        Vector3Int anchorCell = controller.TilemapRenderer.GroundTilemap.WorldToCell(
+            placementAnchor.position);
+
+        for (int index = 0; index < mapAnchoredObjects.Length; index++)
+        {
+            Transform target = mapAnchoredObjects[index];
+            if (target == null)
+                continue;
+
+            Vector3Int targetCell = controller.TilemapRenderer.GroundTilemap.WorldToCell(
+                target.position);
+            offsets[index] = new Vector2Int(
+                targetCell.x - anchorCell.x,
+                targetCell.y - anchorCell.y);
+        }
+
+        return offsets;
+    }
+
+    /// <summary>
+    /// 查找 Main 场景中需要使用随机地图位置的怪物、动物和植物。
+    /// </summary>
+    private static void FindMapAnchoredObjects(
+        Scene scene,
+        Transform integrationRoot,
+        out Transform[] mapAnchoredObjects,
+        out GameObject[] restartObjects)
+    {
+        List<Transform> anchoredObjects = new List<Transform>();
+        List<GameObject> objectsToRestart = new List<GameObject>();
+        HashSet<Transform> seenTransforms = new HashSet<Transform>();
+
+        foreach (GameObject rootObject in scene.GetRootGameObjects())
+        {
+            foreach (Component component in rootObject.GetComponentsInChildren<Component>(true))
+            {
+                if (component == null ||
+                    component.transform == integrationRoot ||
+                    component.transform.IsChildOf(integrationRoot) ||
+                    !MapAnchoredComponentTypeNames.Contains(component.GetType().Name) ||
+                    !seenTransforms.Add(component.transform))
+                {
+                    continue;
+                }
+
+                anchoredObjects.Add(component.transform);
+
+                if (RestartAfterPlacementTypeNames.Contains(component.GetType().Name))
+                    objectsToRestart.Add(component.gameObject);
+            }
+        }
+
+        anchoredObjects.Sort(CompareTransformsByHierarchyPath);
+        objectsToRestart.Sort((left, right) =>
+            CompareTransformsByHierarchyPath(left.transform, right.transform));
+        mapAnchoredObjects = anchoredObjects.ToArray();
+        restartObjects = objectsToRestart.ToArray();
+    }
+
+    /// <summary>
+    /// 使用稳定层级路径排序，避免迁移结果受对象遍历顺序影响。
+    /// </summary>
+    private static int CompareTransformsByHierarchyPath(Transform left, Transform right)
+    {
+        return string.CompareOrdinal(GetHierarchyPath(left), GetHierarchyPath(right));
+    }
+
+    /// <summary>
+    /// 获取 Transform（变换组件）在场景中的完整层级路径。
+    /// </summary>
+    private static string GetHierarchyPath(Transform transform)
+    {
+        string path = transform.name;
+        Transform current = transform.parent;
+
+        while (current != null)
+        {
+            path = current.name + "/" + path;
+            current = current.parent;
+        }
+
+        return path;
+    }
+
+    /// <summary>
+    /// 确保生产随机地图预制体目录存在。
+    /// </summary>
+    private static void EnsureRuntimePrefabFolder()
+    {
+        const string folderPath = "Assets/Prefabs/MapGeneration";
+        if (!AssetDatabase.IsValidFolder(folderPath))
+            AssetDatabase.CreateFolder("Assets/Prefabs", "MapGeneration");
     }
 
     /// <summary>
@@ -280,6 +531,36 @@ public static class MapGenerationRpgIntegration
     {
         SerializedProperty property = RequireProperty(serializedObject, propertyName);
         property.boolValue = value;
+    }
+
+    /// <summary>
+    /// 设置 SerializedObject（序列化对象）的对象引用数组字段。
+    /// </summary>
+    private static void SetObjectArrayProperty(
+        SerializedObject serializedObject,
+        string propertyName,
+        UnityEngine.Object[] values)
+    {
+        SerializedProperty property = RequireProperty(serializedObject, propertyName);
+        property.arraySize = values.Length;
+
+        for (int index = 0; index < values.Length; index++)
+            property.GetArrayElementAtIndex(index).objectReferenceValue = values[index];
+    }
+
+    /// <summary>
+    /// 设置 SerializedObject（序列化对象）的二维整数向量数组字段。
+    /// </summary>
+    private static void SetVector2IntArrayProperty(
+        SerializedObject serializedObject,
+        string propertyName,
+        Vector2Int[] values)
+    {
+        SerializedProperty property = RequireProperty(serializedObject, propertyName);
+        property.arraySize = values.Length;
+
+        for (int index = 0; index < values.Length; index++)
+            property.GetArrayElementAtIndex(index).vector2IntValue = values[index];
     }
 
     /// <summary>

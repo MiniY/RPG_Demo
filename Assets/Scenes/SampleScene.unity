@@ -49494,6 +49494,14 @@ PrefabInstance:
       propertyPath: player
       value:
       objectReference: {fileID: 244025298}
+    - target: {fileID: 420000000000000004, guid: 5c3a7704cf4bc9547bc54b3e1f658207, type: 3}
+      propertyPath: playerFollowCamera
+      value:
+      objectReference: {fileID: 497998058}
+    - target: {fileID: 420000000000000004, guid: 5c3a7704cf4bc9547bc54b3e1f658207, type: 3}
+      propertyPath: playerFollowConfiner
+      value:
+      objectReference: {fileID: 497998060}
     - target: {fileID: 4717348320653228466, guid: 5c3a7704cf4bc9547bc54b3e1f658207, type: 3}
       propertyPath: placementAnchor
       value:

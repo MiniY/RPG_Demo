@@ -97,7 +97,7 @@ public static class MapLifecycleTransitions
             { MapLifecyclePhase.Projecting, new[] { MapLifecyclePhase.Materializing, MapLifecyclePhase.Failed } },
             { MapLifecyclePhase.SpawningPlayer, new[] { MapLifecyclePhase.Preparing, MapLifecyclePhase.Reinitializing, MapLifecyclePhase.Failed } },
             { MapLifecyclePhase.Reinitializing, new[] { MapLifecyclePhase.BindingCamera, MapLifecyclePhase.Failed } },
-            { MapLifecyclePhase.BindingCamera, new[] { MapLifecyclePhase.ValidatingRuntime, MapLifecyclePhase.Failed } },
+            { MapLifecyclePhase.BindingCamera, new[] { MapLifecyclePhase.Preparing, MapLifecyclePhase.ValidatingRuntime, MapLifecyclePhase.Failed } },
             { MapLifecyclePhase.ValidatingRuntime, new[] { MapLifecyclePhase.Ready, MapLifecyclePhase.Failed } }
         };
     public static bool IsLegal(MapLifecyclePhase current, MapLifecyclePhase next) =>

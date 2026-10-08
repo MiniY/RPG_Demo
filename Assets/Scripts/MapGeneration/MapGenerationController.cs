@@ -95,6 +95,62 @@ public class MapGenerationController : MonoBehaviour
         if (!spawned)
         {
             Debug.LogError($"Player spawn failed: {spawnFailure}", this);
+            return;
+        }
+
+        // The standalone MapGeneration test scene intentionally stops at the Stage 3 seam.
+        if (bootstrap == null)
+            return;
+
+        MapDependentReinitializationService[] reinitializationServices =
+            GetComponentsInParent<MapDependentReinitializationService>(true);
+        MapGeneratedObjectPlacementAdapter[] placementAdapters =
+            GetComponentsInParent<MapGeneratedObjectPlacementAdapter>(true);
+        if (reinitializationServices.Length != 1 || placementAdapters.Length != 1)
+        {
+            FailStageConfiguration(result.GenerationId.Value, MapLifecyclePhase.Reinitializing,
+                "ReinitializationOwnerCount",
+                $"RandomGenerated requires exactly one reinitialization service and placement adapter; " +
+                $"found {reinitializationServices.Length} and {placementAdapters.Length}.");
+            return;
+        }
+
+        MapDependentReinitializationService reinitializationService = reinitializationServices[0];
+        if (!reinitializationService.TryReinitialize(
+                orchestrator.Context,
+                result.GenerationId.Value,
+                placementAdapters[0].RestartAfterPlacement,
+                out string reinitializationFailure))
+        {
+            Debug.LogError($"Map-dependent reinitialization failed: {reinitializationFailure}", this);
+            return;
+        }
+
+        CameraBindingService[] cameraBindingServices =
+            GetComponentsInParent<CameraBindingService>(true);
+        PlayerFollowCameraProvider[] cameraProviders =
+            GetComponentsInParent<PlayerFollowCameraProvider>(true);
+        if (cameraBindingServices.Length != 1 || cameraProviders.Length != 1)
+        {
+            FailStageConfiguration(result.GenerationId.Value, MapLifecyclePhase.BindingCamera,
+                "CameraIntegrationOwnerCount",
+                $"RandomGenerated requires exactly one CameraBindingService and Player-follow Camera provider; " +
+                $"found {cameraBindingServices.Length} and {cameraProviders.Length}.");
+            return;
+        }
+
+        if (!cameraBindingServices[0].TryBind(
+                orchestrator.Context,
+                result.GenerationId.Value,
+                tilemapRenderer.Coordinates,
+                playerProvider,
+                player,
+                spawnService,
+                reinitializationService,
+                cameraProviders[0],
+                out string cameraFailure))
+        {
+            Debug.LogError($"Camera binding failed: {cameraFailure}", this);
         }
     }
 
@@ -193,5 +249,30 @@ public class MapGenerationController : MonoBehaviour
         context.RecordFailure(new MapFailureDiagnostic(context.Mode, generationId, context.Phase,
             MapFailureCategory.Configuration, code, reason));
         Debug.LogError($"Player spawn failed [{code}]: {reason}", this);
+    }
+
+    private void FailStageConfiguration(
+        Guid generationId,
+        MapLifecyclePhase failurePhase,
+        string code,
+        string reason)
+    {
+        MapRuntimeContext context = orchestrator.Context;
+        if (failurePhase == MapLifecyclePhase.Reinitializing &&
+            context.Phase == MapLifecyclePhase.SpawningPlayer)
+        {
+            MapLifecycleTransitions.Advance(context, MapLifecyclePhase.Reinitializing);
+        }
+        else if (failurePhase == MapLifecyclePhase.BindingCamera)
+        {
+            if (context.Phase == MapLifecyclePhase.SpawningPlayer)
+                MapLifecycleTransitions.Advance(context, MapLifecyclePhase.Reinitializing);
+            if (context.Phase == MapLifecyclePhase.Reinitializing)
+                MapLifecycleTransitions.Advance(context, MapLifecyclePhase.BindingCamera);
+        }
+
+        context.RecordFailure(new MapFailureDiagnostic(context.Mode, generationId, context.Phase,
+            MapFailureCategory.Configuration, code, reason));
+        Debug.LogError($"Map integration failed [{code}]: {reason}", this);
     }
 }

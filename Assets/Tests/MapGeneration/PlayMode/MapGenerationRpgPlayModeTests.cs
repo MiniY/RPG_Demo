@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Reflection;
+using Cinemachine;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -38,6 +39,12 @@ public sealed class MapGenerationRpgPlayModeTests
             runtimeRoot.GetComponent<CanonicalPlayerProvider>();
         PlayerSpawnService playerSpawnService =
             runtimeRoot.GetComponent<PlayerSpawnService>();
+        MapDependentReinitializationService reinitializationService =
+            runtimeRoot.GetComponent<MapDependentReinitializationService>();
+        PlayerFollowCameraProvider cameraProvider =
+            runtimeRoot.GetComponent<PlayerFollowCameraProvider>();
+        CameraBindingService cameraBindingService =
+            runtimeRoot.GetComponent<CameraBindingService>();
         MapGeneratedObjectPlacementAdapter placementAdapter =
             runtimeRoot.GetComponent<MapGeneratedObjectPlacementAdapter>();
         MapMinimapController minimap =
@@ -47,10 +54,13 @@ public sealed class MapGenerationRpgPlayModeTests
         Assert.That(runtimeBootstrap, Is.Not.Null);
         Assert.That(playerProvider, Is.Not.Null);
         Assert.That(playerSpawnService, Is.Not.Null);
+        Assert.That(reinitializationService, Is.Not.Null);
+        Assert.That(cameraProvider, Is.Not.Null);
+        Assert.That(cameraBindingService, Is.Not.Null);
         MapRuntimeDiagnosticSnapshot bootstrapDiagnostics =
             runtimeBootstrap.DiagnosticSnapshot;
         Assert.That(bootstrapDiagnostics.Mode, Is.EqualTo(MapRuntimeMode.RandomGenerated));
-        Assert.That(bootstrapDiagnostics.Phase, Is.EqualTo(MapLifecyclePhase.SpawningPlayer));
+        Assert.That(bootstrapDiagnostics.Phase, Is.EqualTo(MapLifecyclePhase.BindingCamera));
         Assert.That(bootstrapDiagnostics.IsFailed, Is.False);
         Assert.That(bootstrapDiagnostics.AuthorityState.RandomGeneratedActive, Is.True);
         Assert.That(bootstrapDiagnostics.AuthorityState.LegacyStaticActive, Is.False);
@@ -60,6 +70,11 @@ public sealed class MapGenerationRpgPlayModeTests
         Assert.That(minimap, Is.Not.Null);
         Assert.That(playerSpawnService.SpawnCount, Is.EqualTo(1));
         Assert.That(playerSpawnService.ReadyGenerationId, Is.EqualTo(bootstrapDiagnostics.ActiveGenerationId));
+        Assert.That(reinitializationService.ReinitializationCount, Is.EqualTo(1));
+        Assert.That(reinitializationService.ReadyGenerationId, Is.EqualTo(bootstrapDiagnostics.ActiveGenerationId));
+        Assert.That(cameraBindingService.BindingCount, Is.EqualTo(1));
+        Assert.That(cameraBindingService.TrackingRefreshCount, Is.EqualTo(1));
+        Assert.That(cameraBindingService.ReadyGenerationId, Is.EqualTo(bootstrapDiagnostics.ActiveGenerationId));
         Transform canonicalPlayer = controller.Player;
         Assert.That(canonicalPlayer, Is.Not.Null);
         Component damageController = canonicalPlayer.GetComponent("PlayerDamageController");
@@ -76,6 +91,7 @@ public sealed class MapGenerationRpgPlayModeTests
         AssertGeneratedCollision(controller.TilemapRenderer);
         AssertWorldObjectsPlaced(placementAdapter, controller);
         AssertMainCameraFollowsPlayer(controller.Player);
+        AssertCurrentCameraBinding(controller, cameraProvider, cameraBindingService);
 
         MapData firstMap = controller.LastGeneratedMap;
         controller.RegenerateMap();
@@ -84,10 +100,19 @@ public sealed class MapGenerationRpgPlayModeTests
         Assert.That(controller.LastGeneratedMap, Is.Not.SameAs(firstMap));
         Assert.That(controller.Player, Is.SameAs(canonicalPlayer));
         Assert.That(playerSpawnService.SpawnCount, Is.EqualTo(2));
+        MapRuntimeDiagnosticSnapshot regeneratedDiagnostics = runtimeBootstrap.DiagnosticSnapshot;
+        Assert.That(regeneratedDiagnostics.Phase, Is.EqualTo(MapLifecyclePhase.BindingCamera));
+        Assert.That(regeneratedDiagnostics.IsFailed, Is.False);
+        Assert.That(reinitializationService.ReinitializationCount, Is.EqualTo(2));
+        Assert.That(reinitializationService.ReadyGenerationId, Is.EqualTo(regeneratedDiagnostics.ActiveGenerationId));
+        Assert.That(cameraBindingService.BindingCount, Is.EqualTo(2));
+        Assert.That(cameraBindingService.TrackingRefreshCount, Is.EqualTo(2));
+        Assert.That(cameraBindingService.ReadyGenerationId, Is.EqualTo(regeneratedDiagnostics.ActiveGenerationId));
         Assert.That(GetFloatProperty(damageController, "CurrentHealth"), Is.EqualTo(healthBeforeRegeneration));
         Assert.That(GetCollectionCount(inventory, "ItemStacks"), Is.EqualTo(inventoryStacksBeforeRegeneration));
         AssertPlayerAtSpawn(controller);
         AssertWorldObjectsPlaced(placementAdapter, controller);
+        AssertCurrentCameraBinding(controller, cameraProvider, cameraBindingService);
     }
 
     /// <summary>
@@ -181,6 +206,33 @@ public sealed class MapGenerationRpgPlayModeTests
         }
 
         Assert.That(followsPlayer, Is.True);
+    }
+
+    private static void AssertCurrentCameraBinding(
+        MapGenerationController controller,
+        PlayerFollowCameraProvider provider,
+        CameraBindingService service)
+    {
+        Assert.That(provider.TryResolve(out PlayerFollowCameraBinding binding, out string reason),
+            Is.True, reason);
+        Transform cameraTarget = controller.Player.Find("CameraTarget");
+        Assert.That(cameraTarget, Is.Not.Null);
+        Assert.That(binding.VirtualCamera.Follow, Is.EqualTo(cameraTarget));
+        Assert.That(service.ReadyFollowTarget, Is.EqualTo(cameraTarget));
+        Assert.That(controller.TilemapRenderer.Coordinates.TryCellBoundsToWorld(
+            controller.LastGeneratedMap, out Bounds expectedBounds), Is.True);
+        AssertBounds(service.AppliedWorldBounds, expectedBounds);
+        AssertBounds(binding.BoundsCollider.bounds, expectedBounds);
+        Assert.That(binding.VirtualCamera.PreviousStateIsValid, Is.True,
+            "After one rendered frame, Cinemachine must have consumed the reset state for the Current Generation.");
+    }
+
+    private static void AssertBounds(Bounds actual, Bounds expected)
+    {
+        Assert.That(actual.min.x, Is.EqualTo(expected.min.x).Within(0.01f));
+        Assert.That(actual.min.y, Is.EqualTo(expected.min.y).Within(0.01f));
+        Assert.That(actual.max.x, Is.EqualTo(expected.max.x).Within(0.01f));
+        Assert.That(actual.max.y, Is.EqualTo(expected.max.y).Within(0.01f));
     }
 
     private static float GetFloatProperty(Component component, string propertyName)

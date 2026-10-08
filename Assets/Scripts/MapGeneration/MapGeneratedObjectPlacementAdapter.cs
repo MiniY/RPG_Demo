@@ -59,6 +59,9 @@ public sealed class MapGeneratedObjectPlacementAdapter : MonoBehaviour
     /// </summary>
     public IReadOnlyList<Transform> MapAnchoredObjects => mapAnchoredObjects;
 
+    /// <summary>Explicit objects whose map-derived runtime state must be refreshed after PlayerReady.</summary>
+    public IReadOnlyList<GameObject> RestartAfterPlacement => restartAfterPlacement;
+
     /// <summary>
     /// 在其他组件的 Start（启动）前捕获 Main 场景原始相对布局。
     /// </summary>
@@ -132,9 +135,6 @@ public sealed class MapGeneratedObjectPlacementAdapter : MonoBehaviour
                 unavailableCells.Add(occupiedCell);
         }
 
-        HashSet<GameObject> restartObjects = new HashSet<GameObject>(
-            restartAfterPlacement ?? Array.Empty<GameObject>());
-
         foreach (Transform target in mapAnchoredObjects ?? Array.Empty<Transform>())
         {
             if (target == null || !authoredCellOffsets.TryGetValue(target, out Vector2Int offset))
@@ -154,8 +154,7 @@ public sealed class MapGeneratedObjectPlacementAdapter : MonoBehaviour
             MoveTargetToCell(
                 target,
                 mapData,
-                placementCell,
-                restartObjects.Contains(target.gameObject));
+                placementCell);
             unavailableCells.Add(placementCell);
         }
     }
@@ -284,27 +283,17 @@ public sealed class MapGeneratedObjectPlacementAdapter : MonoBehaviour
     }
 
     /// <summary>
-    /// 移动对象；需要时重新启用对象，让 AI 以新位置记录出生点。
+    /// 移动对象。地图依赖状态由 PlayerReady 之后的 reinitialization service 统一刷新。
     /// </summary>
     private void MoveTargetToCell(
         Transform target,
         MapData mapData,
-        Vector2Int placementCell,
-        bool restartAfterMove)
+        Vector2Int placementCell)
     {
-        GameObject targetObject = target.gameObject;
-        bool shouldRestart = restartAfterMove && targetObject.activeSelf;
-
-        if (shouldRestart)
-            targetObject.SetActive(false);
-
         Vector3 worldPosition = mapController.TilemapRenderer.Coordinates.CellToWorld(
             mapData,
             placementCell);
         worldPosition.z = target.position.z;
         target.position = worldPosition;
-
-        if (shouldRestart)
-            targetObject.SetActive(true);
     }
 }

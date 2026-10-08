@@ -7,7 +7,7 @@ using UnityEngine;
 [RequireComponent(typeof(MonsterPerceptionController))]
 [RequireComponent(typeof(MonsterAttackController))]
 // 管理怪物行为状态、出生点和当前目标，不直接执行移动或动画。
-public class MonsterAIController : MonoBehaviour
+public class MonsterAIController : MonoBehaviour, IMapDependentReinitializable
 {
     [Header("巡逻参数")]
     [SerializeField, Min(0f)] private float patrolRadius = 2f; // 以出生点为圆心的巡逻半径。
@@ -75,14 +75,7 @@ public class MonsterAIController : MonoBehaviour
         BindDamageableEvents();
         BindPerceptionEvents();
 
-        homePosition = transform.position;
-        currentTarget = null;
-        visibleTarget = perceptionController != null
-            ? perceptionController.CurrentVisibleTarget
-            : null;
-        isTargetConfirmed = false;
-        isRunning = true;
-        TryChangeState(MonsterStateType.Patrol);
+        ReinitializeForMap();
     }
 
     // 禁用或回收到对象池时解绑事件并停止 AI。
@@ -100,6 +93,22 @@ public class MonsterAIController : MonoBehaviour
             return;
 
         currentState?.Tick();
+    }
+
+    // 在最终地图定位后显式刷新出生点、目标和巡逻状态。
+    public void ReinitializeForMap()
+    {
+        currentState?.Exit();
+        currentState = null;
+        movementController?.Stop();
+        homePosition = transform.position;
+        currentTarget = null;
+        visibleTarget = perceptionController != null
+            ? perceptionController.CurrentVisibleTarget
+            : null;
+        isTargetConfirmed = false;
+        isRunning = true;
+        TryChangeState(MonsterStateType.Patrol);
     }
 
     // 注册一个可供状态机切换的行为状态。

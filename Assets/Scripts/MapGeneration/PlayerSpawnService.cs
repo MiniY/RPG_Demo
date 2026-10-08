@@ -9,6 +9,7 @@ public sealed class PlayerSpawnService : MonoBehaviour
 
     public int SpawnCount { get; private set; }
     public Guid? ReadyGenerationId { get; private set; }
+    public Vector3 LastTeleportDelta { get; private set; }
 
     public bool TrySpawn(
         MapRuntimeContext context,
@@ -65,6 +66,7 @@ public sealed class PlayerSpawnService : MonoBehaviour
         }
 
         destination.z = player.Player.position.z;
+        Vector3 previousPosition = player.Player.position;
         ResetSpatialTransitionState(player);
         player.Body.position = new Vector2(destination.x, destination.y);
         player.Player.position = destination;
@@ -77,6 +79,7 @@ public sealed class PlayerSpawnService : MonoBehaviour
 
         SpawnCount++;
         ReadyGenerationId = generationId;
+        LastTeleportDelta = destination - previousPosition;
         PlayerReady?.Invoke(generationId);
         return true;
     }

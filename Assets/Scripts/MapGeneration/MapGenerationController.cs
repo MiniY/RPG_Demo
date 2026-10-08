@@ -2,245 +2,161 @@ using System;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-/// <summary>
-/// 协调地图数据生成、Tilemap 渲染和玩家出生点定位。
-/// </summary>
 public class MapGenerationController : MonoBehaviour
 {
-    /// <summary>
-    /// 当前地图使用的生成配置。
-    /// </summary>
     [SerializeField] private MapGenerationSettings settings;
-
-    /// <summary>
-    /// 负责把地图数据写入 Tilemap 的渲染器。
-    /// </summary>
     [SerializeField] private MapTilemapRenderer tilemapRenderer;
-
-    /// <summary>
-    /// 负责根据最终地图数据写入简单装饰 Tilemap 的渲染器。
-    /// </summary>
     [FormerlySerializedAs("decorationRenderer")]
     [SerializeField] private MapSimpleDecorationRenderer simpleDecorationRenderer;
-
-    /// <summary>
-    /// 测试场景中的玩家 Transform（变换组件）。
-    /// </summary>
     [SerializeField] private Transform player;
-
-    /// <summary>
-    /// 是否在进入 Play Mode（运行模式）时重新生成地图。
-    /// </summary>
     [SerializeField] private bool generateOnPlay;
-
-    /// <summary>
-    /// 生成地图后是否把玩家移动到出生点。
-    /// </summary>
     [SerializeField] private bool movePlayerToSpawn = true;
-
-    /// <summary>
-    /// 是否在 Console（控制台）输出本次生成摘要。
-    /// </summary>
     [SerializeField] private bool logGenerationSummary = true;
 
-    /// <summary>
-    /// 最近一次生成的运行时地图数据。
-    /// </summary>
     private MapData lastGeneratedMap;
-
-    /// <summary>
-    /// 最近一次生成的简单装饰物数据。
-    /// </summary>
     private MapSimpleDecorationData lastGeneratedSimpleDecorations;
+    private MapIntegrationOrchestrator orchestrator;
 
-    /// <summary>
-    /// 地图生成完成后通知小地图和其他观察者。
-    /// </summary>
     public event Action<MapData> MapGenerated;
-
-    /// <summary>
-    /// 地图被清空后通知小地图和其他观察者。
-    /// </summary>
     public event Action MapCleared;
 
-    /// <summary>
-    /// 获取当前地图配置。
-    /// </summary>
     public MapGenerationSettings Settings => settings;
-
-    /// <summary>
-    /// 获取 Tilemap 渲染器。
-    /// </summary>
     public MapTilemapRenderer TilemapRenderer => tilemapRenderer;
-
-    /// <summary>
-    /// 获取简单装饰 Tilemap 渲染器。
-    /// </summary>
-    public MapSimpleDecorationRenderer SimpleDecorationRenderer =>
-        simpleDecorationRenderer;
-
-    /// <summary>
-    /// 获取生成地图后需要移动到出生点的玩家变换组件。
-    /// </summary>
+    public MapSimpleDecorationRenderer SimpleDecorationRenderer => simpleDecorationRenderer;
     public Transform Player => player;
-
-    /// <summary>
-    /// 获取最近一次生成的地图数据。
-    /// </summary>
     public MapData LastGeneratedMap => lastGeneratedMap;
-
-    /// <summary>
-    /// 获取最近一次生成的简单装饰物数据。
-    /// </summary>
-    public MapSimpleDecorationData LastGeneratedSimpleDecorations =>
-        lastGeneratedSimpleDecorations;
-
-    /// <summary>
-    /// 根据配置生成并渲染地图。
-    /// </summary>
-    public void GenerateMap()
+    public MapSimpleDecorationData LastGeneratedSimpleDecorations => lastGeneratedSimpleDecorations;
+    public MapIntegrationOrchestrator Orchestrator
     {
-        MapRuntimeBootstrap runtimeBootstrap = GetComponentInParent<MapRuntimeBootstrap>();
-        if (runtimeBootstrap != null && !runtimeBootstrap.CanRunRandomGeneration)
-        {
-            Debug.LogWarning(
-                $"当前地图运行模式为 {runtimeBootstrap.Mode}，" +
-                "或启动校验已失败；RandomGenerated 生产路径不会运行。",
-                this);
-            return;
-        }
-
-        if (settings == null)
-        {
-            Debug.LogError("MapGenerationController 缺少 MapGenerationSettings。", this);
-            return;
-        }
-
-        if (tilemapRenderer == null)
-        {
-            Debug.LogError("MapGenerationController 缺少 MapTilemapRenderer。", this);
-            return;
-        }
-
-        try
-        {
-            lastGeneratedMap = RandomMapGenerator.Generate(settings);
-            tilemapRenderer.Render(lastGeneratedMap, settings);
-
-            // 简单装饰读取最终地图数据，并使用独立随机流保持地形结果稳定。
-            lastGeneratedSimpleDecorations =
-                MapSimpleDecorationGenerator.Generate(lastGeneratedMap, settings);
-
-            if (simpleDecorationRenderer != null)
-            {
-                simpleDecorationRenderer.Render(
-                    lastGeneratedSimpleDecorations,
-                    lastGeneratedMap,
-                    settings);
-            }
-
-            if (movePlayerToSpawn)
-                MovePlayerToSpawn(lastGeneratedMap);
-
-            MapGenerated?.Invoke(lastGeneratedMap);
-
-            if (logGenerationSummary)
-            {
-                Debug.Log(
-                    $"地图生成完成：Seed={settings.seed}，尺寸={settings.mapWidth}x{settings.mapHeight}，" +
-                    $"出生点={lastGeneratedMap.SpawnCell}，道路终点={lastGeneratedMap.ExitCell}，" +
-                    $"简单装饰={lastGeneratedSimpleDecorations.Count}，" +
-                    $"树木={lastGeneratedSimpleDecorations.CountByType(MapSimpleDecorationType.Tree)}，" +
-                    $"灌木={lastGeneratedSimpleDecorations.CountByType(MapSimpleDecorationType.Bush)}，" +
-                    $"散落岩石={lastGeneratedSimpleDecorations.CountByType(MapSimpleDecorationType.ScatteredRock)}。",
-                    this);
-            }
-        }
-        catch (System.Exception exception)
-        {
-            Debug.LogException(exception, this);
-        }
+        get { EnsureOrchestrator(); return orchestrator; }
     }
 
-    /// <summary>
-    /// 清空地表和碰撞 Tilemap，但不删除配置、角色或场景对象。
-    /// </summary>
+    public void GenerateMap()
+    {
+        MapRuntimeBootstrap bootstrap = GetComponentInParent<MapRuntimeBootstrap>();
+        if (bootstrap != null && !bootstrap.CanRunRandomGeneration)
+        {
+            Debug.LogWarning($"Random generation is unavailable in {bootstrap.Mode} mode or after bootstrap validation failure.", this);
+            return;
+        }
+        if (settings == null)
+        {
+            Debug.LogError("MapGenerationController is missing MapGenerationSettings.", this);
+            return;
+        }
+        if (tilemapRenderer == null)
+        {
+            Debug.LogError("MapGenerationController is missing MapTilemapRenderer.", this);
+            return;
+        }
+
+        EnsureOrchestrator();
+        MapGenerationRequest request = new MapGenerationRequest(Guid.NewGuid(), settings.seed);
+        MapGenerationExecutionResult result = orchestrator.Execute(
+            request,
+            GeneratePending,
+            (attempt, pending) => MapStaticPlacementPlanner.Build(
+                attempt.GenerationId, pending.Map, pending.Decorations, settings),
+            ProjectCommitted);
+
+        if (!result.Succeeded)
+            Debug.LogError($"Map generation failed [{result.Failure.Code}]: {result.Failure.Reason}", this);
+    }
+
     public void ClearMap()
     {
-        if (tilemapRenderer != null)
-            tilemapRenderer.Clear();
-
-        if (simpleDecorationRenderer != null)
-            simpleDecorationRenderer.Clear();
-
+        if (tilemapRenderer != null) tilemapRenderer.Clear();
+        if (simpleDecorationRenderer != null) simpleDecorationRenderer.Clear();
         lastGeneratedMap = null;
         lastGeneratedSimpleDecorations = null;
         MapCleared?.Invoke();
     }
 
-    /// <summary>
-    /// 使用当前配置重新生成地图。
-    /// </summary>
-    public void RegenerateMap()
-    {
-        ClearMap();
-        GenerateMap();
-    }
+    // Keep the previous projection intact until a new pending generation commits.
+    public void RegenerateMap() => GenerateMap();
 
-    /// <summary>
-    /// 为配置设置一个新的随机种子，但不立即生成地图。
-    /// </summary>
     public void RandomizeSeed()
     {
         if (settings == null)
         {
-            Debug.LogError("MapGenerationController 缺少 MapGenerationSettings。", this);
+            Debug.LogError("MapGenerationController is missing MapGenerationSettings.", this);
             return;
         }
-
-        settings.seed = System.Guid.NewGuid().GetHashCode();
+        settings.seed = Guid.NewGuid().GetHashCode();
     }
 
-    /// <summary>
-    /// 在运行时自动生成地图，默认关闭以保留编辑器生成结果。
-    /// </summary>
     private void Start()
     {
-        if (generateOnPlay)
-            GenerateMap();
+        if (generateOnPlay) GenerateMap();
     }
 
-    /// <summary>
-    /// 把玩家移动到地图数据中的出生单元中心。
-    /// </summary>
-    /// <param name="mapData">最近生成的地图数据。</param>
+    private void EnsureOrchestrator()
+    {
+        if (orchestrator != null) return;
+        MapRuntimeBootstrap bootstrap = GetComponentInParent<MapRuntimeBootstrap>();
+        MapRuntimeContext context;
+        if (bootstrap != null)
+        {
+            context = bootstrap.Context;
+        }
+        else
+        {
+            context = new MapRuntimeContext(MapRuntimeMode.RandomGenerated);
+            context.SetPhase(MapLifecyclePhase.Initialized);
+        }
+        orchestrator = new MapIntegrationOrchestrator(context);
+    }
+
+    private MapPendingGeneration GeneratePending(MapGenerationAttempt attempt)
+    {
+        MapGenerationSettings attemptSettings = Instantiate(settings);
+        attemptSettings.seed = attempt.AttemptSeed;
+        try
+        {
+            MapData map = RandomMapGenerator.Generate(attemptSettings);
+            MapSimpleDecorationData decorations = MapSimpleDecorationGenerator.Generate(map, attemptSettings);
+            return new MapPendingGeneration(attempt.GenerationId, map, decorations);
+        }
+        finally
+        {
+            if (Application.isPlaying) Destroy(attemptSettings);
+            else DestroyImmediate(attemptSettings);
+        }
+    }
+
+    private void ProjectCommitted(MapPendingGeneration pending)
+    {
+        lastGeneratedMap = pending.Map;
+        lastGeneratedSimpleDecorations = pending.Decorations;
+        tilemapRenderer.Render(lastGeneratedMap, settings);
+        if (simpleDecorationRenderer != null)
+            simpleDecorationRenderer.Render(lastGeneratedSimpleDecorations, lastGeneratedMap, settings);
+
+        // Stage 3 will replace this compatibility spawn behavior with PlayerSpawnService.
+        if (movePlayerToSpawn) MovePlayerToSpawn(lastGeneratedMap);
+        MapGenerated?.Invoke(lastGeneratedMap);
+
+        if (logGenerationSummary)
+            Debug.Log($"Map generation committed: GenerationId={orchestrator.Context.ActiveGenerationId}; " +
+                $"RequestedSeed={settings.seed}; Size={settings.mapWidth}x{settings.mapHeight}; " +
+                $"Spawn={lastGeneratedMap.SpawnCell}; Exit={lastGeneratedMap.ExitCell}; " +
+                $"Decorations={lastGeneratedSimpleDecorations?.Count ?? 0}.", this);
+    }
+
     private void MovePlayerToSpawn(MapData mapData)
     {
-        if (player == null || tilemapRenderer == null)
-            return;
-
-        Vector3 spawnWorldPosition = tilemapRenderer.Coordinates.CellToWorld(
-            mapData,
-            mapData.SpawnCell);
-        spawnWorldPosition.z = player.position.z;
-        player.position = spawnWorldPosition;
+        if (player == null || tilemapRenderer == null) return;
+        Vector3 position = tilemapRenderer.Coordinates.CellToWorld(mapData, mapData.SpawnCell);
+        position.z = player.position.z;
+        player.position = position;
     }
 
-    /// <summary>
-    /// 在 Scene（场景）视图中显示出生点和道路终点辅助图形。
-    /// </summary>
     private void OnDrawGizmosSelected()
     {
-        if (lastGeneratedMap == null || tilemapRenderer == null)
-            return;
-
+        if (lastGeneratedMap == null || tilemapRenderer == null) return;
         Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(
-            tilemapRenderer.Coordinates.CellToWorld(lastGeneratedMap, lastGeneratedMap.SpawnCell),
-            0.35f);
+        Gizmos.DrawWireSphere(tilemapRenderer.Coordinates.CellToWorld(lastGeneratedMap, lastGeneratedMap.SpawnCell), 0.35f);
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(
-            tilemapRenderer.Coordinates.CellToWorld(lastGeneratedMap, lastGeneratedMap.ExitCell),
-            0.35f);
+        Gizmos.DrawWireSphere(tilemapRenderer.Coordinates.CellToWorld(lastGeneratedMap, lastGeneratedMap.ExitCell), 0.35f);
     }
 }

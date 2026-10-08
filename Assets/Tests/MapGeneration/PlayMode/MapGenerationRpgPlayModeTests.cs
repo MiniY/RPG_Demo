@@ -44,7 +44,7 @@ public sealed class MapGenerationRpgPlayModeTests
         MapRuntimeDiagnosticSnapshot bootstrapDiagnostics =
             runtimeBootstrap.DiagnosticSnapshot;
         Assert.That(bootstrapDiagnostics.Mode, Is.EqualTo(MapRuntimeMode.RandomGenerated));
-        Assert.That(bootstrapDiagnostics.Phase, Is.EqualTo(MapLifecyclePhase.Initialized));
+        Assert.That(bootstrapDiagnostics.Phase, Is.EqualTo(MapLifecyclePhase.Materializing));
         Assert.That(bootstrapDiagnostics.IsFailed, Is.False);
         Assert.That(bootstrapDiagnostics.AuthorityState.RandomGeneratedActive, Is.True);
         Assert.That(bootstrapDiagnostics.AuthorityState.LegacyStaticActive, Is.False);

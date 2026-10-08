@@ -95,7 +95,7 @@ public static class MapLifecycleTransitions
             { MapLifecyclePhase.Committing, new[] { MapLifecyclePhase.Committed, MapLifecyclePhase.Failed } },
             { MapLifecyclePhase.Committed, new[] { MapLifecyclePhase.Projecting, MapLifecyclePhase.Failed } },
             { MapLifecyclePhase.Projecting, new[] { MapLifecyclePhase.Materializing, MapLifecyclePhase.Failed } },
-            { MapLifecyclePhase.SpawningPlayer, new[] { MapLifecyclePhase.Reinitializing, MapLifecyclePhase.Failed } },
+            { MapLifecyclePhase.SpawningPlayer, new[] { MapLifecyclePhase.Preparing, MapLifecyclePhase.Reinitializing, MapLifecyclePhase.Failed } },
             { MapLifecyclePhase.Reinitializing, new[] { MapLifecyclePhase.BindingCamera, MapLifecyclePhase.Failed } },
             { MapLifecyclePhase.BindingCamera, new[] { MapLifecyclePhase.ValidatingRuntime, MapLifecyclePhase.Failed } },
             { MapLifecyclePhase.ValidatingRuntime, new[] { MapLifecyclePhase.Ready, MapLifecyclePhase.Failed } }

@@ -10,7 +10,6 @@ public class MapGenerationController : MonoBehaviour
     [SerializeField] private MapSimpleDecorationRenderer simpleDecorationRenderer;
     [SerializeField] private Transform player;
     [SerializeField] private bool generateOnPlay;
-    [SerializeField] private bool movePlayerToSpawn = true;
     [SerializeField] private bool logGenerationSummary = true;
 
     private MapData lastGeneratedMap;
@@ -60,7 +59,43 @@ public class MapGenerationController : MonoBehaviour
             ProjectCommitted);
 
         if (!result.Succeeded)
+        {
             Debug.LogError($"Map generation failed [{result.Failure.Code}]: {result.Failure.Reason}", this);
+            return;
+        }
+
+        PlayerSpawnService[] spawnServices = GetComponentsInParent<PlayerSpawnService>(true);
+        CanonicalPlayerProvider[] playerProviders = GetComponentsInParent<CanonicalPlayerProvider>(true);
+        if (spawnServices.Length != 1)
+        {
+            FailPlayerSpawnConfiguration(result.GenerationId.Value, "PlayerSpawnOwnerCount",
+                $"RandomGenerated requires exactly one PlayerSpawnService; found {spawnServices.Length}.");
+            return;
+        }
+        if (playerProviders.Length != 1)
+        {
+            FailPlayerSpawnConfiguration(result.GenerationId.Value, "CanonicalPlayerProviderCount",
+                $"RandomGenerated requires exactly one CanonicalPlayerProvider; found {playerProviders.Length}.");
+            return;
+        }
+
+        PlayerSpawnService spawnService = spawnServices[0];
+        CanonicalPlayerProvider playerProvider = playerProviders[0];
+        bool projectionReady = tilemapRenderer.TerrainCollisionTilemap != null &&
+                               tilemapRenderer.TerrainCollisionTilemap.GetUsedTilesCount() > 0;
+        string spawnFailure = null;
+        bool spawned = spawnService.TrySpawn(
+                orchestrator.Context,
+                result.GenerationId.Value,
+                tilemapRenderer.Coordinates,
+                playerProvider,
+                player,
+                projectionReady,
+                out spawnFailure);
+        if (!spawned)
+        {
+            Debug.LogError($"Player spawn failed: {spawnFailure}", this);
+        }
     }
 
     public void ClearMap()
@@ -132,8 +167,6 @@ public class MapGenerationController : MonoBehaviour
         if (simpleDecorationRenderer != null)
             simpleDecorationRenderer.Render(lastGeneratedSimpleDecorations, lastGeneratedMap, settings);
 
-        // Stage 3 will replace this compatibility spawn behavior with PlayerSpawnService.
-        if (movePlayerToSpawn) MovePlayerToSpawn(lastGeneratedMap);
         MapGenerated?.Invoke(lastGeneratedMap);
 
         if (logGenerationSummary)
@@ -143,14 +176,6 @@ public class MapGenerationController : MonoBehaviour
                 $"Decorations={lastGeneratedSimpleDecorations?.Count ?? 0}.", this);
     }
 
-    private void MovePlayerToSpawn(MapData mapData)
-    {
-        if (player == null || tilemapRenderer == null) return;
-        Vector3 position = tilemapRenderer.Coordinates.CellToWorld(mapData, mapData.SpawnCell);
-        position.z = player.position.z;
-        player.position = position;
-    }
-
     private void OnDrawGizmosSelected()
     {
         if (lastGeneratedMap == null || tilemapRenderer == null) return;
@@ -158,5 +183,15 @@ public class MapGenerationController : MonoBehaviour
         Gizmos.DrawWireSphere(tilemapRenderer.Coordinates.CellToWorld(lastGeneratedMap, lastGeneratedMap.SpawnCell), 0.35f);
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(tilemapRenderer.Coordinates.CellToWorld(lastGeneratedMap, lastGeneratedMap.ExitCell), 0.35f);
+    }
+
+    private void FailPlayerSpawnConfiguration(Guid generationId, string code, string reason)
+    {
+        MapRuntimeContext context = orchestrator.Context;
+        if (context.Phase == MapLifecyclePhase.Materializing)
+            MapLifecycleTransitions.Advance(context, MapLifecyclePhase.SpawningPlayer);
+        context.RecordFailure(new MapFailureDiagnostic(context.Mode, generationId, context.Phase,
+            MapFailureCategory.Configuration, code, reason));
+        Debug.LogError($"Player spawn failed [{code}]: {reason}", this);
     }
 }

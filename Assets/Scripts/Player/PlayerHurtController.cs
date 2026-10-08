@@ -4,7 +4,7 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerAction))]
 [RequireComponent(typeof(PlayerDamageController))]
 // 监听玩家受伤事件并执行远离伤害来源的短距离击退，不负责扣除生命值或播放动画。
-public class PlayerHurtController : MonoBehaviour
+public class PlayerHurtController : MonoBehaviour, IMapTransitionResettable
 {
     [Header("击退参数")]
     [SerializeField, Min(0f)] private float knockbackDistance = 0.65f; // 玩家每次受击向后移动的总距离。
@@ -172,6 +172,12 @@ public class PlayerHurtController : MonoBehaviour
 
         if (playerAction != null)
             playerAction.SetControlLocked(false);
+    }
+
+    /// <summary>Stops prior-map knockback without changing Player gameplay state.</summary>
+    public void ResetMapTransitionState()
+    {
+        EndKnockback();
     }
 
     // 创建忽略触发器且只检测指定障碍图层的击退过滤条件。

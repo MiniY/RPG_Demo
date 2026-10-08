@@ -1374,6 +1374,8 @@ GameObject:
   - component: {fileID: 1000000053}
   - component: {fileID: 1000000054}
   - component: {fileID: 1000000055}
+  - component: {fileID: 6000000101}
+  - component: {fileID: 6000000102}
   m_Layer: 0
   m_Name: MapGenerationController
   m_TagString: Untagged
@@ -1413,8 +1415,31 @@ MonoBehaviour:
   simpleDecorationRenderer: {fileID: 1000000055}
   player: {fileID: 6000000002}
   generateOnPlay: 1
-  movePlayerToSpawn: 1
   logGenerationSummary: 1
+--- !u!114 &6000000101
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000000050}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17a3a6abfd0c4da8aa478820dfb2b001, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+--- !u!114 &6000000102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000000050}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17a3a6abfd0c4da8aa478820dfb2b002, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
 --- !u!114 &1000000053
 MonoBehaviour:
   m_ObjectHideFlags: 0

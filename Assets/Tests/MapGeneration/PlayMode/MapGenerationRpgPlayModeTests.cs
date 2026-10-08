@@ -34,6 +34,10 @@ public sealed class MapGenerationRpgPlayModeTests
             runtimeRoot.GetComponentInChildren<MapGenerationController>(true);
         MapRuntimeBootstrap runtimeBootstrap =
             runtimeRoot.GetComponent<MapRuntimeBootstrap>();
+        CanonicalPlayerProvider playerProvider =
+            runtimeRoot.GetComponent<CanonicalPlayerProvider>();
+        PlayerSpawnService playerSpawnService =
+            runtimeRoot.GetComponent<PlayerSpawnService>();
         MapGeneratedObjectPlacementAdapter placementAdapter =
             runtimeRoot.GetComponent<MapGeneratedObjectPlacementAdapter>();
         MapMinimapController minimap =
@@ -41,10 +45,12 @@ public sealed class MapGenerationRpgPlayModeTests
 
         Assert.That(controller, Is.Not.Null);
         Assert.That(runtimeBootstrap, Is.Not.Null);
+        Assert.That(playerProvider, Is.Not.Null);
+        Assert.That(playerSpawnService, Is.Not.Null);
         MapRuntimeDiagnosticSnapshot bootstrapDiagnostics =
             runtimeBootstrap.DiagnosticSnapshot;
         Assert.That(bootstrapDiagnostics.Mode, Is.EqualTo(MapRuntimeMode.RandomGenerated));
-        Assert.That(bootstrapDiagnostics.Phase, Is.EqualTo(MapLifecyclePhase.Materializing));
+        Assert.That(bootstrapDiagnostics.Phase, Is.EqualTo(MapLifecyclePhase.SpawningPlayer));
         Assert.That(bootstrapDiagnostics.IsFailed, Is.False);
         Assert.That(bootstrapDiagnostics.AuthorityState.RandomGeneratedActive, Is.True);
         Assert.That(bootstrapDiagnostics.AuthorityState.LegacyStaticActive, Is.False);
@@ -52,6 +58,16 @@ public sealed class MapGenerationRpgPlayModeTests
             "Main 场景进入 Play Mode 后应自动生成随机地图。");
         Assert.That(placementAdapter, Is.Not.Null);
         Assert.That(minimap, Is.Not.Null);
+        Assert.That(playerSpawnService.SpawnCount, Is.EqualTo(1));
+        Assert.That(playerSpawnService.ReadyGenerationId, Is.EqualTo(bootstrapDiagnostics.ActiveGenerationId));
+        Transform canonicalPlayer = controller.Player;
+        Assert.That(canonicalPlayer, Is.Not.Null);
+        Component damageController = canonicalPlayer.GetComponent("PlayerDamageController");
+        Component inventory = canonicalPlayer.GetComponent("PlayerInventory");
+        Assert.That(damageController, Is.Not.Null);
+        Assert.That(inventory, Is.Not.Null);
+        float healthBeforeRegeneration = GetFloatProperty(damageController, "CurrentHealth");
+        int inventoryStacksBeforeRegeneration = GetCollectionCount(inventory, "ItemStacks");
         Assert.That(minimap.Player, Is.EqualTo(controller.Player));
         Assert.That(GameObject.Find("GeneratedMinimapCanvas"), Is.Not.Null,
             "正式场景应创建连接随机地图数据的小地图视图。");
@@ -66,6 +82,10 @@ public sealed class MapGenerationRpgPlayModeTests
         yield return null;
 
         Assert.That(controller.LastGeneratedMap, Is.Not.SameAs(firstMap));
+        Assert.That(controller.Player, Is.SameAs(canonicalPlayer));
+        Assert.That(playerSpawnService.SpawnCount, Is.EqualTo(2));
+        Assert.That(GetFloatProperty(damageController, "CurrentHealth"), Is.EqualTo(healthBeforeRegeneration));
+        Assert.That(GetCollectionCount(inventory, "ItemStacks"), Is.EqualTo(inventoryStacksBeforeRegeneration));
         AssertPlayerAtSpawn(controller);
         AssertWorldObjectsPlaced(placementAdapter, controller);
     }
@@ -161,6 +181,23 @@ public sealed class MapGenerationRpgPlayModeTests
         }
 
         Assert.That(followsPlayer, Is.True);
+    }
+
+    private static float GetFloatProperty(Component component, string propertyName)
+    {
+        PropertyInfo property = component.GetType().GetProperty(propertyName);
+        Assert.That(property, Is.Not.Null, $"{component.GetType().Name}.{propertyName} must remain observable.");
+        return (float)property.GetValue(component);
+    }
+
+    private static int GetCollectionCount(Component component, string propertyName)
+    {
+        PropertyInfo property = component.GetType().GetProperty(propertyName);
+        Assert.That(property, Is.Not.Null, $"{component.GetType().Name}.{propertyName} must remain observable.");
+        object collection = property.GetValue(component);
+        PropertyInfo count = collection?.GetType().GetProperty("Count");
+        Assert.That(count, Is.Not.Null, $"{component.GetType().Name}.{propertyName} must expose Count.");
+        return (int)count.GetValue(collection);
     }
 
     /// <summary>

@@ -643,7 +643,6 @@ MonoBehaviour:
   simpleDecorationRenderer: {fileID: 7083376054990191860}
   player: {fileID: 0}
   generateOnPlay: 1
-  movePlayerToSpawn: 1
   logGenerationSummary: 1
 --- !u!114 &6650904316187142650
 MonoBehaviour:
@@ -1039,6 +1038,8 @@ GameObject:
   - component: {fileID: 1481300874745678524}
   - component: {fileID: 4717348320653228466}
   - component: {fileID: 8816325481290451367}
+  - component: {fileID: 420000000000000001}
+  - component: {fileID: 420000000000000002}
   m_Layer: 0
   m_Name: RandomMapRuntime
   m_TagString: Untagged
@@ -1095,6 +1096,30 @@ MonoBehaviour:
   runtimeMode: 0
   randomGeneratedAuthority: {fileID: 3384820416454931749}
   legacyStaticAuthority: {fileID: 0}
+--- !u!114 &420000000000000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7464507020108064817}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17a3a6abfd0c4da8aa478820dfb2b001, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+--- !u!114 &420000000000000002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7464507020108064817}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17a3a6abfd0c4da8aa478820dfb2b002, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
 --- !u!1 &7890253596842868618
 GameObject:
   m_ObjectHideFlags: 0

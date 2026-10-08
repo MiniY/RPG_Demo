@@ -117,7 +117,21 @@ public static class MapStaticPlacementPlanner
         if (map == null) throw new ArgumentNullException(nameof(map));
         if (settings == null) throw new ArgumentNullException(nameof(settings));
         MapPlacementPlan plan = new MapPlacementPlan(generationId);
-        Add(plan, "map.spawn", "SpawnReservation", map.SpawnCell, new[] { map.SpawnCell });
+        List<Vector2Int> spawnSafetyCells = new List<Vector2Int>();
+        int spawnSafetyRadius = Mathf.Max(0, settings.spawnProtectionRadius);
+        for (int x = map.SpawnCell.x - spawnSafetyRadius;
+             x <= map.SpawnCell.x + spawnSafetyRadius;
+             x++)
+        {
+            for (int y = map.SpawnCell.y - spawnSafetyRadius;
+                 y <= map.SpawnCell.y + spawnSafetyRadius;
+                 y++)
+            {
+                Vector2Int cell = new Vector2Int(x, y);
+                if (map.IsInside(cell)) spawnSafetyCells.Add(cell);
+            }
+        }
+        Add(plan, "map.spawn", "SpawnSafetyReservation", map.SpawnCell, spawnSafetyCells);
         if (map.ExitCell != map.SpawnCell)
             Add(plan, "map.exit", "ExitReservation", map.ExitCell, new[] { map.ExitCell });
 

@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -104,11 +105,28 @@ public class MapGenerationRpgIntegrationTests
 
             MapGeneratedObjectPlacementAdapter placementAdapter =
                 integrationRoot.GetComponent<MapGeneratedObjectPlacementAdapter>();
+            MerchantPlacementService merchantPlacementService =
+                integrationRoot.GetComponent<MerchantPlacementService>();
             Assert.That(placementAdapter, Is.Not.Null, "主场景缺少世界对象随机地图适配器。");
             Assert.That(placementAdapter.MapController, Is.EqualTo(controller));
             Assert.That(placementAdapter.PlacementAnchor, Is.EqualTo(controller.Player));
             Assert.That(placementAdapter.MapAnchoredObjects, Is.Not.Empty,
                 "Main 怪物、动物和植物尚未接入随机地图位置。 ");
+            Assert.That(merchantPlacementService, Is.Not.Null,
+                "主场景缺少 Required Merchant semantic placement owner。");
+            Assert.That(merchantPlacementService.Profile.MinPathSteps, Is.EqualTo(8));
+            Assert.That(merchantPlacementService.Profile.MaxPathSteps, Is.EqualTo(24));
+            Assert.That(merchantPlacementService.Profile.AllowedTerrains,
+                Is.EqualTo(MerchantTerrainMask.Grass | MerchantTerrainMask.Path));
+            Assert.That(merchantPlacementService.MerchantTarget, Is.Not.Null,
+                "主场景未显式连接现有 Merchant gameplay component。");
+            IMerchantPlacementTarget merchantTarget =
+                merchantPlacementService.MerchantTarget as IMerchantPlacementTarget;
+            Assert.That(merchantTarget, Is.Not.Null);
+            CollectionAssert.DoesNotContain(
+                new List<Transform>(placementAdapter.MapAnchoredObjects),
+                merchantTarget.PlacementTransform,
+                "Merchant 不得继续由 Transitional authored-offset adapter 定位。");
 
             controller.GenerateMap();
             Assert.That(controller.LastGeneratedMap, Is.Not.Null, "主场景随机地图生成失败。");
@@ -120,9 +138,19 @@ public class MapGenerationRpgIntegrationTests
                 controller.LastGeneratedMap.SpawnCell);
             Assert.That(controller.Player.position.x, Is.EqualTo(expectedSpawnPosition.x).Within(0.01f));
             Assert.That(controller.Player.position.y, Is.EqualTo(expectedSpawnPosition.y).Within(0.01f));
+            AssertMerchantPlacement(
+                merchantPlacementService,
+                merchantTarget,
+                controller,
+                runtimeBootstrap.Context);
 
             placementAdapter.PlaceObjects(controller.LastGeneratedMap);
             AssertAnchoredObjectsUseGeneratedMap(placementAdapter, controller);
+            AssertMerchantPlacement(
+                merchantPlacementService,
+                merchantTarget,
+                controller,
+                runtimeBootstrap.Context);
 
             MapData firstGeneratedMap = controller.LastGeneratedMap;
             controller.RegenerateMap();
@@ -137,6 +165,45 @@ public class MapGenerationRpgIntegrationTests
         {
             EditorSceneManager.CloseScene(targetScene, true);
         }
+    }
+
+    private static void AssertMerchantPlacement(
+        MerchantPlacementService service,
+        IMerchantPlacementTarget target,
+        MapGenerationController controller,
+        MapRuntimeContext context)
+    {
+        Assert.That(service.ReadyGenerationId, Is.EqualTo(context.ActiveGenerationId));
+        Assert.That(service.ShortestPathSteps, Is.InRange(8, 24));
+        Assert.That(target.BoundPlayer, Is.EqualTo(controller.Player));
+        Assert.That(controller.TilemapRenderer.Coordinates.TryWorldToCell(
+            controller.LastGeneratedMap,
+            target.PlacementTransform.position,
+            out Vector2Int merchantCell), Is.True);
+        Assert.That(merchantCell, Is.EqualTo(service.PlacementCell));
+        Assert.That(controller.LastGeneratedMap.IsWalkable(merchantCell), Is.True);
+        Assert.That(service.Profile.AllowsTerrain(
+            controller.LastGeneratedMap.GetCell(merchantCell).terrainType), Is.True);
+        Assert.That(Mathf.Abs(service.PlacementCell.x - service.InteractionApproachCell.x) +
+                    Mathf.Abs(service.PlacementCell.y - service.InteractionApproachCell.y), Is.EqualTo(1));
+        Assert.That(context.ActiveRegistry.TryGet(
+            MerchantPlacementService.MainMerchantLogicalObjectId,
+            out MapObjectRegistryEntry merchantEntry), Is.True);
+        Assert.That(merchantEntry.GenerationId, Is.EqualTo(context.ActiveGenerationId));
+        Assert.That(merchantEntry.Instance, Is.EqualTo(service.MerchantTarget));
+        Assert.That(context.ActiveRegistry.TryGet(
+            MerchantPlacementService.InteractionApproachLogicalObjectId,
+            out MapObjectRegistryEntry approachEntry), Is.True);
+        Assert.That(approachEntry.InitialCell, Is.EqualTo(service.InteractionApproachCell));
+
+        PropertyInfo shopCatalog = service.MerchantTarget.GetType().GetProperty("ShopCatalog");
+        FieldInfo interactDistance = service.MerchantTarget.GetType().GetField(
+            "interactDistance", BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.That(shopCatalog, Is.Not.Null,
+            "Stage 5A 必须复用 Main Merchant Shop gameplay。");
+        Assert.That(shopCatalog.GetValue(service.MerchantTarget), Is.Not.Null);
+        Assert.That(interactDistance, Is.Not.Null);
+        Assert.That((float)interactDistance.GetValue(service.MerchantTarget), Is.GreaterThan(0f));
     }
 
     /// <summary>

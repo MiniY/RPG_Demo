@@ -45,6 +45,8 @@ public sealed class MapGenerationRpgPlayModeTests
             runtimeRoot.GetComponent<PlayerFollowCameraProvider>();
         CameraBindingService cameraBindingService =
             runtimeRoot.GetComponent<CameraBindingService>();
+        MerchantPlacementService merchantPlacementService =
+            runtimeRoot.GetComponent<MerchantPlacementService>();
         MapGeneratedObjectPlacementAdapter placementAdapter =
             runtimeRoot.GetComponent<MapGeneratedObjectPlacementAdapter>();
         MapMinimapController minimap =
@@ -57,6 +59,7 @@ public sealed class MapGenerationRpgPlayModeTests
         Assert.That(reinitializationService, Is.Not.Null);
         Assert.That(cameraProvider, Is.Not.Null);
         Assert.That(cameraBindingService, Is.Not.Null);
+        Assert.That(merchantPlacementService, Is.Not.Null);
         MapRuntimeDiagnosticSnapshot bootstrapDiagnostics =
             runtimeBootstrap.DiagnosticSnapshot;
         Assert.That(bootstrapDiagnostics.Mode, Is.EqualTo(MapRuntimeMode.RandomGenerated));
@@ -75,6 +78,9 @@ public sealed class MapGenerationRpgPlayModeTests
         Assert.That(cameraBindingService.BindingCount, Is.EqualTo(1));
         Assert.That(cameraBindingService.TrackingRefreshCount, Is.EqualTo(1));
         Assert.That(cameraBindingService.ReadyGenerationId, Is.EqualTo(bootstrapDiagnostics.ActiveGenerationId));
+        Assert.That(merchantPlacementService.MaterializationCount, Is.EqualTo(1));
+        Assert.That(merchantPlacementService.ReadyGenerationId,
+            Is.EqualTo(bootstrapDiagnostics.ActiveGenerationId));
         Transform canonicalPlayer = controller.Player;
         Assert.That(canonicalPlayer, Is.Not.Null);
         Component damageController = canonicalPlayer.GetComponent("PlayerDamageController");
@@ -92,6 +98,11 @@ public sealed class MapGenerationRpgPlayModeTests
         AssertWorldObjectsPlaced(placementAdapter, controller);
         AssertMainCameraFollowsPlayer(controller.Player);
         AssertCurrentCameraBinding(controller, cameraProvider, cameraBindingService);
+        AssertCurrentMerchantPlacement(
+            controller,
+            runtimeBootstrap.Context,
+            placementAdapter,
+            merchantPlacementService);
 
         MapData firstMap = controller.LastGeneratedMap;
         controller.RegenerateMap();
@@ -108,11 +119,19 @@ public sealed class MapGenerationRpgPlayModeTests
         Assert.That(cameraBindingService.BindingCount, Is.EqualTo(2));
         Assert.That(cameraBindingService.TrackingRefreshCount, Is.EqualTo(2));
         Assert.That(cameraBindingService.ReadyGenerationId, Is.EqualTo(regeneratedDiagnostics.ActiveGenerationId));
+        Assert.That(merchantPlacementService.MaterializationCount, Is.EqualTo(2));
+        Assert.That(merchantPlacementService.ReadyGenerationId,
+            Is.EqualTo(regeneratedDiagnostics.ActiveGenerationId));
         Assert.That(GetFloatProperty(damageController, "CurrentHealth"), Is.EqualTo(healthBeforeRegeneration));
         Assert.That(GetCollectionCount(inventory, "ItemStacks"), Is.EqualTo(inventoryStacksBeforeRegeneration));
         AssertPlayerAtSpawn(controller);
         AssertWorldObjectsPlaced(placementAdapter, controller);
         AssertCurrentCameraBinding(controller, cameraProvider, cameraBindingService);
+        AssertCurrentMerchantPlacement(
+            controller,
+            runtimeBootstrap.Context,
+            placementAdapter,
+            merchantPlacementService);
     }
 
     /// <summary>
@@ -225,6 +244,50 @@ public sealed class MapGenerationRpgPlayModeTests
         AssertBounds(binding.BoundsCollider.bounds, expectedBounds);
         Assert.That(binding.VirtualCamera.PreviousStateIsValid, Is.True,
             "After one rendered frame, Cinemachine must have consumed the reset state for the Current Generation.");
+    }
+
+    private static void AssertCurrentMerchantPlacement(
+        MapGenerationController controller,
+        MapRuntimeContext context,
+        MapGeneratedObjectPlacementAdapter placementAdapter,
+        MerchantPlacementService service)
+    {
+        Assert.That(service.MerchantTarget, Is.Not.Null);
+        IMerchantPlacementTarget target = service.MerchantTarget as IMerchantPlacementTarget;
+        Assert.That(target, Is.Not.Null);
+        Assert.That(target.BoundPlayer, Is.EqualTo(controller.Player));
+        Assert.That(service.ShortestPathSteps, Is.InRange(8, 24));
+        Assert.That(controller.TilemapRenderer.Coordinates.TryWorldToCell(
+            controller.LastGeneratedMap,
+            target.PlacementTransform.position,
+            out Vector2Int merchantCell), Is.True);
+        Assert.That(merchantCell, Is.EqualTo(service.PlacementCell));
+        Assert.That(controller.LastGeneratedMap.IsWalkable(merchantCell), Is.True);
+        Assert.That(service.Profile.AllowsTerrain(
+            controller.LastGeneratedMap.GetCell(merchantCell).terrainType), Is.True);
+        CollectionAssert.DoesNotContain(
+            new System.Collections.Generic.List<Transform>(placementAdapter.MapAnchoredObjects),
+            target.PlacementTransform,
+            "Merchant must not remain in Transitional authored-offset positioning.");
+        Assert.That(context.ActiveRegistry.TryGet(
+            MerchantPlacementService.MainMerchantLogicalObjectId,
+            out MapObjectRegistryEntry merchantEntry), Is.True);
+        Assert.That(merchantEntry.GenerationId, Is.EqualTo(context.ActiveGenerationId));
+        Assert.That(merchantEntry.Instance, Is.EqualTo(service.MerchantTarget));
+        Assert.That(context.ActiveRegistry.TryGet(
+            MerchantPlacementService.InteractionApproachLogicalObjectId,
+            out MapObjectRegistryEntry approachEntry), Is.True);
+        Assert.That(approachEntry.InitialCell, Is.EqualTo(service.InteractionApproachCell));
+
+        PropertyInfo shopCatalog = service.MerchantTarget.GetType().GetProperty("ShopCatalog");
+        FieldInfo interactionDistance = service.MerchantTarget.GetType().GetField(
+            "interactDistance", BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.That(shopCatalog, Is.Not.Null);
+        Assert.That(shopCatalog.GetValue(service.MerchantTarget), Is.Not.Null,
+            "Main Merchant shop catalog must remain connected.");
+        Assert.That(interactionDistance, Is.Not.Null);
+        Assert.That((float)interactionDistance.GetValue(service.MerchantTarget),
+            Is.GreaterThan(0f), "Main Merchant interaction baseline must remain configured.");
     }
 
     private static void AssertBounds(Bounds actual, Bounds expected)

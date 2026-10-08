@@ -49502,6 +49502,10 @@ PrefabInstance:
       propertyPath: playerFollowConfiner
       value:
       objectReference: {fileID: 497998060}
+    - target: {fileID: 420000000000000006, guid: 5c3a7704cf4bc9547bc54b3e1f658207, type: 3}
+      propertyPath: merchantTarget
+      value:
+      objectReference: {fileID: 7470993808810666117}
     - target: {fileID: 4717348320653228466, guid: 5c3a7704cf4bc9547bc54b3e1f658207, type: 3}
       propertyPath: placementAnchor
       value:
@@ -53022,6 +53026,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 153e673cd2b939e459131a119ab55233, type: 3}
+--- !u!114 &7470993808810666117 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2248578319071087345, guid: 153e673cd2b939e459131a119ab55233, type: 3}
+  m_PrefabInstance: {fileID: 7470993808810666116}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f9c5bb8be254e9488f247c96846df6e, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

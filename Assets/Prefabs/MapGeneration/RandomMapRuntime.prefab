@@ -1043,6 +1043,7 @@ GameObject:
   - component: {fileID: 420000000000000003}
   - component: {fileID: 420000000000000004}
   - component: {fileID: 420000000000000005}
+  - component: {fileID: 420000000000000006}
   m_Layer: 0
   m_Name: RandomMapRuntime
   m_TagString: Untagged
@@ -1161,6 +1162,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17a3a6abfd0c4da8aa478820dfb2b006, type: 3}
   m_Name:
   m_EditorClassIdentifier:
+--- !u!114 &420000000000000006
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7464507020108064817}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17a3a6abfd0c4da8aa478820dfb2b008, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  merchantTarget: {fileID: 0}
+  profile:
+    minPathSteps: 8
+    maxPathSteps: 24
+    allowedTerrains: 5
 --- !u!1 &7890253596842868618
 GameObject:
   m_ObjectHideFlags: 0

@@ -50,6 +50,26 @@ public sealed class MapObjectRegistry
         if (retired || generationId != GenerationId || !entries.Remove(logicalObjectId)) return false;
         occupancy.Release(logicalObjectId); return true;
     }
+    public bool TryBindInstance(Guid generationId, string logicalObjectId, string role,
+        UnityEngine.Object instance, out string reason)
+    {
+        if (retired) { reason = "Registry is retired."; return false; }
+        if (generationId != GenerationId) { reason = "Generation mismatch."; return false; }
+        if (instance == null) { reason = "Runtime instance is required."; return false; }
+        if (!entries.TryGetValue(logicalObjectId, out MapObjectRegistryEntry entry))
+        { reason = $"Logical object ID is not registered: {logicalObjectId}."; return false; }
+        if (!string.Equals(entry.Role, role, StringComparison.Ordinal))
+        { reason = $"Role mismatch for {logicalObjectId}."; return false; }
+        if (entry.Instance != null && entry.Instance != instance)
+        { reason = $"Runtime instance is already bound for {logicalObjectId}."; return false; }
+        entries[logicalObjectId] = new MapObjectRegistryEntry(
+            entry.GenerationId, entry.LogicalObjectId, entry.Role, instance,
+            entry.InitialCell, entry.Ownership, entry.OccupiedCells);
+        reason = null;
+        return true;
+    }
+    public bool TryGet(string logicalObjectId, out MapObjectRegistryEntry entry) =>
+        entries.TryGetValue(logicalObjectId, out entry);
     public bool IsOccupied(Vector2Int cell) => occupancy.IsOccupied(cell);
     public bool Retire(Guid generationId)
     {

@@ -5,7 +5,7 @@ using UnityEngine.Events;
 /// <summary>
 /// 商人交互控制器，负责检测玩家距离、更新商人标识动画状态，并响应交互输入。
 /// </summary>
-public class MerchantInteractionController : MonoBehaviour
+public class MerchantInteractionController : MonoBehaviour, IMerchantPlacementTarget
 {
     /// <summary>
     /// 任意商人成功接收到玩家交互时发出的全局事件。
@@ -66,6 +66,26 @@ public class MerchantInteractionController : MonoBehaviour
     /// 对外提供当前商人的商店目录，只允许读取。
     /// </summary>
     public ShopCatalogSO ShopCatalog => shopCatalog;
+
+    /// <summary>由 RandomGenerated Merchant placement 使用的场景实例 Transform。</summary>
+    public Transform PlacementTransform => transform;
+
+    /// <summary>当前交互逻辑实际使用的玩家引用。</summary>
+    public Transform BoundPlayer => playerTransform;
+
+    /// <summary>显式绑定 Q4 Canonical Player；不改变原有商店、UI 或交互所有权。</summary>
+    public bool TryBindCanonicalPlayer(Transform canonicalPlayer, out string reason)
+    {
+        if (canonicalPlayer == null)
+        {
+            reason = "Canonical Player is missing.";
+            return false;
+        }
+
+        playerTransform = canonicalPlayer;
+        reason = string.Empty;
+        return true;
+    }
 
     /// <summary>
     /// 进入播放模式时清空静态事件，避免关闭 Domain Reload（域重载）后残留旧订阅。

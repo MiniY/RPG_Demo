@@ -50,12 +50,29 @@ public class MapGenerationController : MonoBehaviour
         }
 
         EnsureOrchestrator();
+        MerchantPlacementService merchantPlacementService = null;
+        if (bootstrap != null)
+        {
+            MerchantPlacementService[] merchantPlacementServices =
+                GetComponentsInParent<MerchantPlacementService>(true);
+            if (merchantPlacementServices.Length != 1)
+            {
+                FailPreGenerationConfiguration(
+                    "MerchantPlacementOwnerCount",
+                    $"RandomGenerated requires exactly one Required Merchant placement service; " +
+                    $"found {merchantPlacementServices.Length}.");
+                return;
+            }
+            merchantPlacementService = merchantPlacementServices[0];
+        }
         MapGenerationRequest request = new MapGenerationRequest(Guid.NewGuid(), settings.seed);
         MapGenerationExecutionResult result = orchestrator.Execute(
             request,
             GeneratePending,
-            (attempt, pending) => MapStaticPlacementPlanner.Build(
-                attempt.GenerationId, pending.Map, pending.Decorations, settings),
+            (attempt, pending) => BuildPlacementPlan(
+                attempt,
+                pending,
+                merchantPlacementService),
             ProjectCommitted);
 
         if (!result.Succeeded)
@@ -81,6 +98,18 @@ public class MapGenerationController : MonoBehaviour
 
         PlayerSpawnService spawnService = spawnServices[0];
         CanonicalPlayerProvider playerProvider = playerProviders[0];
+        if (merchantPlacementService != null &&
+            !merchantPlacementService.TryMaterialize(
+                orchestrator.Context,
+                result.GenerationId.Value,
+                tilemapRenderer.Coordinates,
+                playerProvider,
+                player,
+                out string merchantFailure))
+        {
+            Debug.LogError($"Required Merchant materialization failed: {merchantFailure}", this);
+            return;
+        }
         bool projectionReady = tilemapRenderer.TerrainCollisionTilemap != null &&
                                tilemapRenderer.TerrainCollisionTilemap.GetUsedTilesCount() > 0;
         string spawnFailure = null;
@@ -215,6 +244,20 @@ public class MapGenerationController : MonoBehaviour
         }
     }
 
+    private MapPlacementPlan BuildPlacementPlan(
+        MapGenerationAttempt attempt,
+        MapPendingGeneration pending,
+        MerchantPlacementService merchantPlacementService)
+    {
+        MapPlacementPlan plan = MapStaticPlacementPlanner.Build(
+            attempt.GenerationId,
+            pending.Map,
+            pending.Decorations,
+            settings);
+        merchantPlacementService?.Plan(attempt, pending.Map, plan);
+        return plan;
+    }
+
     private void ProjectCommitted(MapPendingGeneration pending)
     {
         lastGeneratedMap = pending.Map;
@@ -249,6 +292,19 @@ public class MapGenerationController : MonoBehaviour
         context.RecordFailure(new MapFailureDiagnostic(context.Mode, generationId, context.Phase,
             MapFailureCategory.Configuration, code, reason));
         Debug.LogError($"Player spawn failed [{code}]: {reason}", this);
+    }
+
+    private void FailPreGenerationConfiguration(string code, string reason)
+    {
+        MapRuntimeContext context = orchestrator.Context;
+        context.RecordFailure(new MapFailureDiagnostic(
+            context.Mode,
+            null,
+            context.Phase,
+            MapFailureCategory.Configuration,
+            code,
+            reason));
+        Debug.LogError($"Map integration failed [{code}]: {reason}", this);
     }
 
     private void FailStageConfiguration(

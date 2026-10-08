@@ -221,7 +221,9 @@ public class MapGenerationSceneTests
             Assert.That(CountTiles(elevationTilemap.GetTilesBlock(bounds)), Is.EqualTo(0));
             Assert.That(CountTiles(collisionTilemap.GetTilesBlock(bounds)), Is.EqualTo(0));
 
-            Vector3 expectedSpawnPosition = controller.TilemapRenderer.GetCellCenterWorld(mapData.SpawnCell);
+            Vector3 expectedSpawnPosition = controller.TilemapRenderer.Coordinates.CellToWorld(
+                mapData,
+                mapData.SpawnCell);
             Assert.That(Vector2.Distance(controller.Player.position, expectedSpawnPosition), Is.LessThan(0.01f));
         }
         finally

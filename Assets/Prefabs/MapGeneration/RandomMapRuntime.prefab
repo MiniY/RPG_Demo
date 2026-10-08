@@ -1038,6 +1038,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1481300874745678524}
   - component: {fileID: 4717348320653228466}
+  - component: {fileID: 8816325481290451367}
   m_Layer: 0
   m_Name: RandomMapRuntime
   m_TagString: Untagged
@@ -1079,6 +1080,21 @@ MonoBehaviour:
   mapAnchoredObjects: []
   authoredCellOffsetValues: []
   restartAfterPlacement: []
+--- !u!114 &8816325481290451367
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7464507020108064817}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8f4af4cf35a47c1baa759f282c7ef53, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  runtimeMode: 0
+  randomGeneratedAuthority: {fileID: 3384820416454931749}
+  legacyStaticAuthority: {fileID: 0}
 --- !u!1 &7890253596842868618
 GameObject:
   m_ObjectHideFlags: 0

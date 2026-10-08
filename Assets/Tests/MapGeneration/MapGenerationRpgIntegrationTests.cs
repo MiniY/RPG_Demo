@@ -71,7 +71,22 @@ public class MapGenerationRpgIntegrationTests
 
             MapGenerationController controller =
                 integrationRoot.GetComponentInChildren<MapGenerationController>(true);
+            MapRuntimeBootstrap runtimeBootstrap =
+                integrationRoot.GetComponent<MapRuntimeBootstrap>();
             Assert.That(controller, Is.Not.Null, "主场景缺少 MapGenerationController。");
+            Assert.That(runtimeBootstrap, Is.Not.Null, "主场景缺少显式 Runtime Mode 启动器。");
+            Assert.That(runtimeBootstrap.Mode, Is.EqualTo(MapRuntimeMode.RandomGenerated));
+            Assert.That(runtimeBootstrap.RandomGeneratedAuthority, Is.EqualTo(controller.gameObject));
+            Assert.That(runtimeBootstrap.LegacyStaticAuthority, Is.EqualTo(legacyGrid));
+
+            runtimeBootstrap.Initialize();
+            MapRuntimeDiagnosticSnapshot bootstrapDiagnostics =
+                runtimeBootstrap.DiagnosticSnapshot;
+            Assert.That(bootstrapDiagnostics.Phase, Is.EqualTo(MapLifecyclePhase.Initialized));
+            Assert.That(bootstrapDiagnostics.IsFailed, Is.False);
+            Assert.That(bootstrapDiagnostics.AuthorityState.RandomGeneratedActive, Is.True);
+            Assert.That(bootstrapDiagnostics.AuthorityState.LegacyStaticActive, Is.False);
+
             Assert.That(controller.Settings, Is.Not.Null, "主场景缺少地图生成配置。");
             Assert.That(controller.Player, Is.Not.Null, "随机地图控制器没有绑定 RPG 玩家。");
             Assert.That(controller.Player.GetComponent("PlayerAction"), Is.Not.Null,
@@ -100,7 +115,8 @@ public class MapGenerationRpgIntegrationTests
             Assert.That(controller.LastGeneratedSimpleDecorations, Is.Not.Null,
                 "主场景随机装饰生成失败。");
 
-            Vector3 expectedSpawnPosition = controller.TilemapRenderer.GetCellCenterWorld(
+            Vector3 expectedSpawnPosition = controller.TilemapRenderer.Coordinates.CellToWorld(
+                controller.LastGeneratedMap,
                 controller.LastGeneratedMap.SpawnCell);
             Assert.That(controller.Player.position.x, Is.EqualTo(expectedSpawnPosition.x).Within(0.01f));
             Assert.That(controller.Player.position.y, Is.EqualTo(expectedSpawnPosition.y).Within(0.01f));
@@ -138,11 +154,12 @@ public class MapGenerationRpgIntegrationTests
         foreach (Transform target in adapter.MapAnchoredObjects)
         {
             Assert.That(target, Is.Not.Null);
-            Vector3Int cell3 = controller.TilemapRenderer.GroundTilemap.WorldToCell(
-                target.position);
-            Vector2Int cell = new Vector2Int(cell3.x, cell3.y);
+            bool isInside = controller.TilemapRenderer.Coordinates.TryWorldToCell(
+                mapData,
+                target.position,
+                out Vector2Int cell);
 
-            Assert.That(mapData.IsInside(cell), Is.True,
+            Assert.That(isInside, Is.True,
                 $"{target.name} 位于随机地图范围外。");
             Assert.That(mapData.IsWalkable(cell), Is.True,
                 $"{target.name} 没有落在可行走地形上。");

@@ -688,7 +688,9 @@ public sealed class MapMinimapController : MonoBehaviour
         if (!enableFogOfWar)
             return;
 
-        Vector2Int playerCell = GetPlayerCell();
+        if (!TryGetPlayerCell(out Vector2Int playerCell))
+            return;
+
         if (hasLastExplorationCell && playerCell == lastExplorationCell)
             return;
 
@@ -822,8 +824,7 @@ public sealed class MapMinimapController : MonoBehaviour
         if (displayedMap == null || player == null || playerMarker == null)
             return;
 
-        Vector2Int playerCell = GetPlayerCell();
-        bool isInsideMap = displayedMap.IsInside(playerCell);
+        bool isInsideMap = TryGetPlayerCell(out Vector2Int playerCell);
         playerMarker.gameObject.SetActive(isInsideMap);
 
         if (!isInsideMap)
@@ -840,18 +841,21 @@ public sealed class MapMinimapController : MonoBehaviour
     /// <summary>
     /// 将玩家世界坐标转换为地图网格坐标。
     /// </summary>
-    /// <returns>玩家当前所在的网格坐标。</returns>
-    private Vector2Int GetPlayerCell()
+    /// <param name="cell">玩家当前所在的地图网格坐标。</param>
+    /// <returns>坐标可以通过统一边界转换且位于当前地图内时返回 true。</returns>
+    private bool TryGetPlayerCell(out Vector2Int cell)
     {
-        if (tilemapRenderer != null && tilemapRenderer.GroundTilemap != null)
+        cell = default;
+        if (displayedMap == null || tilemapRenderer == null ||
+            tilemapRenderer.GroundTilemap == null || player == null)
         {
-            Vector3Int cell = tilemapRenderer.GroundTilemap.WorldToCell(player.position);
-            return new Vector2Int(cell.x, cell.y);
+            return false;
         }
 
-        return new Vector2Int(
-            Mathf.FloorToInt(player.position.x),
-            Mathf.FloorToInt(player.position.y));
+        return tilemapRenderer.Coordinates.TryWorldToCell(
+            displayedMap,
+            player.position,
+            out cell);
     }
 
     /// <summary>

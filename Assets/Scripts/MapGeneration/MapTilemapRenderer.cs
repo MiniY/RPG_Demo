@@ -35,6 +35,16 @@ public class MapTilemapRenderer : MonoBehaviour
     private Tilemap terrainCollisionTilemap;
 
     /// <summary>
+    /// 基于地表 Tilemap GridLayout 的唯一坐标转换边界。
+    /// </summary>
+    private MapCoordinateBoundary coordinateBoundary;
+
+    /// <summary>
+    /// 最近一次成功投影到 Tilemap 的地图数据，仅用于兼容现有边界消费者。
+    /// </summary>
+    private MapData lastRenderedMap;
+
+    /// <summary>
     /// 获取 Water Base（水体底层），供控制器和编辑器工具使用。
     /// </summary>
     public Tilemap WaterBaseTilemap => waterBaseTilemap;
@@ -68,6 +78,26 @@ public class MapTilemapRenderer : MonoBehaviour
     /// 获取隐藏碰撞 Tilemap，供控制器和编辑器工具使用。
     /// </summary>
     public Tilemap CollisionTilemap => terrainCollisionTilemap;
+
+    /// <summary>
+    /// 获取唯一的 Cell/World 和 Bounds 转换入口。
+    /// </summary>
+    public MapCoordinateBoundary Coordinates
+    {
+        get
+        {
+            if (waterBaseTilemap == null)
+            {
+                throw new MissingReferenceException(
+                    "MapTilemapRenderer 缺少 Water Base Tilemap，无法建立坐标边界。");
+            }
+
+            if (coordinateBoundary == null || coordinateBoundary.Tilemap != waterBaseTilemap)
+                coordinateBoundary = new MapCoordinateBoundary(waterBaseTilemap);
+
+            return coordinateBoundary;
+        }
+    }
 
     /// <summary>
     /// 把地图数据批量写入四个视觉层和一个碰撞层。
@@ -148,6 +178,7 @@ public class MapTilemapRenderer : MonoBehaviour
         ApplyTiles(terrainCollisionTilemap, bounds, collisionTiles);
 
         ConfigureRenderers(settings);
+        lastRenderedMap = mapData;
     }
 
     /// <summary>
@@ -160,52 +191,23 @@ public class MapTilemapRenderer : MonoBehaviour
         ClearTilemap(grassOverlayTilemap);
         ClearTilemap(elevationTilemap);
         ClearTilemap(terrainCollisionTilemap);
+        lastRenderedMap = null;
     }
 
     /// <summary>
-    /// 把出生网格坐标转换为地表 Tilemap 的世界坐标中心。
-    /// </summary>
-    /// <param name="cell">出生网格坐标。</param>
-    /// <returns>对应的世界坐标。</returns>
-    public Vector3 GetCellCenterWorld(Vector2Int cell)
-    {
-        if (waterBaseTilemap == null)
-            return new Vector3(cell.x + 0.5f, cell.y + 0.5f, 0f);
-
-        return waterBaseTilemap.GetCellCenterWorld(new Vector3Int(cell.x, cell.y, 0));
-    }
-
-    /// <summary>
-    /// 获取当前地表 Tilemap（瓦片地图）在世界坐标中的边界。
+    /// 获取最近一次已渲染 MapData 在世界坐标中的边界。
+    /// 所有数学转换仍统一委托给 Coordinates。
     /// </summary>
     /// <param name="worldBounds">输出的世界坐标边界。</param>
-    /// <returns>地表存在有效瓦片时返回 true。</returns>
+    /// <returns>已有成功渲染的地图且边界有效时返回 true。</returns>
     public bool TryGetWorldBounds(out Bounds worldBounds)
     {
         worldBounds = default;
 
-        if (waterBaseTilemap == null)
+        if (waterBaseTilemap == null || lastRenderedMap == null)
             return false;
 
-        BoundsInt cellBounds = waterBaseTilemap.cellBounds;
-        if (cellBounds.size.x <= 0 || cellBounds.size.y <= 0)
-            return false;
-
-        int z = cellBounds.zMin;
-        Vector3 bottomLeft = waterBaseTilemap.CellToWorld(
-            new Vector3Int(cellBounds.xMin, cellBounds.yMin, z));
-        Vector3 bottomRight = waterBaseTilemap.CellToWorld(
-            new Vector3Int(cellBounds.xMax, cellBounds.yMin, z));
-        Vector3 topLeft = waterBaseTilemap.CellToWorld(
-            new Vector3Int(cellBounds.xMin, cellBounds.yMax, z));
-        Vector3 topRight = waterBaseTilemap.CellToWorld(
-            new Vector3Int(cellBounds.xMax, cellBounds.yMax, z));
-
-        worldBounds = new Bounds(bottomLeft, Vector3.zero);
-        worldBounds.Encapsulate(bottomRight);
-        worldBounds.Encapsulate(topLeft);
-        worldBounds.Encapsulate(topRight);
-        return worldBounds.size.x > 0f && worldBounds.size.y > 0f;
+        return Coordinates.TryCellBoundsToWorld(lastRenderedMap, out worldBounds);
     }
 
     /// <summary>

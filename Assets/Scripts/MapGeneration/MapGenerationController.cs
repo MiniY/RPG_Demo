@@ -100,6 +100,16 @@ public class MapGenerationController : MonoBehaviour
     /// </summary>
     public void GenerateMap()
     {
+        MapRuntimeBootstrap runtimeBootstrap = GetComponentInParent<MapRuntimeBootstrap>();
+        if (runtimeBootstrap != null && !runtimeBootstrap.CanRunRandomGeneration)
+        {
+            Debug.LogWarning(
+                $"当前地图运行模式为 {runtimeBootstrap.Mode}，" +
+                "或启动校验已失败；RandomGenerated 生产路径不会运行。",
+                this);
+            return;
+        }
+
         if (settings == null)
         {
             Debug.LogError("MapGenerationController 缺少 MapGenerationSettings。", this);
@@ -209,7 +219,9 @@ public class MapGenerationController : MonoBehaviour
         if (player == null || tilemapRenderer == null)
             return;
 
-        Vector3 spawnWorldPosition = tilemapRenderer.GetCellCenterWorld(mapData.SpawnCell);
+        Vector3 spawnWorldPosition = tilemapRenderer.Coordinates.CellToWorld(
+            mapData,
+            mapData.SpawnCell);
         spawnWorldPosition.z = player.position.z;
         player.position = spawnWorldPosition;
     }
@@ -223,8 +235,12 @@ public class MapGenerationController : MonoBehaviour
             return;
 
         Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(tilemapRenderer.GetCellCenterWorld(lastGeneratedMap.SpawnCell), 0.35f);
+        Gizmos.DrawWireSphere(
+            tilemapRenderer.Coordinates.CellToWorld(lastGeneratedMap, lastGeneratedMap.SpawnCell),
+            0.35f);
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(tilemapRenderer.GetCellCenterWorld(lastGeneratedMap.ExitCell), 0.35f);
+        Gizmos.DrawWireSphere(
+            tilemapRenderer.Coordinates.CellToWorld(lastGeneratedMap, lastGeneratedMap.ExitCell),
+            0.35f);
     }
 }

@@ -154,6 +154,13 @@ public static class MapGenerationRpgIntegration
                 Array.Empty<Transform>(),
                 Array.Empty<GameObject>());
 
+            MapRuntimeBootstrap runtimeBootstrap =
+                prefabRoot.AddComponent<MapRuntimeBootstrap>();
+            ConfigureRuntimeBootstrap(
+                runtimeBootstrap,
+                sourceController.gameObject,
+                null);
+
             EnsureRuntimePrefabFolder();
             GameObject prefabAsset = PrefabUtility.SaveAsPrefabAsset(
                 prefabRoot,
@@ -227,14 +234,20 @@ public static class MapGenerationRpgIntegration
             integrationRoot.GetComponentInChildren<MapMinimapController>(true);
         MapGeneratedObjectPlacementAdapter placementAdapter =
             integrationRoot.GetComponent<MapGeneratedObjectPlacementAdapter>();
+        MapRuntimeBootstrap runtimeBootstrap =
+            integrationRoot.GetComponent<MapRuntimeBootstrap>();
 
         if (targetController == null || targetController.TilemapRenderer == null ||
-            placementAdapter == null)
+            placementAdapter == null || runtimeBootstrap == null)
         {
             throw new InvalidOperationException(
-                "生产随机地图预制体缺少控制器、渲染器或场景对象适配器。");
+                "生产随机地图预制体缺少控制器、渲染器、模式启动器或场景对象适配器。");
         }
 
+        ConfigureRuntimeBootstrap(
+            runtimeBootstrap,
+            targetController.gameObject,
+            legacyGrid);
         ConfigureController(targetController, playerAction.transform);
         ConfigureMinimap(targetMinimap, targetController, playerAction.transform);
         FindMapAnchoredObjects(
@@ -259,6 +272,32 @@ public static class MapGenerationRpgIntegration
             throw new InvalidOperationException("无法保存随机地图集成后的 SampleScene。");
 
         AssetDatabase.SaveAssets();
+    }
+
+    /// <summary>
+    /// 配置显式 Runtime Mode 和 Random/Legacy 互斥校验引用。
+    /// </summary>
+    private static void ConfigureRuntimeBootstrap(
+        MapRuntimeBootstrap bootstrap,
+        GameObject randomGeneratedAuthority,
+        GameObject legacyStaticAuthority)
+    {
+        SerializedObject serializedBootstrap = new SerializedObject(bootstrap);
+        SerializedProperty modeProperty = serializedBootstrap.FindProperty("runtimeMode");
+        if (modeProperty == null)
+            throw new InvalidOperationException("找不到 runtimeMode 序列化属性。");
+
+        modeProperty.enumValueIndex = (int)MapRuntimeMode.RandomGenerated;
+        SetObjectProperty(
+            serializedBootstrap,
+            "randomGeneratedAuthority",
+            randomGeneratedAuthority);
+        SetObjectProperty(
+            serializedBootstrap,
+            "legacyStaticAuthority",
+            legacyStaticAuthority);
+        serializedBootstrap.ApplyModifiedPropertiesWithoutUndo();
+        EditorUtility.SetDirty(bootstrap);
     }
 
     /// <summary>
@@ -353,8 +392,8 @@ public static class MapGenerationRpgIntegration
             return offsets;
         }
 
-        Vector3Int anchorCell = controller.TilemapRenderer.GroundTilemap.WorldToCell(
-            placementAnchor.position);
+        MapCoordinateBoundary coordinates = controller.TilemapRenderer.Coordinates;
+        Vector2Int anchorCell = coordinates.WorldToCell(placementAnchor.position);
 
         for (int index = 0; index < mapAnchoredObjects.Length; index++)
         {
@@ -362,11 +401,8 @@ public static class MapGenerationRpgIntegration
             if (target == null)
                 continue;
 
-            Vector3Int targetCell = controller.TilemapRenderer.GroundTilemap.WorldToCell(
-                target.position);
-            offsets[index] = new Vector2Int(
-                targetCell.x - anchorCell.x,
-                targetCell.y - anchorCell.y);
+            Vector2Int targetCell = coordinates.WorldToCell(target.position);
+            offsets[index] = targetCell - anchorCell;
         }
 
         return offsets;

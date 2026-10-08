@@ -151,7 +151,11 @@ public sealed class MapGeneratedObjectPlacementAdapter : MonoBehaviour
                 continue;
             }
 
-            MoveTargetToCell(target, placementCell, restartObjects.Contains(target.gameObject));
+            MoveTargetToCell(
+                target,
+                mapData,
+                placementCell,
+                restartObjects.Contains(target.gameObject));
             unavailableCells.Add(placementCell);
         }
     }
@@ -178,19 +182,16 @@ public sealed class MapGeneratedObjectPlacementAdapter : MonoBehaviour
         }
 
         authoredCellOffsets.Clear();
-        Vector3Int anchorCell = mapController.TilemapRenderer.GroundTilemap.WorldToCell(
-            placementAnchor.position);
+        MapCoordinateBoundary coordinates = mapController.TilemapRenderer.Coordinates;
+        Vector2Int anchorCell = coordinates.WorldToCell(placementAnchor.position);
 
         foreach (Transform target in mapAnchoredObjects ?? Array.Empty<Transform>())
         {
             if (target == null || target == placementAnchor)
                 continue;
 
-            Vector3Int targetCell = mapController.TilemapRenderer.GroundTilemap.WorldToCell(
-                target.position);
-            authoredCellOffsets[target] = new Vector2Int(
-                targetCell.x - anchorCell.x,
-                targetCell.y - anchorCell.y);
+            Vector2Int targetCell = coordinates.WorldToCell(target.position);
+            authoredCellOffsets[target] = targetCell - anchorCell;
         }
 
         hasCapturedAuthoredLayout = true;
@@ -287,6 +288,7 @@ public sealed class MapGeneratedObjectPlacementAdapter : MonoBehaviour
     /// </summary>
     private void MoveTargetToCell(
         Transform target,
+        MapData mapData,
         Vector2Int placementCell,
         bool restartAfterMove)
     {
@@ -296,7 +298,9 @@ public sealed class MapGeneratedObjectPlacementAdapter : MonoBehaviour
         if (shouldRestart)
             targetObject.SetActive(false);
 
-        Vector3 worldPosition = mapController.TilemapRenderer.GetCellCenterWorld(placementCell);
+        Vector3 worldPosition = mapController.TilemapRenderer.Coordinates.CellToWorld(
+            mapData,
+            placementCell);
         worldPosition.z = target.position.z;
         target.position = worldPosition;
 

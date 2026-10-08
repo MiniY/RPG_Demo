@@ -32,12 +32,22 @@ public sealed class MapGenerationRpgPlayModeTests
 
         MapGenerationController controller =
             runtimeRoot.GetComponentInChildren<MapGenerationController>(true);
+        MapRuntimeBootstrap runtimeBootstrap =
+            runtimeRoot.GetComponent<MapRuntimeBootstrap>();
         MapGeneratedObjectPlacementAdapter placementAdapter =
             runtimeRoot.GetComponent<MapGeneratedObjectPlacementAdapter>();
         MapMinimapController minimap =
             runtimeRoot.GetComponentInChildren<MapMinimapController>(true);
 
         Assert.That(controller, Is.Not.Null);
+        Assert.That(runtimeBootstrap, Is.Not.Null);
+        MapRuntimeDiagnosticSnapshot bootstrapDiagnostics =
+            runtimeBootstrap.DiagnosticSnapshot;
+        Assert.That(bootstrapDiagnostics.Mode, Is.EqualTo(MapRuntimeMode.RandomGenerated));
+        Assert.That(bootstrapDiagnostics.Phase, Is.EqualTo(MapLifecyclePhase.Initialized));
+        Assert.That(bootstrapDiagnostics.IsFailed, Is.False);
+        Assert.That(bootstrapDiagnostics.AuthorityState.RandomGeneratedActive, Is.True);
+        Assert.That(bootstrapDiagnostics.AuthorityState.LegacyStaticActive, Is.False);
         Assert.That(controller.LastGeneratedMap, Is.Not.Null,
             "Main 场景进入 Play Mode 后应自动生成随机地图。");
         Assert.That(placementAdapter, Is.Not.Null);
@@ -65,7 +75,8 @@ public sealed class MapGenerationRpgPlayModeTests
     /// </summary>
     private static void AssertPlayerAtSpawn(MapGenerationController controller)
     {
-        Vector3 expectedPosition = controller.TilemapRenderer.GetCellCenterWorld(
+        Vector3 expectedPosition = controller.TilemapRenderer.Coordinates.CellToWorld(
+            controller.LastGeneratedMap,
             controller.LastGeneratedMap.SpawnCell);
         Assert.That(controller.Player.position.x, Is.EqualTo(expectedPosition.x).Within(0.01f));
         Assert.That(controller.Player.position.y, Is.EqualTo(expectedPosition.y).Within(0.01f));
@@ -94,11 +105,12 @@ public sealed class MapGenerationRpgPlayModeTests
 
         foreach (Transform target in adapter.MapAnchoredObjects)
         {
-            Vector3Int cell3 = controller.TilemapRenderer.GroundTilemap.WorldToCell(
-                target.position);
-            Vector2Int cell = new Vector2Int(cell3.x, cell3.y);
+            bool isInside = controller.TilemapRenderer.Coordinates.TryWorldToCell(
+                controller.LastGeneratedMap,
+                target.position,
+                out Vector2Int cell);
 
-            Assert.That(controller.LastGeneratedMap.IsInside(cell), Is.True);
+            Assert.That(isInside, Is.True);
             Assert.That(controller.LastGeneratedMap.IsWalkable(cell), Is.True);
             Assert.That(
                 controller.LastGeneratedSimpleDecorations == null ||

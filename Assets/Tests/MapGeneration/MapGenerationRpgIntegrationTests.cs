@@ -111,11 +111,13 @@ public class MapGenerationRpgIntegrationTests
                 integrationRoot.GetComponent<MonsterPlacementService>();
             AnimalPlacementService animalPlacementService =
                 integrationRoot.GetComponent<AnimalPlacementService>();
+            PlantPlacementService plantPlacementService =
+                integrationRoot.GetComponent<PlantPlacementService>();
             Assert.That(placementAdapter, Is.Not.Null, "主场景缺少世界对象随机地图适配器。");
             Assert.That(placementAdapter.MapController, Is.EqualTo(controller));
             Assert.That(placementAdapter.PlacementAnchor, Is.EqualTo(controller.Player));
-            Assert.That(placementAdapter.MapAnchoredObjects, Is.Not.Empty,
-                "Main Plant 尚未接入随机地图位置。 ");
+            Assert.That(placementAdapter.MapAnchoredObjects, Is.Empty,
+                "Stage 5D 后 Transitional adapter 不得继续拥有 production Role。");
             Assert.That(merchantPlacementService, Is.Not.Null,
                 "主场景缺少 Required Merchant semantic placement owner。");
             Assert.That(merchantPlacementService.Profile.MinPathSteps, Is.EqualTo(8));
@@ -182,6 +184,31 @@ public class MapGenerationRpgIntegrationTests
                     binding.AnimalTransform,
                     "Animal 不得继续由 Transitional authored-offset adapter 定位。");
             }
+            Assert.That(plantPlacementService, Is.Not.Null,
+                "主场景缺少 Optional Plant semantic placement owner。");
+            Assert.That(plantPlacementService.Profile.Required, Is.False);
+            Assert.That(plantPlacementService.Profile.RequiredMinimum, Is.Zero);
+            Assert.That(plantPlacementService.Profile.TargetCount, Is.EqualTo(17));
+            Assert.That(plantPlacementService.Profile.Maximum, Is.EqualTo(17));
+            Assert.That(plantPlacementService.Profile.MinPathSteps, Is.Zero);
+            Assert.That(plantPlacementService.Profile.MaxPathSteps, Is.EqualTo(int.MaxValue));
+            Assert.That(plantPlacementService.Profile.MinimumSpacingSteps, Is.EqualTo(1));
+            Assert.That(plantPlacementService.Profile.AllowedTerrains, Is.EqualTo(
+                PlantTerrainMask.Grass |
+                PlantTerrainMask.Path |
+                PlantTerrainMask.Forest |
+                PlantTerrainMask.Sand));
+            Assert.That(plantPlacementService.Bindings.Count, Is.EqualTo(17));
+            foreach (PlantPlacementBinding binding in plantPlacementService.Bindings)
+            {
+                Assert.That(binding.PlantTransform, Is.Not.Null);
+                Assert.That(binding.PlantTransform.GetComponent("Plant"), Is.Not.Null);
+                Assert.That(binding.PlantTransform.GetComponent<IPlantPlacementTarget>(), Is.Not.Null);
+                AssertNotOwnedByTransitionalAdapter(
+                    placementAdapter,
+                    binding.PlantTransform,
+                    "Plant 不得继续由 Transitional authored-offset adapter 定位。");
+            }
 
             controller.GenerateMap();
             Assert.That(controller.LastGeneratedMap, Is.Not.Null, "主场景随机地图生成失败。");
@@ -207,6 +234,10 @@ public class MapGenerationRpgIntegrationTests
                 animalPlacementService,
                 controller,
                 runtimeBootstrap.Context);
+            AssertPlantPlacement(
+                plantPlacementService,
+                controller,
+                runtimeBootstrap.Context);
 
             placementAdapter.PlaceObjects(controller.LastGeneratedMap);
             AssertAnchoredObjectsUseGeneratedMap(placementAdapter, controller);
@@ -222,6 +253,10 @@ public class MapGenerationRpgIntegrationTests
                 runtimeBootstrap.Context);
             AssertAnimalPlacement(
                 animalPlacementService,
+                controller,
+                runtimeBootstrap.Context);
+            AssertPlantPlacement(
+                plantPlacementService,
                 controller,
                 runtimeBootstrap.Context);
 
@@ -247,6 +282,10 @@ public class MapGenerationRpgIntegrationTests
                 runtimeBootstrap.Context);
             AssertAnimalPlacement(
                 animalPlacementService,
+                controller,
+                runtimeBootstrap.Context);
+            AssertPlantPlacement(
+                plantPlacementService,
                 controller,
                 runtimeBootstrap.Context);
 
@@ -360,8 +399,42 @@ public class MapGenerationRpgIntegrationTests
         }
     }
 
+    private static void AssertPlantPlacement(
+        PlantPlacementService service,
+        MapGenerationController controller,
+        MapRuntimeContext context)
+    {
+        Assert.That(service.ReadyGenerationId, Is.EqualTo(context.ActiveGenerationId));
+        Assert.That(service.PlannedCount, Is.EqualTo(17));
+        Assert.That(service.MaterializedCount, Is.EqualTo(17));
+        HashSet<Vector2Int> occupiedCells = new HashSet<Vector2Int>();
+        foreach (PlantPlacementBinding binding in service.Bindings)
+        {
+            Assert.That(service.TryGetMaterializedCell(
+                binding.LogicalObjectId,
+                out Vector2Int plantCell), Is.True);
+            Assert.That(controller.TilemapRenderer.Coordinates.TryWorldToCell(
+                controller.LastGeneratedMap,
+                binding.PlantTransform.position,
+                out Vector2Int worldCell), Is.True);
+            Assert.That(worldCell, Is.EqualTo(plantCell));
+            Assert.That(controller.LastGeneratedMap.IsWalkable(plantCell), Is.True);
+            Assert.That(service.Profile.AllowsTerrain(
+                controller.LastGeneratedMap.GetCell(plantCell).terrainType), Is.True);
+            Assert.That(occupiedCells.Add(plantCell), Is.True);
+            Assert.That(context.ActiveRegistry.TryGet(
+                binding.LogicalObjectId,
+                out MapObjectRegistryEntry entry), Is.True);
+            Assert.That(entry.GenerationId, Is.EqualTo(context.ActiveGenerationId));
+            Assert.That(entry.Instance, Is.EqualTo(
+                binding.PlantTransform.GetComponent<IPlantPlacementTarget>() as UnityEngine.Object));
+            Assert.That(entry.InitialCell, Is.EqualTo(plantCell));
+            Assert.That(entry.Ownership, Is.EqualTo(MapPlacementOwnership.SceneBound));
+        }
+    }
+
     /// <summary>
-    /// 验证尚未迁移的 Main Plant 已落到随机地图的独立可行走单元。
+    /// 验证 Transitional adapter 已不再拥有任何 production placement Role。
     /// </summary>
     private static void AssertAnchoredObjectsUseGeneratedMap(
         MapGeneratedObjectPlacementAdapter adapter,
@@ -370,6 +443,8 @@ public class MapGenerationRpgIntegrationTests
         MapData mapData = controller.LastGeneratedMap;
         MapSimpleDecorationData decorations = controller.LastGeneratedSimpleDecorations;
         HashSet<Vector2Int> occupiedCells = new HashSet<Vector2Int>();
+        Assert.That(adapter.MapAnchoredObjects, Is.Empty,
+            "Merchant/Monster/Animal/Plant 均已迁移，Transitional production role count 必须为零。");
         foreach (Transform target in adapter.MapAnchoredObjects)
         {
             Assert.That(target, Is.Not.Null);
@@ -393,6 +468,8 @@ public class MapGenerationRpgIntegrationTests
                 "Monster 已迁移到 semantic placement，不得残留在 Transitional adapter。");
             Assert.That(target.GetComponent("Animal"), Is.Null,
                 "Animal 已迁移到 semantic placement，不得残留在 Transitional adapter。");
+            Assert.That(target.GetComponent("Plant"), Is.Null,
+                "Plant 已迁移到 semantic placement，不得残留在 Transitional adapter。");
         }
     }
 

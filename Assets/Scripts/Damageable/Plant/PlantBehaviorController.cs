@@ -81,6 +81,13 @@ public class PlantBehaviorController : MonoBehaviour
         flashCoroutine = StartCoroutine(FlashCoroutine());
     }
 
+    // 地图重定位后终止旧地图上的瞬时闪烁，同时保留 Plant 的生命和死亡状态。
+    public void CancelTransientMapState()
+    {
+        StopFlashCoroutine();
+        SetVisualVisible(plant == null || !plant.IsDefeated);
+    }
+
     // 执行整体显隐闪烁。
     private IEnumerator FlashCoroutine()
     {

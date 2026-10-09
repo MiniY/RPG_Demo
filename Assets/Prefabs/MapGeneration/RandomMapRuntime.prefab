@@ -1046,6 +1046,7 @@ GameObject:
   - component: {fileID: 420000000000000006}
   - component: {fileID: 420000000000000007}
   - component: {fileID: 420000000000000008}
+  - component: {fileID: 420000000000000009}
   m_Layer: 0
   m_Name: RandomMapRuntime
   m_TagString: Untagged
@@ -1230,6 +1231,61 @@ MonoBehaviour:
     requiredMinimum: 0
     targetCount: 4
     maximum: 4
+--- !u!114 &420000000000000009
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7464507020108064817}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 119a57a054c84032a75c15d7780bbc5f, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  bindings:
+  - logicalObjectId: plant.mushroom-big.1
+    plantTransform: {fileID: 0}
+  - logicalObjectId: plant.mushroom-big.2
+    plantTransform: {fileID: 0}
+  - logicalObjectId: plant.mushroom-big.3
+    plantTransform: {fileID: 0}
+  - logicalObjectId: plant.mushroom-big.4
+    plantTransform: {fileID: 0}
+  - logicalObjectId: plant.mushroom-midsize.1
+    plantTransform: {fileID: 0}
+  - logicalObjectId: plant.mushroom-midsize.2
+    plantTransform: {fileID: 0}
+  - logicalObjectId: plant.mushroom-midsize.3
+    plantTransform: {fileID: 0}
+  - logicalObjectId: plant.mushroom-midsize.4
+    plantTransform: {fileID: 0}
+  - logicalObjectId: plant.mushroom-small.1
+    plantTransform: {fileID: 0}
+  - logicalObjectId: plant.mushroom-small.2
+    plantTransform: {fileID: 0}
+  - logicalObjectId: plant.mushroom-small.3
+    plantTransform: {fileID: 0}
+  - logicalObjectId: plant.mushroom-small.4
+    plantTransform: {fileID: 0}
+  - logicalObjectId: plant.sweet-potato-big.1
+    plantTransform: {fileID: 0}
+  - logicalObjectId: plant.sweet-potato-big.2
+    plantTransform: {fileID: 0}
+  - logicalObjectId: plant.sweet-potato-big.3
+    plantTransform: {fileID: 0}
+  - logicalObjectId: plant.sweet-potato-small.1
+    plantTransform: {fileID: 0}
+  - logicalObjectId: plant.sweet-potato-small.2
+    plantTransform: {fileID: 0}
+  profile:
+    minPathSteps: 0
+    maxPathSteps: 2147483647
+    minimumSpacingSteps: 1
+    allowedTerrains: 85
+    requiredMinimum: 0
+    targetCount: 17
+    maximum: 17
 --- !u!1 &7890253596842868618
 GameObject:
   m_ObjectHideFlags: 0

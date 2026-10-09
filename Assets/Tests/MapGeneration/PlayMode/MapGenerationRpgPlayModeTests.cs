@@ -51,6 +51,8 @@ public sealed class MapGenerationRpgPlayModeTests
             runtimeRoot.GetComponent<MonsterPlacementService>();
         AnimalPlacementService animalPlacementService =
             runtimeRoot.GetComponent<AnimalPlacementService>();
+        PlantPlacementService plantPlacementService =
+            runtimeRoot.GetComponent<PlantPlacementService>();
         MapGeneratedObjectPlacementAdapter placementAdapter =
             runtimeRoot.GetComponent<MapGeneratedObjectPlacementAdapter>();
         MapMinimapController minimap =
@@ -66,6 +68,7 @@ public sealed class MapGenerationRpgPlayModeTests
         Assert.That(merchantPlacementService, Is.Not.Null);
         Assert.That(monsterPlacementService, Is.Not.Null);
         Assert.That(animalPlacementService, Is.Not.Null);
+        Assert.That(plantPlacementService, Is.Not.Null);
         MapRuntimeDiagnosticSnapshot bootstrapDiagnostics =
             runtimeBootstrap.DiagnosticSnapshot;
         Assert.That(bootstrapDiagnostics.Mode, Is.EqualTo(MapRuntimeMode.RandomGenerated));
@@ -92,6 +95,9 @@ public sealed class MapGenerationRpgPlayModeTests
             Is.EqualTo(bootstrapDiagnostics.ActiveGenerationId));
         Assert.That(animalPlacementService.MaterializationCount, Is.EqualTo(1));
         Assert.That(animalPlacementService.ReadyGenerationId,
+            Is.EqualTo(bootstrapDiagnostics.ActiveGenerationId));
+        Assert.That(plantPlacementService.MaterializationCount, Is.EqualTo(1));
+        Assert.That(plantPlacementService.ReadyGenerationId,
             Is.EqualTo(bootstrapDiagnostics.ActiveGenerationId));
         Transform canonicalPlayer = controller.Player;
         Assert.That(canonicalPlayer, Is.Not.Null);
@@ -125,6 +131,11 @@ public sealed class MapGenerationRpgPlayModeTests
             runtimeBootstrap.Context,
             placementAdapter,
             animalPlacementService);
+        AssertCurrentPlantPlacement(
+            controller,
+            runtimeBootstrap.Context,
+            placementAdapter,
+            plantPlacementService);
 
         MapData firstMap = controller.LastGeneratedMap;
         MapObjectRegistry firstRegistry = runtimeBootstrap.Context.ActiveRegistry;
@@ -135,6 +146,21 @@ public sealed class MapGenerationRpgPlayModeTests
             animalInstances[index] = animalPlacementService.Bindings[index].AnimalTransform
                 .GetComponent<IAnimalPlacementTarget>() as UnityEngine.Object;
         }
+        UnityEngine.Object[] plantInstances = new UnityEngine.Object[plantPlacementService.Bindings.Count];
+        for (int index = 0; index < plantInstances.Length; index++)
+        {
+            plantInstances[index] = plantPlacementService.Bindings[index].PlantTransform
+                .GetComponent<IPlantPlacementTarget>() as UnityEngine.Object;
+        }
+        Component persistentPlant = plantPlacementService.Bindings[0].PlantTransform.GetComponent("Plant");
+        Assert.That(persistentPlant, Is.Not.Null);
+        MethodInfo takeDamage = persistentPlant.GetType().GetMethod(
+            "TakeDamage",
+            new[] { typeof(float) });
+        Assert.That(takeDamage, Is.Not.Null);
+        takeDamage.Invoke(persistentPlant, new object[] { 1f });
+        float plantHealthBeforeRegeneration = GetFloatProperty(persistentPlant, "CurrentHealth");
+        bool plantDefeatedBeforeRegeneration = GetBoolProperty(persistentPlant, "IsDefeated");
         controller.RegenerateMap();
         yield return null;
 
@@ -155,11 +181,25 @@ public sealed class MapGenerationRpgPlayModeTests
         Assert.That(monsterPlacementService.MaterializationCount, Is.EqualTo(2));
         Assert.That(monsterPlacementService.ReadyGenerationId,
             Is.EqualTo(regeneratedDiagnostics.ActiveGenerationId));
+        Assert.That(animalPlacementService.MaterializationCount, Is.EqualTo(2));
+        Assert.That(animalPlacementService.ReadyGenerationId,
+            Is.EqualTo(regeneratedDiagnostics.ActiveGenerationId));
+        Assert.That(plantPlacementService.MaterializationCount, Is.EqualTo(2));
+        Assert.That(plantPlacementService.ReadyGenerationId,
+            Is.EqualTo(regeneratedDiagnostics.ActiveGenerationId));
         Assert.That(firstRegistry.IsRetired, Is.True);
         Assert.That(regeneratedDiagnostics.ActiveGenerationId,
             Is.Not.EqualTo(bootstrapDiagnostics.ActiveGenerationId));
         Assert.That(GetFloatProperty(damageController, "CurrentHealth"), Is.EqualTo(healthBeforeRegeneration));
         Assert.That(GetCollectionCount(inventory, "ItemStacks"), Is.EqualTo(inventoryStacksBeforeRegeneration));
+        Assert.That(GetFloatProperty(persistentPlant, "CurrentHealth"),
+            Is.EqualTo(plantHealthBeforeRegeneration));
+        Assert.That(GetBoolProperty(persistentPlant, "IsDefeated"),
+            Is.EqualTo(plantDefeatedBeforeRegeneration));
+        Transform persistentPlantVisual = persistentPlant.transform.Find("Visual");
+        Assert.That(persistentPlantVisual, Is.Not.Null);
+        Assert.That(persistentPlantVisual.gameObject.activeSelf, Is.True,
+            "Plant map reinitialization must cancel transient damage flash without resetting health.");
         AssertPlayerAtSpawn(controller);
         AssertTransitionalObjectsPlaced(placementAdapter, controller);
         AssertCurrentCameraBinding(controller, cameraProvider, cameraBindingService);
@@ -178,6 +218,11 @@ public sealed class MapGenerationRpgPlayModeTests
             runtimeBootstrap.Context,
             placementAdapter,
             animalPlacementService);
+        AssertCurrentPlantPlacement(
+            controller,
+            runtimeBootstrap.Context,
+            placementAdapter,
+            plantPlacementService);
         Assert.That(monsterPlacementService.MonsterTarget, Is.SameAs(monsterInstance));
         for (int index = 0; index < animalInstances.Length; index++)
         {
@@ -185,6 +230,13 @@ public sealed class MapGenerationRpgPlayModeTests
                 animalPlacementService.Bindings[index].AnimalTransform
                     .GetComponent<IAnimalPlacementTarget>(),
                 Is.SameAs(animalInstances[index]));
+        }
+        for (int index = 0; index < plantInstances.Length; index++)
+        {
+            Assert.That(
+                plantPlacementService.Bindings[index].PlantTransform
+                    .GetComponent<IPlantPlacementTarget>(),
+                Is.SameAs(plantInstances[index]));
         }
     }
 
@@ -213,12 +265,14 @@ public sealed class MapGenerationRpgPlayModeTests
     }
 
     /// <summary>
-    /// 验证尚未迁移的 Main Animal/Plant 仍由 Transitional adapter 定位。
+    /// 验证已迁移的 production Roles 不再由 Transitional adapter 定位。
     /// </summary>
     private static void AssertTransitionalObjectsPlaced(
         MapGeneratedObjectPlacementAdapter adapter,
         MapGenerationController controller)
     {
+        Assert.That(adapter.MapAnchoredObjects, Is.Empty,
+            "Stage 5D 后 Transitional production role count 必须为零。");
         foreach (Transform target in adapter.MapAnchoredObjects)
         {
             bool isInside = controller.TilemapRenderer.Coordinates.TryWorldToCell(
@@ -235,6 +289,10 @@ public sealed class MapGenerationRpgPlayModeTests
 
             Assert.That(target.GetComponent("MonsterAIController"), Is.Null,
                 "Monster 不得继续由 Transitional authored-offset adapter 定位。");
+            Assert.That(target.GetComponent("Animal"), Is.Null,
+                "Animal 不得继续由 Transitional authored-offset adapter 定位。");
+            Assert.That(target.GetComponent("Plant"), Is.Null,
+                "Plant 不得继续由 Transitional authored-offset adapter 定位。");
         }
     }
 
@@ -448,6 +506,60 @@ public sealed class MapGenerationRpgPlayModeTests
         }
     }
 
+    private static void AssertCurrentPlantPlacement(
+        MapGenerationController controller,
+        MapRuntimeContext context,
+        MapGeneratedObjectPlacementAdapter placementAdapter,
+        PlantPlacementService service)
+    {
+        Assert.That(service.ReadyGenerationId, Is.EqualTo(context.ActiveGenerationId));
+        Assert.That(service.PlannedCount, Is.EqualTo(17));
+        Assert.That(service.MaterializedCount, Is.EqualTo(17));
+        Assert.That(service.Profile.Required, Is.False);
+        Assert.That(service.Profile.RequiredMinimum, Is.Zero);
+        Assert.That(service.Profile.TargetCount, Is.EqualTo(17));
+        Assert.That(service.Profile.Maximum, Is.EqualTo(17));
+
+        System.Collections.Generic.HashSet<Vector2Int> occupied =
+            new System.Collections.Generic.HashSet<Vector2Int>();
+        foreach (PlantPlacementBinding binding in service.Bindings)
+        {
+            Assert.That(binding.PlantTransform, Is.Not.Null);
+            Assert.That(binding.PlantTransform.gameObject.activeInHierarchy, Is.True);
+            IPlantPlacementTarget target =
+                binding.PlantTransform.GetComponent<IPlantPlacementTarget>();
+            Assert.That(target, Is.Not.Null);
+            Assert.That(target.ReinitializationTarget.GetComponent("Plant"), Is.Not.Null);
+            Assert.That(target.ReinitializationTarget.GetComponent("PlantBehaviorController"), Is.Not.Null);
+            Assert.That(controller.TilemapRenderer.Coordinates.TryWorldToCell(
+                controller.LastGeneratedMap,
+                target.PlacementTransform.position,
+                out Vector2Int plantCell), Is.True);
+            Assert.That(service.TryGetMaterializedCell(
+                binding.LogicalObjectId,
+                out Vector2Int committedCell), Is.True);
+            Assert.That(plantCell, Is.EqualTo(committedCell));
+            Assert.That(controller.LastGeneratedMap.IsWalkable(plantCell), Is.True);
+            Assert.That(service.Profile.AllowsTerrain(
+                controller.LastGeneratedMap.GetCell(plantCell).terrainType), Is.True);
+            Assert.That(occupied.Add(plantCell), Is.True);
+            Assert.That(context.ActiveRegistry.TryGet(
+                binding.LogicalObjectId,
+                out MapObjectRegistryEntry entry), Is.True);
+            Assert.That(entry.GenerationId, Is.EqualTo(context.ActiveGenerationId));
+            Assert.That(entry.Instance, Is.SameAs(target as UnityEngine.Object));
+            Assert.That(entry.InitialCell, Is.EqualTo(plantCell));
+            Assert.That(entry.Ownership, Is.EqualTo(MapPlacementOwnership.SceneBound));
+
+            foreach (Transform transitionalTarget in placementAdapter.MapAnchoredObjects)
+            {
+                Assert.That(transitionalTarget, Is.Not.Null);
+                Assert.That(transitionalTarget, Is.Not.SameAs(target.PlacementTransform),
+                    "Plant must not remain in Transitional authored-offset positioning.");
+            }
+        }
+    }
+
     private static void AssertBounds(Bounds actual, Bounds expected)
     {
         Assert.That(actual.min.x, Is.EqualTo(expected.min.x).Within(0.01f));
@@ -461,6 +573,13 @@ public sealed class MapGenerationRpgPlayModeTests
         PropertyInfo property = component.GetType().GetProperty(propertyName);
         Assert.That(property, Is.Not.Null, $"{component.GetType().Name}.{propertyName} must remain observable.");
         return (float)property.GetValue(component);
+    }
+
+    private static bool GetBoolProperty(Component component, string propertyName)
+    {
+        PropertyInfo property = component.GetType().GetProperty(propertyName);
+        Assert.That(property, Is.Not.Null, $"{component.GetType().Name}.{propertyName} must remain observable.");
+        return (bool)property.GetValue(component);
     }
 
     private static int GetCollectionCount(Component component, string propertyName)

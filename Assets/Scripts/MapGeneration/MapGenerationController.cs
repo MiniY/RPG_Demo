@@ -54,6 +54,7 @@ public class MapGenerationController : MonoBehaviour
         MerchantPlacementService merchantPlacementService = null;
         MonsterPlacementService monsterPlacementService = null;
         AnimalPlacementService animalPlacementService = null;
+        PlantPlacementService plantPlacementService = null;
         if (bootstrap != null)
         {
             MerchantPlacementService[] merchantPlacementServices =
@@ -91,6 +92,18 @@ public class MapGenerationController : MonoBehaviour
                 return;
             }
             animalPlacementService = animalPlacementServices[0];
+
+            PlantPlacementService[] plantPlacementServices =
+                GetComponentsInParent<PlantPlacementService>(true);
+            if (plantPlacementServices.Length != 1)
+            {
+                FailPreGenerationConfiguration(
+                    "PlantPlacementOwnerCount",
+                    $"RandomGenerated requires exactly one Plant semantic placement service; " +
+                    $"found {plantPlacementServices.Length}.");
+                return;
+            }
+            plantPlacementService = plantPlacementServices[0];
         }
         MapGenerationRequest request = new MapGenerationRequest(Guid.NewGuid(), settings.seed);
         MapGenerationExecutionResult result = orchestrator.Execute(
@@ -101,7 +114,8 @@ public class MapGenerationController : MonoBehaviour
                 pending,
                 merchantPlacementService,
                 monsterPlacementService,
-                animalPlacementService),
+                animalPlacementService,
+                plantPlacementService),
             ProjectCommitted);
 
         if (!result.Succeeded)
@@ -159,6 +173,16 @@ public class MapGenerationController : MonoBehaviour
             Debug.LogError($"Animal materialization failed: {animalFailure}", this);
             return;
         }
+        if (plantPlacementService != null &&
+            !plantPlacementService.TryMaterialize(
+                orchestrator.Context,
+                result.GenerationId.Value,
+                tilemapRenderer.Coordinates,
+                out string plantFailure))
+        {
+            Debug.LogError($"Plant materialization failed: {plantFailure}", this);
+            return;
+        }
         bool projectionReady = tilemapRenderer.TerrainCollisionTilemap != null &&
                                tilemapRenderer.TerrainCollisionTilemap.GetUsedTilesCount() > 0;
         string spawnFailure = null;
@@ -197,7 +221,8 @@ public class MapGenerationController : MonoBehaviour
         IReadOnlyList<GameObject> reinitializationTargets = BuildReinitializationTargets(
             placementAdapters[0],
             monsterPlacementService,
-            animalPlacementService);
+            animalPlacementService,
+            plantPlacementService);
         if (!reinitializationService.TryReinitialize(
                 orchestrator.Context,
                 result.GenerationId.Value,
@@ -302,7 +327,8 @@ public class MapGenerationController : MonoBehaviour
         MapPendingGeneration pending,
         MerchantPlacementService merchantPlacementService,
         MonsterPlacementService monsterPlacementService,
-        AnimalPlacementService animalPlacementService)
+        AnimalPlacementService animalPlacementService,
+        PlantPlacementService plantPlacementService)
     {
         MapPlacementPlan plan = MapStaticPlacementPlanner.Build(
             attempt.GenerationId,
@@ -312,13 +338,15 @@ public class MapGenerationController : MonoBehaviour
         merchantPlacementService?.Plan(attempt, pending.Map, plan);
         monsterPlacementService?.Plan(attempt, pending.Map, plan);
         animalPlacementService?.Plan(attempt, pending.Map, plan);
+        plantPlacementService?.Plan(attempt, pending.Map, plan);
         return plan;
     }
 
     private static IReadOnlyList<GameObject> BuildReinitializationTargets(
         MapGeneratedObjectPlacementAdapter placementAdapter,
         MonsterPlacementService monsterPlacementService,
-        AnimalPlacementService animalPlacementService)
+        AnimalPlacementService animalPlacementService,
+        PlantPlacementService plantPlacementService)
     {
         List<GameObject> targets = new List<GameObject>();
         foreach (GameObject target in placementAdapter.RestartAfterPlacement)
@@ -328,6 +356,11 @@ public class MapGenerationController : MonoBehaviour
         if (animalPlacementService != null)
         {
             foreach (GameObject target in animalPlacementService.ReinitializationTargets)
+                targets.Add(target);
+        }
+        if (plantPlacementService != null)
+        {
+            foreach (GameObject target in plantPlacementService.ReinitializationTargets)
                 targets.Add(target);
         }
         return targets.AsReadOnly();

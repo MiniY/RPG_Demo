@@ -242,7 +242,8 @@ public sealed class MapGeneratedObjectPlacementAdapter : MonoBehaviour
         return target != null &&
                target != placementAnchor &&
                target.GetComponent<IMonsterPlacementTarget>() == null &&
-               target.GetComponent<IAnimalPlacementTarget>() == null;
+               target.GetComponent<IAnimalPlacementTarget>() == null &&
+               target.GetComponent<IPlantPlacementTarget>() == null;
     }
 
     /// <summary>

@@ -1045,6 +1045,7 @@ GameObject:
   - component: {fileID: 420000000000000005}
   - component: {fileID: 420000000000000006}
   - component: {fileID: 420000000000000007}
+  - component: {fileID: 420000000000000008}
   m_Layer: 0
   m_Name: RandomMapRuntime
   m_TagString: Untagged
@@ -1200,6 +1201,35 @@ MonoBehaviour:
     requiredMinimum: 1
     targetCount: 1
     maximum: 1
+--- !u!114 &420000000000000008
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7464507020108064817}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf29487a8c9041df87d48531b769759a, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  bindings:
+  - logicalObjectId: animal.happy-sheep.1
+    animalTransform: {fileID: 0}
+  - logicalObjectId: animal.happy-sheep.2
+    animalTransform: {fileID: 0}
+  - logicalObjectId: animal.happy-sheep.3
+    animalTransform: {fileID: 0}
+  - logicalObjectId: animal.happy-sheep.4
+    animalTransform: {fileID: 0}
+  profile:
+    minPathSteps: 0
+    maxPathSteps: 2147483647
+    minimumSpacingSteps: 1
+    allowedTerrains: 85
+    requiredMinimum: 0
+    targetCount: 4
+    maximum: 4
 --- !u!1 &7890253596842868618
 GameObject:
   m_ObjectHideFlags: 0

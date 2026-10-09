@@ -49,6 +49,8 @@ public sealed class MapGenerationRpgPlayModeTests
             runtimeRoot.GetComponent<MerchantPlacementService>();
         MonsterPlacementService monsterPlacementService =
             runtimeRoot.GetComponent<MonsterPlacementService>();
+        AnimalPlacementService animalPlacementService =
+            runtimeRoot.GetComponent<AnimalPlacementService>();
         MapGeneratedObjectPlacementAdapter placementAdapter =
             runtimeRoot.GetComponent<MapGeneratedObjectPlacementAdapter>();
         MapMinimapController minimap =
@@ -63,6 +65,7 @@ public sealed class MapGenerationRpgPlayModeTests
         Assert.That(cameraBindingService, Is.Not.Null);
         Assert.That(merchantPlacementService, Is.Not.Null);
         Assert.That(monsterPlacementService, Is.Not.Null);
+        Assert.That(animalPlacementService, Is.Not.Null);
         MapRuntimeDiagnosticSnapshot bootstrapDiagnostics =
             runtimeBootstrap.DiagnosticSnapshot;
         Assert.That(bootstrapDiagnostics.Mode, Is.EqualTo(MapRuntimeMode.RandomGenerated));
@@ -86,6 +89,9 @@ public sealed class MapGenerationRpgPlayModeTests
             Is.EqualTo(bootstrapDiagnostics.ActiveGenerationId));
         Assert.That(monsterPlacementService.MaterializationCount, Is.EqualTo(1));
         Assert.That(monsterPlacementService.ReadyGenerationId,
+            Is.EqualTo(bootstrapDiagnostics.ActiveGenerationId));
+        Assert.That(animalPlacementService.MaterializationCount, Is.EqualTo(1));
+        Assert.That(animalPlacementService.ReadyGenerationId,
             Is.EqualTo(bootstrapDiagnostics.ActiveGenerationId));
         Transform canonicalPlayer = controller.Player;
         Assert.That(canonicalPlayer, Is.Not.Null);
@@ -114,10 +120,21 @@ public sealed class MapGenerationRpgPlayModeTests
             runtimeBootstrap.Context,
             placementAdapter,
             monsterPlacementService);
+        AssertCurrentAnimalPlacement(
+            controller,
+            runtimeBootstrap.Context,
+            placementAdapter,
+            animalPlacementService);
 
         MapData firstMap = controller.LastGeneratedMap;
         MapObjectRegistry firstRegistry = runtimeBootstrap.Context.ActiveRegistry;
         UnityEngine.Object monsterInstance = monsterPlacementService.MonsterTarget;
+        UnityEngine.Object[] animalInstances = new UnityEngine.Object[animalPlacementService.Bindings.Count];
+        for (int index = 0; index < animalInstances.Length; index++)
+        {
+            animalInstances[index] = animalPlacementService.Bindings[index].AnimalTransform
+                .GetComponent<IAnimalPlacementTarget>() as UnityEngine.Object;
+        }
         controller.RegenerateMap();
         yield return null;
 
@@ -139,6 +156,8 @@ public sealed class MapGenerationRpgPlayModeTests
         Assert.That(monsterPlacementService.ReadyGenerationId,
             Is.EqualTo(regeneratedDiagnostics.ActiveGenerationId));
         Assert.That(firstRegistry.IsRetired, Is.True);
+        Assert.That(regeneratedDiagnostics.ActiveGenerationId,
+            Is.Not.EqualTo(bootstrapDiagnostics.ActiveGenerationId));
         Assert.That(GetFloatProperty(damageController, "CurrentHealth"), Is.EqualTo(healthBeforeRegeneration));
         Assert.That(GetCollectionCount(inventory, "ItemStacks"), Is.EqualTo(inventoryStacksBeforeRegeneration));
         AssertPlayerAtSpawn(controller);
@@ -154,7 +173,19 @@ public sealed class MapGenerationRpgPlayModeTests
             runtimeBootstrap.Context,
             placementAdapter,
             monsterPlacementService);
+        AssertCurrentAnimalPlacement(
+            controller,
+            runtimeBootstrap.Context,
+            placementAdapter,
+            animalPlacementService);
         Assert.That(monsterPlacementService.MonsterTarget, Is.SameAs(monsterInstance));
+        for (int index = 0; index < animalInstances.Length; index++)
+        {
+            Assert.That(
+                animalPlacementService.Bindings[index].AnimalTransform
+                    .GetComponent<IAnimalPlacementTarget>(),
+                Is.SameAs(animalInstances[index]));
+        }
     }
 
     /// <summary>
@@ -362,6 +393,59 @@ public sealed class MapGenerationRpgPlayModeTests
         Assert.That(monsterAi.GetComponent("MonsterPerceptionController"), Is.Not.Null);
         Assert.That(monsterAi.GetComponent("MonsterAttackController"), Is.Not.Null);
         Assert.That(monsterAi.GetComponent("BaseMonster"), Is.Not.Null);
+    }
+
+    private static void AssertCurrentAnimalPlacement(
+        MapGenerationController controller,
+        MapRuntimeContext context,
+        MapGeneratedObjectPlacementAdapter placementAdapter,
+        AnimalPlacementService service)
+    {
+        Assert.That(service.ReadyGenerationId, Is.EqualTo(context.ActiveGenerationId));
+        Assert.That(service.PlannedCount, Is.EqualTo(4));
+        Assert.That(service.MaterializedCount, Is.EqualTo(4));
+        Assert.That(service.Profile.Required, Is.False);
+        Assert.That(service.Profile.RequiredMinimum, Is.Zero);
+        Assert.That(service.Profile.TargetCount, Is.EqualTo(4));
+        Assert.That(service.Profile.Maximum, Is.EqualTo(4));
+
+        System.Collections.Generic.HashSet<Vector2Int> occupied =
+            new System.Collections.Generic.HashSet<Vector2Int>();
+        foreach (AnimalPlacementBinding binding in service.Bindings)
+        {
+            Assert.That(binding.AnimalTransform, Is.Not.Null);
+            Assert.That(binding.AnimalTransform.gameObject.activeInHierarchy, Is.True);
+            IAnimalPlacementTarget target =
+                binding.AnimalTransform.GetComponent<IAnimalPlacementTarget>();
+            Assert.That(target, Is.Not.Null);
+            Assert.That(target.ReinitializationTarget.GetComponent("Animal"), Is.Not.Null);
+            Assert.That(controller.TilemapRenderer.Coordinates.TryWorldToCell(
+                controller.LastGeneratedMap,
+                target.PlacementTransform.position,
+                out Vector2Int animalCell), Is.True);
+            Assert.That(service.TryGetMaterializedCell(
+                binding.LogicalObjectId,
+                out Vector2Int committedCell), Is.True);
+            Assert.That(animalCell, Is.EqualTo(committedCell));
+            Assert.That(controller.LastGeneratedMap.IsWalkable(animalCell), Is.True);
+            Assert.That(service.Profile.AllowsTerrain(
+                controller.LastGeneratedMap.GetCell(animalCell).terrainType), Is.True);
+            Assert.That(occupied.Add(animalCell), Is.True);
+            Assert.That(context.ActiveRegistry.TryGet(
+                binding.LogicalObjectId,
+                out MapObjectRegistryEntry entry), Is.True);
+            Assert.That(entry.GenerationId, Is.EqualTo(context.ActiveGenerationId));
+            Assert.That(entry.Instance, Is.SameAs(target as UnityEngine.Object));
+            Assert.That(entry.InitialCell, Is.EqualTo(animalCell));
+            Assert.That(entry.Ownership, Is.EqualTo(MapPlacementOwnership.SceneBound));
+
+            foreach (Transform transitionalTarget in placementAdapter.MapAnchoredObjects)
+            {
+                Assert.That(transitionalTarget, Is.Not.Null);
+                Assert.That(transitionalTarget, Is.Not.SameAs(target.PlacementTransform),
+                    "Animal must not remain in Transitional authored-offset positioning.");
+            }
+        }
     }
 
     private static void AssertBounds(Bounds actual, Bounds expected)

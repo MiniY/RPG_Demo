@@ -57,7 +57,7 @@ public sealed class MapGeneratedObjectPlacementAdapter : MonoBehaviour
     /// <summary>
     /// 获取所有由随机地图负责定位的场景对象。
     /// </summary>
-    public IReadOnlyList<Transform> MapAnchoredObjects => mapAnchoredObjects;
+    public IReadOnlyList<Transform> MapAnchoredObjects => GetTransitionalTargets();
 
     /// <summary>Explicit objects whose map-derived runtime state must be refreshed after PlayerReady.</summary>
     public IReadOnlyList<GameObject> RestartAfterPlacement => restartAfterPlacement;
@@ -135,7 +135,7 @@ public sealed class MapGeneratedObjectPlacementAdapter : MonoBehaviour
                 unavailableCells.Add(occupiedCell);
         }
 
-        foreach (Transform target in mapAnchoredObjects ?? Array.Empty<Transform>())
+        foreach (Transform target in GetTransitionalTargets())
         {
             if (target == null || !authoredCellOffsets.TryGetValue(target, out Vector2Int offset))
                 continue;
@@ -184,7 +184,7 @@ public sealed class MapGeneratedObjectPlacementAdapter : MonoBehaviour
         MapCoordinateBoundary coordinates = mapController.TilemapRenderer.Coordinates;
         Vector2Int anchorCell = coordinates.WorldToCell(placementAnchor.position);
 
-        foreach (Transform target in mapAnchoredObjects ?? Array.Empty<Transform>())
+        foreach (Transform target in GetTransitionalTargets())
         {
             if (target == null || target == placementAnchor)
                 continue;
@@ -214,12 +214,34 @@ public sealed class MapGeneratedObjectPlacementAdapter : MonoBehaviour
         for (int index = 0; index < mapAnchoredObjects.Length; index++)
         {
             Transform target = mapAnchoredObjects[index];
-            if (target != null && target != placementAnchor)
+            if (IsTransitionalTarget(target))
                 authoredCellOffsets[target] = authoredCellOffsetValues[index];
         }
 
         hasCapturedAuthoredLayout = true;
         return true;
+    }
+
+    /// <summary>
+    /// Excludes Roles that already have a formal semantic placement owner even if stale
+    /// serialized migration data still references them.
+    /// </summary>
+    private IReadOnlyList<Transform> GetTransitionalTargets()
+    {
+        List<Transform> targets = new List<Transform>();
+        foreach (Transform target in mapAnchoredObjects ?? Array.Empty<Transform>())
+        {
+            if (IsTransitionalTarget(target))
+                targets.Add(target);
+        }
+        return targets.AsReadOnly();
+    }
+
+    private bool IsTransitionalTarget(Transform target)
+    {
+        return target != null &&
+               target != placementAnchor &&
+               target.GetComponent<IMonsterPlacementTarget>() == null;
     }
 
     /// <summary>

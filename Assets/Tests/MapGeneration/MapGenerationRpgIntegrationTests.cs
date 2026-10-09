@@ -107,11 +107,13 @@ public class MapGenerationRpgIntegrationTests
                 integrationRoot.GetComponent<MapGeneratedObjectPlacementAdapter>();
             MerchantPlacementService merchantPlacementService =
                 integrationRoot.GetComponent<MerchantPlacementService>();
+            MonsterPlacementService monsterPlacementService =
+                integrationRoot.GetComponent<MonsterPlacementService>();
             Assert.That(placementAdapter, Is.Not.Null, "主场景缺少世界对象随机地图适配器。");
             Assert.That(placementAdapter.MapController, Is.EqualTo(controller));
             Assert.That(placementAdapter.PlacementAnchor, Is.EqualTo(controller.Player));
             Assert.That(placementAdapter.MapAnchoredObjects, Is.Not.Empty,
-                "Main 怪物、动物和植物尚未接入随机地图位置。 ");
+                "Main Animal/Plant 尚未接入随机地图位置。 ");
             Assert.That(merchantPlacementService, Is.Not.Null,
                 "主场景缺少 Required Merchant semantic placement owner。");
             Assert.That(merchantPlacementService.Profile.MinPathSteps, Is.EqualTo(8));
@@ -123,10 +125,36 @@ public class MapGenerationRpgIntegrationTests
             IMerchantPlacementTarget merchantTarget =
                 merchantPlacementService.MerchantTarget as IMerchantPlacementTarget;
             Assert.That(merchantTarget, Is.Not.Null);
-            CollectionAssert.DoesNotContain(
-                new List<Transform>(placementAdapter.MapAnchoredObjects),
+            AssertNotOwnedByTransitionalAdapter(
+                placementAdapter,
                 merchantTarget.PlacementTransform,
                 "Merchant 不得继续由 Transitional authored-offset adapter 定位。");
+            Assert.That(monsterPlacementService, Is.Not.Null,
+                "主场景缺少 Required Monster semantic placement owner。");
+            Assert.That(monsterPlacementService.Profile.Required, Is.True);
+            Assert.That(monsterPlacementService.Profile.RequiredMinimum, Is.EqualTo(1));
+            Assert.That(monsterPlacementService.Profile.TargetCount, Is.EqualTo(1));
+            Assert.That(monsterPlacementService.Profile.Maximum, Is.EqualTo(1));
+            Assert.That(monsterPlacementService.Profile.MinPathSteps, Is.EqualTo(10));
+            Assert.That(monsterPlacementService.Profile.MaxPathSteps, Is.EqualTo(28));
+            Assert.That(monsterPlacementService.Profile.AllowedTerrains, Is.EqualTo(
+                MonsterTerrainMask.Grass |
+                MonsterTerrainMask.Path |
+                MonsterTerrainMask.Forest |
+                MonsterTerrainMask.Sand));
+            Assert.That(monsterPlacementService.MonsterTarget.GetType().Name,
+                Is.EqualTo("MonsterAIController"));
+            IMonsterPlacementTarget monsterTarget =
+                monsterPlacementService.MonsterTarget as IMonsterPlacementTarget;
+            Assert.That(monsterTarget, Is.Not.Null);
+            AssertNotOwnedByTransitionalAdapter(
+                placementAdapter,
+                monsterTarget.PlacementTransform,
+                "Monster 不得继续由 Transitional authored-offset adapter 定位。");
+            CollectionAssert.DoesNotContain(
+                new List<GameObject>(placementAdapter.RestartAfterPlacement),
+                monsterTarget.ReinitializationTarget,
+                "Monster reinitialization ownership 不得继续来自 Transitional adapter。");
 
             controller.GenerateMap();
             Assert.That(controller.LastGeneratedMap, Is.Not.Null, "主场景随机地图生成失败。");
@@ -143,12 +171,22 @@ public class MapGenerationRpgIntegrationTests
                 merchantTarget,
                 controller,
                 runtimeBootstrap.Context);
+            AssertMonsterPlacement(
+                monsterPlacementService,
+                monsterTarget,
+                controller,
+                runtimeBootstrap.Context);
 
             placementAdapter.PlaceObjects(controller.LastGeneratedMap);
             AssertAnchoredObjectsUseGeneratedMap(placementAdapter, controller);
             AssertMerchantPlacement(
                 merchantPlacementService,
                 merchantTarget,
+                controller,
+                runtimeBootstrap.Context);
+            AssertMonsterPlacement(
+                monsterPlacementService,
+                monsterTarget,
                 controller,
                 runtimeBootstrap.Context);
 
@@ -158,6 +196,11 @@ public class MapGenerationRpgIntegrationTests
                 "主场景必须支持通过正式控制器重新生成地图。");
             placementAdapter.PlaceObjects(controller.LastGeneratedMap);
             AssertAnchoredObjectsUseGeneratedMap(placementAdapter, controller);
+            AssertMonsterPlacement(
+                monsterPlacementService,
+                monsterTarget,
+                controller,
+                runtimeBootstrap.Context);
 
             AssertMainCameraRemainsConnected(targetScene, controller.Player);
         }
@@ -206,8 +249,37 @@ public class MapGenerationRpgIntegrationTests
         Assert.That((float)interactDistance.GetValue(service.MerchantTarget), Is.GreaterThan(0f));
     }
 
+    private static void AssertMonsterPlacement(
+        MonsterPlacementService service,
+        IMonsterPlacementTarget target,
+        MapGenerationController controller,
+        MapRuntimeContext context)
+    {
+        Assert.That(service.ReadyGenerationId, Is.EqualTo(context.ActiveGenerationId));
+        Assert.That(service.ShortestPathSteps, Is.InRange(10, 28));
+        Assert.That(controller.TilemapRenderer.Coordinates.TryWorldToCell(
+            controller.LastGeneratedMap,
+            target.PlacementTransform.position,
+            out Vector2Int monsterCell), Is.True);
+        Assert.That(monsterCell, Is.EqualTo(service.PlacementCell));
+        Assert.That(controller.LastGeneratedMap.IsWalkable(monsterCell), Is.True);
+        Assert.That(service.Profile.AllowsTerrain(
+            controller.LastGeneratedMap.GetCell(monsterCell).terrainType), Is.True);
+        Assert.That(context.ActiveRegistry.TryGet(
+            MonsterPlacementService.MainMonsterLogicalObjectId,
+            out MapObjectRegistryEntry entry), Is.True);
+        Assert.That(entry.GenerationId, Is.EqualTo(context.ActiveGenerationId));
+        Assert.That(entry.Instance, Is.EqualTo(service.MonsterTarget));
+        Assert.That(entry.InitialCell, Is.EqualTo(service.PlacementCell));
+        Assert.That(entry.Ownership, Is.EqualTo(MapPlacementOwnership.SceneBound));
+        Assert.That(service.MonsterTarget.GetComponent("MonsterMovementController"), Is.Not.Null);
+        Assert.That(service.MonsterTarget.GetComponent("MonsterPerceptionController"), Is.Not.Null);
+        Assert.That(service.MonsterTarget.GetComponent("MonsterAttackController"), Is.Not.Null);
+        Assert.That(service.MonsterTarget.GetComponent("BaseMonster"), Is.Not.Null);
+    }
+
     /// <summary>
-    /// 验证 Main 场景对象已经落到随机地图的独立可行走单元。
+    /// 验证尚未迁移的 Main Animal/Plant 已落到随机地图的独立可行走单元。
     /// </summary>
     private static void AssertAnchoredObjectsUseGeneratedMap(
         MapGeneratedObjectPlacementAdapter adapter,
@@ -216,8 +288,6 @@ public class MapGenerationRpgIntegrationTests
         MapData mapData = controller.LastGeneratedMap;
         MapSimpleDecorationData decorations = controller.LastGeneratedSimpleDecorations;
         HashSet<Vector2Int> occupiedCells = new HashSet<Vector2Int>();
-        bool foundMonsterAi = false;
-
         foreach (Transform target in adapter.MapAnchoredObjects)
         {
             Assert.That(target, Is.Not.Null);
@@ -237,12 +307,26 @@ public class MapGenerationRpgIntegrationTests
             Assert.That(occupiedCells.Add(cell), Is.True,
                 $"多个 Main 场景对象占用了同一随机地图单元 {cell}。");
 
-            if (target.GetComponent("MonsterAIController") != null)
-                foundMonsterAi = true;
+            Assert.That(target.GetComponent("MonsterAIController"), Is.Null,
+                "Monster 已迁移到 semantic placement，不得残留在 Transitional adapter。");
         }
+    }
 
-        Assert.That(foundMonsterAi, Is.True,
-            "至少一个 Main MonsterAIController 应由随机地图定位。 ");
+    private static void AssertNotOwnedByTransitionalAdapter(
+        MapGeneratedObjectPlacementAdapter adapter,
+        Transform semanticTarget,
+        string message)
+    {
+        Assert.That(semanticTarget, Is.Not.Null);
+        int semanticTargetInstanceId = semanticTarget.GetInstanceID();
+        foreach (Transform transitionalTarget in adapter.MapAnchoredObjects)
+        {
+            Assert.That(transitionalTarget, Is.Not.Null);
+            Assert.That(
+                transitionalTarget.GetInstanceID(),
+                Is.Not.EqualTo(semanticTargetInstanceId),
+                message);
+        }
     }
 
     /// <summary>

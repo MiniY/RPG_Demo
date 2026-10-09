@@ -7,7 +7,7 @@ using UnityEngine;
 [RequireComponent(typeof(MonsterPerceptionController))]
 [RequireComponent(typeof(MonsterAttackController))]
 // 管理怪物行为状态、出生点和当前目标，不直接执行移动或动画。
-public class MonsterAIController : MonoBehaviour, IMapDependentReinitializable
+public class MonsterAIController : MonoBehaviour, IMapDependentReinitializable, IMonsterPlacementTarget
 {
     [Header("巡逻参数")]
     [SerializeField, Min(0f)] private float patrolRadius = 2f; // 以出生点为圆心的巡逻半径。
@@ -44,6 +44,8 @@ public class MonsterAIController : MonoBehaviour, IMapDependentReinitializable
     public MonsterStateType CurrentStateType => currentStateType; // 对外提供当前行为状态。
     public Transform CurrentTarget => currentTarget; // 对外提供当前锁定目标。
     public bool IsTargetConfirmed => isTargetConfirmed; // 对外提供当前目标是否已经确认。
+    public Transform PlacementTransform => transform; // 向地图集成层提供现有怪物实例的位置入口。
+    public GameObject ReinitializationTarget => gameObject; // 向地图重初始化服务提供显式目标。
     internal Vector2 HomePosition => homePosition; // 向状态实现提供本次出生位置。
     internal float PatrolRadius => patrolRadius; // 向巡逻状态提供巡逻半径。
     internal Vector2 PatrolWaitRange => patrolWaitRange; // 向巡逻状态提供停留时间范围。

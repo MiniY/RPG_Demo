@@ -1044,6 +1044,7 @@ GameObject:
   - component: {fileID: 420000000000000004}
   - component: {fileID: 420000000000000005}
   - component: {fileID: 420000000000000006}
+  - component: {fileID: 420000000000000007}
   m_Layer: 0
   m_Name: RandomMapRuntime
   m_TagString: Untagged
@@ -1179,6 +1180,26 @@ MonoBehaviour:
     minPathSteps: 8
     maxPathSteps: 24
     allowedTerrains: 5
+--- !u!114 &420000000000000007
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7464507020108064817}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b5f253b4cf8460c9dfb645e6dde6ea1, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  monsterTarget: {fileID: 0}
+  profile:
+    minPathSteps: 10
+    maxPathSteps: 28
+    allowedTerrains: 85
+    requiredMinimum: 1
+    targetCount: 1
+    maximum: 1
 --- !u!1 &7890253596842868618
 GameObject:
   m_ObjectHideFlags: 0

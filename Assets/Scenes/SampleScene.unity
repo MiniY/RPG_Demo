@@ -49506,13 +49506,17 @@ PrefabInstance:
       propertyPath: merchantTarget
       value:
       objectReference: {fileID: 7470993808810666117}
+    - target: {fileID: 420000000000000007, guid: 5c3a7704cf4bc9547bc54b3e1f658207, type: 3}
+      propertyPath: monsterTarget
+      value:
+      objectReference: {fileID: 2946139027853730536}
     - target: {fileID: 4717348320653228466, guid: 5c3a7704cf4bc9547bc54b3e1f658207, type: 3}
       propertyPath: placementAnchor
       value:
       objectReference: {fileID: 244025298}
     - target: {fileID: 4717348320653228466, guid: 5c3a7704cf4bc9547bc54b3e1f658207, type: 3}
       propertyPath: mapAnchoredObjects.Array.size
-      value: 22
+      value: 21
       objectReference: {fileID: 0}
     - target: {fileID: 4717348320653228466, guid: 5c3a7704cf4bc9547bc54b3e1f658207, type: 3}
       propertyPath: mapAnchoredObjects.Array.data[0]
@@ -49556,7 +49560,7 @@ PrefabInstance:
       objectReference: {fileID: 1305480784}
     - target: {fileID: 4717348320653228466, guid: 5c3a7704cf4bc9547bc54b3e1f658207, type: 3}
       propertyPath: restartAfterPlacement.Array.size
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4717348320653228466, guid: 5c3a7704cf4bc9547bc54b3e1f658207, type: 3}
       propertyPath: mapAnchoredObjects.Array.data[10]
@@ -49603,17 +49607,9 @@ PrefabInstance:
       value:
       objectReference: {fileID: 2034830726}
     - target: {fileID: 4717348320653228466, guid: 5c3a7704cf4bc9547bc54b3e1f658207, type: 3}
-      propertyPath: mapAnchoredObjects.Array.data[21]
-      value:
-      objectReference: {fileID: 2032728729}
-    - target: {fileID: 4717348320653228466, guid: 5c3a7704cf4bc9547bc54b3e1f658207, type: 3}
       propertyPath: authoredCellOffsetValues.Array.size
-      value: 22
+      value: 21
       objectReference: {fileID: 0}
-    - target: {fileID: 4717348320653228466, guid: 5c3a7704cf4bc9547bc54b3e1f658207, type: 3}
-      propertyPath: restartAfterPlacement.Array.data[0]
-      value:
-      objectReference: {fileID: 2946139027853730535}
     - target: {fileID: 4717348320653228466, guid: 5c3a7704cf4bc9547bc54b3e1f658207, type: 3}
       propertyPath: authoredCellOffsetValues.Array.data[0].x
       value: -6
@@ -49773,14 +49769,6 @@ PrefabInstance:
     - target: {fileID: 4717348320653228466, guid: 5c3a7704cf4bc9547bc54b3e1f658207, type: 3}
       propertyPath: authoredCellOffsetValues.Array.data[20].y
       value: -1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4717348320653228466, guid: 5c3a7704cf4bc9547bc54b3e1f658207, type: 3}
-      propertyPath: authoredCellOffsetValues.Array.data[21].x
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4717348320653228466, guid: 5c3a7704cf4bc9547bc54b3e1f658207, type: 3}
-      propertyPath: authoredCellOffsetValues.Array.data[21].y
-      value: -4
       objectReference: {fileID: 0}
     - target: {fileID: 6436714561388822757, guid: 5c3a7704cf4bc9547bc54b3e1f658207, type: 3}
       propertyPath: player
@@ -52961,6 +52949,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3014392730237608508, guid: af07a9fb402e6934dbed62860d520910, type: 3}
   m_PrefabInstance: {fileID: 2946139027853730534}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2946139027853730536 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4143397260352118681, guid: af07a9fb402e6934dbed62860d520910, type: 3}
+  m_PrefabInstance: {fileID: 2946139027853730534}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56779cac060282e4ea271c681148fbe6, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
 --- !u!1001 &7470993808810666116
 PrefabInstance:
   m_ObjectHideFlags: 0

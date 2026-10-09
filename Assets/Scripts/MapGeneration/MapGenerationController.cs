@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -51,6 +52,7 @@ public class MapGenerationController : MonoBehaviour
 
         EnsureOrchestrator();
         MerchantPlacementService merchantPlacementService = null;
+        MonsterPlacementService monsterPlacementService = null;
         if (bootstrap != null)
         {
             MerchantPlacementService[] merchantPlacementServices =
@@ -64,6 +66,18 @@ public class MapGenerationController : MonoBehaviour
                 return;
             }
             merchantPlacementService = merchantPlacementServices[0];
+
+            MonsterPlacementService[] monsterPlacementServices =
+                GetComponentsInParent<MonsterPlacementService>(true);
+            if (monsterPlacementServices.Length != 1)
+            {
+                FailPreGenerationConfiguration(
+                    "MonsterPlacementOwnerCount",
+                    $"RandomGenerated requires exactly one Required Monster placement service; " +
+                    $"found {monsterPlacementServices.Length}.");
+                return;
+            }
+            monsterPlacementService = monsterPlacementServices[0];
         }
         MapGenerationRequest request = new MapGenerationRequest(Guid.NewGuid(), settings.seed);
         MapGenerationExecutionResult result = orchestrator.Execute(
@@ -72,7 +86,8 @@ public class MapGenerationController : MonoBehaviour
             (attempt, pending) => BuildPlacementPlan(
                 attempt,
                 pending,
-                merchantPlacementService),
+                merchantPlacementService,
+                monsterPlacementService),
             ProjectCommitted);
 
         if (!result.Succeeded)
@@ -110,6 +125,16 @@ public class MapGenerationController : MonoBehaviour
             Debug.LogError($"Required Merchant materialization failed: {merchantFailure}", this);
             return;
         }
+        if (monsterPlacementService != null &&
+            !monsterPlacementService.TryMaterialize(
+                orchestrator.Context,
+                result.GenerationId.Value,
+                tilemapRenderer.Coordinates,
+                out string monsterFailure))
+        {
+            Debug.LogError($"Required Monster materialization failed: {monsterFailure}", this);
+            return;
+        }
         bool projectionReady = tilemapRenderer.TerrainCollisionTilemap != null &&
                                tilemapRenderer.TerrainCollisionTilemap.GetUsedTilesCount() > 0;
         string spawnFailure = null;
@@ -145,10 +170,13 @@ public class MapGenerationController : MonoBehaviour
         }
 
         MapDependentReinitializationService reinitializationService = reinitializationServices[0];
+        IReadOnlyList<GameObject> reinitializationTargets = BuildReinitializationTargets(
+            placementAdapters[0],
+            monsterPlacementService);
         if (!reinitializationService.TryReinitialize(
                 orchestrator.Context,
                 result.GenerationId.Value,
-                placementAdapters[0].RestartAfterPlacement,
+                reinitializationTargets,
                 out string reinitializationFailure))
         {
             Debug.LogError($"Map-dependent reinitialization failed: {reinitializationFailure}", this);
@@ -247,7 +275,8 @@ public class MapGenerationController : MonoBehaviour
     private MapPlacementPlan BuildPlacementPlan(
         MapGenerationAttempt attempt,
         MapPendingGeneration pending,
-        MerchantPlacementService merchantPlacementService)
+        MerchantPlacementService merchantPlacementService,
+        MonsterPlacementService monsterPlacementService)
     {
         MapPlacementPlan plan = MapStaticPlacementPlanner.Build(
             attempt.GenerationId,
@@ -255,7 +284,20 @@ public class MapGenerationController : MonoBehaviour
             pending.Decorations,
             settings);
         merchantPlacementService?.Plan(attempt, pending.Map, plan);
+        monsterPlacementService?.Plan(attempt, pending.Map, plan);
         return plan;
+    }
+
+    private static IReadOnlyList<GameObject> BuildReinitializationTargets(
+        MapGeneratedObjectPlacementAdapter placementAdapter,
+        MonsterPlacementService monsterPlacementService)
+    {
+        List<GameObject> targets = new List<GameObject>();
+        foreach (GameObject target in placementAdapter.RestartAfterPlacement)
+            targets.Add(target);
+        if (monsterPlacementService != null)
+            targets.Add(monsterPlacementService.ReinitializationTarget);
+        return targets.AsReadOnly();
     }
 
     private void ProjectCommitted(MapPendingGeneration pending)

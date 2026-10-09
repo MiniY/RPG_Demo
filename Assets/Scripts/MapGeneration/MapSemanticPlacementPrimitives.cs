@@ -90,6 +90,26 @@ internal static class MapSemanticPlacementPrimitives
         }
     }
 
+    internal static uint StableScore(
+        int mapSeed,
+        string role,
+        string typeId,
+        string logicalObjectId,
+        Vector2Int cell)
+    {
+        unchecked
+        {
+            uint hash = 2166136261;
+            Mix(ref hash, mapSeed);
+            Mix(ref hash, role);
+            Mix(ref hash, typeId);
+            Mix(ref hash, logicalObjectId);
+            Mix(ref hash, cell.x);
+            Mix(ref hash, cell.y);
+            return hash;
+        }
+    }
+
     internal static int CompareCells(Vector2Int left, Vector2Int right)
     {
         int xComparison = left.x.CompareTo(right.x);

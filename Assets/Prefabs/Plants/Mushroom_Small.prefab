@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7414941846972179694}
   - component: {fileID: 6400409991291766046}
   - component: {fileID: 8727020027434828930}
+  - component: {fileID: 954208372611908447}
   m_Layer: 6
   m_Name: Mushroom_Small
   m_TagString: Damageable
@@ -121,6 +122,18 @@ MonoBehaviour:
   visualObject: {fileID: 2079484830598087002}
   flashInterval: 0.05
   flashCount: 2
+--- !u!114 &954208372611908447
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 351051980577646650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6e4201e34ed4ff8a8138cbf53c4f8bc, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
 --- !u!1 &1359329202545550817
 GameObject:
   m_ObjectHideFlags: 0

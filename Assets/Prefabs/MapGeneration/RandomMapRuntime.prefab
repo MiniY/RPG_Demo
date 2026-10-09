@@ -1047,6 +1047,7 @@ GameObject:
   - component: {fileID: 420000000000000007}
   - component: {fileID: 420000000000000008}
   - component: {fileID: 420000000000000009}
+  - component: {fileID: 420000000000000010}
   m_Layer: 0
   m_Name: RandomMapRuntime
   m_TagString: Untagged
@@ -1286,6 +1287,28 @@ MonoBehaviour:
     requiredMinimum: 0
     targetCount: 17
     maximum: 17
+--- !u!114 &420000000000000010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7464507020108064817}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 469f9b91acf64628a0c465593f64d16c, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  destructiblePrefab: {fileID: 351051980577646650, guid: 32a13702d1192114e95eb89b2617f74e, type: 3}
+  profile:
+    minPathSteps: 8
+    maxPathSteps: 2147483647
+    minimumSpacingSteps: 3
+    exitSafetyRadius: 2
+    allowedTerrains: 17
+    requiredMinimum: 4
+    targetCount: 8
+    maximum: 8
 --- !u!1 &7890253596842868618
 GameObject:
   m_ObjectHideFlags: 0

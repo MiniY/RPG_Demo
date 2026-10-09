@@ -53,6 +53,7 @@ public class MapGenerationController : MonoBehaviour
         EnsureOrchestrator();
         MerchantPlacementService merchantPlacementService = null;
         MonsterPlacementService monsterPlacementService = null;
+        DestructiblePlacementService destructiblePlacementService = null;
         AnimalPlacementService animalPlacementService = null;
         PlantPlacementService plantPlacementService = null;
         if (bootstrap != null)
@@ -80,6 +81,18 @@ public class MapGenerationController : MonoBehaviour
                 return;
             }
             monsterPlacementService = monsterPlacementServices[0];
+
+            DestructiblePlacementService[] destructiblePlacementServices =
+                GetComponentsInParent<DestructiblePlacementService>(true);
+            if (destructiblePlacementServices.Length != 1)
+            {
+                FailPreGenerationConfiguration(
+                    "DestructiblePlacementOwnerCount",
+                    $"RandomGenerated requires exactly one Destructible population service; " +
+                    $"found {destructiblePlacementServices.Length}.");
+                return;
+            }
+            destructiblePlacementService = destructiblePlacementServices[0];
 
             AnimalPlacementService[] animalPlacementServices =
                 GetComponentsInParent<AnimalPlacementService>(true);
@@ -114,6 +127,7 @@ public class MapGenerationController : MonoBehaviour
                 pending,
                 merchantPlacementService,
                 monsterPlacementService,
+                destructiblePlacementService,
                 animalPlacementService,
                 plantPlacementService),
             ProjectCommitted);
@@ -161,6 +175,16 @@ public class MapGenerationController : MonoBehaviour
                 out string monsterFailure))
         {
             Debug.LogError($"Required Monster materialization failed: {monsterFailure}", this);
+            return;
+        }
+        if (destructiblePlacementService != null &&
+            !destructiblePlacementService.TryMaterialize(
+                orchestrator.Context,
+                result.GenerationId.Value,
+                tilemapRenderer.Coordinates,
+                out string destructibleFailure))
+        {
+            Debug.LogError($"Destructible materialization failed: {destructibleFailure}", this);
             return;
         }
         if (animalPlacementService != null &&
@@ -327,6 +351,7 @@ public class MapGenerationController : MonoBehaviour
         MapPendingGeneration pending,
         MerchantPlacementService merchantPlacementService,
         MonsterPlacementService monsterPlacementService,
+        DestructiblePlacementService destructiblePlacementService,
         AnimalPlacementService animalPlacementService,
         PlantPlacementService plantPlacementService)
     {
@@ -337,6 +362,7 @@ public class MapGenerationController : MonoBehaviour
             settings);
         merchantPlacementService?.Plan(attempt, pending.Map, plan);
         monsterPlacementService?.Plan(attempt, pending.Map, plan);
+        destructiblePlacementService?.Plan(attempt, pending.Map, plan);
         animalPlacementService?.Plan(attempt, pending.Map, plan);
         plantPlacementService?.Plan(attempt, pending.Map, plan);
         return plan;

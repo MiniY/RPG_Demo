@@ -5,7 +5,7 @@ using UnityEngine.Serialization;
 
 // 控制玩家的移动、朝向和攻击行为。
 [RequireComponent(typeof(Rigidbody2D))]
-public class PlayerAction : MonoBehaviour
+public class PlayerAction : MonoBehaviour, IMapTransitionResettable
 {
     [SerializeField] private float moveSpeed = 5f; // 玩家移动速度。
     [SerializeField] private float speedBoostAmount = 2f; // 左 Ctrl 开启时额外增加的速度。
@@ -251,6 +251,21 @@ public class PlayerAction : MonoBehaviour
 
         if (rb != null)
             rb.velocity = Vector2.zero;
+    }
+
+    /// <summary>Clears movement and attack transient state before a committed map relocation.</summary>
+    public void ResetMapTransitionState()
+    {
+        moveInput = Vector2.zero;
+        preparedAttackTarget = null;
+        isControlLocked = false;
+        ApplyControlState(false);
+        gameInput?.CancelControlState();
+        if (rb != null)
+        {
+            rb.velocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+        }
     }
 
     // 等待攻击命中延迟后再结算伤害。

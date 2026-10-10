@@ -72,6 +72,12 @@ public class AnimalHurtController : MonoBehaviour
         hurtCoroutine = StartCoroutine(PlayHurtCoroutine(damageSourcePosition));
     }
 
+    // 地图重定位后取消仍持有旧起点的受击协程，避免下一帧把动物拉回旧地图位置。
+    public void CancelTransientMapState()
+    {
+        StopHurtCoroutine();
+    }
+
     // 执行后退再回到原位的完整位移过程。
     private IEnumerator PlayHurtCoroutine(Vector3 damageSourcePosition)
     {

@@ -29,25 +29,16 @@ public class MapGenerationRpgIntegrationTests
         "Assets/Prefabs/MapGeneration/RandomMapRuntime.prefab";
 
     /// <summary>
-    /// 只用于开发和回归测试的独立场景。
-    /// </summary>
-    private const string DevelopmentScenePath =
-        "Assets/Scenes/MapGeneration/MapGenerationTest.unity";
-
-    /// <summary>
     /// 验证构建入口、旧地图停用、随机地图引用和生成结果。
     /// </summary>
     [Test]
     public void SampleSceneUsesRandomMapAsDefaultMapImplementation()
     {
         Assert.That(EditorBuildSettings.scenes, Is.Not.Empty);
+        Assert.That(EditorBuildSettings.scenes, Has.Length.EqualTo(1),
+            "正式构建应只包含 SampleScene。");
         Assert.That(EditorBuildSettings.scenes[0].path, Is.EqualTo(TargetScenePath));
         Assert.That(EditorBuildSettings.scenes[0].enabled, Is.True);
-        foreach (EditorBuildSettingsScene buildScene in EditorBuildSettings.scenes)
-        {
-            Assert.That(buildScene.path, Is.Not.EqualTo(DevelopmentScenePath),
-                "开发测试场景不应参与正式构建流程。");
-        }
 
         Scene targetScene = EditorSceneManager.OpenScene(
             TargetScenePath,

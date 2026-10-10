@@ -1,18 +1,21 @@
+using System;
 using NUnit.Framework;
+using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
 
 /// <summary>
-/// 验证独立地图测试场景可以使用真实组件完成生成和碰撞配置。
+/// 验证可重复创建的临时场景可以使用正式运行时 Prefab 完成生成和碰撞配置。
 /// </summary>
 public class MapGenerationSceneTests
 {
     /// <summary>
-    /// 独立地图测试场景的项目相对路径。
+    /// 正式随机地图运行时 Prefab 的项目相对路径。
     /// </summary>
-    private const string TestScenePath = "Assets/Scenes/MapGeneration/MapGenerationTest.unity";
+    private const string RuntimePrefabPath =
+        "Assets/Prefabs/MapGeneration/RandomMapRuntime.prefab";
 
     /// <summary>
     /// 验证测试场景能生成分层地形、分层简单装饰、碰撞瓦片并移动玩家。
@@ -20,10 +23,9 @@ public class MapGenerationSceneTests
     [Test]
     public void TestSceneGeneratesLayeredTerrainAndCollisionTilemaps()
     {
-        Scene testScene = EditorSceneManager.OpenScene(TestScenePath, OpenSceneMode.Additive);
-
-        try
+        using (MapGenerationSceneFixture fixture = CreateTestFixture())
         {
+            Scene testScene = fixture.Scene;
             MapGenerationController controller = FindComponentInScene<MapGenerationController>(testScene);
             Assert.That(controller, Is.Not.Null, "测试场景缺少 MapGenerationController。");
             Assert.That(controller.Settings, Is.Not.Null, "测试场景缺少 MapGenerationSettings 引用。");
@@ -226,11 +228,6 @@ public class MapGenerationSceneTests
                 mapData.SpawnCell);
             Assert.That(Vector2.Distance(controller.Player.position, expectedSpawnPosition), Is.LessThan(0.01f));
         }
-        finally
-        {
-            if (testScene.IsValid() && testScene.isLoaded)
-                EditorSceneManager.CloseScene(testScene, true);
-        }
     }
 
     /// <summary>
@@ -241,10 +238,9 @@ public class MapGenerationSceneTests
     [TestCase(MapTerrainType.ShallowWater)]
     public void ElevationFacesDoNotRenderOnWaterCells(MapTerrainType waterType)
     {
-        Scene testScene = EditorSceneManager.OpenScene(TestScenePath, OpenSceneMode.Additive);
-
-        try
+        using (MapGenerationSceneFixture fixture = CreateTestFixture())
         {
+            Scene testScene = fixture.Scene;
             MapGenerationController controller = FindComponentInScene<MapGenerationController>(testScene);
             Assert.That(controller, Is.Not.Null, "测试场景缺少 MapGenerationController。");
             Assert.That(controller.Settings, Is.Not.Null, "测试场景缺少 MapGenerationSettings 引用。");
@@ -268,11 +264,6 @@ public class MapGenerationSceneTests
                 Is.Null,
                 "高地南侧崖面不得写入深水或浅水单元。");
         }
-        finally
-        {
-            if (testScene.IsValid() && testScene.isLoaded)
-                EditorSceneManager.CloseScene(testScene, true);
-        }
     }
 
     /// <summary>
@@ -281,10 +272,9 @@ public class MapGenerationSceneTests
     [Test]
     public void ElevationFacesStillRenderOnSandCells()
     {
-        Scene testScene = EditorSceneManager.OpenScene(TestScenePath, OpenSceneMode.Additive);
-
-        try
+        using (MapGenerationSceneFixture fixture = CreateTestFixture())
         {
+            Scene testScene = fixture.Scene;
             MapGenerationController controller = FindComponentInScene<MapGenerationController>(testScene);
             Assert.That(controller, Is.Not.Null, "测试场景缺少 MapGenerationController。");
             Assert.That(controller.Settings, Is.Not.Null, "测试场景缺少 MapGenerationSettings 引用。");
@@ -302,11 +292,6 @@ public class MapGenerationSceneTests
                 elevationTilemap.GetTile(new Vector3Int(sandCell.x, sandCell.y, 0)),
                 Is.Not.Null,
                 "具有沙地底层的单元必须继续允许显示高地南侧崖面。");
-        }
-        finally
-        {
-            if (testScene.IsValid() && testScene.isLoaded)
-                EditorSceneManager.CloseScene(testScene, true);
         }
     }
 
@@ -389,6 +374,130 @@ public class MapGenerationSceneTests
         }
 
         return mapData;
+    }
+
+    /// <summary>
+    /// 创建不保存到项目的独立测试场景，并从正式运行时 Prefab 构建最小测试环境。
+    /// </summary>
+    private static MapGenerationSceneFixture CreateTestFixture()
+    {
+        return new MapGenerationSceneFixture(RuntimePrefabPath);
+    }
+
+    /// <summary>
+    /// 设置测试实例上的序列化对象引用，不修改 Prefab 资产。
+    /// </summary>
+    private static void SetObjectReference(
+        UnityEngine.Object target,
+        string propertyName,
+        UnityEngine.Object value)
+    {
+        SerializedObject serializedTarget = new SerializedObject(target);
+        SerializedProperty property = serializedTarget.FindProperty(propertyName);
+        Assert.That(property, Is.Not.Null,
+            $"{target.GetType().Name} 缺少序列化字段 {propertyName}。");
+        property.objectReferenceValue = value;
+        serializedTarget.ApplyModifiedPropertiesWithoutUndo();
+    }
+
+    /// <summary>
+    /// 管理临时 Scene、Prefab 实例和最小 Player，并保证测试结束后完整清理。
+    /// </summary>
+    private sealed class MapGenerationSceneFixture : IDisposable
+    {
+        private readonly Scene previousActiveScene;
+        private Scene playerScene;
+        private bool ownsPlayerScene;
+        private GameObject player;
+
+        public MapGenerationSceneFixture(string runtimePrefabPath)
+        {
+            previousActiveScene = SceneManager.GetActiveScene();
+            Scene = EditorSceneManager.NewPreviewScene();
+
+            try
+            {
+                playerScene = GetPlayerScene(previousActiveScene, out ownsPlayerScene);
+                Assert.That(GameObject.FindGameObjectsWithTag("Player"), Is.Empty,
+                    "Player Fixture 要求 Test Runner 场景中没有其他 Player。");
+                player = new GameObject("FixturePlayer");
+                player.tag = "Player";
+                Rigidbody2D body = player.AddComponent<Rigidbody2D>();
+                body.gravityScale = 0f;
+                GameObject cameraTarget = new GameObject("CameraTarget");
+                cameraTarget.transform.SetParent(player.transform, false);
+                SceneManager.MoveGameObjectToScene(player, playerScene);
+
+                GameObject runtimePrefab =
+                    AssetDatabase.LoadAssetAtPath<GameObject>(runtimePrefabPath);
+                Assert.That(runtimePrefab, Is.Not.Null,
+                    $"缺少正式随机地图运行时 Prefab：{runtimePrefabPath}");
+
+                GameObject runtimeRoot =
+                    PrefabUtility.InstantiatePrefab(runtimePrefab, Scene) as GameObject;
+                Assert.That(runtimeRoot, Is.Not.Null, "无法实例化正式随机地图运行时 Prefab。");
+
+                MapRuntimeBootstrap bootstrap = runtimeRoot.GetComponent<MapRuntimeBootstrap>();
+                Assert.That(bootstrap, Is.Not.Null, "正式运行时 Prefab 缺少 MapRuntimeBootstrap。");
+                UnityEngine.Object.DestroyImmediate(bootstrap);
+
+                MapGenerationController controller =
+                    runtimeRoot.GetComponentInChildren<MapGenerationController>(true);
+                MapMinimapController minimap =
+                    runtimeRoot.GetComponentInChildren<MapMinimapController>(true);
+                Assert.That(controller, Is.Not.Null,
+                    "正式运行时 Prefab 缺少 MapGenerationController。");
+                Assert.That(minimap, Is.Not.Null,
+                    "正式运行时 Prefab 缺少 MapMinimapController。");
+
+                SetObjectReference(controller, "player", player.transform);
+                SetObjectReference(minimap, "player", player.transform);
+            }
+            catch
+            {
+                Dispose();
+                throw;
+            }
+        }
+
+        public Scene Scene { get; }
+
+        private static Scene GetPlayerScene(Scene currentScene, out bool ownsScene)
+        {
+            if (currentScene.IsValid() &&
+                currentScene.isLoaded &&
+                string.IsNullOrEmpty(currentScene.path))
+            {
+                ownsScene = false;
+                return currentScene;
+            }
+
+            Assert.That(
+                !currentScene.IsValid() ||
+                !currentScene.isLoaded ||
+                !string.IsNullOrEmpty(currentScene.path),
+                Is.True,
+                "为避免污染用户未保存的非空 Scene，测试拒绝创建 Player Fixture。");
+
+            ownsScene = true;
+            return EditorSceneManager.NewScene(
+                NewSceneSetup.EmptyScene,
+                NewSceneMode.Additive);
+        }
+
+        public void Dispose()
+        {
+            if (previousActiveScene.IsValid() && previousActiveScene.isLoaded)
+                SceneManager.SetActiveScene(previousActiveScene);
+
+            if (Scene.IsValid() && Scene.isLoaded)
+                EditorSceneManager.ClosePreviewScene(Scene);
+
+            if (ownsPlayerScene && playerScene.IsValid() && playerScene.isLoaded)
+                EditorSceneManager.CloseScene(playerScene, true);
+            else if (player != null)
+                UnityEngine.Object.DestroyImmediate(player);
+        }
     }
 
     /// <summary>

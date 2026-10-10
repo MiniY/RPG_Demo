@@ -4,10 +4,9 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.Tilemaps;
 
 /// <summary>
-/// 将独立随机地图测试场景中已经验证的运行时地图对象接入 RPG 主场景。
+/// 将正式随机地图运行时 Prefab 接入 RPG 主场景。
 /// </summary>
 public static class MapGenerationRpgIntegration
 {
@@ -15,12 +14,6 @@ public static class MapGenerationRpgIntegration
     /// RPG 正常游戏流程使用的主场景路径。
     /// </summary>
     private const string TargetScenePath = "Assets/Scenes/SampleScene.unity";
-
-    /// <summary>
-    /// 保存随机地图开发与回归测试对象的场景路径。
-    /// </summary>
-    private const string DevelopmentScenePath =
-        "Assets/Scenes/MapGeneration/MapGenerationTest.unity";
 
     /// <summary>
     /// RPG 正常游戏流程使用的生产随机地图运行时预制体。
@@ -68,15 +61,6 @@ public static class MapGenerationRpgIntegration
     }
 
     /// <summary>
-    /// 从开发场景重建生产运行时预制体；正式游戏运行不依赖开发场景。
-    /// </summary>
-    [MenuItem("Tools/RPG Demo/Map Generation/Rebuild Production Runtime Prefab")]
-    public static void RebuildRuntimePrefabFromMenu()
-    {
-        RebuildRuntimePrefabFromDevelopmentScene();
-    }
-
-    /// <summary>
     /// 从 Unity batch mode（批处理模式）执行 RPG 随机地图集成。
     /// </summary>
     public static void RunBatchIntegration()
@@ -92,94 +76,6 @@ public static class MapGenerationRpgIntegration
             Debug.LogException(exception);
             EditorApplication.Exit(1);
         }
-    }
-
-    /// <summary>
-    /// 一次性重建生产预制体并重新接入 RPG 主场景。
-    /// </summary>
-    public static void RunBatchProductionMigration()
-    {
-        try
-        {
-            RebuildRuntimePrefabFromDevelopmentScene();
-            Integrate();
-            Debug.Log("生产随机地图预制体已重建并接入 RPG 主场景。");
-            EditorApplication.Exit(0);
-        }
-        catch (Exception exception)
-        {
-            Debug.LogException(exception);
-            EditorApplication.Exit(1);
-        }
-    }
-
-    /// <summary>
-    /// 把开发场景中已经验证的地图运行时对象固化为生产专用预制体。
-    /// </summary>
-    private static void RebuildRuntimePrefabFromDevelopmentScene()
-    {
-        Scene developmentScene = EditorSceneManager.OpenScene(
-            DevelopmentScenePath,
-            OpenSceneMode.Additive);
-
-        try
-        {
-            Grid sourceGrid = FindComponentInScene<Grid>(developmentScene);
-            MapGenerationController sourceController =
-                FindComponentInScene<MapGenerationController>(developmentScene);
-
-            if (sourceGrid == null || sourceController == null)
-            {
-                throw new InvalidOperationException(
-                    "MapGenerationTest 缺少 Grid 或 MapGenerationController。");
-            }
-
-            GameObject prefabRoot = new GameObject(IntegrationRootName);
-            SceneManager.MoveGameObjectToScene(prefabRoot, developmentScene);
-            sourceGrid.transform.SetParent(prefabRoot.transform, true);
-            sourceController.transform.SetParent(prefabRoot.transform, true);
-
-            ConfigureController(sourceController, null);
-            ConfigureMinimap(
-                sourceController.GetComponent<MapMinimapController>(),
-                sourceController,
-                null);
-
-            MapGeneratedObjectPlacementAdapter placementAdapter =
-                prefabRoot.AddComponent<MapGeneratedObjectPlacementAdapter>();
-            ConfigurePlacementAdapter(
-                placementAdapter,
-                sourceController,
-                null,
-                Array.Empty<Transform>(),
-                Array.Empty<GameObject>());
-
-            MapRuntimeBootstrap runtimeBootstrap =
-                prefabRoot.AddComponent<MapRuntimeBootstrap>();
-            ConfigureRuntimeBootstrap(
-                runtimeBootstrap,
-                sourceController.gameObject,
-                null);
-
-            EnsureRuntimePrefabFolder();
-            GameObject prefabAsset = PrefabUtility.SaveAsPrefabAsset(
-                prefabRoot,
-                RuntimePrefabPath,
-                out bool success);
-
-            if (!success || prefabAsset == null)
-            {
-                throw new InvalidOperationException(
-                    $"无法保存生产随机地图预制体：{RuntimePrefabPath}");
-            }
-        }
-        finally
-        {
-            if (developmentScene.IsValid() && developmentScene.isLoaded)
-                EditorSceneManager.CloseScene(developmentScene, true);
-        }
-
-        AssetDatabase.SaveAssets();
     }
 
     /// <summary>
@@ -474,16 +370,6 @@ public static class MapGenerationRpgIntegration
     }
 
     /// <summary>
-    /// 确保生产随机地图预制体目录存在。
-    /// </summary>
-    private static void EnsureRuntimePrefabFolder()
-    {
-        const string folderPath = "Assets/Prefabs/MapGeneration";
-        if (!AssetDatabase.IsValidFolder(folderPath))
-            AssetDatabase.CreateFolder("Assets/Prefabs", "MapGeneration");
-    }
-
-    /// <summary>
     /// 在指定场景的根对象中按名称查找对象。
     /// </summary>
     /// <param name="scene">待搜索的场景。</param>
@@ -516,24 +402,6 @@ public static class MapGenerationRpgIntegration
                 if (component != null && component.GetType().Name == typeName)
                     return component;
             }
-        }
-
-        return null;
-    }
-
-    /// <summary>
-    /// 在指定场景中查找第一个目标类型组件。
-    /// </summary>
-    /// <typeparam name="T">目标组件类型。</typeparam>
-    /// <param name="scene">待搜索的场景。</param>
-    /// <returns>找到的组件；不存在时返回 null。</returns>
-    private static T FindComponentInScene<T>(Scene scene) where T : Component
-    {
-        foreach (GameObject rootObject in scene.GetRootGameObjects())
-        {
-            T component = rootObject.GetComponentInChildren<T>(true);
-            if (component != null)
-                return component;
         }
 
         return null;

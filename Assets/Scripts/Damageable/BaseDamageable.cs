@@ -141,7 +141,28 @@ public abstract class BaseDamageable : MonoBehaviour
                 pickup = rewardObject.AddComponent<RewardPickup>();
 
             pickup.Initialize(rule.reward, amount);
+            BindRewardToCurrentMap(rewardObject);
         }
+    }
+
+    // 让随机地图在新一代提交或显式清空时回收未拾取奖励。
+    private static void BindRewardToCurrentMap(GameObject rewardObject)
+    {
+        MapGenerationController mapController =
+            UnityEngine.Object.FindObjectOfType<MapGenerationController>();
+
+        if (mapController == null)
+            return;
+
+        GenerationScopedRewardLifetime lifetime =
+            rewardObject.GetComponent<GenerationScopedRewardLifetime>();
+
+        if (lifetime == null)
+            lifetime = rewardObject.AddComponent<GenerationScopedRewardLifetime>();
+
+        lifetime.Arm(
+            mapController,
+            () => ObjectPoolManager.ReturnOrDeactivate(rewardObject));
     }
 
     // 计算奖励掉落在对象附近的随机位置。

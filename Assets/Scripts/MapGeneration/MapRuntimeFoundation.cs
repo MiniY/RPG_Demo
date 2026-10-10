@@ -70,7 +70,9 @@ public sealed class MapRuntimeDiagnosticSnapshot
         IsFailed = phase == MapLifecyclePhase.Failed || failure != null;
         StateSummary = $"Mode={Mode}; ActiveGenerationId={Format(ActiveGenerationId)}; " +
             $"PendingGenerationId={Format(PendingGenerationId)}; Phase={Phase}; Ready={IsReady}; " +
-            $"Failed={IsFailed}; HasActiveMap={HasActiveMap}; PlacementReservations={PlacementReservationCount}; " +
+            $"Failed={IsFailed}; RandomAuthorityActive={AuthorityState.RandomGeneratedActive}; " +
+            $"LegacyAuthorityActive={AuthorityState.LegacyStaticActive}; HasActiveMap={HasActiveMap}; " +
+            $"PlacementReservations={PlacementReservationCount}; " +
             $"RegistryEntries={RegistryEntryCount}; Attempts={AttemptChain.Count}; FailureCode={Failure?.Code ?? "none"}";
     }
     public MapRuntimeMode Mode { get; }
@@ -195,21 +197,29 @@ public sealed class MapRuntimeContext
 
 public static class MapRuntimeModeValidator
 {
-    public static MapFailureDiagnostic Validate(MapRuntimeMode mode, MapRuntimeAuthorityState state)
+    public static MapFailureDiagnostic Validate(
+        MapRuntimeMode mode,
+        MapRuntimeAuthorityState state,
+        MapLifecyclePhase phase = MapLifecyclePhase.ValidatingConfiguration)
     {
         switch (mode)
         {
             case MapRuntimeMode.RandomGenerated:
-                if (state.LegacyStaticActive) return Failure(mode, MapFailureCategory.ModeConflict, "RandomModeLegacyAuthorityActive", "Legacy authority is active in RandomGenerated mode.");
-                if (!state.RandomGeneratedActive) return Failure(mode, MapFailureCategory.Configuration, "RandomAuthorityInactive", "Random authority must be active in RandomGenerated mode.");
+                if (state.LegacyStaticActive) return Failure(mode, phase, MapFailureCategory.ModeConflict, "RandomModeLegacyAuthorityActive", "Legacy authority is active in RandomGenerated mode.");
+                if (!state.RandomGeneratedActive) return Failure(mode, phase, MapFailureCategory.Configuration, "RandomAuthorityInactive", "Random authority must be active in RandomGenerated mode.");
                 return null;
             case MapRuntimeMode.LegacyStatic:
-                if (state.RandomGeneratedActive) return Failure(mode, MapFailureCategory.ModeConflict, "LegacyModeRandomAuthorityActive", "Random authority is active in LegacyStatic mode.");
-                if (!state.LegacyStaticActive) return Failure(mode, MapFailureCategory.Configuration, "LegacyAuthorityInactive", "Legacy authority must be active in LegacyStatic mode.");
+                if (state.RandomGeneratedActive) return Failure(mode, phase, MapFailureCategory.ModeConflict, "LegacyModeRandomAuthorityActive", "Random authority is active in LegacyStatic mode.");
+                if (!state.LegacyStaticActive) return Failure(mode, phase, MapFailureCategory.Configuration, "LegacyAuthorityInactive", "Legacy authority must be active in LegacyStatic mode.");
                 return null;
-            default: return Failure(mode, MapFailureCategory.Configuration, "UnsupportedRuntimeMode", $"Unsupported runtime mode: {mode}.");
+            default: return Failure(mode, phase, MapFailureCategory.Configuration, "UnsupportedRuntimeMode", $"Unsupported runtime mode: {mode}.");
         }
     }
-    private static MapFailureDiagnostic Failure(MapRuntimeMode mode, MapFailureCategory category, string code, string reason) =>
-        new MapFailureDiagnostic(mode, null, MapLifecyclePhase.ValidatingConfiguration, category, code, reason);
+    private static MapFailureDiagnostic Failure(
+        MapRuntimeMode mode,
+        MapLifecyclePhase phase,
+        MapFailureCategory category,
+        string code,
+        string reason) =>
+        new MapFailureDiagnostic(mode, null, phase, category, code, reason);
 }

@@ -230,20 +230,17 @@ public class MapGenerationController : MonoBehaviour
 
         MapDependentReinitializationService[] reinitializationServices =
             GetComponentsInParent<MapDependentReinitializationService>(true);
-        MapGeneratedObjectPlacementAdapter[] placementAdapters =
-            GetComponentsInParent<MapGeneratedObjectPlacementAdapter>(true);
-        if (reinitializationServices.Length != 1 || placementAdapters.Length != 1)
+        if (reinitializationServices.Length != 1)
         {
             FailStageConfiguration(result.GenerationId.Value, MapLifecyclePhase.Reinitializing,
                 "ReinitializationOwnerCount",
-                $"RandomGenerated requires exactly one reinitialization service and placement adapter; " +
-                $"found {reinitializationServices.Length} and {placementAdapters.Length}.");
+                $"RandomGenerated requires exactly one reinitialization service; " +
+                $"found {reinitializationServices.Length}.");
             return;
         }
 
         MapDependentReinitializationService reinitializationService = reinitializationServices[0];
         IReadOnlyList<GameObject> reinitializationTargets = BuildReinitializationTargets(
-            placementAdapters[0],
             monsterPlacementService,
             animalPlacementService,
             plantPlacementService);
@@ -282,6 +279,30 @@ public class MapGenerationController : MonoBehaviour
                 out string cameraFailure))
         {
             Debug.LogError($"Camera binding failed: {cameraFailure}", this);
+            return;
+        }
+
+        MapRuntimeContext context = orchestrator.Context;
+        MapLifecycleTransitions.Advance(context, MapLifecyclePhase.ValidatingRuntime);
+        if (!bootstrap.TryValidateCurrentAuthority(
+                MapLifecyclePhase.ValidatingRuntime,
+                out string authorityFailure))
+        {
+            Debug.LogError($"Runtime authority validation failed: {authorityFailure}", this);
+            return;
+        }
+
+        MapLifecycleTransitions.Advance(context, MapLifecyclePhase.Ready);
+        if (!orchestrator.PublishGameplayReady(result.GenerationId.Value))
+        {
+            context.RecordFailure(new MapFailureDiagnostic(
+                context.Mode,
+                result.GenerationId.Value,
+                context.Phase,
+                MapFailureCategory.Lifecycle,
+                "GameplayReadyPublicationRejected",
+                "GameplayReady could not be published for the Current Generation."));
+            Debug.LogError("GameplayReady publication was rejected for the Current Generation.", this);
         }
     }
 
@@ -369,14 +390,11 @@ public class MapGenerationController : MonoBehaviour
     }
 
     private static IReadOnlyList<GameObject> BuildReinitializationTargets(
-        MapGeneratedObjectPlacementAdapter placementAdapter,
         MonsterPlacementService monsterPlacementService,
         AnimalPlacementService animalPlacementService,
         PlantPlacementService plantPlacementService)
     {
         List<GameObject> targets = new List<GameObject>();
-        foreach (GameObject target in placementAdapter.RestartAfterPlacement)
-            targets.Add(target);
         if (monsterPlacementService != null)
             targets.Add(monsterPlacementService.ReinitializationTarget);
         if (animalPlacementService != null)

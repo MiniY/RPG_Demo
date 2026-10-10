@@ -47,6 +47,8 @@ public sealed class MapRuntimeFoundationTests
         Assert.That(snapshot.IsFailed, Is.False);
         Assert.That(snapshot.Failure, Is.Null);
         Assert.That(snapshot.StateSummary, Does.Contain("Mode=RandomGenerated"));
+        Assert.That(snapshot.StateSummary, Does.Contain("RandomAuthorityActive=True"));
+        Assert.That(snapshot.StateSummary, Does.Contain("LegacyAuthorityActive=False"));
     }
 
     [Test]
@@ -123,6 +125,37 @@ public sealed class MapRuntimeFoundationTests
         AssertPublicPropertiesAreReadOnly(typeof(MapRuntimeDiagnosticSnapshot));
         AssertPublicPropertiesAreReadOnly(typeof(MapFailureDiagnostic));
         AssertPublicPropertiesAreReadOnly(typeof(MapRuntimeContext));
+    }
+
+    [Test]
+    public void RuntimeAuthorityConflictFailsWithoutSwitchingModeOrRepairingAuthorities()
+    {
+        MapRuntimeBootstrap bootstrap = CreateBootstrap(
+            MapRuntimeMode.RandomGenerated,
+            randomActive: true,
+            legacyActive: false);
+        bootstrap.Initialize();
+        legacyAuthority.SetActive(true);
+        LogAssert.Expect(
+            LogType.Error,
+            new Regex("RandomModeLegacyAuthorityActive"));
+
+        bool valid = bootstrap.TryValidateCurrentAuthority(
+            MapLifecyclePhase.ValidatingRuntime,
+            out string reason);
+        MapRuntimeDiagnosticSnapshot snapshot = bootstrap.DiagnosticSnapshot;
+
+        Assert.That(valid, Is.False);
+        Assert.That(reason, Is.Not.Empty);
+        Assert.That(bootstrap.Mode, Is.EqualTo(MapRuntimeMode.RandomGenerated));
+        Assert.That(snapshot.Phase, Is.EqualTo(MapLifecyclePhase.Failed));
+        Assert.That(snapshot.Failure.Phase, Is.EqualTo(MapLifecyclePhase.ValidatingRuntime));
+        Assert.That(snapshot.Failure.Code, Is.EqualTo("RandomModeLegacyAuthorityActive"));
+        Assert.That(snapshot.AuthorityState.RandomGeneratedActive, Is.True);
+        Assert.That(snapshot.AuthorityState.LegacyStaticActive, Is.True);
+        Assert.That(randomAuthority.activeSelf, Is.True);
+        Assert.That(legacyAuthority.activeSelf, Is.True,
+            "Runtime validation reports conflicts; it must not silently switch or repair Mode authorities.");
     }
 
     [Test]

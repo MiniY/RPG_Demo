@@ -75,7 +75,8 @@ public sealed class MapGenerationRpgPlayModeTests
         MapRuntimeDiagnosticSnapshot bootstrapDiagnostics =
             runtimeBootstrap.DiagnosticSnapshot;
         Assert.That(bootstrapDiagnostics.Mode, Is.EqualTo(MapRuntimeMode.RandomGenerated));
-        Assert.That(bootstrapDiagnostics.Phase, Is.EqualTo(MapLifecyclePhase.BindingCamera));
+        Assert.That(bootstrapDiagnostics.Phase, Is.EqualTo(MapLifecyclePhase.Ready));
+        Assert.That(bootstrapDiagnostics.IsReady, Is.True);
         Assert.That(bootstrapDiagnostics.IsFailed, Is.False);
         Assert.That(bootstrapDiagnostics.AuthorityState.RandomGeneratedActive, Is.True);
         Assert.That(bootstrapDiagnostics.AuthorityState.LegacyStaticActive, Is.False);
@@ -190,6 +191,13 @@ public sealed class MapGenerationRpgPlayModeTests
             Is.EqualTo(destructiblePlacementService.LastPopulationPlan.ActualCount - 1));
         Assert.That(runtimeBootstrap.Context.ActiveRegistry.TryGet(
             defeatedPlacement.LogicalObjectId, out _), Is.False);
+        int gameplayReadyCount = 0;
+        System.Guid gameplayReadyGenerationId = System.Guid.Empty;
+        controller.Orchestrator.GameplayReady += generationId =>
+        {
+            gameplayReadyCount++;
+            gameplayReadyGenerationId = generationId;
+        };
         controller.RegenerateMap();
         yield return null;
 
@@ -197,8 +205,12 @@ public sealed class MapGenerationRpgPlayModeTests
         Assert.That(controller.Player, Is.SameAs(canonicalPlayer));
         Assert.That(playerSpawnService.SpawnCount, Is.EqualTo(2));
         MapRuntimeDiagnosticSnapshot regeneratedDiagnostics = runtimeBootstrap.DiagnosticSnapshot;
-        Assert.That(regeneratedDiagnostics.Phase, Is.EqualTo(MapLifecyclePhase.BindingCamera));
+        Assert.That(regeneratedDiagnostics.Phase, Is.EqualTo(MapLifecyclePhase.Ready));
+        Assert.That(regeneratedDiagnostics.IsReady, Is.True);
         Assert.That(regeneratedDiagnostics.IsFailed, Is.False);
+        Assert.That(gameplayReadyCount, Is.EqualTo(1));
+        Assert.That(gameplayReadyGenerationId,
+            Is.EqualTo(regeneratedDiagnostics.ActiveGenerationId));
         Assert.That(reinitializationService.ReinitializationCount, Is.EqualTo(2));
         Assert.That(reinitializationService.ReadyGenerationId, Is.EqualTo(regeneratedDiagnostics.ActiveGenerationId));
         Assert.That(cameraBindingService.BindingCount, Is.EqualTo(2));
@@ -281,6 +293,88 @@ public sealed class MapGenerationRpgPlayModeTests
                     .GetComponent<IPlantPlacementTarget>(),
                 Is.SameAs(plantInstances[index]));
         }
+    }
+
+    [UnityTest]
+    public IEnumerator RandomFailureStaysFailedAndDoesNotActivateLegacyFallback()
+    {
+        yield return SceneManager.LoadSceneAsync("SampleScene", LoadSceneMode.Single);
+        yield return null;
+
+        Scene scene = SceneManager.GetActiveScene();
+        GameObject legacyGrid = FindRootObject(scene, "Grid");
+        GameObject runtimeRoot = FindRootObject(scene, "RandomMapRuntime");
+        MapGenerationController controller =
+            runtimeRoot.GetComponentInChildren<MapGenerationController>(true);
+        MapRuntimeBootstrap bootstrap = runtimeRoot.GetComponent<MapRuntimeBootstrap>();
+        MerchantPlacementService merchant = runtimeRoot.GetComponent<MerchantPlacementService>();
+        MapData activeMap = controller.LastGeneratedMap;
+        System.Guid? activeGenerationId = bootstrap.Context.ActiveGenerationId;
+
+        Assert.That(bootstrap.DiagnosticSnapshot.IsReady, Is.True);
+        Assert.That(legacyGrid.activeSelf, Is.False);
+        Assert.That(merchant, Is.Not.Null);
+        Object.Destroy(merchant);
+        yield return null;
+
+        LogAssert.Expect(
+            LogType.Error,
+            new System.Text.RegularExpressions.Regex("MerchantPlacementOwnerCount"));
+        controller.RegenerateMap();
+        yield return null;
+
+        MapRuntimeDiagnosticSnapshot failed = bootstrap.DiagnosticSnapshot;
+        Assert.That(failed.Mode, Is.EqualTo(MapRuntimeMode.RandomGenerated));
+        Assert.That(failed.Phase, Is.EqualTo(MapLifecyclePhase.Failed));
+        Assert.That(failed.IsFailed, Is.True);
+        Assert.That(failed.Failure.Code, Is.EqualTo("MerchantPlacementOwnerCount"));
+        Assert.That(failed.ActiveGenerationId, Is.EqualTo(activeGenerationId));
+        Assert.That(controller.LastGeneratedMap, Is.SameAs(activeMap));
+        Assert.That(runtimeRoot.activeInHierarchy, Is.True);
+        Assert.That(legacyGrid.activeSelf, Is.False,
+            "RandomGenerated failure must remain Failed and must never activate LegacyStatic fallback.");
+        Assert.That(failed.AuthorityState.RandomGeneratedActive, Is.True);
+        Assert.That(failed.AuthorityState.LegacyStaticActive, Is.False);
+    }
+
+    [UnityTest]
+    public IEnumerator LegacyStaticRollbackRequiresExplicitFreshBootstrapAndExclusiveAuthorities()
+    {
+        yield return SceneManager.LoadSceneAsync("SampleScene", LoadSceneMode.Single);
+        yield return null;
+
+        Scene scene = SceneManager.GetActiveScene();
+        GameObject legacyGrid = FindRootObject(scene, "Grid");
+        GameObject runtimeRoot = FindRootObject(scene, "RandomMapRuntime");
+        MapRuntimeBootstrap randomBootstrap = runtimeRoot.GetComponent<MapRuntimeBootstrap>();
+        MapGenerationController controller =
+            runtimeRoot.GetComponentInChildren<MapGenerationController>(true);
+        GameObject randomAuthority = randomBootstrap.RandomGeneratedAuthority;
+        GameObject bootstrapHost = new GameObject("LegacyStaticReinitializeBootstrap");
+        bootstrapHost.SetActive(false);
+        MapRuntimeBootstrap legacyBootstrap = bootstrapHost.AddComponent<MapRuntimeBootstrap>();
+
+        randomAuthority.SetActive(false);
+        legacyGrid.SetActive(true);
+        SetPrivateField(legacyBootstrap, "runtimeMode", MapRuntimeMode.LegacyStatic);
+        SetPrivateField(legacyBootstrap, "randomGeneratedAuthority", randomAuthority);
+        SetPrivateField(legacyBootstrap, "legacyStaticAuthority", legacyGrid);
+        bootstrapHost.SetActive(true);
+        yield return null;
+
+        MapRuntimeDiagnosticSnapshot legacy = legacyBootstrap.DiagnosticSnapshot;
+        Assert.That(randomBootstrap.Mode, Is.EqualTo(MapRuntimeMode.RandomGenerated),
+            "The original session Mode must not hot-switch.");
+        Assert.That(legacyBootstrap.Mode, Is.EqualTo(MapRuntimeMode.LegacyStatic));
+        Assert.That(legacy.Phase, Is.EqualTo(MapLifecyclePhase.Initialized));
+        Assert.That(legacy.IsFailed, Is.False);
+        Assert.That(legacy.AuthorityState.RandomGeneratedActive, Is.False);
+        Assert.That(legacy.AuthorityState.LegacyStaticActive, Is.True);
+        Assert.That(legacyBootstrap.CanRunRandomGeneration, Is.False);
+        Assert.That(controller.gameObject.activeInHierarchy, Is.False);
+        Assert.That(legacyGrid.activeInHierarchy, Is.True);
+
+        Object.Destroy(bootstrapHost);
     }
 
     /// <summary>
@@ -674,6 +768,16 @@ public sealed class MapGenerationRpgPlayModeTests
         PropertyInfo count = collection?.GetType().GetProperty("Count");
         Assert.That(count, Is.Not.Null, $"{component.GetType().Name}.{propertyName} must expose Count.");
         return (int)count.GetValue(collection);
+    }
+
+    private static void SetPrivateField<T>(object target, string fieldName, T value)
+    {
+        FieldInfo field = target.GetType().GetField(
+            fieldName,
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.That(field, Is.Not.Null,
+            $"{target.GetType().Name}.{fieldName} must remain available for serialized configuration.");
+        field.SetValue(target, value);
     }
 
     /// <summary>

@@ -62,6 +62,54 @@ public sealed class MapRuntimeBootstrap : MonoBehaviour
     }
 
     /// <summary>
+    /// Re-reads both authority roots at the final RandomGenerated gate.
+    /// This validates the configured mode without changing active state or falling back to LegacyStatic.
+    /// </summary>
+    public bool TryValidateCurrentAuthority(
+        MapLifecyclePhase validationPhase,
+        out string reason)
+    {
+        EnsureInitialized();
+        reason = string.Empty;
+
+        if (context.IsFailed)
+        {
+            reason = context.Failure?.Reason ?? "Map runtime is already failed.";
+            return false;
+        }
+
+        if (randomGeneratedAuthority == null || legacyStaticAuthority == null)
+        {
+            string missingAuthority = randomGeneratedAuthority == null
+                ? "RandomGenerated"
+                : "LegacyStatic";
+            MapFailureDiagnostic missingFailure = new MapFailureDiagnostic(
+                runtimeMode,
+                context.ActiveGenerationId,
+                validationPhase,
+                MapFailureCategory.Configuration,
+                "MissingAuthorityReference",
+                $"MapRuntimeBootstrap 缺少 {missingAuthority} authority 引用。");
+            RecordFailure(missingFailure);
+            reason = missingFailure.Reason;
+            return false;
+        }
+
+        MapRuntimeAuthorityState authorityState = ReadAuthorityState();
+        context.RecordAuthorityState(authorityState);
+        MapFailureDiagnostic failure = MapRuntimeModeValidator.Validate(
+            runtimeMode,
+            authorityState,
+            validationPhase);
+        if (failure == null)
+            return true;
+
+        RecordFailure(failure);
+        reason = failure.Reason;
+        return false;
+    }
+
+    /// <summary>
     /// 在其他组件 Start 前完成只读配置检查。
     /// </summary>
     private void Awake()
@@ -94,9 +142,7 @@ public sealed class MapRuntimeBootstrap : MonoBehaviour
             return;
         }
 
-        MapRuntimeAuthorityState authorityState = new MapRuntimeAuthorityState(
-            randomGeneratedAuthority.activeInHierarchy,
-            legacyStaticAuthority.activeInHierarchy);
+        MapRuntimeAuthorityState authorityState = ReadAuthorityState();
         context.RecordAuthorityState(authorityState);
 
         MapFailureDiagnostic failure = MapRuntimeModeValidator.Validate(
@@ -109,6 +155,13 @@ public sealed class MapRuntimeBootstrap : MonoBehaviour
             context.SetPhase(MapLifecyclePhase.Initialized);
 
         initialized = true;
+    }
+
+    private MapRuntimeAuthorityState ReadAuthorityState()
+    {
+        return new MapRuntimeAuthorityState(
+            randomGeneratedAuthority.activeInHierarchy,
+            legacyStaticAuthority.activeInHierarchy);
     }
 
     private void EnsureInitialized()

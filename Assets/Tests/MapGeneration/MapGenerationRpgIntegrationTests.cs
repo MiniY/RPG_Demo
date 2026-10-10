@@ -118,6 +118,9 @@ public class MapGenerationRpgIntegrationTests
             Assert.That(placementAdapter.PlacementAnchor, Is.EqualTo(controller.Player));
             Assert.That(placementAdapter.MapAnchoredObjects, Is.Empty,
                 "Stage 5D 后 Transitional adapter 不得继续拥有 production Role。");
+            Assert.That(placementAdapter.ProductionRoleCount, Is.Zero);
+            Assert.That(placementAdapter.RuntimePlacementEnabled, Is.False,
+                "Stage 7 后 Transitional adapter 必须退出 RandomGenerated runtime placement。");
             Assert.That(merchantPlacementService, Is.Not.Null,
                 "主场景缺少 Required Merchant semantic placement owner。");
             Assert.That(merchantPlacementService.Profile.MinPathSteps, Is.EqualTo(8));
@@ -214,6 +217,9 @@ public class MapGenerationRpgIntegrationTests
             Assert.That(controller.LastGeneratedMap, Is.Not.Null, "主场景随机地图生成失败。");
             Assert.That(controller.LastGeneratedSimpleDecorations, Is.Not.Null,
                 "主场景随机装饰生成失败。");
+            Assert.That(runtimeBootstrap.DiagnosticSnapshot.Phase,
+                Is.EqualTo(MapLifecyclePhase.Ready));
+            Assert.That(runtimeBootstrap.DiagnosticSnapshot.IsReady, Is.True);
 
             Vector3 expectedSpawnPosition = controller.TilemapRenderer.Coordinates.CellToWorld(
                 controller.LastGeneratedMap,

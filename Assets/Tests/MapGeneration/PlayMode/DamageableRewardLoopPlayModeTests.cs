@@ -33,6 +33,8 @@ public sealed class DamageableRewardLoopPlayModeTests
         Assert.That(monsterService, Is.Not.Null);
         Assert.That(monsterService.MonsterTarget, Is.Not.Null);
         Assert.That(monsterService.ReinitializationTarget, Is.Not.Null);
+        MapGenerationController legacyController = CreateLegacyStaticControllerDistractor();
+        Assert.That(legacyController.gameObject.activeInHierarchy, Is.True);
 
         Component damageable = FindComponentInHierarchy(
             monsterService.ReinitializationTarget,
@@ -52,6 +54,7 @@ public sealed class DamageableRewardLoopPlayModeTests
         Assert.That(firstLifeRewards, Has.Count.EqualTo(1),
             "同一次生命中的重复致命伤害只能生成一个奖励实例。");
         Component firstReward = firstLifeRewards[0];
+        AssertRewardBoundToController(firstReward, controller);
 
         yield return PickUpThroughPhysics(firstReward, controller.Player);
         Assert.That(GetInventoryAmount(inventory, reward), Is.EqualTo(inventoryBefore + 1));
@@ -145,6 +148,61 @@ public sealed class DamageableRewardLoopPlayModeTests
         yield return null;
         Assert.That(FindActiveRewardPickups(), Is.Empty,
             "地图再生成应回收 Destructible 留下的未拾取奖励。");
+    }
+
+    [UnityTest]
+    public IEnumerator FailedRegenerationPreservesCurrentMapReward()
+    {
+        yield return SceneManager.LoadSceneAsync("SampleScene", LoadSceneMode.Single);
+        yield return null;
+
+        Scene scene = SceneManager.GetActiveScene();
+        GameObject runtimeRoot = FindRootObject(scene, "RandomMapRuntime");
+        MapRuntimeBootstrap bootstrap = runtimeRoot.GetComponent<MapRuntimeBootstrap>();
+        MapGenerationController controller =
+            runtimeRoot.GetComponentInChildren<MapGenerationController>(true);
+        MonsterPlacementService monsterService =
+            runtimeRoot.GetComponent<MonsterPlacementService>();
+        MerchantPlacementService merchantService =
+            runtimeRoot.GetComponent<MerchantPlacementService>();
+        Assert.That(bootstrap, Is.Not.Null);
+        Assert.That(controller, Is.Not.Null);
+        Assert.That(monsterService, Is.Not.Null);
+        Assert.That(merchantService, Is.Not.Null);
+
+        Component damageable = FindComponentInHierarchy(
+            monsterService.ReinitializationTarget,
+            "BaseDamageable");
+        Assert.That(damageable, Is.Not.Null);
+
+        InvokeTakeDamage(damageable, float.MaxValue);
+        yield return WaitForActiveRewardCount(1);
+
+        Component reward = FindActiveRewardPickups()[0];
+        AssertRewardBoundToController(reward, controller);
+        System.Guid priorGenerationId = bootstrap.Context.ActiveGenerationId.Value;
+
+        SetPrivateField(
+            merchantService,
+            "profile",
+            new MerchantPlacementProfile(
+                int.MaxValue,
+                int.MaxValue,
+                MerchantTerrainMask.Grass | MerchantTerrainMask.Path));
+
+        LogAssert.Expect(
+            LogType.Error,
+            new System.Text.RegularExpressions.Regex("RequiredMerchantPlacementUnavailable"));
+        controller.RegenerateMap();
+        yield return null;
+
+        MapRuntimeDiagnosticSnapshot failed = bootstrap.DiagnosticSnapshot;
+        Assert.That(failed.IsFailed, Is.True);
+        Assert.That(failed.Failure.Code, Is.EqualTo("RequiredMerchantPlacementUnavailable"));
+        Assert.That(failed.ActiveGenerationId, Is.EqualTo(priorGenerationId));
+        Assert.That(reward.gameObject.activeInHierarchy, Is.True,
+            "失败再生成不能发布 MapGenerated，也不能提前回收当前地图的未拾取奖励。");
+        Assert.That(FindActiveRewardPickups(), Has.Count.EqualTo(1));
     }
 
     private static object AssertFormalTorchBlueRewardMapping(
@@ -311,6 +369,56 @@ public sealed class DamageableRewardLoopPlayModeTests
             BindingFlags.Instance | BindingFlags.NonPublic);
         Assert.That(callback, Is.Not.Null);
         callback.Invoke(rewardPickup, new object[] { playerCollider });
+    }
+
+    private static void AssertRewardBoundToController(
+        Component rewardPickup,
+        MapGenerationController expectedController)
+    {
+        GenerationScopedRewardLifetime lifetime =
+            rewardPickup.GetComponent<GenerationScopedRewardLifetime>();
+        Assert.That(lifetime, Is.Not.Null);
+
+        FieldInfo ownerField = typeof(GenerationScopedRewardLifetime).GetField(
+            "mapController",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.That(ownerField, Is.Not.Null);
+        Assert.That(ownerField.GetValue(lifetime), Is.SameAs(expectedController),
+            "奖励必须绑定到正式 RandomGenerated 地图运行实例。");
+    }
+
+    private static void SetPrivateField<T>(object target, string fieldName, T value)
+    {
+        FieldInfo field = target.GetType().GetField(
+            fieldName,
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.That(field, Is.Not.Null);
+        field.SetValue(target, value);
+    }
+
+    private static MapGenerationController CreateLegacyStaticControllerDistractor()
+    {
+        GameObject host = new GameObject("LegacyStaticRewardBindingDistractor");
+        host.SetActive(false);
+
+        GameObject randomAuthority = new GameObject("InactiveRandomAuthority");
+        randomAuthority.transform.SetParent(host.transform);
+        randomAuthority.SetActive(false);
+
+        GameObject legacyAuthority = new GameObject("ActiveLegacyAuthority");
+        legacyAuthority.transform.SetParent(host.transform);
+        MapGenerationController legacyController =
+            legacyAuthority.AddComponent<MapGenerationController>();
+
+        MapRuntimeBootstrap bootstrap = host.AddComponent<MapRuntimeBootstrap>();
+        SetPrivateField(bootstrap, "runtimeMode", MapRuntimeMode.LegacyStatic);
+        SetPrivateField(bootstrap, "randomGeneratedAuthority", randomAuthority);
+        SetPrivateField(bootstrap, "legacyStaticAuthority", legacyAuthority);
+        host.SetActive(true);
+
+        Assert.That(bootstrap.CanRunRandomGeneration, Is.False);
+        Assert.That(bootstrap.Mode, Is.EqualTo(MapRuntimeMode.LegacyStatic));
+        return legacyController;
     }
 
     private static int GetInventoryAmount(Component inventory, object reward)

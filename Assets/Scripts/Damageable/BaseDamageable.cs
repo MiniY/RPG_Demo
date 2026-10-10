@@ -148,8 +148,7 @@ public abstract class BaseDamageable : MonoBehaviour
     // 让随机地图在新一代提交或显式清空时回收未拾取奖励。
     private static void BindRewardToCurrentMap(GameObject rewardObject)
     {
-        MapGenerationController mapController =
-            UnityEngine.Object.FindObjectOfType<MapGenerationController>();
+        MapGenerationController mapController = FindCurrentRandomMapController();
 
         if (mapController == null)
             return;
@@ -163,6 +162,42 @@ public abstract class BaseDamageable : MonoBehaviour
         lifetime.Arm(
             mapController,
             () => ObjectPoolManager.ReturnOrDeactivate(rewardObject));
+    }
+
+    // 只接受显式 RandomGenerated authority 下的唯一控制器，避免误绑 LegacyStatic 或其他运行实例。
+    private static MapGenerationController FindCurrentRandomMapController()
+    {
+        MapGenerationController selectedController = null;
+
+        foreach (MapGenerationController candidate in
+                 UnityEngine.Object.FindObjectsOfType<MapGenerationController>())
+        {
+            MapRuntimeBootstrap bootstrap = candidate.GetComponentInParent<MapRuntimeBootstrap>();
+
+            if (bootstrap == null || bootstrap.Mode != MapRuntimeMode.RandomGenerated)
+                continue;
+
+            GameObject randomAuthority = bootstrap.RandomGeneratedAuthority;
+            bool belongsToRandomAuthority = randomAuthority != null &&
+                (candidate.gameObject == randomAuthority ||
+                 candidate.transform.IsChildOf(randomAuthority.transform));
+
+            if (!belongsToRandomAuthority)
+                continue;
+
+            // Failed regeneration keeps the prior committed map authoritative, so Mode and ownership
+            // are used here instead of CanRunRandomGeneration, which becomes false after that failure.
+            if (selectedController != null && selectedController != candidate)
+            {
+                Debug.LogWarning(
+                    "存在多个活动的 RandomGenerated MapGenerationController；奖励不会绑定到不明确的地图生命周期。");
+                return null;
+            }
+
+            selectedController = candidate;
+        }
+
+        return selectedController;
     }
 
     // 计算奖励掉落在对象附近的随机位置。

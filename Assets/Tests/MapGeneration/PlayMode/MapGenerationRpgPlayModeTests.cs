@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 using Cinemachine;
 using NUnit.Framework;
@@ -12,6 +13,94 @@ using UnityEngine.Tilemaps;
 /// </summary>
 public sealed class MapGenerationRpgPlayModeTests
 {
+    private const string Stage8ProfileId = "stage8-supplemental-v1";
+    private const string Stage8ProfileApproval = "PendingUserApproval";
+
+    private sealed class AcceptanceSeed
+    {
+        public AcceptanceSeed(string seedClass, int seed)
+        {
+            SeedClass = seedClass;
+            Seed = seed;
+        }
+
+        public string SeedClass { get; }
+        public int Seed { get; }
+    }
+
+    private sealed class ReadyTracker
+    {
+        public int Count { get; set; }
+        public System.Guid LastGeneration { get; set; }
+    }
+
+    [System.Serializable]
+    private sealed class SeedAcceptanceEvidence
+    {
+        public string unityVersion;
+        public string profileId;
+        public string profileApproval;
+        public string seedClass;
+        public int seed;
+        public string requestId;
+        public int attemptId;
+        public int attemptSeed;
+        public string generationId;
+        public string mode;
+        public string phase;
+        public string result;
+        public string failureCode;
+        public string retryPolicy;
+        public int maxAttempts;
+        public int reservationCount;
+        public int registryCount;
+        public int destructibleCount;
+        public bool replay;
+        public string deterministicSignature;
+    }
+
+    // Q9 does not define numeric seed counts. This fixed supplemental profile is therefore
+    // reproducible evidence for Stage 8, but remains PendingUserApproval as the formal profile.
+    private static readonly AcceptanceSeed[] FullAcceptanceSeeds =
+    {
+        new AcceptanceSeed("Golden", 20260929),
+        new AcceptanceSeed("KnownRegression", -1391545000),
+        new AcceptanceSeed("KnownRegression", 613580675),
+        new AcceptanceSeed("KnownRegression", 839235445),
+        new AcceptanceSeed("DeterministicSweep", int.MinValue),
+        new AcceptanceSeed("DeterministicSweep", -2080374784),
+        new AcceptanceSeed("DeterministicSweep", -1879048192),
+        new AcceptanceSeed("DeterministicSweep", -1610612736),
+        new AcceptanceSeed("DeterministicSweep", -1391655703),
+        new AcceptanceSeed("DeterministicSweep", -1073741824),
+        new AcceptanceSeed("DeterministicSweep", -805306368),
+        new AcceptanceSeed("DeterministicSweep", -536870912),
+        new AcceptanceSeed("DeterministicSweep", -268435456),
+        new AcceptanceSeed("DeterministicSweep", -16777216),
+        new AcceptanceSeed("DeterministicSweep", -65536),
+        new AcceptanceSeed("DeterministicSweep", -1024),
+        new AcceptanceSeed("DeterministicSweep", -42),
+        new AcceptanceSeed("DeterministicSweep", -2),
+        new AcceptanceSeed("DeterministicSweep", 0),
+        new AcceptanceSeed("DeterministicSweep", 1),
+        new AcceptanceSeed("DeterministicSweep", 2),
+        new AcceptanceSeed("DeterministicSweep", 42),
+        new AcceptanceSeed("DeterministicSweep", 1024),
+        new AcceptanceSeed("DeterministicSweep", 65536),
+        new AcceptanceSeed("DeterministicSweep", 16777216),
+        new AcceptanceSeed("DeterministicSweep", 268435456),
+        new AcceptanceSeed("DeterministicSweep", 536870912),
+        new AcceptanceSeed("DeterministicSweep", 805306368),
+        new AcceptanceSeed("DeterministicSweep", 1073741824),
+        new AcceptanceSeed("DeterministicSweep", 1342177280),
+        new AcceptanceSeed("DeterministicSweep", 1610612736),
+        new AcceptanceSeed("DeterministicSweep", 1879048192),
+        new AcceptanceSeed("DeterministicSweep", 2013265920),
+        new AcceptanceSeed("DeterministicSweep", 2080374784),
+        new AcceptanceSeed("DeterministicSweep", 2130706432),
+        new AcceptanceSeed("DeterministicSweep", int.MaxValue)
+    };
+
     /// <summary>
     /// 进入 Main 场景并验证自动生成、Main 系统连接和重新生成。
     /// </summary>
@@ -296,6 +385,324 @@ public sealed class MapGenerationRpgPlayModeTests
     }
 
     [UnityTest]
+    public IEnumerator FullMultiSeedAcceptanceProfileIsReadyAndDeterministic()
+    {
+        yield return SceneManager.LoadSceneAsync("SampleScene", LoadSceneMode.Single);
+        yield return null;
+
+        Scene scene = SceneManager.GetActiveScene();
+        GameObject legacyGrid = FindRootObject(scene, "Grid");
+        GameObject runtimeRoot = FindRootObject(scene, "RandomMapRuntime");
+        MapGenerationController controller =
+            runtimeRoot.GetComponentInChildren<MapGenerationController>(true);
+        MapRuntimeBootstrap bootstrap = runtimeRoot.GetComponent<MapRuntimeBootstrap>();
+        PlayerFollowCameraProvider cameraProvider =
+            runtimeRoot.GetComponent<PlayerFollowCameraProvider>();
+        CameraBindingService cameraBindingService =
+            runtimeRoot.GetComponent<CameraBindingService>();
+        MerchantPlacementService merchant = runtimeRoot.GetComponent<MerchantPlacementService>();
+        MonsterPlacementService monster = runtimeRoot.GetComponent<MonsterPlacementService>();
+        AnimalPlacementService animal = runtimeRoot.GetComponent<AnimalPlacementService>();
+        PlantPlacementService plant = runtimeRoot.GetComponent<PlantPlacementService>();
+        DestructiblePlacementService destructible =
+            runtimeRoot.GetComponent<DestructiblePlacementService>();
+        MapGeneratedObjectPlacementAdapter adapter =
+            runtimeRoot.GetComponent<MapGeneratedObjectPlacementAdapter>();
+
+        Assert.That(bootstrap.DiagnosticSnapshot.IsReady, Is.True);
+        MapGenerationSettings runtimeSettings = Object.Instantiate(controller.Settings);
+        runtimeSettings.name = "Stage8RuntimeAcceptanceSettings";
+        SetPrivateField(controller, "settings", runtimeSettings);
+        SetPrivateField(controller, "logGenerationSummary", false);
+
+        ReadyTracker readyTracker = new ReadyTracker();
+        controller.Orchestrator.GameplayReady += generationId =>
+        {
+            readyTracker.Count++;
+            readyTracker.LastGeneration = generationId;
+        };
+
+        foreach (AcceptanceSeed profileSeed in FullAcceptanceSeeds)
+        {
+            string firstSignature = RunAcceptanceSeed(
+                profileSeed,
+                false,
+                controller,
+                bootstrap,
+                legacyGrid,
+                adapter,
+                cameraProvider,
+                cameraBindingService,
+                merchant,
+                monster,
+                animal,
+                plant,
+                destructible,
+                runtimeSettings,
+                readyTracker);
+
+            string replaySignature = RunAcceptanceSeed(
+                profileSeed,
+                true,
+                controller,
+                bootstrap,
+                legacyGrid,
+                adapter,
+                cameraProvider,
+                cameraBindingService,
+                merchant,
+                monster,
+                animal,
+                plant,
+                destructible,
+                runtimeSettings,
+                readyTracker);
+
+            Assert.That(replaySignature, Is.EqualTo(firstSignature),
+                $"Same Seed/config placement was not deterministic for Seed={profileSeed.Seed}.");
+        }
+
+        Object.Destroy(runtimeSettings);
+        yield return null;
+    }
+
+    [UnityTest]
+    public IEnumerator AmbiguousCanonicalPlayerFailsWithoutGameplayReadyOrLegacyFallback()
+    {
+        yield return SceneManager.LoadSceneAsync("SampleScene", LoadSceneMode.Single);
+        yield return null;
+
+        Scene scene = SceneManager.GetActiveScene();
+        GameObject legacyGrid = FindRootObject(scene, "Grid");
+        GameObject runtimeRoot = FindRootObject(scene, "RandomMapRuntime");
+        MapRuntimeBootstrap bootstrap = runtimeRoot.GetComponent<MapRuntimeBootstrap>();
+        MapGenerationController controller =
+            runtimeRoot.GetComponentInChildren<MapGenerationController>(true);
+        GameObject duplicatePlayer = new GameObject("Stage8DuplicatePlayer");
+        duplicatePlayer.tag = "Player";
+        int gameplayReadyCount = 0;
+        controller.Orchestrator.GameplayReady += _ => gameplayReadyCount++;
+
+        LogAssert.Expect(
+            LogType.Error,
+            new System.Text.RegularExpressions.Regex("Required Merchant materialization failed"));
+        controller.RegenerateMap();
+
+        MapRuntimeDiagnosticSnapshot failed = bootstrap.DiagnosticSnapshot;
+        Assert.That(failed.IsFailed, Is.True);
+        Assert.That(failed.Failure.Code, Is.EqualTo("CanonicalPlayerUnavailable"));
+        Assert.That(failed.Failure.Reason, Does.Contain("ambiguous"));
+        Assert.That(gameplayReadyCount, Is.Zero);
+        AssertRandomFailureDoesNotFallback(bootstrap, runtimeRoot, legacyGrid);
+
+        Object.Destroy(duplicatePlayer);
+        yield return null;
+    }
+
+    [UnityTest]
+    public IEnumerator MissingCameraTargetFailsWithoutGameplayReadyOrLegacyFallback()
+    {
+        yield return SceneManager.LoadSceneAsync("SampleScene", LoadSceneMode.Single);
+        yield return null;
+
+        Scene scene = SceneManager.GetActiveScene();
+        GameObject legacyGrid = FindRootObject(scene, "Grid");
+        GameObject runtimeRoot = FindRootObject(scene, "RandomMapRuntime");
+        MapRuntimeBootstrap bootstrap = runtimeRoot.GetComponent<MapRuntimeBootstrap>();
+        MapGenerationController controller =
+            runtimeRoot.GetComponentInChildren<MapGenerationController>(true);
+        Transform cameraTarget = controller.Player.Find("CameraTarget");
+        Assert.That(cameraTarget, Is.Not.Null);
+        cameraTarget.name = "Stage8MissingCameraTarget";
+        int gameplayReadyCount = 0;
+        controller.Orchestrator.GameplayReady += _ => gameplayReadyCount++;
+
+        LogAssert.Expect(
+            LogType.Error,
+            new System.Text.RegularExpressions.Regex("Required Merchant materialization failed"));
+        controller.RegenerateMap();
+
+        MapRuntimeDiagnosticSnapshot failed = bootstrap.DiagnosticSnapshot;
+        Assert.That(failed.IsFailed, Is.True);
+        Assert.That(failed.Failure.Code, Is.EqualTo("CanonicalPlayerUnavailable"));
+        Assert.That(failed.Failure.Reason, Does.Contain("CameraTarget"));
+        Assert.That(gameplayReadyCount, Is.Zero);
+        AssertRandomFailureDoesNotFallback(bootstrap, runtimeRoot, legacyGrid);
+    }
+
+    [UnityTest]
+    public IEnumerator RequiredMerchantCapacityFailurePreservesPriorGeneration()
+    {
+        yield return SceneManager.LoadSceneAsync("SampleScene", LoadSceneMode.Single);
+        yield return null;
+
+        Scene scene = SceneManager.GetActiveScene();
+        GameObject legacyGrid = FindRootObject(scene, "Grid");
+        GameObject runtimeRoot = FindRootObject(scene, "RandomMapRuntime");
+        MapRuntimeBootstrap bootstrap = runtimeRoot.GetComponent<MapRuntimeBootstrap>();
+        MapGenerationController controller =
+            runtimeRoot.GetComponentInChildren<MapGenerationController>(true);
+        MerchantPlacementService merchant = runtimeRoot.GetComponent<MerchantPlacementService>();
+        System.Guid priorGenerationId = bootstrap.Context.ActiveGenerationId.Value;
+        MapData priorMap = bootstrap.Context.ActiveMap;
+        MapObjectRegistry priorRegistry = bootstrap.Context.ActiveRegistry;
+        SetPrivateField(
+            merchant,
+            "profile",
+            new MerchantPlacementProfile(
+                int.MaxValue,
+                int.MaxValue,
+                MerchantTerrainMask.Grass | MerchantTerrainMask.Path));
+
+        LogAssert.Expect(
+            LogType.Error,
+            new System.Text.RegularExpressions.Regex("RequiredMerchantPlacementUnavailable"));
+        controller.RegenerateMap();
+
+        MapRuntimeDiagnosticSnapshot failed = bootstrap.DiagnosticSnapshot;
+        Assert.That(failed.IsFailed, Is.True);
+        Assert.That(failed.Failure.Code, Is.EqualTo("RequiredMerchantPlacementUnavailable"));
+        Assert.That(failed.Failure.Phase, Is.EqualTo(MapLifecyclePhase.Planning));
+        Assert.That(failed.ActiveGenerationId, Is.EqualTo(priorGenerationId));
+        Assert.That(bootstrap.Context.ActiveMap, Is.SameAs(priorMap));
+        Assert.That(bootstrap.Context.ActiveRegistry, Is.SameAs(priorRegistry));
+        Assert.That(priorRegistry.IsRetired, Is.False);
+        Assert.That(failed.AttemptChain, Has.Count.EqualTo(1));
+        Assert.That(failed.AttemptChain[0].Outcome, Is.EqualTo(MapAttemptOutcome.NonRetryableFailure));
+        AssertRandomFailureDoesNotFallback(bootstrap, runtimeRoot, legacyGrid);
+    }
+
+    [UnityTest]
+    public IEnumerator DestructibleRequiredMinimumExhaustionPreservesPriorGeneration()
+    {
+        yield return SceneManager.LoadSceneAsync("SampleScene", LoadSceneMode.Single);
+        yield return null;
+
+        Scene scene = SceneManager.GetActiveScene();
+        GameObject legacyGrid = FindRootObject(scene, "Grid");
+        GameObject runtimeRoot = FindRootObject(scene, "RandomMapRuntime");
+        MapRuntimeBootstrap bootstrap = runtimeRoot.GetComponent<MapRuntimeBootstrap>();
+        MapGenerationController controller =
+            runtimeRoot.GetComponentInChildren<MapGenerationController>(true);
+        DestructiblePlacementService destructible =
+            runtimeRoot.GetComponent<DestructiblePlacementService>();
+        System.Guid priorGenerationId = bootstrap.Context.ActiveGenerationId.Value;
+        MapData priorMap = bootstrap.Context.ActiveMap;
+        MapObjectRegistry priorRegistry = bootstrap.Context.ActiveRegistry;
+        SetPrivateField(
+            destructible,
+            "profile",
+            new DestructiblePlacementProfile(
+                int.MaxValue,
+                int.MaxValue,
+                DestructiblePlacementProfile.CurrentDefaultMinimumSpacingSteps,
+                DestructiblePlacementProfile.CurrentDefaultExitSafetyRadius,
+                DestructiblePlacementProfile.CurrentDefaultAllowedTerrains,
+                DestructiblePlacementProfile.CurrentDefaultRequiredMinimum,
+                DestructiblePlacementProfile.CurrentDefaultTargetCount,
+                DestructiblePlacementProfile.CurrentDefaultMaximum));
+
+        LogAssert.Expect(
+            LogType.Error,
+            new System.Text.RegularExpressions.Regex("RetryBudgetExhausted"));
+        controller.RegenerateMap();
+
+        MapRuntimeDiagnosticSnapshot failed = bootstrap.DiagnosticSnapshot;
+        Assert.That(failed.IsFailed, Is.True);
+        Assert.That(failed.Failure.Code, Is.EqualTo("RetryBudgetExhausted"));
+        Assert.That(failed.Failure.Phase, Is.EqualTo(MapLifecyclePhase.Planning));
+        Assert.That(failed.ActiveGenerationId, Is.EqualTo(priorGenerationId));
+        Assert.That(bootstrap.Context.ActiveMap, Is.SameAs(priorMap));
+        Assert.That(bootstrap.Context.ActiveRegistry, Is.SameAs(priorRegistry));
+        Assert.That(priorRegistry.IsRetired, Is.False);
+        Assert.That(failed.AttemptChain, Has.Count.EqualTo(1));
+        Assert.That(failed.AttemptChain[0].Code,
+            Is.EqualTo("DestructibleRequiredMinimumUnavailable"));
+        Assert.That(failed.AttemptChain[0].IsRetryable, Is.True);
+        AssertRandomFailureDoesNotFallback(bootstrap, runtimeRoot, legacyGrid);
+    }
+
+    [UnityTest]
+    public IEnumerator RuntimeAuthorityConflictFailsAtFinalGateWithoutRepairOrFallback()
+    {
+        yield return SceneManager.LoadSceneAsync("SampleScene", LoadSceneMode.Single);
+        yield return null;
+
+        Scene scene = SceneManager.GetActiveScene();
+        GameObject legacyGrid = FindRootObject(scene, "Grid");
+        GameObject runtimeRoot = FindRootObject(scene, "RandomMapRuntime");
+        MapRuntimeBootstrap bootstrap = runtimeRoot.GetComponent<MapRuntimeBootstrap>();
+        MapGenerationController controller =
+            runtimeRoot.GetComponentInChildren<MapGenerationController>(true);
+        int gameplayReadyCount = 0;
+        controller.Orchestrator.GameplayReady += _ => gameplayReadyCount++;
+        legacyGrid.SetActive(true);
+
+        LogAssert.Expect(
+            LogType.Error,
+            new System.Text.RegularExpressions.Regex("RandomModeLegacyAuthorityActive"));
+        LogAssert.Expect(
+            LogType.Error,
+            new System.Text.RegularExpressions.Regex("Runtime authority validation failed"));
+        controller.RegenerateMap();
+
+        MapRuntimeDiagnosticSnapshot failed = bootstrap.DiagnosticSnapshot;
+        Assert.That(failed.IsFailed, Is.True);
+        Assert.That(failed.Failure.Code, Is.EqualTo("RandomModeLegacyAuthorityActive"));
+        Assert.That(failed.Failure.Phase, Is.EqualTo(MapLifecyclePhase.ValidatingRuntime));
+        Assert.That(failed.AuthorityState.RandomGeneratedActive, Is.True);
+        Assert.That(failed.AuthorityState.LegacyStaticActive, Is.True);
+        Assert.That(gameplayReadyCount, Is.Zero);
+        Assert.That(runtimeRoot.activeInHierarchy, Is.True);
+        Assert.That(legacyGrid.activeInHierarchy, Is.True,
+            "Conflict diagnostics must not mutate or repair either authority.");
+    }
+
+    [UnityTest]
+    public IEnumerator StaleGenerationCallbackIsRejectedWithoutDuplicateReadyOrRegistration()
+    {
+        yield return SceneManager.LoadSceneAsync("SampleScene", LoadSceneMode.Single);
+        yield return null;
+
+        Scene scene = SceneManager.GetActiveScene();
+        GameObject legacyGrid = FindRootObject(scene, "Grid");
+        GameObject runtimeRoot = FindRootObject(scene, "RandomMapRuntime");
+        MapRuntimeBootstrap bootstrap = runtimeRoot.GetComponent<MapRuntimeBootstrap>();
+        MapGenerationController controller =
+            runtimeRoot.GetComponentInChildren<MapGenerationController>(true);
+        PlayerSpawnService spawnService = runtimeRoot.GetComponent<PlayerSpawnService>();
+        CanonicalPlayerProvider playerProvider = runtimeRoot.GetComponent<CanonicalPlayerProvider>();
+        System.Guid staleGenerationId = bootstrap.Context.ActiveGenerationId.Value;
+        controller.RegenerateMap();
+        System.Guid currentGenerationId = bootstrap.Context.ActiveGenerationId.Value;
+        MapObjectRegistry currentRegistry = bootstrap.Context.ActiveRegistry;
+        int registryCount = currentRegistry.Count;
+        int spawnCount = spawnService.SpawnCount;
+        int playerReadyCount = 0;
+        spawnService.PlayerReady += _ => playerReadyCount++;
+
+        bool accepted = spawnService.TrySpawn(
+            bootstrap.Context,
+            staleGenerationId,
+            controller.TilemapRenderer.Coordinates,
+            playerProvider,
+            controller.Player,
+            true,
+            out string reason);
+
+        Assert.That(accepted, Is.False);
+        Assert.That(reason, Does.Contain("stale"));
+        Assert.That(bootstrap.DiagnosticSnapshot.Failure.Code, Is.EqualTo("StalePlayerSpawn"));
+        Assert.That(bootstrap.Context.ActiveGenerationId, Is.EqualTo(currentGenerationId));
+        Assert.That(bootstrap.Context.ActiveRegistry, Is.SameAs(currentRegistry));
+        Assert.That(currentRegistry.IsRetired, Is.False);
+        Assert.That(currentRegistry.Count, Is.EqualTo(registryCount));
+        Assert.That(spawnService.SpawnCount, Is.EqualTo(spawnCount));
+        Assert.That(playerReadyCount, Is.Zero);
+        AssertRandomFailureDoesNotFallback(bootstrap, runtimeRoot, legacyGrid);
+    }
+
+    [UnityTest]
     public IEnumerator RandomFailureStaysFailedAndDoesNotActivateLegacyFallback()
     {
         yield return SceneManager.LoadSceneAsync("SampleScene", LoadSceneMode.Single);
@@ -375,6 +782,271 @@ public sealed class MapGenerationRpgPlayModeTests
         Assert.That(legacyGrid.activeInHierarchy, Is.True);
 
         Object.Destroy(bootstrapHost);
+    }
+
+    private static string RunAcceptanceSeed(
+        AcceptanceSeed profileSeed,
+        bool replay,
+        MapGenerationController controller,
+        MapRuntimeBootstrap bootstrap,
+        GameObject legacyGrid,
+        MapGeneratedObjectPlacementAdapter adapter,
+        PlayerFollowCameraProvider cameraProvider,
+        CameraBindingService cameraBindingService,
+        MerchantPlacementService merchant,
+        MonsterPlacementService monster,
+        AnimalPlacementService animal,
+        PlantPlacementService plant,
+        DestructiblePlacementService destructible,
+        MapGenerationSettings runtimeSettings,
+        ReadyTracker readyTracker)
+    {
+        int readyCountBefore = readyTracker.Count;
+        System.Guid? previousGenerationId = bootstrap.Context.ActiveGenerationId;
+        MapObjectRegistry previousRegistry = bootstrap.Context.ActiveRegistry;
+        runtimeSettings.seed = profileSeed.Seed;
+
+        controller.RegenerateMap();
+
+        MapRuntimeDiagnosticSnapshot snapshot = bootstrap.DiagnosticSnapshot;
+        Assert.That(snapshot.Mode, Is.EqualTo(MapRuntimeMode.RandomGenerated));
+        Assert.That(snapshot.Phase, Is.EqualTo(MapLifecyclePhase.Ready));
+        Assert.That(snapshot.IsReady, Is.True);
+        Assert.That(snapshot.IsFailed, Is.False);
+        Assert.That(snapshot.Failure, Is.Null);
+        Assert.That(snapshot.AuthorityState.RandomGeneratedActive, Is.True);
+        Assert.That(snapshot.AuthorityState.LegacyStaticActive, Is.False);
+        Assert.That(legacyGrid.activeSelf, Is.False);
+        Assert.That(snapshot.ActiveRequest, Is.Not.Null);
+        Assert.That(snapshot.ActiveRequest.RequestedSeed, Is.EqualTo(profileSeed.Seed));
+        Assert.That(snapshot.ActiveRequest.RetryPolicy, Is.EqualTo(MapRetryPolicy.StrictSeed));
+        Assert.That(snapshot.ActiveRequest.MaxAttempts, Is.EqualTo(1));
+        Assert.That(snapshot.AttemptChain, Has.Count.EqualTo(1));
+        MapGenerationAttemptDiagnostic attempt = snapshot.AttemptChain[0];
+        Assert.That(attempt.Attempt.RequestId, Is.EqualTo(snapshot.ActiveRequest.RequestId));
+        Assert.That(attempt.Attempt.AttemptIndex, Is.Zero);
+        Assert.That(attempt.Attempt.AttemptSeed, Is.EqualTo(profileSeed.Seed));
+        Assert.That(attempt.Attempt.GenerationId, Is.EqualTo(snapshot.ActiveGenerationId));
+        Assert.That(attempt.Outcome, Is.EqualTo(MapAttemptOutcome.Succeeded));
+        Assert.That(attempt.Phase, Is.EqualTo(MapLifecyclePhase.Materializing));
+        Assert.That(attempt.FailureCategory, Is.EqualTo(MapFailureCategory.None));
+        Assert.That(readyTracker.Count, Is.EqualTo(readyCountBefore + 1));
+        Assert.That(readyTracker.LastGeneration, Is.EqualTo(snapshot.ActiveGenerationId));
+        Assert.That(snapshot.ActiveGenerationId, Is.Not.EqualTo(previousGenerationId));
+        if (previousRegistry != null)
+            Assert.That(previousRegistry.IsRetired, Is.True);
+
+        AssertPlayerAtSpawn(controller);
+        AssertGeneratedCollision(controller.TilemapRenderer);
+        AssertTransitionalObjectsPlaced(adapter, controller);
+        AssertCurrentMerchantPlacement(controller, bootstrap.Context, adapter, merchant);
+        AssertCurrentMonsterPlacement(controller, bootstrap.Context, adapter, monster);
+        AssertCurrentAnimalPlacement(controller, bootstrap.Context, adapter, animal);
+        AssertCurrentPlantPlacement(controller, bootstrap.Context, adapter, plant);
+        AssertCurrentDestructiblePlacement(controller, bootstrap.Context, destructible);
+        Assert.That(cameraBindingService.ReadyGenerationId, Is.EqualTo(snapshot.ActiveGenerationId));
+        Assert.That(cameraProvider.TryResolve(out PlayerFollowCameraBinding camera, out string cameraReason),
+            Is.True, cameraReason);
+        Assert.That(camera.VirtualCamera.Follow, Is.EqualTo(controller.Player.Find("CameraTarget")));
+        AssertRegistryMatchesPlacementPlan(controller, bootstrap.Context);
+        AssertCriticalPathRemainsReachable(bootstrap.Context.ActiveMap,
+            bootstrap.Context.ActivePlacementPlan);
+
+        string signature = BuildDeterministicSignature(
+            bootstrap.Context.ActiveMap,
+            bootstrap.Context.ActivePlacementPlan);
+        SeedAcceptanceEvidence evidence = new SeedAcceptanceEvidence
+        {
+            unityVersion = Application.unityVersion,
+            profileId = Stage8ProfileId,
+            profileApproval = Stage8ProfileApproval,
+            seedClass = profileSeed.SeedClass,
+            seed = profileSeed.Seed,
+            requestId = snapshot.ActiveRequest.RequestId.ToString("D"),
+            attemptId = attempt.Attempt.AttemptIndex,
+            attemptSeed = attempt.Attempt.AttemptSeed,
+            generationId = snapshot.ActiveGenerationId.Value.ToString("D"),
+            mode = snapshot.Mode.ToString(),
+            phase = snapshot.Phase.ToString(),
+            result = "PASS",
+            failureCode = string.Empty,
+            retryPolicy = snapshot.ActiveRequest.RetryPolicy.ToString(),
+            maxAttempts = snapshot.ActiveRequest.MaxAttempts,
+            reservationCount = snapshot.PlacementReservationCount,
+            registryCount = snapshot.RegistryEntryCount,
+            destructibleCount = destructible.LastPopulationPlan.ActualCount,
+            replay = replay,
+            deterministicSignature = signature
+        };
+        string evidenceLine = "STAGE8_SEED_EVIDENCE|" + JsonUtility.ToJson(evidence);
+        Debug.Log(evidenceLine);
+        TestContext.Progress.WriteLine(evidenceLine);
+        return signature;
+    }
+
+    private static void AssertRegistryMatchesPlacementPlan(
+        MapGenerationController controller,
+        MapRuntimeContext context)
+    {
+        Assert.That(context.ActivePlacementPlan, Is.Not.Null);
+        Assert.That(context.ActiveRegistry, Is.Not.Null);
+        Assert.That(context.ActiveRegistry.GenerationId, Is.EqualTo(context.ActiveGenerationId));
+        Assert.That(context.ActiveRegistry.Count,
+            Is.EqualTo(context.ActivePlacementPlan.ReservationCount));
+
+        foreach (MapPlacementReservation reservation in context.ActivePlacementPlan.Reservations)
+        {
+            Assert.That(context.ActiveRegistry.TryGet(
+                reservation.LogicalObjectId,
+                out MapObjectRegistryEntry entry), Is.True,
+                $"Registry is missing {reservation.LogicalObjectId}.");
+            Assert.That(entry.GenerationId, Is.EqualTo(context.ActiveGenerationId));
+            Assert.That(entry.Role, Is.EqualTo(reservation.Role));
+            Assert.That(entry.InitialCell, Is.EqualTo(reservation.AnchorCell));
+            Assert.That(entry.Ownership, Is.EqualTo(reservation.Ownership));
+            CollectionAssert.AreEqual(reservation.OccupiedCells, entry.OccupiedCells);
+
+            Vector3 world = controller.TilemapRenderer.Coordinates.CellToWorld(
+                context.ActiveMap,
+                reservation.AnchorCell);
+            Assert.That(controller.TilemapRenderer.Coordinates.TryWorldToCell(
+                context.ActiveMap,
+                world,
+                out Vector2Int roundTrip), Is.True);
+            Assert.That(roundTrip, Is.EqualTo(reservation.AnchorCell));
+        }
+    }
+
+    private static void AssertCriticalPathRemainsReachable(
+        MapData map,
+        MapPlacementPlan plan)
+    {
+        Assert.That(map.IsInside(map.SpawnCell), Is.True);
+        Assert.That(map.IsInside(map.ExitCell), Is.True);
+        Assert.That(map.IsWalkable(map.SpawnCell), Is.True);
+        Assert.That(map.IsWalkable(map.ExitCell), Is.True);
+
+        HashSet<Vector2Int> blockers = new HashSet<Vector2Int>();
+        foreach (MapPlacementReservation reservation in plan.Reservations)
+        {
+            bool blocksNavigation =
+                reservation.Role == "CollisionDecoration" ||
+                reservation.Role == MerchantPlacementService.MerchantRole ||
+                reservation.Role == PlantPlacementService.PlantRole ||
+                reservation.Role == DestructiblePlacementService.DestructibleRole;
+            if (!blocksNavigation)
+                continue;
+            foreach (Vector2Int cell in reservation.OccupiedCells)
+                blockers.Add(cell);
+        }
+
+        HashSet<Vector2Int> reachable = new HashSet<Vector2Int>();
+        Queue<Vector2Int> pending = new Queue<Vector2Int>();
+        if (!blockers.Contains(map.SpawnCell))
+        {
+            reachable.Add(map.SpawnCell);
+            pending.Enqueue(map.SpawnCell);
+        }
+        Vector2Int[] directions =
+        {
+            Vector2Int.right,
+            Vector2Int.up,
+            Vector2Int.left,
+            Vector2Int.down
+        };
+        while (pending.Count > 0)
+        {
+            Vector2Int current = pending.Dequeue();
+            foreach (Vector2Int direction in directions)
+            {
+                Vector2Int next = current + direction;
+                if (!map.IsInside(next) || !map.IsWalkable(next) ||
+                    blockers.Contains(next) || !reachable.Add(next))
+                {
+                    continue;
+                }
+                pending.Enqueue(next);
+            }
+        }
+
+        Assert.That(reachable.Contains(map.ExitCell), Is.True,
+            "Committed semantic placements must preserve the Spawn-to-Exit Critical Path.");
+    }
+
+    private static string BuildDeterministicSignature(
+        MapData map,
+        MapPlacementPlan plan)
+    {
+        ulong hash = 14695981039346656037UL;
+        Hash(ref hash, map.Width);
+        Hash(ref hash, map.Height);
+        Hash(ref hash, map.Origin.x);
+        Hash(ref hash, map.Origin.y);
+        Hash(ref hash, map.SpawnCell.x);
+        Hash(ref hash, map.SpawnCell.y);
+        Hash(ref hash, map.ExitCell.x);
+        Hash(ref hash, map.ExitCell.y);
+        for (int x = map.Origin.x; x < map.Origin.x + map.Width; x++)
+        {
+            for (int y = map.Origin.y; y < map.Origin.y + map.Height; y++)
+                Hash(ref hash, (int)map.GetCell(new Vector2Int(x, y)).terrainType);
+        }
+
+        List<MapPlacementReservation> reservations =
+            new List<MapPlacementReservation>(plan.Reservations);
+        reservations.Sort((left, right) =>
+            System.StringComparer.Ordinal.Compare(left.LogicalObjectId, right.LogicalObjectId));
+        foreach (MapPlacementReservation reservation in reservations)
+        {
+            Hash(ref hash, reservation.LogicalObjectId);
+            Hash(ref hash, reservation.Role);
+            Hash(ref hash, reservation.AnchorCell.x);
+            Hash(ref hash, reservation.AnchorCell.y);
+            Hash(ref hash, (int)reservation.Ownership);
+            List<Vector2Int> cells = new List<Vector2Int>(reservation.OccupiedCells);
+            cells.Sort((left, right) =>
+            {
+                int xComparison = left.x.CompareTo(right.x);
+                return xComparison != 0 ? xComparison : left.y.CompareTo(right.y);
+            });
+            foreach (Vector2Int cell in cells)
+            {
+                Hash(ref hash, cell.x);
+                Hash(ref hash, cell.y);
+            }
+        }
+        return hash.ToString("X16");
+    }
+
+    private static void Hash(ref ulong hash, int value)
+    {
+        unchecked
+        {
+            hash ^= (uint)value;
+            hash *= 1099511628211UL;
+        }
+    }
+
+    private static void Hash(ref ulong hash, string value)
+    {
+        foreach (char character in value)
+            Hash(ref hash, character);
+    }
+
+    private static void AssertRandomFailureDoesNotFallback(
+        MapRuntimeBootstrap bootstrap,
+        GameObject runtimeRoot,
+        GameObject legacyGrid)
+    {
+        MapRuntimeDiagnosticSnapshot snapshot = bootstrap.DiagnosticSnapshot;
+        Assert.That(snapshot.Mode, Is.EqualTo(MapRuntimeMode.RandomGenerated));
+        Assert.That(snapshot.Phase, Is.EqualTo(MapLifecyclePhase.Failed));
+        Assert.That(snapshot.IsFailed, Is.True);
+        Assert.That(snapshot.AuthorityState.RandomGeneratedActive, Is.True);
+        Assert.That(snapshot.AuthorityState.LegacyStaticActive, Is.False);
+        Assert.That(runtimeRoot.activeInHierarchy, Is.True);
+        Assert.That(legacyGrid.activeSelf, Is.False,
+            "RandomGenerated failure must never activate LegacyStatic fallback.");
     }
 
     /// <summary>

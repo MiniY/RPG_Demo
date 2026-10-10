@@ -5,6 +5,25 @@ using UnityEngine;
 
 public sealed class MapIntegrationOrchestratorTests
 {
+    [Serializable]
+    private sealed class AttemptChainEvidence
+    {
+        public string scenario;
+        public string requestId;
+        public int requestedSeed;
+        public string retryPolicy;
+        public int maxAttempts;
+        public int attemptId;
+        public int attemptSeed;
+        public string generationId;
+        public string mode;
+        public string phase;
+        public string outcome;
+        public string failureCode;
+        public string finalResult;
+        public string finalFailureCode;
+    }
+
     [Test]
     public void StrictSeedCommitsOneAttemptAndDoesNotPublishGameplayReady()
     {
@@ -184,6 +203,166 @@ public sealed class MapIntegrationOrchestratorTests
         Assert.That(registry.IsOccupied(new Vector2Int(2, 2)), Is.False);
         Assert.That(registry.Retire(generationId), Is.True);
         Assert.That(registry.Retire(generationId), Is.False);
+    }
+
+    [Test]
+    public void Stage8AttemptChainsAreCompleteForSuccessExhaustionAndNonRetryableFailure()
+    {
+        MapGenerationRequest retryThenSuccessRequest = new MapGenerationRequest(
+            Guid.NewGuid(),
+            -91,
+            "stage8-attempt-chain-v1",
+            MapRetryPolicy.BoundedDeterministicRetry,
+            4,
+            2);
+        MapRuntimeContext retryThenSuccessContext = InitializedContext();
+        MapIntegrationOrchestrator retryThenSuccess =
+            new MapIntegrationOrchestrator(retryThenSuccessContext);
+        int successPlanningCalls = 0;
+        MapGenerationExecutionResult succeeded = retryThenSuccess.Execute(
+            retryThenSuccessRequest,
+            Pending,
+            (attempt, pending) =>
+            {
+                successPlanningCalls++;
+                if (attempt.AttemptIndex < 2)
+                {
+                    throw new MapPlanningException(
+                        "CandidateExhaustion",
+                        "Stage 8 deterministic capacity rejection.",
+                        true);
+                }
+                return Plan(attempt, pending.Map);
+            },
+            _ => { });
+
+        Assert.That(succeeded.Succeeded, Is.True);
+        Assert.That(successPlanningCalls, Is.EqualTo(3));
+        Assert.That(retryThenSuccessContext.AttemptChain, Has.Count.EqualTo(3));
+        Assert.That(retryThenSuccessContext.AttemptChain[0].IsRetryable, Is.True);
+        Assert.That(retryThenSuccessContext.AttemptChain[1].IsRetryable, Is.True);
+        Assert.That(retryThenSuccessContext.AttemptChain[2].Outcome,
+            Is.EqualTo(MapAttemptOutcome.Succeeded));
+        AssertUniqueAttemptGenerationIds(retryThenSuccessContext.AttemptChain);
+        WriteAttemptChainEvidence(
+            "RetryThenSuccess",
+            retryThenSuccessRequest,
+            retryThenSuccessContext,
+            succeeded);
+
+        MapGenerationRequest exhaustedRequest = new MapGenerationRequest(
+            Guid.NewGuid(),
+            711,
+            "stage8-attempt-chain-v1",
+            MapRetryPolicy.BoundedDeterministicRetry,
+            3,
+            2);
+        MapRuntimeContext exhaustedContext = InitializedContext();
+        MapIntegrationOrchestrator exhausted = new MapIntegrationOrchestrator(exhaustedContext);
+        int exhaustionPlanningCalls = 0;
+        MapGenerationExecutionResult exhaustedResult = exhausted.Execute(
+            exhaustedRequest,
+            Pending,
+            (attempt, pending) =>
+            {
+                exhaustionPlanningCalls++;
+                throw new MapPlanningException(
+                    "InsufficientEligibleArea",
+                    "Stage 8 deterministic budget exhaustion.",
+                    true);
+            },
+            _ => Assert.Fail("An exhausted request must not project."));
+
+        Assert.That(exhaustedResult.Succeeded, Is.False);
+        Assert.That(exhaustedResult.Failure.Code, Is.EqualTo("RetryBudgetExhausted"));
+        Assert.That(exhaustionPlanningCalls, Is.EqualTo(3));
+        Assert.That(exhaustedContext.AttemptChain, Has.Count.EqualTo(3));
+        Assert.That(exhaustedContext.ActiveGenerationId, Is.Null);
+        Assert.That(exhaustedContext.PendingGenerationId, Is.Null);
+        AssertUniqueAttemptGenerationIds(exhaustedContext.AttemptChain);
+        WriteAttemptChainEvidence(
+            "RetryBudgetExhausted",
+            exhaustedRequest,
+            exhaustedContext,
+            exhaustedResult);
+
+        MapGenerationRequest nonRetryableRequest = new MapGenerationRequest(
+            Guid.NewGuid(),
+            8128,
+            "stage8-attempt-chain-v1",
+            MapRetryPolicy.BoundedDeterministicRetry,
+            4,
+            2);
+        MapRuntimeContext nonRetryableContext = InitializedContext();
+        MapIntegrationOrchestrator nonRetryable =
+            new MapIntegrationOrchestrator(nonRetryableContext);
+        int nonRetryablePlanningCalls = 0;
+        MapGenerationExecutionResult nonRetryableResult = nonRetryable.Execute(
+            nonRetryableRequest,
+            Pending,
+            (attempt, pending) =>
+            {
+                nonRetryablePlanningCalls++;
+                throw new MapPlanningException(
+                    "MissingRequiredConfiguration",
+                    "Stage 8 structural failures terminate immediately.",
+                    false);
+            },
+            _ => Assert.Fail("A non-retryable request must not project."));
+
+        Assert.That(nonRetryableResult.Succeeded, Is.False);
+        Assert.That(nonRetryableResult.Failure.Code,
+            Is.EqualTo("MissingRequiredConfiguration"));
+        Assert.That(nonRetryablePlanningCalls, Is.EqualTo(1));
+        Assert.That(nonRetryableContext.AttemptChain, Has.Count.EqualTo(1));
+        Assert.That(nonRetryableContext.AttemptChain[0].Outcome,
+            Is.EqualTo(MapAttemptOutcome.NonRetryableFailure));
+        Assert.That(nonRetryableContext.ActiveGenerationId, Is.Null);
+        Assert.That(nonRetryableContext.PendingGenerationId, Is.Null);
+        WriteAttemptChainEvidence(
+            "NonRetryableStopsImmediately",
+            nonRetryableRequest,
+            nonRetryableContext,
+            nonRetryableResult);
+    }
+
+    private static void AssertUniqueAttemptGenerationIds(
+        IReadOnlyList<MapGenerationAttemptDiagnostic> diagnostics)
+    {
+        HashSet<Guid> generationIds = new HashSet<Guid>();
+        foreach (MapGenerationAttemptDiagnostic diagnostic in diagnostics)
+            Assert.That(generationIds.Add(diagnostic.Attempt.GenerationId), Is.True);
+    }
+
+    private static void WriteAttemptChainEvidence(
+        string scenario,
+        MapGenerationRequest request,
+        MapRuntimeContext context,
+        MapGenerationExecutionResult result)
+    {
+        foreach (MapGenerationAttemptDiagnostic diagnostic in context.AttemptChain)
+        {
+            AttemptChainEvidence evidence = new AttemptChainEvidence
+            {
+                scenario = scenario,
+                requestId = request.RequestId.ToString("D"),
+                requestedSeed = request.RequestedSeed,
+                retryPolicy = request.RetryPolicy.ToString(),
+                maxAttempts = request.MaxAttempts,
+                attemptId = diagnostic.Attempt.AttemptIndex,
+                attemptSeed = diagnostic.Attempt.AttemptSeed,
+                generationId = diagnostic.Attempt.GenerationId.ToString("D"),
+                mode = context.Mode.ToString(),
+                phase = diagnostic.Phase.ToString(),
+                outcome = diagnostic.Outcome.ToString(),
+                failureCode = diagnostic.Code,
+                finalResult = result.Succeeded ? "PASS" : "FAIL",
+                finalFailureCode = result.Failure?.Code ?? string.Empty
+            };
+            string line = "STAGE8_ATTEMPT_EVIDENCE|" + JsonUtility.ToJson(evidence);
+            Debug.Log(line);
+            TestContext.Progress.WriteLine(line);
+        }
     }
 
     private static MapGenerationExecutionResult ExecuteSuccess(MapIntegrationOrchestrator orchestrator, MapGenerationRequest request)

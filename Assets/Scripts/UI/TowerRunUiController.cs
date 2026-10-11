@@ -472,7 +472,7 @@ public sealed class TowerRunUiController : MonoBehaviour
 
     private void BuildUi()
     {
-        Font font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+        Font font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
         flowOverlay = CreateOverlay("TowerRunFlowOverlay", transform, new Color(0f, 0f, 0f, 0.82f));
         Transform flowContent = CreateVerticalContent("FlowContent", flowOverlay.transform);
         flowTitle = CreateText("Title", flowContent, font, 32, TextAnchor.MiddleCenter);

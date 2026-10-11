@@ -14,10 +14,17 @@ public sealed class TowerRunFlowPlayModeTests
 {
     private string testRoot;
     private Keyboard testKeyboard;
+    private InputSettings.BackgroundBehavior previousBackgroundBehavior;
+    private InputSettings.EditorInputBehaviorInPlayMode previousEditorInputBehavior;
 
     [SetUp]
     public void SetUp()
     {
+        previousBackgroundBehavior = InputSystem.settings.backgroundBehavior;
+        previousEditorInputBehavior = InputSystem.settings.editorInputBehaviorInPlayMode;
+        InputSystem.settings.backgroundBehavior = InputSettings.BackgroundBehavior.IgnoreFocus;
+        InputSystem.settings.editorInputBehaviorInPlayMode =
+            InputSettings.EditorInputBehaviorInPlayMode.AllDeviceInputAlwaysGoesToGameView;
         testRoot = Path.Combine(
             Path.GetTempPath(),
             "RPG_Demo-TowerRunFlowTests",
@@ -29,13 +36,21 @@ public sealed class TowerRunFlowPlayModeTests
     [TearDown]
     public void TearDown()
     {
-        if (testKeyboard != null && testKeyboard.added)
-            InputSystem.RemoveDevice(testKeyboard);
+        try
+        {
+            if (testKeyboard != null && testKeyboard.added)
+                InputSystem.RemoveDevice(testKeyboard);
 
-        TowerRunRuntimeEnvironment.ResetOverrides();
+            TowerRunRuntimeEnvironment.ResetOverrides();
 
-        if (Directory.Exists(testRoot))
-            Directory.Delete(testRoot, true);
+            if (Directory.Exists(testRoot))
+                Directory.Delete(testRoot, true);
+        }
+        finally
+        {
+            InputSystem.settings.backgroundBehavior = previousBackgroundBehavior;
+            InputSystem.settings.editorInputBehaviorInPlayMode = previousEditorInputBehavior;
+        }
     }
 
     [UnityTest]
@@ -362,6 +377,7 @@ public sealed class TowerRunFlowPlayModeTests
 
     private void PressInteract()
     {
+        EnsureTestKeyboardEnabled();
         InputSystem.QueueStateEvent(testKeyboard, new KeyboardState(Key.F));
         InputSystem.Update();
         InputSystem.QueueStateEvent(testKeyboard, new KeyboardState());
@@ -370,6 +386,7 @@ public sealed class TowerRunFlowPlayModeTests
 
     private void PressTab()
     {
+        EnsureTestKeyboardEnabled();
         InputSystem.QueueStateEvent(testKeyboard, new KeyboardState(Key.Tab));
         InputSystem.Update();
         InputSystem.QueueStateEvent(testKeyboard, new KeyboardState());
@@ -378,12 +395,24 @@ public sealed class TowerRunFlowPlayModeTests
 
     private IEnumerator PressEscape(MonoBehaviour runUi)
     {
+        EnsureTestKeyboardEnabled();
         InputSystem.QueueStateEvent(testKeyboard, new KeyboardState(Key.Escape));
         InputSystem.Update();
         InvokePrivate(runUi, "Update");
         InputSystem.QueueStateEvent(testKeyboard, new KeyboardState());
         InputSystem.Update();
         yield return null;
+    }
+
+    private void EnsureTestKeyboardEnabled()
+    {
+        Assert.That(testKeyboard, Is.Not.Null);
+        Assert.That(testKeyboard.added, Is.True);
+
+        if (!testKeyboard.enabled)
+            InputSystem.EnableDevice(testKeyboard);
+
+        Assert.That(testKeyboard.enabled, Is.True);
     }
 
     private IEnumerator RecreateApplicationRuntime()
@@ -673,6 +702,7 @@ public sealed class TowerRunFlowPlayModeTests
         Assert.That(field, Is.Not.Null);
         field.SetValue(behaviour, value);
     }
+
 
     private static MonoBehaviour FindBehaviour(string typeName)
     {

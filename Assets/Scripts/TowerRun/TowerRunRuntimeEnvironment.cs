@@ -58,12 +58,26 @@ public static class TowerRunRuntimeEnvironment
 
     public static void ConfigureTestIsolation(string rootDirectory)
     {
+        ConfigureTestIsolation(rootDirectory, new TowerRunMemoryPreferenceStore());
+    }
+
+    public static void ConfigureTestIsolation(
+        string rootDirectory,
+        ITowerRunPreferenceStore isolatedPreferences)
+    {
         if (string.IsNullOrWhiteSpace(rootDirectory))
             throw new ArgumentException("A test isolation root is required.", nameof(rootDirectory));
 
+        if (isolatedPreferences == null)
+        {
+            throw new ArgumentNullException(
+                nameof(isolatedPreferences),
+                "A test preference store is required.");
+        }
+
         slotRootOverride = Path.Combine(rootDirectory, "tower-run-slots");
         legacySavePathOverride = Path.Combine(rootDirectory, "save.json");
-        preferenceOverride = new TowerRunMemoryPreferenceStore();
+        preferenceOverride = isolatedPreferences;
     }
 
     public static void ResetOverrides()

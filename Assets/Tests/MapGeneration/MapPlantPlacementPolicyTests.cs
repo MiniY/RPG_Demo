@@ -136,13 +136,33 @@ public sealed class MapPlantPlacementPolicyTests
         MapData map = CreateOpenMap();
         MapGenerationSettings settings = ScriptableObject.CreateInstance<MapGenerationSettings>();
         settings.spawnProtectionRadius = 2;
+        settings.simpleDecorationExitClearRadius = 2;
         try
         {
             MapPlacementPlan plan = MapStaticPlacementPlanner.Build(Guid.NewGuid(), map, null, settings);
             Assert.That(Evaluate(map, map.SpawnCell, out _, out string spawnReason, plan), Is.False);
             Assert.That(spawnReason, Is.EqualTo("Occupancy"));
-            Assert.That(Evaluate(map, map.ExitCell, out _, out string exitReason, plan), Is.False);
+            Assert.That(Evaluate(
+                map,
+                map.ExitCell + Vector2Int.left * settings.ExitClearanceRadius,
+                out _,
+                out string exitReason,
+                plan), Is.False);
             Assert.That(exitReason, Is.EqualTo("Occupancy"));
+
+            Vector2Int exitFootprintAnchor =
+                map.ExitCell + Vector2Int.left * (settings.ExitClearanceRadius + 1);
+            PlantSemanticPlacementRequest exitFootprintRequest = Request(
+                "plant.exit-overlap",
+                footprint: new[] { Vector2Int.zero, Vector2Int.right });
+            Assert.That(new PlantPlacementPolicy().TryEvaluateCandidate(
+                map,
+                plan,
+                exitFootprintRequest,
+                exitFootprintAnchor,
+                out _,
+                out string exitFootprintReason), Is.False);
+            Assert.That(exitFootprintReason, Is.EqualTo("Occupancy"));
 
             Vector2Int candidate = new Vector2Int(8, 2);
             Assert.That(plan.TryAdd(new MapPlacementReservation(

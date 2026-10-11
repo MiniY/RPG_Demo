@@ -137,6 +137,7 @@ public sealed class MapMonsterPlacementPolicyTests
         MapData map = CreateOpenMap();
         MapGenerationSettings settings = ScriptableObject.CreateInstance<MapGenerationSettings>();
         settings.spawnProtectionRadius = 2;
+        settings.simpleDecorationExitClearRadius = 2;
         try
         {
             MapPlacementPlan plan = MapStaticPlacementPlanner.Build(
@@ -154,7 +155,7 @@ public sealed class MapMonsterPlacementPolicyTests
             Assert.That(spawnReason, Is.EqualTo("Occupancy"));
             Assert.That(Evaluate(
                 map,
-                map.ExitCell,
+                map.ExitCell + Vector2Int.left * settings.ExitClearanceRadius,
                 out _,
                 out string exitReason,
                 plan,

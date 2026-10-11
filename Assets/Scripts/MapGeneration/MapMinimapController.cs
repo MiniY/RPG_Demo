@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -72,7 +73,7 @@ public sealed class MapMinimapController : MonoBehaviour
     [SerializeField] private bool showSpawnMarker = true;
 
     /// <summary>
-    /// 是否显示出口标记。
+    /// 是否允许显示出口标记。实际显示仍要求当前地图出口已由玩法状态解锁。
     /// </summary>
     [SerializeField] private bool showExitMarker = true;
 
@@ -188,6 +189,16 @@ public sealed class MapMinimapController : MonoBehaviour
     private MapData displayedMap;
 
     /// <summary>
+    /// 当前显示地图的唯一生成轮次；用于拒绝旧地图延迟到达的解锁事件。
+    /// </summary>
+    private Guid? displayedGenerationId;
+
+    /// <summary>
+    /// 当前地图出口是否已经由外部玩法状态解锁。
+    /// </summary>
+    private bool exitAvailable;
+
+    /// <summary>
     /// 当前地图的逻辑探索状态。
     /// </summary>
     private MapExplorationState explorationState;
@@ -216,6 +227,16 @@ public sealed class MapMinimapController : MonoBehaviour
     /// 获取当前显示的地图数据，便于测试和其他系统读取状态。
     /// </summary>
     public MapData DisplayedMap => displayedMap;
+
+    /// <summary>
+    /// 获取当前显示地图的唯一生成轮次。
+    /// </summary>
+    public Guid? DisplayedGenerationId => displayedGenerationId;
+
+    /// <summary>
+    /// 获取当前地图出口是否已解锁。该状态只控制小地图表现，不负责目标判定或地图推进。
+    /// </summary>
+    public bool IsExitAvailable => exitAvailable;
 
     /// <summary>
     /// 获取当前使用的地图生成控制器。
@@ -287,6 +308,7 @@ public sealed class MapMinimapController : MonoBehaviour
         mapController.MapGenerated += HandleMapGenerated;
         mapController.MapCleared -= HandleMapCleared;
         mapController.MapCleared += HandleMapCleared;
+        SynchronizeWithController();
     }
 
     /// <summary>
@@ -294,8 +316,7 @@ public sealed class MapMinimapController : MonoBehaviour
     /// </summary>
     private void Start()
     {
-        if (mapController != null && mapController.LastGeneratedMap != null)
-            RenderMap(mapController.LastGeneratedMap);
+        SynchronizeWithController();
     }
 
     /// <summary>
@@ -357,13 +378,16 @@ public sealed class MapMinimapController : MonoBehaviour
         if (mapData == null)
             return;
 
+        displayedMap = mapData;
+        displayedGenerationId = ResolveGenerationId(mapData);
+        exitAvailable = false;
+
         EnsureRuntimeView();
 
         if (minimapImage == null)
         {
             if (!Application.isPlaying)
             {
-                displayedMap = mapData;
                 return;
             }
 
@@ -389,7 +413,6 @@ public sealed class MapMinimapController : MonoBehaviour
         minimapImage.color = Color.white;
         minimapImage.enabled = true;
 
-        displayedMap = mapData;
         UpdateAspectRatio(mapData);
         ResetExploration(mapData);
         UpdateMapMarkers();
@@ -402,6 +425,8 @@ public sealed class MapMinimapController : MonoBehaviour
     public void ClearMap()
     {
         displayedMap = null;
+        displayedGenerationId = null;
+        exitAvailable = false;
         explorationState = null;
         hasLastExplorationCell = false;
         ReleaseTexture();
@@ -427,6 +452,58 @@ public sealed class MapMinimapController : MonoBehaviour
             fogOverlay.texture = null;
             fogOverlay.enabled = false;
         }
+    }
+
+    /// <summary>
+    /// 由拥有地图目标状态的外部系统更新出口可用性。生成轮次不匹配时拒绝更新，
+    /// 防止旧地图的延迟完成事件解锁当前地图出口。
+    /// </summary>
+    /// <param name="generationId">目标状态所属的唯一地图生成轮次。</param>
+    /// <param name="available">出口是否已经解锁并应在小地图显示。</param>
+    /// <returns>生成轮次匹配且状态已应用时返回 true；过期或未绑定地图时返回 false。</returns>
+    public bool TrySetExitAvailable(Guid generationId, bool available)
+    {
+        if (generationId == Guid.Empty ||
+            displayedMap == null ||
+            displayedGenerationId != generationId)
+        {
+            return false;
+        }
+
+        if (exitAvailable == available)
+            return true;
+
+        exitAvailable = available;
+        UpdateMapMarkers();
+        return true;
+    }
+
+    private Guid? ResolveGenerationId(MapData mapData)
+    {
+        if (mapController == null)
+            return null;
+
+        MapRuntimeContext context = mapController.Orchestrator.Context;
+        return ReferenceEquals(context.ActiveMap, mapData)
+            ? context.ActiveGenerationId
+            : null;
+    }
+
+    private void SynchronizeWithController()
+    {
+        if (mapController == null)
+            return;
+
+        MapData activeMap = mapController.LastGeneratedMap;
+        if (activeMap == null)
+        {
+            if (displayedMap != null)
+                ClearMap();
+            return;
+        }
+
+        if (!ReferenceEquals(displayedMap, activeMap))
+            RenderMap(activeMap);
     }
 
     /// <summary>
@@ -765,7 +842,7 @@ public sealed class MapMinimapController : MonoBehaviour
         UpdateStaticMarker(
             exitMarker,
             displayedMap.ExitCell,
-            showExitMarker,
+            showExitMarker && exitAvailable,
             exitMarkerColor);
     }
 

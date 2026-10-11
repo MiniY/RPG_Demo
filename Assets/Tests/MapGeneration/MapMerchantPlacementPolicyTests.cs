@@ -119,6 +119,7 @@ public sealed class MapMerchantPlacementPolicyTests
         MapData map = CreateOpenMap();
         MapGenerationSettings settings = ScriptableObject.CreateInstance<MapGenerationSettings>();
         settings.spawnProtectionRadius = 2;
+        settings.simpleDecorationExitClearRadius = 2;
         try
         {
             MapPlacementPlan plan = MapStaticPlacementPlanner.Build(
@@ -131,7 +132,10 @@ public sealed class MapMerchantPlacementPolicyTests
                 plan, profile), Is.False);
             Assert.That(spawnReason, Is.EqualTo("StaticOccupancy"));
             Assert.That(Evaluate(
-                map, map.ExitCell, out _, out string exitReason,
+                map,
+                map.ExitCell + Vector2Int.left * settings.ExitClearanceRadius,
+                out _,
+                out string exitReason,
                 plan, profile), Is.False);
             Assert.That(exitReason, Is.EqualTo("StaticOccupancy"));
         }

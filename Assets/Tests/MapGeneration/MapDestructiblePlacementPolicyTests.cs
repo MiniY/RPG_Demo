@@ -120,6 +120,7 @@ public sealed class MapDestructiblePlacementPolicyTests
         MapData map = CreateOpenMap(35, 5);
         MapGenerationSettings settings = ScriptableObject.CreateInstance<MapGenerationSettings>();
         settings.spawnProtectionRadius = 2;
+        settings.simpleDecorationExitClearRadius = 2;
         try
         {
             MapPlacementPlan plan = MapStaticPlacementPlanner.Build(
@@ -128,11 +129,21 @@ public sealed class MapDestructiblePlacementPolicyTests
             Assert.That(spawnReason, Is.EqualTo("Occupancy"));
             Assert.That(Evaluate(
                 map,
-                map.ExitCell + Vector2Int.left,
+                map.ExitCell + Vector2Int.left * settings.ExitClearanceRadius,
                 out _,
                 out string exitReason,
-                plan), Is.False);
-            Assert.That(exitReason, Is.EqualTo("ExitSafety"));
+                plan,
+                new DestructiblePlacementProfile(
+                    0,
+                    int.MaxValue,
+                    1,
+                    0,
+                    DestructiblePlacementProfile.CurrentDefaultAllowedTerrains |
+                    DestructibleTerrainMask.Path,
+                    1,
+                    1,
+                    1)), Is.False);
+            Assert.That(exitReason, Is.EqualTo("Occupancy"));
 
             Vector2Int candidate = new Vector2Int(10, 2);
             Assert.That(plan.TryAdd(new MapPlacementReservation(

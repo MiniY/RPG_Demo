@@ -196,10 +196,16 @@ public class MapGenerationSettings : ScriptableObject
     [Min(0)] public int simpleDecorationSpawnClearRadius = 6;
 
     /// <summary>
-    /// 出口周围不放置简单装饰物的净空半径。
+    /// 出口周围不放置简单装饰物或语义玩法对象的共享净空半径。
+    /// 使用 Chebyshev Distance（切比雪夫距离），因此半径 2 对应最多 5×5 的网格区域。
     /// </summary>
     [FormerlySerializedAs("decorationExitClearRadius")]
     [Min(0)] public int simpleDecorationExitClearRadius = 2;
+
+    /// <summary>
+    /// 出口净空的权威半径。保留原序列化字段名以避免破坏现有资源兼容性。
+    /// </summary>
+    public int ExitClearanceRadius => Mathf.Max(0, simpleDecorationExitClearRadius);
 
     /// <summary>
     /// Sand Base（沙地底层）使用的 16 状态自动瓦片集合。

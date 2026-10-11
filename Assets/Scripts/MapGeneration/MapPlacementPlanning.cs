@@ -117,23 +117,22 @@ public static class MapStaticPlacementPlanner
         if (map == null) throw new ArgumentNullException(nameof(map));
         if (settings == null) throw new ArgumentNullException(nameof(settings));
         MapPlacementPlan plan = new MapPlacementPlan(generationId);
-        List<Vector2Int> spawnSafetyCells = new List<Vector2Int>();
         int spawnSafetyRadius = Mathf.Max(0, settings.spawnProtectionRadius);
-        for (int x = map.SpawnCell.x - spawnSafetyRadius;
-             x <= map.SpawnCell.x + spawnSafetyRadius;
-             x++)
-        {
-            for (int y = map.SpawnCell.y - spawnSafetyRadius;
-                 y <= map.SpawnCell.y + spawnSafetyRadius;
-                 y++)
-            {
-                Vector2Int cell = new Vector2Int(x, y);
-                if (map.IsInside(cell)) spawnSafetyCells.Add(cell);
-            }
-        }
+        List<Vector2Int> spawnSafetyCells = BuildClearanceCells(
+            map,
+            map.SpawnCell,
+            spawnSafetyRadius);
         Add(plan, "map.spawn", "SpawnSafetyReservation", map.SpawnCell, spawnSafetyCells);
         if (map.ExitCell != map.SpawnCell)
-            Add(plan, "map.exit", "ExitReservation", map.ExitCell, new[] { map.ExitCell });
+        {
+            List<Vector2Int> exitClearanceCells = BuildClearanceCells(
+                map,
+                map.ExitCell,
+                settings.ExitClearanceRadius);
+            exitClearanceCells.RemoveAll(plan.IsOccupied);
+            if (exitClearanceCells.Count > 0)
+                Add(plan, "map.exit", "ExitClearanceReservation", map.ExitCell, exitClearanceCells);
+        }
 
         if (decorations == null || settings.simpleDecorationPalette == null) return plan;
         Dictionary<string, MapSimpleDecorationVariant> variants = new Dictionary<string, MapSimpleDecorationVariant>(StringComparer.Ordinal);
@@ -150,6 +149,26 @@ public static class MapStaticPlacementPlanner
             Add(plan, $"static-decoration.{index}", "CollisionDecoration", placement.AnchorCell, cells);
         }
         return plan;
+    }
+
+    private static List<Vector2Int> BuildClearanceCells(
+        MapData map,
+        Vector2Int anchor,
+        int radius)
+    {
+        List<Vector2Int> cells = new List<Vector2Int>();
+        int clampedRadius = Mathf.Max(0, radius);
+        for (int x = anchor.x - clampedRadius; x <= anchor.x + clampedRadius; x++)
+        {
+            for (int y = anchor.y - clampedRadius; y <= anchor.y + clampedRadius; y++)
+            {
+                Vector2Int cell = new Vector2Int(x, y);
+                if (map.IsInside(cell) && map.IsWalkable(cell))
+                    cells.Add(cell);
+            }
+        }
+
+        return cells;
     }
 
     private static void Add(MapPlacementPlan plan, string id, string role, Vector2Int anchor,

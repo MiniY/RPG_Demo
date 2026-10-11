@@ -1,7 +1,9 @@
 {
     "name": "RPG_Demo.TowerRun",
     "rootNamespace": "",
-    "references": [],
+    "references": [
+        "RPG_Demo.MapGeneration"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

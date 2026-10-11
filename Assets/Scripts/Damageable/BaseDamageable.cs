@@ -25,6 +25,7 @@ public abstract class BaseDamageable : MonoBehaviour
     [SerializeField, Min(0f)] private float returnToPoolDelay = 0.5f; // 被击败后回收到对象池前的等待时间。
 
     private Collider2D[] colliders; // 对象身上的碰撞体。
+    private Coroutine returnToPoolCoroutine; // 当前击败流程等待回收的协程。
 
     public event Action<BaseDamageable, DamageInfo> OnDamaged; // 对象受到伤害时触发的事件。
     public event Action<BaseDamageable> OnDefeated; // 对象被击败或摧毁时触发的事件。
@@ -44,6 +45,18 @@ public abstract class BaseDamageable : MonoBehaviour
     // 对象启用或从对象池取出时重置状态。
     private void OnEnable()
     {
+        ResetForGenerationReuse();
+    }
+
+    // 仅由明确拥有该对象复用生命周期的系统调用；不会发布击败事件或生成奖励。
+    public void ResetForGenerationReuse()
+    {
+        if (returnToPoolCoroutine != null)
+        {
+            StopCoroutine(returnToPoolCoroutine);
+            returnToPoolCoroutine = null;
+        }
+
         currentHealth = maxHealth;
         isDefeated = false;
         SetCollidersEnabled(true);
@@ -88,7 +101,7 @@ public abstract class BaseDamageable : MonoBehaviour
         SetCollidersEnabled(false);
         SpawnRewards();
         OnDefeated?.Invoke(this);
-        StartCoroutine(ReturnToPoolAfterDelay());
+        returnToPoolCoroutine = StartCoroutine(ReturnToPoolAfterDelay());
     }
 
     // 设置对象所有碰撞体是否启用。
@@ -216,10 +229,12 @@ public abstract class BaseDamageable : MonoBehaviour
 
         if (poolPrefab != null)
         {
+            returnToPoolCoroutine = null;
             ObjectPoolManager.Return(gameObject, poolPrefab);
             yield break;
         }
 
+        returnToPoolCoroutine = null;
         ObjectPoolManager.ReturnOrDeactivate(gameObject);
     }
 

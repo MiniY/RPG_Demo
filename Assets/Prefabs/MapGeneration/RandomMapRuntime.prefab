@@ -642,7 +642,7 @@ MonoBehaviour:
   tilemapRenderer: {fileID: 6650904316187142650}
   simpleDecorationRenderer: {fileID: 7083376054990191860}
   player: {fileID: 0}
-  generateOnPlay: 1
+  generateOnPlay: 0
   logGenerationSummary: 1
 --- !u!114 &6650904316187142650
 MonoBehaviour:
@@ -1048,6 +1048,8 @@ GameObject:
   - component: {fileID: 420000000000000008}
   - component: {fileID: 420000000000000009}
   - component: {fileID: 420000000000000010}
+  - component: {fileID: 420000000000000012}
+  - component: {fileID: 420000000000000011}
   m_Layer: 0
   m_Name: RandomMapRuntime
   m_TagString: Untagged
@@ -1309,6 +1311,34 @@ MonoBehaviour:
     requiredMinimum: 4
     targetCount: 8
     maximum: 8
+--- !u!114 &420000000000000011
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7464507020108064817}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2b73b6c8ca749e580c5a84d18ab1a42, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  mapController: {fileID: 2798388526612952683}
+  minimapController: {fileID: 0}
+  exitPortalPrefab: {fileID: 5809947503129732595, guid: c561c97e770760d42a2f5c7abb75e5ac, type: 3}
+  interactionRadius: 1.5
+--- !u!114 &420000000000000012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7464507020108064817}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8cf3d61f907b4a2abf694564cba6c8a1, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
 --- !u!1 &7890253596842868618
 GameObject:
   m_ObjectHideFlags: 0

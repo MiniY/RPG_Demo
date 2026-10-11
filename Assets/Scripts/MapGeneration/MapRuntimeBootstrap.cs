@@ -24,6 +24,7 @@ public sealed class MapRuntimeBootstrap : MonoBehaviour
 
     private MapRuntimeContext context;
     private bool initialized;
+    private bool startupValidationPassed;
 
     public MapRuntimeMode Mode => runtimeMode;
 
@@ -57,7 +58,7 @@ public sealed class MapRuntimeBootstrap : MonoBehaviour
         get
         {
             EnsureInitialized();
-            return runtimeMode == MapRuntimeMode.RandomGenerated && !context.IsFailed;
+            return runtimeMode == MapRuntimeMode.RandomGenerated && startupValidationPassed;
         }
     }
 
@@ -152,7 +153,10 @@ public sealed class MapRuntimeBootstrap : MonoBehaviour
         if (failure != null)
             RecordFailure(failure);
         else
+        {
+            startupValidationPassed = true;
             context.SetPhase(MapLifecyclePhase.Initialized);
+        }
 
         initialized = true;
     }

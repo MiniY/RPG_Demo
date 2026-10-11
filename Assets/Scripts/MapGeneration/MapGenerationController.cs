@@ -16,6 +16,7 @@ public class MapGenerationController : MonoBehaviour
     private MapData lastGeneratedMap;
     private MapSimpleDecorationData lastGeneratedSimpleDecorations;
     private MapIntegrationOrchestrator orchestrator;
+    private MapGenerationRequest requestedGeneration;
 
     public event Action<MapData> MapGenerated;
     public event Action MapCleared;
@@ -118,7 +119,7 @@ public class MapGenerationController : MonoBehaviour
             }
             plantPlacementService = plantPlacementServices[0];
         }
-        MapGenerationRequest request = new MapGenerationRequest(Guid.NewGuid(), settings.seed);
+        MapGenerationRequest request = requestedGeneration ?? new MapGenerationRequest(Guid.NewGuid(), settings.seed);
         MapGenerationExecutionResult result = orchestrator.Execute(
             request,
             GeneratePending,
@@ -292,6 +293,55 @@ public class MapGenerationController : MonoBehaviour
             return;
         }
 
+        MonoBehaviour[] behaviours = GetComponentsInParent<MonoBehaviour>(true);
+
+        for (int i = 0; i < behaviours.Length; i++)
+        {
+            if (behaviours[i] == null || !behaviours[i].isActiveAndEnabled ||
+                !(behaviours[i] is IMapRuntimeReadyFinalizer finalizer))
+                continue;
+
+            bool finalized;
+            string finalizerFailure;
+
+            try
+            {
+                finalized = finalizer.TryFinalizeBeforeReady(
+                    context,
+                    result.GenerationId.Value,
+                    out finalizerFailure);
+            }
+            catch (Exception exception)
+            {
+                finalizerFailure =
+                    $"{finalizer.GetType().Name} threw during runtime-ready finalization: {exception.Message}";
+                context.RecordFailure(new MapFailureDiagnostic(
+                    context.Mode,
+                    result.GenerationId.Value,
+                    context.Phase,
+                    MapFailureCategory.Lifecycle,
+                    "RuntimeReadyFinalizerException",
+                    finalizerFailure));
+                Debug.LogException(exception, behaviours[i]);
+                return;
+            }
+
+            if (finalized)
+                continue;
+
+            context.RecordFailure(new MapFailureDiagnostic(
+                context.Mode,
+                result.GenerationId.Value,
+                context.Phase,
+                MapFailureCategory.Lifecycle,
+                "RuntimeReadyFinalizationFailed",
+                string.IsNullOrWhiteSpace(finalizerFailure)
+                    ? "A runtime ready finalizer rejected the generation."
+                    : finalizerFailure));
+            Debug.LogError($"Runtime ready finalization failed: {finalizerFailure}", this);
+            return;
+        }
+
         MapLifecycleTransitions.Advance(context, MapLifecyclePhase.Ready);
         if (!orchestrator.PublishGameplayReady(result.GenerationId.Value))
         {
@@ -317,6 +367,39 @@ public class MapGenerationController : MonoBehaviour
 
     // Keep the previous projection intact until a new pending generation commits.
     public void RegenerateMap() => GenerateMap();
+
+    /// <summary>Runs one explicit generation request without mutating the settings asset.</summary>
+    public bool TryGenerateMap(MapGenerationRequest request)
+    {
+        if (request == null)
+            return false;
+
+        requestedGeneration = request;
+
+        try
+        {
+            GenerateMap();
+            return orchestrator != null && orchestrator.Context.IsReady;
+        }
+        catch (Exception exception)
+        {
+            EnsureOrchestrator();
+            MapRuntimeContext context = orchestrator.Context;
+            context.RecordFailure(new MapFailureDiagnostic(
+                context.Mode,
+                context.ActiveGenerationId,
+                context.Phase,
+                MapFailureCategory.Lifecycle,
+                "UnhandledGenerationException",
+                $"Unhandled generation exception: {exception.Message}"));
+            Debug.LogException(exception, this);
+            return false;
+        }
+        finally
+        {
+            requestedGeneration = null;
+        }
+    }
 
     public void RandomizeSeed()
     {

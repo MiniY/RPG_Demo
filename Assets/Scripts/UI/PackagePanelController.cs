@@ -1,12 +1,12 @@
 using System;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 /// <summary>
 /// 控制背包面板的打开和关闭，并在打开时锁定玩家玩法输入。
 /// </summary>
 public class PackagePanelController : MonoBehaviour
 {
+    private const string GameplayGateOwner = "ui.package";
     /// <summary>
     /// 背包面板打开或关闭时发出的事件。
     /// </summary>
@@ -26,6 +26,7 @@ public class PackagePanelController : MonoBehaviour
     /// 当前已经绑定的游戏输入管理器。
     /// </summary>
     private GameInput gameInput; // 游戏输入管理器。
+    private TowerRunGateLease gameplayGateLease;
 
     /// <summary>
     /// 背包面板当前是否正在显示。
@@ -49,14 +50,11 @@ public class PackagePanelController : MonoBehaviour
     }
 
     /// <summary>
-    /// 输入管理器可能稍后才初始化，因此每帧尝试补绑定一次，并监听 Escape。
+    /// 输入管理器可能稍后才初始化，因此每帧尝试补绑定一次。
     /// </summary>
     private void Update()
     {
         TryBindInput();
-
-        if (IsPackagePanelOpen() && Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
-            ClosePackagePanel();
     }
 
     /// <summary>
@@ -65,6 +63,7 @@ public class PackagePanelController : MonoBehaviour
     private void OnDisable()
     {
         UnbindInput();
+        ReleaseGameplayGate();
     }
 
     /// <summary>
@@ -77,7 +76,9 @@ public class PackagePanelController : MonoBehaviour
 
         gameInput = GameInput.Instance;
         gameInput.OnPackagePressed += HandlePackagePressed;
-        gameInput.SetGameplayInputEnabled(!IsPackagePanelOpen());
+
+        if (IsPackagePanelOpen())
+            AcquireGameplayGate();
     }
 
     /// <summary>
@@ -97,6 +98,9 @@ public class PackagePanelController : MonoBehaviour
     /// </summary>
     private void HandlePackagePressed()
     {
+        if (!IsPackagePanelOpen() && TowerRunGateHub.IsGameplayBlockedByOtherThan(GameplayGateOwner))
+            return;
+
         TogglePackagePanel();
     }
 
@@ -135,8 +139,10 @@ public class PackagePanelController : MonoBehaviour
         if (packagePanel != null)
             packagePanel.SetActive(isVisible);
 
-        if (gameInput != null)
-            gameInput.SetGameplayInputEnabled(!isVisible);
+        if (isVisible)
+            AcquireGameplayGate();
+        else
+            ReleaseGameplayGate();
 
         if (wasVisible != isVisible)
             OnPackagePanelVisibilityChanged?.Invoke(isVisible);
@@ -149,5 +155,17 @@ public class PackagePanelController : MonoBehaviour
     private bool IsPackagePanelOpen()
     {
         return packagePanel != null && packagePanel.activeSelf;
+    }
+
+    private void AcquireGameplayGate()
+    {
+        if (gameplayGateLease == null)
+            gameplayGateLease = TowerRunGateHub.AcquireGameplay(GameplayGateOwner);
+    }
+
+    private void ReleaseGameplayGate()
+    {
+        gameplayGateLease?.Dispose();
+        gameplayGateLease = null;
     }
 }

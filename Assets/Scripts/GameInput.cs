@@ -67,6 +67,7 @@ public class GameInput : MonoBehaviour
         gameControls = new GameControls();
         gameControls.Player.Interact.performed += Interact_performed;
         gameControls.Player.Battle.performed += Battle_performed;
+        TowerRunGateHub.BindInput(this);
     }
 
     /// <summary>
@@ -98,7 +99,10 @@ public class GameInput : MonoBehaviour
         }
 
         if (Instance == this)
+        {
+            TowerRunGateHub.BindInput(null);
             Instance = null;
+        }
     }
 
     /// <summary>

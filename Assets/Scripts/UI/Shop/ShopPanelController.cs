@@ -1,12 +1,12 @@
 using System;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 /// <summary>
 /// 商店面板控制器，负责打开、关闭商店 UI，并在商店打开时锁定玩家玩法输入。
 /// </summary>
 public class ShopPanelController : MonoBehaviour
 {
+    private const string GameplayGateOwner = "ui.shop";
     /// <summary>
     /// 商店面板显示状态发生变化时发出的事件。
     /// </summary>
@@ -31,6 +31,7 @@ public class ShopPanelController : MonoBehaviour
     /// 当前已经绑定的游戏输入管理器。
     /// </summary>
     private GameInput gameInput; // 游戏输入管理器。
+    private TowerRunGateLease gameplayGateLease;
 
     /// <summary>
     /// 当前商店面板是否正在显示。
@@ -61,14 +62,11 @@ public class ShopPanelController : MonoBehaviour
     }
 
     /// <summary>
-    /// 每帧尝试补绑定输入管理器，并监听 Escape 关闭商店。
+    /// 每帧尝试补绑定输入管理器。
     /// </summary>
     private void Update()
     {
         TryBindInput();
-
-        if (IsShopPanelOpen() && Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
-            CloseShopPanel();
     }
 
     /// <summary>
@@ -78,6 +76,7 @@ public class ShopPanelController : MonoBehaviour
     {
         MerchantInteractionController.OnAnyMerchantInteracted -= HandleMerchantInteracted;
         UnbindInput();
+        ReleaseGameplayGate();
     }
 
     /// <summary>
@@ -86,7 +85,8 @@ public class ShopPanelController : MonoBehaviour
     /// <param name="merchant">本次被交互的商人。</param>
     private void HandleMerchantInteracted(MerchantInteractionController merchant)
     {
-        if (merchant == null || IsShopPanelOpen())
+        if (merchant == null || IsShopPanelOpen() ||
+            TowerRunGateHub.IsGameplayBlockedByOtherThan(GameplayGateOwner))
             return;
 
         if (merchant.ShopCatalog != null && shopGridUI != null)
@@ -130,8 +130,10 @@ public class ShopPanelController : MonoBehaviour
         if (shopPanelRoot != null)
             shopPanelRoot.SetActive(isVisible);
 
-        if (gameInput != null)
-            gameInput.SetGameplayInputEnabled(!isVisible);
+        if (isVisible)
+            AcquireGameplayGate();
+        else
+            ReleaseGameplayGate();
 
         if (wasVisible != isVisible)
             OnShopPanelVisibilityChanged?.Invoke(isVisible);
@@ -155,7 +157,9 @@ public class ShopPanelController : MonoBehaviour
             return;
 
         gameInput = GameInput.Instance;
-        gameInput.SetGameplayInputEnabled(!IsShopPanelOpen());
+
+        if (IsShopPanelOpen())
+            AcquireGameplayGate();
     }
 
     /// <summary>
@@ -167,5 +171,17 @@ public class ShopPanelController : MonoBehaviour
             return;
 
         gameInput = null;
+    }
+
+    private void AcquireGameplayGate()
+    {
+        if (gameplayGateLease == null)
+            gameplayGateLease = TowerRunGateHub.AcquireGameplay(GameplayGateOwner);
+    }
+
+    private void ReleaseGameplayGate()
+    {
+        gameplayGateLease?.Dispose();
+        gameplayGateLease = null;
     }
 }

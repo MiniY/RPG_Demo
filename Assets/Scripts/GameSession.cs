@@ -23,6 +23,11 @@ public class GameSession : MonoBehaviour
     public PlayerProgressionService ProgressionService { get; private set; }
 
     /// <summary>
+    /// 当前应用唯一的新 Run、恢复、死亡和换层协调者。
+    /// </summary>
+    public TowerRunCoordinator TowerRun { get; private set; }
+
+    /// <summary>
     /// 自动创建跨场景游戏会话。
     /// </summary>
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -61,6 +66,11 @@ public class GameSession : MonoBehaviour
 
         PlayerStats.EnsureInitializedForRuntime();
         ProgressionService.Initialize(PlayerStats);
+        TowerRun = GetComponent<TowerRunCoordinator>();
+
+        if (TowerRun == null)
+            TowerRun = gameObject.AddComponent<TowerRunCoordinator>();
+
         SceneManager.sceneLoaded += HandleSceneLoaded;
     }
 
@@ -157,6 +167,8 @@ public class GameSession : MonoBehaviour
 
         if (characterPanel != null && characterPanel.GetComponent<PlayerStatsUpgradeUI>() == null)
             characterPanel.AddComponent<PlayerStatsUpgradeUI>();
+
+        TowerRun?.BindScene();
     }
 
     /// <summary>

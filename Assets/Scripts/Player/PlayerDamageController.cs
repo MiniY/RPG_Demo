@@ -15,6 +15,13 @@ public class PlayerDamageController : MonoBehaviour
     public bool IsDefeated => isDefeated; // 对外提供玩家是否已经被击败。
     public float CurrentHealth => playerStatsRuntime != null ? playerStatsRuntime.CurrentHealth : 0f; // 对外提供当前生命值。
 
+    // 完整恢复应用属性后重新同步击败状态，不发布伪造的受伤或死亡事件。
+    public void SynchronizeAfterRestore()
+    {
+        ResolvePlayerStats();
+        RefreshDefeatedState();
+    }
+
     // 初始化时尝试取得游戏会话中的玩家属性数据。
     private void Awake()
     {

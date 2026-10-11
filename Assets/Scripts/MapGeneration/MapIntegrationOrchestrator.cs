@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 public sealed class MapPendingGeneration
 {
@@ -122,8 +123,28 @@ public sealed class MapIntegrationOrchestrator
 
     internal bool PublishGameplayReady(Guid generationId)
     {
-        if (!context.IsCurrentActive(generationId) || context.Phase != MapLifecyclePhase.Ready || context.IsFailed) return false;
-        GameplayReady?.Invoke(generationId); return true;
+        if (!context.IsCurrentActive(generationId) || context.Phase != MapLifecyclePhase.Ready || context.IsFailed)
+            return false;
+
+        Delegate[] subscribers = GameplayReady?.GetInvocationList();
+
+        if (subscribers == null)
+            return true;
+
+        for (int i = 0; i < subscribers.Length; i++)
+        {
+            try
+            {
+                ((Action<Guid>)subscribers[i]).Invoke(generationId);
+            }
+            catch (Exception exception)
+            {
+                // GameplayReady is already committed. Notification failures are non-fatal.
+                Debug.LogException(exception);
+            }
+        }
+
+        return true;
     }
 
     private MapGenerationExecutionResult Fail(MapGenerationRequest request, MapGenerationAttempt attempt,

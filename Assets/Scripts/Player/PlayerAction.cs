@@ -26,6 +26,7 @@ public class PlayerAction : MonoBehaviour, IMapTransitionResettable
     private int attackDirectionIndex = 1; // 攻击方向编号：Up = 0，Down = 1，Left = 2，Right = 3。
     private bool isSpeedBoostActive; // 左 Ctrl 是否处于加速状态。
     private bool isControlLocked; // 受击击退等外部行为是否正在临时接管玩家控制。
+    private Coroutine pendingAttackCoroutine; // 等待命中帧的攻击协程。
 
     public event Action<int> OnAttackPerformed; // 玩家执行攻击时通知动画系统。
 
@@ -54,6 +55,7 @@ public class PlayerAction : MonoBehaviour, IMapTransitionResettable
     {
         UnbindInput();
         StopAllCoroutines();
+        pendingAttackCoroutine = null;
         isControlLocked = false;
         moveInput = Vector2.zero;
     }
@@ -234,7 +236,10 @@ public class PlayerAction : MonoBehaviour, IMapTransitionResettable
         BaseDamageable attackTarget = preparedAttackTarget;
 
         OnAttackPerformed?.Invoke(preparedDirectionIndex);
-        StartCoroutine(DealDamageAfterDelay(attackTarget));
+        if (pendingAttackCoroutine != null)
+            StopCoroutine(pendingAttackCoroutine);
+
+        pendingAttackCoroutine = StartCoroutine(DealDamageAfterDelay(attackTarget));
         preparedAttackTarget = null;
     }
 
@@ -258,6 +263,13 @@ public class PlayerAction : MonoBehaviour, IMapTransitionResettable
     {
         moveInput = Vector2.zero;
         preparedAttackTarget = null;
+
+        if (pendingAttackCoroutine != null)
+        {
+            StopCoroutine(pendingAttackCoroutine);
+            pendingAttackCoroutine = null;
+        }
+
         isControlLocked = false;
         ApplyControlState(false);
         gameInput?.CancelControlState();
@@ -275,6 +287,7 @@ public class PlayerAction : MonoBehaviour, IMapTransitionResettable
             yield return new WaitForSeconds(attackHitDelay);
 
         DealDamageToTarget(attackTarget);
+        pendingAttackCoroutine = null;
     }
 
     // 对指定可破坏对象造成伤害。

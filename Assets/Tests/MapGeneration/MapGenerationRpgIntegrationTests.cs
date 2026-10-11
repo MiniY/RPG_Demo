@@ -204,6 +204,7 @@ public class MapGenerationRpgIntegrationTests
                     "Plant 不得继续由 Transitional authored-offset adapter 定位。");
             }
 
+            DisableTowerRunFinalizers(integrationRoot);
             controller.GenerateMap();
             Assert.That(controller.LastGeneratedMap, Is.Not.Null, "主场景随机地图生成失败。");
             Assert.That(controller.LastGeneratedSimpleDecorations, Is.Not.Null,
@@ -565,6 +566,29 @@ public class MapGenerationRpgIntegrationTests
         Assert.That(renderer.DecorationCollisionTilemap.GetComponent<CompositeCollider2D>(),
             Is.Not.Null,
             "装饰碰撞层缺少 CompositeCollider2D。");
+    }
+
+    private static void DisableTowerRunFinalizers(GameObject runtimeRoot)
+    {
+        int disabled = 0;
+        MonoBehaviour[] behaviours = runtimeRoot.GetComponentsInChildren<MonoBehaviour>(true);
+
+        for (int i = 0; i < behaviours.Length; i++)
+        {
+            MonoBehaviour behaviour = behaviours[i];
+
+            if (behaviour == null ||
+                (behaviour.GetType().Name != "TowerRunRestoreFinalizer" &&
+                 behaviour.GetType().Name != "TowerFloorRuntimeController"))
+            {
+                continue;
+            }
+
+            behaviour.enabled = false;
+            disabled++;
+        }
+
+        Assert.That(disabled, Is.EqualTo(2));
     }
 
     /// <summary>

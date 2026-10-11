@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.TestTools;
 
 public sealed class MapIntegrationOrchestratorTests
 {
@@ -43,6 +45,38 @@ public sealed class MapIntegrationOrchestratorTests
         Assert.That(context.AttemptChain[0].Attempt.AttemptSeed, Is.EqualTo(12345));
         Assert.That(context.AttemptChain[0].Outcome, Is.EqualTo(MapAttemptOutcome.Succeeded));
         Assert.That(readyCount, Is.Zero);
+    }
+
+    [Test]
+    public void GameplayReadySubscriberFailureDoesNotInvalidateReadyOrSkipLaterSubscribers()
+    {
+        MapRuntimeContext context = InitializedContext();
+        MapIntegrationOrchestrator orchestrator = new MapIntegrationOrchestrator(context);
+        MapGenerationExecutionResult result = ExecuteSuccess(
+            orchestrator,
+            new MapGenerationRequest(Guid.NewGuid(), 7788));
+        SetContextPhase(context, MapLifecyclePhase.Ready);
+        int laterSubscriberCount = 0;
+        orchestrator.GameplayReady += _ =>
+            throw new InvalidOperationException("Injected GameplayReady observer failure.");
+        orchestrator.GameplayReady += _ => laterSubscriberCount++;
+        LogAssert.Expect(
+            LogType.Exception,
+            new Regex("Injected GameplayReady observer failure"));
+
+        System.Reflection.MethodInfo publish = typeof(MapIntegrationOrchestrator).GetMethod(
+            "PublishGameplayReady",
+            System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+        Assert.That(publish, Is.Not.Null);
+        bool published = (bool)publish.Invoke(
+            orchestrator,
+            new object[] { result.GenerationId.Value });
+
+        Assert.That(published, Is.True);
+        Assert.That(laterSubscriberCount, Is.EqualTo(1));
+        Assert.That(context.Phase, Is.EqualTo(MapLifecyclePhase.Ready));
+        Assert.That(context.IsReady, Is.True);
+        Assert.That(context.IsFailed, Is.False);
     }
 
     [Test]

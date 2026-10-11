@@ -75,6 +75,7 @@ public sealed class MapCompatibilityRetirementTests
                 gameplayReadyCount++;
                 readyGenerationId = generationId;
             };
+            DisableTowerRunFinalizers(runtimeRoot);
 
             controller.GenerateMap();
 
@@ -126,5 +127,28 @@ public sealed class MapCompatibilityRetirementTests
 
         Assert.Fail($"Scene {scene.path} is missing root object {objectName}.");
         return null;
+    }
+
+    private static void DisableTowerRunFinalizers(GameObject runtimeRoot)
+    {
+        int disabled = 0;
+        MonoBehaviour[] behaviours = runtimeRoot.GetComponentsInChildren<MonoBehaviour>(true);
+
+        for (int i = 0; i < behaviours.Length; i++)
+        {
+            MonoBehaviour behaviour = behaviours[i];
+
+            if (behaviour == null ||
+                (behaviour.GetType().Name != "TowerRunRestoreFinalizer" &&
+                 behaviour.GetType().Name != "TowerFloorRuntimeController"))
+            {
+                continue;
+            }
+
+            behaviour.enabled = false;
+            disabled++;
+        }
+
+        Assert.That(disabled, Is.EqualTo(2));
     }
 }

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using Cinemachine;
 using NUnit.Framework;
@@ -13,6 +14,7 @@ using UnityEngine.Tilemaps;
 /// </summary>
 public sealed class MapGenerationRpgPlayModeTests
 {
+    private string towerRunTestRoot;
     private const string Stage8ProfileId = "stage8-supplemental-v1";
     private const string Stage8ProfileApproval = "PendingUserApproval";
 
@@ -101,6 +103,25 @@ public sealed class MapGenerationRpgPlayModeTests
         new AcceptanceSeed("DeterministicSweep", int.MaxValue)
     };
 
+    [SetUp]
+    public void SetUpTowerRunIsolation()
+    {
+        towerRunTestRoot = Path.Combine(
+            Path.GetTempPath(),
+            "RPG_Demo-TowerRunTests",
+            System.Guid.NewGuid().ToString("N"));
+        TowerRunRuntimeEnvironment.ConfigureTestIsolation(towerRunTestRoot);
+    }
+
+    [TearDown]
+    public void TearDownTowerRunIsolation()
+    {
+        TowerRunRuntimeEnvironment.ResetOverrides();
+
+        if (Directory.Exists(towerRunTestRoot))
+            Directory.Delete(towerRunTestRoot, true);
+    }
+
     /// <summary>
     /// 进入 Main 场景并验证自动生成、Main 系统连接和重新生成。
     /// </summary>
@@ -109,6 +130,7 @@ public sealed class MapGenerationRpgPlayModeTests
     {
         yield return SceneManager.LoadSceneAsync("SampleScene", LoadSceneMode.Single);
         yield return null;
+        yield return BeginFreshTowerRun(disableTowerRunFinalizers: true);
 
         Scene scene = SceneManager.GetActiveScene();
         Assert.That(scene.path, Is.EqualTo("Assets/Scenes/SampleScene.unity"));
@@ -389,6 +411,7 @@ public sealed class MapGenerationRpgPlayModeTests
     {
         yield return SceneManager.LoadSceneAsync("SampleScene", LoadSceneMode.Single);
         yield return null;
+        yield return BeginFreshTowerRun(disableTowerRunFinalizers: true);
 
         Scene scene = SceneManager.GetActiveScene();
         GameObject legacyGrid = FindRootObject(scene, "Grid");
@@ -471,6 +494,7 @@ public sealed class MapGenerationRpgPlayModeTests
     {
         yield return SceneManager.LoadSceneAsync("SampleScene", LoadSceneMode.Single);
         yield return null;
+        yield return BeginFreshTowerRun(disableTowerRunFinalizers: true);
 
         Scene scene = SceneManager.GetActiveScene();
         GameObject legacyGrid = FindRootObject(scene, "Grid");
@@ -504,6 +528,7 @@ public sealed class MapGenerationRpgPlayModeTests
     {
         yield return SceneManager.LoadSceneAsync("SampleScene", LoadSceneMode.Single);
         yield return null;
+        yield return BeginFreshTowerRun(disableTowerRunFinalizers: true);
 
         Scene scene = SceneManager.GetActiveScene();
         GameObject legacyGrid = FindRootObject(scene, "Grid");
@@ -535,6 +560,7 @@ public sealed class MapGenerationRpgPlayModeTests
     {
         yield return SceneManager.LoadSceneAsync("SampleScene", LoadSceneMode.Single);
         yield return null;
+        yield return BeginFreshTowerRun(disableTowerRunFinalizers: true);
 
         Scene scene = SceneManager.GetActiveScene();
         GameObject legacyGrid = FindRootObject(scene, "Grid");
@@ -577,6 +603,7 @@ public sealed class MapGenerationRpgPlayModeTests
     {
         yield return SceneManager.LoadSceneAsync("SampleScene", LoadSceneMode.Single);
         yield return null;
+        yield return BeginFreshTowerRun(disableTowerRunFinalizers: true);
 
         Scene scene = SceneManager.GetActiveScene();
         GameObject legacyGrid = FindRootObject(scene, "Grid");
@@ -627,6 +654,7 @@ public sealed class MapGenerationRpgPlayModeTests
     {
         yield return SceneManager.LoadSceneAsync("SampleScene", LoadSceneMode.Single);
         yield return null;
+        yield return BeginFreshTowerRun(disableTowerRunFinalizers: true);
 
         Scene scene = SceneManager.GetActiveScene();
         GameObject legacyGrid = FindRootObject(scene, "Grid");
@@ -663,6 +691,7 @@ public sealed class MapGenerationRpgPlayModeTests
     {
         yield return SceneManager.LoadSceneAsync("SampleScene", LoadSceneMode.Single);
         yield return null;
+        yield return BeginFreshTowerRun(disableTowerRunFinalizers: true);
 
         Scene scene = SceneManager.GetActiveScene();
         GameObject legacyGrid = FindRootObject(scene, "Grid");
@@ -707,6 +736,7 @@ public sealed class MapGenerationRpgPlayModeTests
     {
         yield return SceneManager.LoadSceneAsync("SampleScene", LoadSceneMode.Single);
         yield return null;
+        yield return BeginFreshTowerRun(disableTowerRunFinalizers: true);
 
         Scene scene = SceneManager.GetActiveScene();
         GameObject legacyGrid = FindRootObject(scene, "Grid");
@@ -749,6 +779,7 @@ public sealed class MapGenerationRpgPlayModeTests
     {
         yield return SceneManager.LoadSceneAsync("SampleScene", LoadSceneMode.Single);
         yield return null;
+        yield return BeginFreshTowerRun(disableTowerRunFinalizers: true);
 
         Scene scene = SceneManager.GetActiveScene();
         GameObject legacyGrid = FindRootObject(scene, "Grid");
@@ -782,6 +813,56 @@ public sealed class MapGenerationRpgPlayModeTests
         Assert.That(legacyGrid.activeInHierarchy, Is.True);
 
         Object.Destroy(bootstrapHost);
+    }
+
+    private static IEnumerator BeginFreshTowerRun(bool disableTowerRunFinalizers)
+    {
+        MonoBehaviour coordinator = null;
+        MonoBehaviour[] behaviours = Resources.FindObjectsOfTypeAll<MonoBehaviour>();
+
+        for (int i = 0; i < behaviours.Length; i++)
+        {
+            if (behaviours[i] != null &&
+                behaviours[i].GetType().Name == "TowerRunCoordinator")
+            {
+                coordinator = behaviours[i];
+                break;
+            }
+        }
+
+        Assert.That(coordinator, Is.Not.Null);
+        MethodInfo returnToStartup = coordinator.GetType().GetMethod("ReturnToStartupChoice");
+        MethodInfo beginNewRun = coordinator.GetType().GetMethod("BeginNewRun");
+        PropertyInfo state = coordinator.GetType().GetProperty("State");
+        Assert.That(returnToStartup, Is.Not.Null);
+        Assert.That(beginNewRun, Is.Not.Null);
+        Assert.That(state, Is.Not.Null);
+        returnToStartup.Invoke(coordinator, null);
+        beginNewRun.Invoke(coordinator, null);
+        yield return null;
+        Assert.That(state.GetValue(coordinator).ToString(), Is.EqualTo("Playing"));
+
+        if (!disableTowerRunFinalizers)
+            yield break;
+
+        int disabled = 0;
+
+        for (int i = 0; i < behaviours.Length; i++)
+        {
+            MonoBehaviour behaviour = behaviours[i];
+
+            if (behaviour == null ||
+                (behaviour.GetType().Name != "TowerRunRestoreFinalizer" &&
+                 behaviour.GetType().Name != "TowerFloorRuntimeController"))
+            {
+                continue;
+            }
+
+            behaviour.enabled = false;
+            disabled++;
+        }
+
+        Assert.That(disabled, Is.EqualTo(2));
     }
 
     private static string RunAcceptanceSeed(

@@ -12,6 +12,26 @@ public sealed class BlackHolePortalPlayModeTests
     private const string PrefabPath = "Assets/Effects/BlackHolePortal/Prefabs/VerticalBlackHolePortal.prefab";
     private const int CaptureWidth = 1280;
     private const int CaptureHeight = 720;
+    private string towerRunTestRoot;
+
+    [SetUp]
+    public void SetUpTowerRunIsolation()
+    {
+        towerRunTestRoot = Path.Combine(
+            Path.GetTempPath(),
+            "RPG_Demo-BlackHolePortalTests",
+            System.Guid.NewGuid().ToString("N"));
+        TowerRunRuntimeEnvironment.ConfigureTestIsolation(towerRunTestRoot);
+    }
+
+    [TearDown]
+    public void TearDownTowerRunIsolation()
+    {
+        TowerRunRuntimeEnvironment.ResetOverrides();
+
+        if (Directory.Exists(towerRunTestRoot))
+            Directory.Delete(towerRunTestRoot, true);
+    }
 
     [UnityTest]
     public IEnumerator Portal_RendersInGameScene_AndManagesRuntimeState()
@@ -25,6 +45,7 @@ public sealed class BlackHolePortalPlayModeTests
 
         yield return null;
         yield return null;
+        yield return BeginFreshTowerRun();
 
         Camera gameCamera = Camera.main;
         Assert.That(gameCamera, Is.Not.Null, "SampleScene does not have a MainCamera.");
@@ -140,6 +161,37 @@ public sealed class BlackHolePortalPlayModeTests
 
         Object.Destroy(portalObject);
         yield return null;
+    }
+
+    private static IEnumerator BeginFreshTowerRun()
+    {
+        MonoBehaviour coordinator = null;
+        MonoBehaviour[] behaviours = Resources.FindObjectsOfTypeAll<MonoBehaviour>();
+
+        for (int i = 0; i < behaviours.Length; i++)
+        {
+            if (behaviours[i] != null && behaviours[i].gameObject.scene.IsValid() &&
+                behaviours[i].GetType().Name == "TowerRunCoordinator")
+            {
+                coordinator = behaviours[i];
+                break;
+            }
+        }
+
+        Assert.That(coordinator, Is.Not.Null);
+        System.Reflection.MethodInfo returnToStartup =
+            coordinator.GetType().GetMethod("ReturnToStartupChoice");
+        System.Reflection.MethodInfo beginNewRun =
+            coordinator.GetType().GetMethod("BeginNewRun");
+        System.Reflection.PropertyInfo state = coordinator.GetType().GetProperty("State");
+        Assert.That(returnToStartup, Is.Not.Null);
+        Assert.That(beginNewRun, Is.Not.Null);
+        Assert.That(state, Is.Not.Null);
+        returnToStartup.Invoke(coordinator, null);
+        beginNewRun.Invoke(coordinator, null);
+        yield return null;
+        Assert.That(state.GetValue(coordinator).ToString(), Is.EqualTo("Playing"));
+        Assert.That(Time.timeScale, Is.EqualTo(1f));
     }
 
     private static Texture2D CaptureAgainstBrightBackground(GameObject prefab, string outputDirectory)

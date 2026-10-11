@@ -128,6 +128,36 @@ public sealed class MapRuntimeFoundationTests
     }
 
     [Test]
+    public void OperationalFailureDoesNotInvalidateSuccessfulStartupConfiguration()
+    {
+        MapRuntimeBootstrap bootstrap = CreateBootstrap(
+            MapRuntimeMode.RandomGenerated,
+            randomActive: true,
+            legacyActive: false);
+        bootstrap.Initialize();
+        MapRuntimeContext context = bootstrap.Context;
+        MethodInfo recordFailure = typeof(MapRuntimeContext).GetMethod(
+            "RecordFailure",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.That(recordFailure, Is.Not.Null);
+
+        recordFailure.Invoke(context, new object[]
+        {
+            new MapFailureDiagnostic(
+                MapRuntimeMode.RandomGenerated,
+                Guid.NewGuid(),
+                MapLifecyclePhase.Planning,
+                MapFailureCategory.Planning,
+                "InjectedOperationalFailure",
+                "A later generation request failed.")
+        });
+
+        Assert.That(context.IsFailed, Is.True);
+        Assert.That(bootstrap.CanRunRandomGeneration, Is.True,
+            "A later request must be able to enter BeginRequest and clear an operational failure.");
+    }
+
+    [Test]
     public void RuntimeAuthorityConflictFailsWithoutSwitchingModeOrRepairingAuthorities()
     {
         MapRuntimeBootstrap bootstrap = CreateBootstrap(

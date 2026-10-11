@@ -168,6 +168,11 @@ public class ShopTradeController : MonoBehaviour
     public RewardSO GoldReward => goldReward;
 
     /// <summary>
+    /// 当前商店的稳定目录 ID；未配置时为空。
+    /// </summary>
+    public string CatalogId => shopCatalog == null ? string.Empty : shopCatalog.CatalogId;
+
+    /// <summary>
     /// 启用时查找背包、订阅背包变化，并加载持久化库存。
     /// </summary>
     private void OnEnable()
@@ -674,6 +679,211 @@ public class ShopTradeController : MonoBehaviour
                 });
             }
         }
+    }
+
+    /// <summary>
+    /// 捕获当前目录的正式检查点库存，不在运行时补造 CatalogId 或 ProductId。
+    /// </summary>
+    internal bool TryCaptureCheckpointShop(TowerRunShopRecord destination, out string message)
+    {
+        if (destination == null)
+        {
+            message = "商店检查点目标为空。";
+            return false;
+        }
+
+        if (shopCatalog == null || string.IsNullOrWhiteSpace(shopCatalog.CatalogId))
+        {
+            message = "商店缺少稳定 CatalogId。";
+            return false;
+        }
+
+        InitializeRuntimeStocksIfNeeded();
+        HashSet<string> productIds = new HashSet<string>(StringComparer.Ordinal);
+        List<TowerRunShopStockRecord> captured = new List<TowerRunShopStockRecord>();
+        IReadOnlyList<ShopCatalogCategory> categories = shopCatalog.Categories;
+
+        for (int i = 0; i < categories.Count; i++)
+        {
+            ShopCatalogCategory category = categories[i];
+
+            if (category == null)
+                continue;
+
+            IReadOnlyList<ShopCatalogProduct> products = category.Products;
+
+            for (int j = 0; j < products.Count; j++)
+            {
+                ShopCatalogProduct product = products[j];
+
+                if (product == null || product.InfiniteStock)
+                    continue;
+
+                if (string.IsNullOrWhiteSpace(product.ProductId) || !productIds.Add(product.ProductId))
+                {
+                    message = "商店包含缺失或重复的稳定 ProductId。";
+                    return false;
+                }
+
+                captured.Add(new TowerRunShopStockRecord
+                {
+                    productId = product.ProductId,
+                    quantity = GetCurrentStock(product)
+                });
+            }
+        }
+
+        captured.Sort((left, right) => string.CompareOrdinal(left.productId, right.productId));
+        destination.catalogId = shopCatalog.CatalogId;
+        destination.productStocks = captured;
+        message = string.Empty;
+        return true;
+    }
+
+    /// <summary>
+    /// 原子应用当前目录的正式检查点库存；未知或缺失商品会使恢复失败。
+    /// </summary>
+    internal bool TryApplyCheckpointShop(
+        TowerRunShopRecord source,
+        bool notify,
+        out string message)
+    {
+        if (source == null || shopCatalog == null ||
+            !string.Equals(source.catalogId, shopCatalog.CatalogId, StringComparison.Ordinal))
+        {
+            message = "商店检查点与当前 CatalogId 不匹配。";
+            return false;
+        }
+
+        Dictionary<string, ShopCatalogProduct> productsById =
+            new Dictionary<string, ShopCatalogProduct>(StringComparer.Ordinal);
+        IReadOnlyList<ShopCatalogCategory> categories = shopCatalog.Categories;
+
+        for (int i = 0; i < categories.Count; i++)
+        {
+            ShopCatalogCategory category = categories[i];
+
+            if (category == null)
+                continue;
+
+            IReadOnlyList<ShopCatalogProduct> products = category.Products;
+
+            for (int j = 0; j < products.Count; j++)
+            {
+                ShopCatalogProduct product = products[j];
+
+                if (product == null || product.InfiniteStock)
+                    continue;
+
+                if (string.IsNullOrWhiteSpace(product.ProductId) ||
+                    productsById.ContainsKey(product.ProductId))
+                {
+                    message = "当前商店包含缺失或重复的稳定 ProductId。";
+                    return false;
+                }
+
+                productsById.Add(product.ProductId, product);
+            }
+        }
+
+        Dictionary<ShopCatalogProduct, int> prepared =
+            new Dictionary<ShopCatalogProduct, int>();
+
+        if (source.productStocks == null || source.productStocks.Count != productsById.Count)
+        {
+            message = "商店检查点没有完整覆盖当前目录库存。";
+            return false;
+        }
+
+        for (int i = 0; i < source.productStocks.Count; i++)
+        {
+            TowerRunShopStockRecord stock = source.productStocks[i];
+
+            if (stock == null ||
+                !productsById.TryGetValue(stock.productId, out ShopCatalogProduct product) ||
+                prepared.ContainsKey(product) ||
+                stock.quantity < 0L ||
+                stock.quantity > product.InitialStock)
+            {
+                message = "商店检查点包含未知、重复或无效的商品库存。";
+                return false;
+            }
+
+            prepared.Add(product, (int)stock.quantity);
+        }
+
+        runtimeStocks.Clear();
+
+        foreach (KeyValuePair<ShopCatalogProduct, int> pair in prepared)
+            runtimeStocks.Add(pair.Key, pair.Value);
+
+        hasInitializedRuntimeStocks = true;
+
+        if (notify)
+            OnTradeStateChanged?.Invoke();
+
+        message = string.Empty;
+        return true;
+    }
+
+    /// <summary>
+    /// 对检查点中尚不存在的新目录按当前配置基线初始化，避免沿用旧实例的运行库存。
+    /// </summary>
+    internal bool TryInitializeCheckpointShopFromCatalog(bool notify, out string message)
+    {
+        if (shopCatalog == null || string.IsNullOrWhiteSpace(shopCatalog.CatalogId))
+        {
+            message = "商店缺少稳定 CatalogId。";
+            return false;
+        }
+
+        TowerRunShopRecord baseline = new TowerRunShopRecord
+        {
+            catalogId = shopCatalog.CatalogId
+        };
+        HashSet<string> productIds = new HashSet<string>(StringComparer.Ordinal);
+        IReadOnlyList<ShopCatalogCategory> categories = shopCatalog.Categories;
+
+        for (int i = 0; i < categories.Count; i++)
+        {
+            ShopCatalogCategory category = categories[i];
+
+            if (category == null)
+                continue;
+
+            IReadOnlyList<ShopCatalogProduct> products = category.Products;
+
+            for (int j = 0; j < products.Count; j++)
+            {
+                ShopCatalogProduct product = products[j];
+
+                if (product == null || product.InfiniteStock)
+                    continue;
+
+                if (string.IsNullOrWhiteSpace(product.ProductId) ||
+                    !productIds.Add(product.ProductId))
+                {
+                    message = "当前商店包含缺失或重复的稳定 ProductId。";
+                    return false;
+                }
+
+                baseline.productStocks.Add(new TowerRunShopStockRecord
+                {
+                    productId = product.ProductId,
+                    quantity = Mathf.Max(0, product.InitialStock)
+                });
+            }
+        }
+
+        return TryApplyCheckpointShop(baseline, notify, out message);
+    }
+
+    /// <summary>
+    /// 完整恢复成功后统一通知商店界面刷新。
+    /// </summary>
+    internal void NotifyCheckpointApplied()
+    {
+        OnTradeStateChanged?.Invoke();
     }
 
     /// <summary>

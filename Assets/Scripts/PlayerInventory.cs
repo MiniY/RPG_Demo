@@ -483,6 +483,161 @@ public class PlayerInventory : MonoBehaviour
     }
 
     /// <summary>
+    /// 捕获正式检查点使用的纯数据背包。缺失稳定 ID 时拒绝发布，不在运行时生成身份。
+    /// </summary>
+    internal bool TryCaptureCheckpointInventory(
+        List<TowerRunInventoryEntry> destination,
+        out string message)
+    {
+        message = string.Empty;
+
+        if (destination == null)
+        {
+            message = "背包检查点目标集合为空。";
+            return false;
+        }
+
+        EnsureInitialized();
+        Dictionary<string, long> amounts = new Dictionary<string, long>(StringComparer.Ordinal);
+
+        for (int i = 0; i < unresolvedSaveEntries.Count; i++)
+        {
+            GameSaveInventoryEntry entry = unresolvedSaveEntries[i];
+
+            if (!TryAddCheckpointAmount(amounts, entry?.rewardId, entry?.amount ?? 0L, out message))
+                return false;
+        }
+
+        for (int i = 0; i < itemStacks.Count; i++)
+        {
+            InventoryItemStack stack = itemStacks[i];
+
+            if (stack == null || stack.Amount <= 0)
+                continue;
+
+            if (stack.Reward == null ||
+                !TryAddCheckpointAmount(amounts, stack.Reward.RewardId, stack.Amount, out message))
+            {
+                message = stack?.Reward == null ? "背包条目缺少奖励配置。" : message;
+                return false;
+            }
+        }
+
+        destination.Clear();
+        List<string> rewardIds = new List<string>(amounts.Keys);
+        rewardIds.Sort(StringComparer.Ordinal);
+
+        for (int i = 0; i < rewardIds.Count; i++)
+        {
+            string rewardId = rewardIds[i];
+            destination.Add(new TowerRunInventoryEntry
+            {
+                rewardId = rewardId,
+                amount = amounts[rewardId]
+            });
+        }
+
+        message = string.Empty;
+        return true;
+    }
+
+    /// <summary>
+    /// 原子应用正式检查点背包。无法解析的奖励按纯 ID 保留，不会静默丢失。
+    /// </summary>
+    internal bool TryApplyCheckpointInventory(
+        IReadOnlyList<TowerRunInventoryEntry> source,
+        bool notify,
+        out string message)
+    {
+        message = string.Empty;
+        Dictionary<string, long> amounts = new Dictionary<string, long>(StringComparer.Ordinal);
+
+        if (source != null)
+        {
+            for (int i = 0; i < source.Count; i++)
+            {
+                TowerRunInventoryEntry entry = source[i];
+
+                if (entry == null ||
+                    !TryAddCheckpointAmount(amounts, entry.rewardId, entry.amount, out message))
+                {
+                    message = entry == null ? "背包检查点包含空条目。" : message;
+                    return false;
+                }
+            }
+        }
+
+        List<InventoryItemStack> resolved = new List<InventoryItemStack>();
+        List<GameSaveInventoryEntry> unresolved = new List<GameSaveInventoryEntry>();
+
+        foreach (KeyValuePair<string, long> pair in amounts)
+        {
+            RewardSO reward = rewardRegistry == null ? null : rewardRegistry.FindById(pair.Key);
+
+            if (reward == null)
+            {
+                unresolved.Add(new GameSaveInventoryEntry
+                {
+                    rewardId = pair.Key,
+                    amount = pair.Value
+                });
+                continue;
+            }
+
+            resolved.Add(new InventoryItemStack(reward, (int)pair.Value));
+        }
+
+        itemStacks.Clear();
+        itemStacks.AddRange(resolved);
+        unresolvedSaveEntries.Clear();
+        unresolvedSaveEntries.AddRange(unresolved);
+        isInitialized = true;
+
+        if (notify)
+            NotifyInventoryChanged();
+
+        message = string.Empty;
+        return true;
+    }
+
+    private static bool TryAddCheckpointAmount(
+        Dictionary<string, long> amounts,
+        string rewardId,
+        long amount,
+        out string message)
+    {
+        if (string.IsNullOrWhiteSpace(rewardId))
+        {
+            message = "背包条目缺少稳定 RewardId。";
+            return false;
+        }
+
+        if (amount <= 0L || amount > GameSaveService.MaxQuantity)
+        {
+            message = $"背包条目 {rewardId} 的数量无效。";
+            return false;
+        }
+
+        if (amounts.TryGetValue(rewardId, out long current))
+        {
+            if (current > GameSaveService.MaxQuantity - amount)
+            {
+                message = $"背包条目 {rewardId} 的数量溢出。";
+                return false;
+            }
+
+            amounts[rewardId] = current + amount;
+        }
+        else
+        {
+            amounts.Add(rewardId, amount);
+        }
+
+        message = string.Empty;
+        return true;
+    }
+
+    /// <summary>
     /// 初始化背包引用并从统一存档恢复数量。
     /// </summary>
     private void InitializeFromSave()
@@ -497,8 +652,9 @@ public class PlayerInventory : MonoBehaviour
         unresolvedSaveEntries.Clear();
 
         GameSaveData loadedData = GameSaveService.GetOrCreateData(); // 统一存档数据。
+        bool hasRuntimeData = GameSaveService.HasRuntimeData;
 
-        if (GameSaveService.HasLoadedExistingSave && rewardRegistry != null)
+        if (hasRuntimeData && rewardRegistry != null)
         {
             LoadFromSaveData(loadedData);
         }
@@ -506,7 +662,7 @@ public class PlayerInventory : MonoBehaviour
         {
             NormalizeRuntimeStacks();
 
-            if (!GameSaveService.HasLoadedExistingSave &&
+            if (!hasRuntimeData &&
                 goldReward != null &&
                 GetItemAmountLong(goldReward) <= 0 &&
                 newGameStartingGold > 0)
@@ -517,8 +673,8 @@ public class PlayerInventory : MonoBehaviour
             GameSaveData newCandidate = GameSaveService.Clone(loadedData);
             WriteToSaveData(newCandidate);
 
-            if (!GameSaveService.HasLoadedExistingSave && !GameSaveService.TrySave(newCandidate))
-                Debug.LogWarning("新游戏初始数据保存失败，本次运行仍会继续使用内存数据。", this);
+            if (!hasRuntimeData && !GameSaveService.TrySave(newCandidate))
+                Debug.LogWarning("新游戏初始数据无法提交到内存后端。", this);
         }
 
         isInitialized = true;

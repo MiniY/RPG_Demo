@@ -97,6 +97,49 @@
 - 本地编译检查通过。
 - 本条记录随本次提交一起推送到远程仓库。
 
+## 2026-10-12 — Tower Run MVP 与设置 UI v4 → v8：技术导读（设置视觉已验收，MVP 待最终验收）
+
+> 本节依据 `feat/tower-run-save-mvp@7da9a7dc80733bdb35c6145bc244496589fa00e0` 的源码、Git 提交和 `.codex/TestResults/` 原始证据增量记录。设置 UI v4 当时仍是**未提交工作树改动**，尚未获得用户最终视觉确认；该阶段已推进至 v8 并获得视觉验收。以下不是整个 Tower Run MVP 的最终验收、发布或 PR 就绪声明。Q1—Q31 的原始决策不在此重写，详见本地 `.codex/handoffs/player-death-run-save-q19.md`。
+
+### 需求、方案与边界
+
+- 目标是闭合“新手关卡 → 第 1 层 → 第 2 层”的最小可玩链：打败本 generation 的全部目标 Monster 才解锁黑洞出口及小地图标记，走近不自动换层，玩家在范围内主动按 `F`；死亡可从三个正式槽位恢复或开始新 Run。
+- 保存的是**本层入口检查点**，不是随时保存当前战斗状态。进入楼层后的生命、物品或怪物变化不写回该入口候选；离层时先完整冻结可携带的玩家/背包/商店状态，再开始下一层操作。这使重试和恢复有明确边界。
+- 旧 `save.json` 保留但退出本 MVP 的正式保存链；三个新槽位使用 `Application.persistentDataPath/tower-run-slots`。音频偏好使用 `PlayerPrefs`。测试在初始化正式场景前由 `TowerRunRuntimeEnvironment.ConfigureTestIsolation` 改指本地隔离目录/偏好后端，不能拿测试目录或隔离 Player 的结果替代真实正式槽位观察。
+- `TowerRunCoordinator` 用操作 ID、generation ID、staged record、状态和可组合门禁约束新 Run、恢复与换层；失败时保持门禁及可重试的 staged 数据，成功完成所有 finalizer 并收到 `GameplayReady` 后才把 staged 数据发布为当前 Run、入口候选并放开玩法。地图静态基线签名用于恢复时核对生成结果；`ConfigurationIdentity` 是显式维护的兼容身份，不是受保护地图配置资产的内容哈希。
+
+### 运行时对象、调用与数据流
+
+1. `Assets/Scenes/SampleScene.unity` 放置主 HUD `Canvas`、`SettingButton`，并引用 `Assets/Prefabs/MapGeneration/RandomMapRuntime.prefab`。`GameSession.BindSceneObjects` 调用 `TowerRunCoordinator.BindScene`；协调者取得地图、玩家、背包、商店、受伤组件，订阅 `GameplayReady`、出口与死亡事件，再由 `TowerRunUiController.EnsureForScene` 绑定 UI。主 Canvas 与地图运行 prefab 应在 Unity Inspector 中结合序列化引用查看；不要把动态设置节点误认为 Scene 中预先放好的静态 UI。
+2. `Assets/Scripts/TowerRun/TowerRunCheckpointRecord.cs` 定义 Run ID、楼层、生成请求/静态签名、属性、背包和商店快照及 `DeepClone`。`TowerRunRuntimeStateBridge.TryCapture/TryApply` 将运行状态与记录互转；应用失败不得发布可玩状态。`TowerRunCoordinator.BeginNewRun/BeginRestoreSlot/HandleExitUseRequested` 分别产生新基线、读取槽位深拷贝、或冻结下一层携带数据，然后由 `BeginOperation` 发出 `MapGenerationRequest`。
+3. 地图生成后，`TowerRunRestoreFinalizer.TryFinalizeBeforeReady` 转交协调者核对 generation/seed/attempt/静态签名并应用玩家状态；`TowerFloorRuntimeController.TryFinalizeBeforeReady` 从当前 registry 只收集 role 为目标 Monster 的活动 `BaseDamageable`，绑定死亡事件、放置黑洞 prefab、锁定小地图出口。`GameplayReady` 后才进入 Playing。非目标对象不计入目标集合；目标为空则拒绝就绪。
+4. 目标全败后，`TowerFloorRuntimeController.HandleTargetDefeated` 同步解锁世界出口与小地图标记。`HandleInteractPressed` 检查门禁、玩家存活、距离及当前 generation；协调者先捕获离层数据，`TryAcceptExitTransition` 再将出口置为 Transitioning 并隐藏，避免同一出口反复接受换层。黑洞视觉资源在 `Assets/Effects/BlackHolePortal/Prefabs/VerticalBlackHolePortal.prefab`、`Scripts/BlackHolePortalEffect.cs`、相关 shader/material；视觉 prefab 本身不拥有换层事务。
+5. `Assets/Scripts/TowerRun/TowerRunSlotStore.cs` 的 `ReadSlot/TryCommit` 分类空、有效、损坏、不兼容、不可用；写入候选先经兼容检查、临时文件回读验证，再移动或替换正式槽，最后回读核验。覆盖时使用读取时的 confirmation token 防止在确认期间无声替换已变化的记录；结果不确定时返回需核验状态，不把内存事务成功伪报为正式磁盘保存。`Assets/Scripts/TowerRun/LegacySaveDetector.cs` 只检测旧档，不迁移或删除它。
+6. `Assets/Scripts/TowerRunGateHub.cs` / `TowerRunGate.cs` 管理 startup、death、operation、settings 等独立 owner 的玩法和世界暂停 lease。死亡时协调者重置旧攻击/受击过渡状态并关闭背包/商店；恢复最终化还会同步玩家受伤状态。任何一个 owner 仍持有门禁时，另一个 UI 的关闭都不能提前解除暂停。
+
+### 小地图迷雾缺陷：实际原因而非推测
+
+`Assets/Scripts/MapGeneration/MapMinimapController.cs` 在每次 `RenderMap` 时创建新的 `MapExplorationState` 并重置 fog `Texture2D` 像素。曾出现“第三次死亡后开始新 Run，旧死亡地点仍被揭开”的真实人工失败；定向探针发现 `MapGenerated` 回调执行时玩家仍在上一地图格 `(62,62)`，之后 `PlayerSpawnService.TrySpawn` 才把玩家移动到新出生格 `(32,32)`。旧代码在重置迷雾的回调里立即按旧位置揭示 37 格，于是视觉上像继承旧探索状态。`7da9a7d` 删除这次过早揭雾，改由正常 `LateUpdate` 在出生重定位后按玩家当前位置揭示；同 Run 移动仍继续探索，每次生成仍按入口世界规则重建探索，而非建立跨 Run 迷雾持久化。修复前定向用例 0/1、修复后 1/1，扩展流程 4/4、Unity 正常退出；修复后的独立 Player 新 Run 迷雾由用户实际观察 PASS。证据见 `.codex/TestResults/tower-fog-sentinel-investigation-2026-10-12.md`、`tower-fog-flow-regression.xml` 与 `tower-fog-isolated-player-build-7da9a7d.md`。同一时期 H0033 弹窗的进程归属/根因未被证实，不能归因于 Unity 或游戏断言。
+
+### 设置、音频与“古卷账簿”v4 → v8（v8 视觉已验收）
+
+- `Assets/Scripts/UI/TowerRunUiController.cs` 是正式 Player 使用的**运行时构建者**。`Awake → BuildUi` 在 HUD Canvas 上创建流程覆盖层、设置木框/纸面、音频页、存档页、三槽卡片、覆盖确认弹窗和楼层标签；`HookExistingSettingsButton` 将现有 HUD 按钮连到与 Esc 同一窗口。`Update` 对覆盖确认、设置、背包、商店实施关闭优先级。`OpenSettings/CloseSettings` 获取/释放 settings 门禁并停止试听，未复制保存业务系统。
+- `Assets/Scripts/UI/TowerRunUiSkin.cs` 是小型 Scene-owned 视觉配置：八个 Sprite 字段及少量墨色、按钮/切片应用函数。`SampleScene.unity` 的**主 Canvas** 序列化这些引用；`EnsureForScene` 优先找带 `TowerRunUiSkin` 的名为 `Canvas` 的 HUD，防止误将窗口建到小地图动态 Canvas 上。木框 `WoodTable_Slots`、纸面 `Carved_9Slides`、横向卡片 `Carved_3Slides`、标题 `Banner_Horizontal`、选中页签 `Ribbon_Blue_3Slides`、普通/覆盖/禁用的蓝/红/灰按钮来自既有 TinySwords 素材。卡片采用较矮的 `Carved_3Slides`，不是压扁九宫格纸面。
+- 八张 Sprite `.meta` 为 Point 过滤，并按实际 Sprite border 设置木框 32、纸面 48、卡片左右 48、页签/按钮左右 64 像素（完整 L/B/R/T 见 `.codex/TestResults/settings-ui-visual-v4-20261012.md`）。`TowerRunUiSkin.ApplySprite` 仅在 border 非零时使用 `Image.Type.Sliced`，否则保留 Simple；标题小横幅保纵横比。样式仍回退到纯色，避免引用失效时窗口完全不可见。没有迁移 TMP；沿用 Unity 2022.3 可用的 `LegacyRuntime.ttf`，这也修复了早先 `Arial.ttf` 在该版本抛异常的实际缺陷。
+- `ShowAudioPage/ShowSavePage` 只切换页签内容；`BeginSaveRequest/SelectSaveSlot/CommitSlot` 调用协调者现有保存接口，`ConfirmOverwrite/CancelOverwrite` 处理弹窗。音量/静音经 `TowerRunRuntimeEnvironment.Preferences` 保存，`ApplyAudio` 设置 `AudioListener.volume`；`PlayPreviewSound` 用独立 `AudioSource` 播放短合成音。存档页 `ScrollRect + RectMask2D` 包住可增长的消息和卡片，关闭按钮留在固定布局区；`ResizeSettingsFrame` 按 Canvas 尺寸限制外框。
+- v4 的真实隔离 Player 截图、素材映射与 1280×720/1920×1080 检查见 `.codex/TestResults/settings-ui-visual-v4-20261012.md`。最终流程回归 `settings-ui-v4-flow-regression.xml` 为 5/5 PASS、Unity exit 0，独立 v4 Player 构建 exit 0。该结果证明实现与两种实际尺寸的初步画面，但**当时用户尚未最终批准 v4 视觉，也未授权提交 UI**；极端比例/更小窗口未执行。不要把早期概念图当正式渲染截图。
+- 用户随后批准 A—F 最小收口：保留古卷账簿风格和全局 `CanvasScaler`，将音频控件收成居中的紧凑组并为滑块手柄、静音框加入像素风内芯；标题装饰缩到 88×84；覆盖弹窗扩为最多 720×480、标题 30、正文/按钮 22，并以 0.82 遮罩和独立 `CanvasGroup` 阻断底层交互。存档提示在最低宽度显式分行，避免中文句号孤立成行。
+- 槽位时间仅在 UI 层经严格 ISO 8601 `"O"` 解析后转换为玩家本机 `yyyy-MM-dd HH:mm`；解析失败显示“保存时间未知”。存档内 `savedAtUtc`、confirmation token、覆盖事务、并发保护和格式均未改变。最终 `TowerRunFlowPlayModeTests` 6/6 PASS、Unity exit 0；取消覆盖前后隔离槽位文件 SHA-256 相同。
+- v6 独立 Player 构建成功，并在真实客户端 `1024×576`、`1280×720`、`1920×1080` 各采集音频页、三槽页和覆盖弹窗，共 9 张截图；最小分辨率下文字、按钮与三个槽位完整显示，底层“关闭”位置在弹窗开启时不可操作，取消后恢复。完整证据见 `.codex/TestResults/settings-ui-v6-visual-closure-20261012.md`。**在 v6 阶段，用户最终视觉确认与提交授权尚未收到**，因此当时的工作树继续保持未提交。
+- v6 美术方向获认可后，用户只要求文字可读性收口。v7 将主/次墨色收紧到 `#30231B` / `#4A3629`，选中页签改为 `#FFF3DB`；设置标题由 34 调为 38，其他关键设置文字由 22 调为 24，并使用现有 dynamic `LegacyRuntime.ttf` 的 `Bold`。标题、页签、按钮与槽位仅增加一个 `(1,-1)`、约 35% Alpha 的单向 Shadow，不使用 Outline，也未替换字体或迁移 TMP。新增可读性用例先在 v6 上 0/1 FAIL，修正后 1/1 PASS；最终 `TowerRunFlowPlayModeTests` 7/7 PASS，v7 Player 构建成功。真实 Player 检查覆盖 1024×576 音频/存档/弹窗和 1920×1080 存档页，未见新增裁切、遮挡、溢出或按钮交互回归；证据见 `.codex/TestResults/settings-ui-v7-text-readability-20261012.md`。**在 v7 阶段，仍待用户最终视觉确认，未获提交授权。**
+- 用户补充指出 v6/v7 的“音频”“存档”“试听”“关闭”虽然几何居中，实际字形视觉上仍偏下。定位确认这些 Text 已为 `MiddleCenter`、全拉伸 Anchor、中心 Pivot 和零 offset；偏差来自 `LegacyRuntime.ttf` 行框/基线与中文字形墨迹边界不重合，并叠加 Tiny Swords 按钮下沿和 Ribbon 尾部的不对称视觉重量。v8 只为这四个短标签引入集中常量 `ShortButtonLabelVisualOffsetY = 3f`，沿 Unity UI 正 Y 上移，按钮 Sprite、父 RectTransform、尺寸、位置、点击范围、事件和全部长文字布局不变。新用例先在 v7 上 0/1 FAIL，修正后 1/1 PASS；强化后逐一触发四个按钮 Hover、切换页签并确认长按钮仍为零偏移。最终 `TowerRunFlowPlayModeTests` 8/8 PASS。独立 v8 Player 与真实帧采集 Player 均构建成功；Standalone 截图覆盖 1024×576、1280×720、1920×1080 的音频/试听 Hover/存档/覆盖弹窗，未见文字跳动、裁切、遮挡或异常换行。证据见 `.codex/TestResults/settings-ui-v8-short-button-optical-center-20261012.md`。**当前 `VISUAL_ACCEPTANCE = PASS WITH MINOR ISSUES`：用户已接受 v8 作为 RPG_Demo 设置界面的正式 MVP 视觉版本，文字可读性与短按钮视觉居中已获确认；1024×576 下部分长文本略显粗重，列为非阻断美术改进项。本轮设置 UI 视觉改造正式收口，不继续迭代；已有自动化与实际 Player 验收结果继续有效。整体 Tower Run MVP 尚未通过最终审核，`READY_FOR_PR_REVIEW = NO`。**
+
+### 验证、版本与仍待收口
+
+- 可追溯本地提交：`c13625d` 出口净空/小地图门禁；`2d3a1fe` 黑洞视觉；`5adfb7f` HUD 场景基线；`5e86436` 检查点/三槽；`ece3074` Run 生命周期/UI；`146ab53` 恢复/爬塔测试；`c4cb850` Unity 运行修复；`7da9a7d` 迷雾时序修复。完整 SHA、执行命令及异常过程保留在 `.codex/handoffs/player-death-run-save-q19.md` 与 `.codex/TestResults/`，Git 保留源码差异。
+- `c4cb850` 的最终工程证据：TowerRun EditMode 21/21 **断言通过但 runner 退出挂起、非 exit 0**；MapGeneration EditMode 216/216、PlayMode 16/16、黑洞 GPU 1/1、独立进程写入与读取各 1/1，后五项均 exit 0。GPU 结果只覆盖 D3D11/RTX 4060。v4 UI 的 5/5 是当时未提交工作树的针对性回归，不应冒充 `c4cb850` 或旧 HEAD 的测试。
+- 人工已报告 PASS：新手关卡至第 2 层路线、目标击败/出口解锁/主动 F、槽位保存与覆盖/恢复、输入优先级及两次死亡恢复；迷雾修复后新 Run、设置输入、黑洞视觉和亲耳试听四项也获用户 PASS。仍缺独立明确观察的四项：非目标对象不阻塞、换层重复 F 不并发、出口实际净空、第三次死亡后新 Run 对三个旧正式槽位逐槽不变。槽位恢复绑定和覆盖确认并发窗口的 Spec 审核风险仍待收口。`READY_FOR_PR_REVIEW = NO`；文档归档或清理临时文件不会把它自动改成 YES。
+
 ## 2026-10-04
 
 ### Implement monster AI and damage reaction system（实现怪物 AI 与伤害受击系统）

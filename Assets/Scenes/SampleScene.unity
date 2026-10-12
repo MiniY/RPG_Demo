@@ -37552,6 +37552,7 @@ GameObject:
   - component: {fileID: 1656487595}
   - component: {fileID: 1656487594}
   - component: {fileID: 1656487598}
+  - component: {fileID: 1656487599}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -37660,6 +37661,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   packagePanel: {fileID: 1047394623}
   openAtStart: 0
+--- !u!114 &1656487599
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1656487593}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1978909a8a94d96a62db8c2a2868278, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  woodFrame: {fileID: 21300000, guid: 72e463c5f567500409db8b57e3c3975e, type: 3}
+  carvedPaper: {fileID: 21300000, guid: 9fc57f2a1ce7ba44384cf39e94d22e00, type: 3}
+  carvedCard: {fileID: 21300000, guid: e2fb7750ad96f524d9cd6a40432b4f68, type: 3}
+  titleBanner: {fileID: 21300000, guid: 9dd43ccd6604dc542aa38ad5e68a625e, type: 3}
+  blueRibbon: {fileID: 21300000, guid: b50df00b0dafd564db33fcc4e638108b, type: 3}
+  blueButton: {fileID: 21300000, guid: 086c8f2d2380f744fa312bffc294781d, type: 3}
+  redButton: {fileID: 21300000, guid: 088856fc86fe500409a0edcca12d795f, type: 3}
+  disabledButton: {fileID: 21300000, guid: 10da1f1f28ee535408767c81bb586ae3, type: 3}
 --- !u!1 &1660507267
 GameObject:
   m_ObjectHideFlags: 0

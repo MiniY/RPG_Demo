@@ -76,6 +76,7 @@ public sealed class TowerRunFlowPlayModeTests
             runtimeRoot.GetComponentInChildren<MapMinimapController>(true);
 
         AssertPlaying(coordinator, "新手关卡");
+        AssertFreshSpawnExploration(minimap);
         Assert.That(GetProperty(floor, "State").ToString(), Is.EqualTo("Locked"));
         Assert.That((int)GetProperty(floor, "TargetCount"), Is.GreaterThan(0));
         Assert.That(minimap.IsExitAvailable, Is.False);
@@ -114,6 +115,7 @@ public sealed class TowerRunFlowPlayModeTests
         yield return null;
 
         AssertPlaying(coordinator, "第 1 层");
+        AssertFreshSpawnExploration(minimap);
         Assert.That(bootstrap.Context.ActiveGenerationId, Is.Not.EqualTo(tutorialGeneration));
         Assert.That(GetProperty(floor, "State").ToString(), Is.EqualTo("Locked"));
         Assert.That(minimap.IsExitAvailable, Is.False);
@@ -139,6 +141,7 @@ public sealed class TowerRunFlowPlayModeTests
         yield return null;
 
         AssertPlaying(coordinator, "第 2 层");
+        AssertFreshSpawnExploration(minimap);
         Assert.That(GetProperty(floor, "State").ToString(), Is.EqualTo("Locked"));
         Assert.That(minimap.IsExitAvailable, Is.False);
     }
@@ -249,6 +252,9 @@ public sealed class TowerRunFlowPlayModeTests
         MapRuntimeBootstrap bootstrap = runtimeRoot.GetComponent<MapRuntimeBootstrap>();
         MapGenerationController controller =
             runtimeRoot.GetComponentInChildren<MapGenerationController>(true);
+        MapMinimapController minimap =
+            runtimeRoot.GetComponentInChildren<MapMinimapController>(true);
+        AssertFreshSpawnExploration(minimap);
         GameObject pendingAttackTarget = FindFirstRoleTarget(
             bootstrap.Context,
             MonsterPlacementService.MonsterRole);
@@ -281,6 +287,7 @@ public sealed class TowerRunFlowPlayModeTests
         Invoke(coordinator, "BeginRestoreSlot", 1);
         yield return null;
         AssertPlaying(coordinator, "新手关卡");
+        AssertFreshSpawnExploration(minimap);
         Assert.That(firstDeathRegistry.IsRetired, Is.True);
         AssertSingleRuntimeOwners();
         Assert.That(Time.timeScale, Is.EqualTo(1f));
@@ -293,9 +300,65 @@ public sealed class TowerRunFlowPlayModeTests
         Invoke(coordinator, "BeginRestoreSlot", 1);
         yield return null;
         AssertPlaying(coordinator, "新手关卡");
+        AssertFreshSpawnExploration(minimap);
         Assert.That(secondDeathRegistry.IsRetired, Is.True);
         AssertSingleRuntimeOwners();
         Assert.That(Time.timeScale, Is.EqualTo(1f));
+    }
+
+    [UnityTest]
+    public IEnumerator NewRunAfterDeathDoesNotRevealPreviousRunLocation()
+    {
+        yield return SceneManager.LoadSceneAsync("SampleScene", LoadSceneMode.Single);
+        yield return null;
+
+        MonoBehaviour coordinator = FindBehaviour("TowerRunCoordinator");
+        AssertIsolatedSlotRoot(coordinator);
+        Invoke(coordinator, "ReturnToStartupChoice");
+        Invoke(coordinator, "BeginNewRun");
+        yield return null;
+        AssertPlaying(coordinator, "新手关卡");
+
+        GameObject runtimeRoot = FindRootObject(SceneManager.GetActiveScene(), "RandomMapRuntime");
+        MapGenerationController controller =
+            runtimeRoot.GetComponentInChildren<MapGenerationController>(true);
+        MapMinimapController minimap =
+            runtimeRoot.GetComponentInChildren<MapMinimapController>(true);
+        MapData previousMap = minimap.DisplayedMap;
+        int revealRadius = GetPrivateFieldValue<int>(minimap, "explorationRadius");
+        Vector2Int previousDeathCell = previousMap.Origin +
+            new Vector2Int(previousMap.Width - 2, previousMap.Height - 2);
+        Assert.That(Vector2Int.Distance(previousDeathCell, previousMap.SpawnCell),
+            Is.GreaterThan(revealRadius + 1));
+
+        controller.Player.position = minimap.TilemapRenderer.Coordinates.CellToWorld(
+            previousMap, previousDeathCell);
+        yield return null;
+        Assert.That(minimap.ExplorationState.IsExplored(previousDeathCell), Is.True,
+            "Exploration in the current Run must remain available before death.");
+
+        DefeatPlayer();
+        yield return null;
+        Assert.That(GetProperty(coordinator, "State").ToString(), Is.EqualTo("DeathChoice"));
+        Invoke(coordinator, "BeginNewRun");
+        yield return null;
+        AssertPlaying(coordinator, "新手关卡");
+
+        MapData newMap = minimap.DisplayedMap;
+        AssertFreshSpawnExploration(minimap);
+        Assert.That(newMap.IsInside(previousDeathCell), Is.True,
+            "The old location must lie inside the replacement map for this regression check.");
+        Assert.That(Vector2Int.Distance(previousDeathCell, newMap.SpawnCell),
+            Is.GreaterThan(revealRadius + 1),
+            "The old location must be outside normal new-Run spawn vision.");
+        Assert.That(minimap.ExplorationState.IsExplored(newMap.SpawnCell), Is.True,
+            "The new Run must still reveal its own spawn vision.");
+        Assert.That(minimap.ExplorationState.IsExplored(previousDeathCell), Is.False,
+            "A new Run must not inherit the previous death location's exploration.");
+        Vector2Int textureCell = previousDeathCell - newMap.Origin;
+        Assert.That(minimap.FogTexture.GetPixel(textureCell.x, textureCell.y).a,
+            Is.GreaterThan(0f),
+            "The visible fog texture must also cover the previous Run's death location.");
     }
 
     [UnityTest]
@@ -646,6 +709,30 @@ public sealed class TowerRunFlowPlayModeTests
     {
         Assert.That(GetProperty(coordinator, "State").ToString(), Is.EqualTo("Playing"));
         Assert.That((string)GetProperty(coordinator, "FloorDisplayName"), Is.EqualTo(floorDisplayName));
+    }
+
+    private static void AssertFreshSpawnExploration(MapMinimapController minimap)
+    {
+        MapData map = minimap.DisplayedMap;
+        Assert.That(map, Is.Not.Null);
+        Assert.That(minimap.ExplorationState, Is.Not.Null);
+        MapExplorationState expected = new MapExplorationState(map);
+        expected.RevealAround(
+            map.SpawnCell,
+            GetPrivateFieldValue<int>(minimap, "explorationRadius"));
+
+        Assert.That(minimap.ExplorationState.ExploredCount,
+            Is.EqualTo(expected.ExploredCount),
+            "A new entrance world should only reveal the current spawn vision.");
+        for (int x = map.Origin.x; x < map.Origin.x + map.Width; x++)
+        {
+            for (int y = map.Origin.y; y < map.Origin.y + map.Height; y++)
+            {
+                Vector2Int cell = new Vector2Int(x, y);
+                if (minimap.ExplorationState.IsExplored(cell) != expected.IsExplored(cell))
+                    Assert.Fail($"Unexpected exploration at {cell} after entrance initialization.");
+            }
+        }
     }
 
     private static object GetProperty(MonoBehaviour behaviour, string propertyName)

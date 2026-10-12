@@ -746,9 +746,6 @@ public sealed class MapMinimapController : MonoBehaviour
         }
 
         ApplyFogTexture();
-
-        if (enableFogOfWar)
-            UpdateExplorationAroundPlayer();
     }
 
     /// <summary>

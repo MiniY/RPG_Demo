@@ -690,6 +690,60 @@ public sealed class TowerRunFlowPlayModeTests
     }
 
     [UnityTest]
+    public IEnumerator StartupRestoreRejectsSlotChangedAfterTheChoiceWasRendered()
+    {
+        yield return SceneManager.LoadSceneAsync("SampleScene", LoadSceneMode.Single);
+        yield return null;
+
+        MonoBehaviour coordinator = FindBehaviour("TowerRunCoordinator");
+        MonoBehaviour runUi = FindBehaviour("TowerRunUiController");
+        Assert.That(coordinator, Is.Not.Null);
+        Assert.That(runUi, Is.Not.Null);
+        AssertIsolatedSlotRoot(coordinator);
+
+        Invoke(coordinator, "ReturnToStartupChoice");
+        Invoke(coordinator, "BeginNewRun");
+        yield return null;
+        AssertPlaying(coordinator, "新手关卡");
+
+        Invoke(runUi, "OpenSettings");
+        InvokePrivate(runUi, "ShowSavePage");
+        InvokePrivate(runUi, "BeginSaveRequest");
+        InvokePrivate(runUi, "SelectSaveSlot", 1);
+        TowerRunSlotReadResult displayed =
+            (TowerRunSlotReadResult)Invoke(coordinator, "ReadSlot", 1);
+        Assert.That(displayed.state, Is.EqualTo(TowerRunSlotState.Valid), displayed.message);
+        Invoke(runUi, "CloseSettings");
+
+        Invoke(coordinator, "ReturnToStartupChoice");
+        yield return null;
+
+        TowerRunCheckpointRecord concurrent = displayed.record.DeepClone();
+        concurrent.runId = "concurrent-run";
+        concurrent.savedAtUtc = System.DateTime.UtcNow.ToString("O");
+        TowerRunSlotStore slotStore = GetPrivateField<TowerRunSlotStore>(coordinator, "slotStore");
+        TowerRunSlotWriteResult concurrentWrite = slotStore.TryCommit(
+            1,
+            concurrent,
+            true,
+            displayed.confirmationToken);
+        Assert.That(concurrentWrite.succeeded, Is.True, concurrentWrite.message);
+
+        Button[] restoreButtons = GetPrivateField<Button[]>(runUi, "flowSlotButtons");
+        restoreButtons[0].onClick.Invoke();
+        yield return null;
+
+        Assert.That(
+            GetProperty(coordinator, "State").ToString(),
+            Is.EqualTo("Failure"),
+            "A restore choice must be rejected when the displayed slot record changed before click.");
+        Assert.That(
+            (string)GetProperty(coordinator, "FailureMessage"),
+            Does.Contain("变化"));
+        Assert.That(slotStore.ReadSlot(1).record.runId, Is.EqualTo("concurrent-run"));
+    }
+
+    [UnityTest]
     public IEnumerator NewRunAfterDeathDoesNotRevealPreviousRunLocation()
     {
         yield return SceneManager.LoadSceneAsync("SampleScene", LoadSceneMode.Single);

@@ -47,6 +47,7 @@ try {
     $gate = [IO.File]::Open($lockFile, [IO.FileMode]::OpenOrCreate, [IO.FileAccess]::ReadWrite, [IO.FileShare]::None)
     if (-not $FromRunner -and (Test-FileLocked $runLock)) { throw 'A DataTest run is active.' }
     if (-not (Test-Path -LiteralPath $project)) { throw 'DataTest worktree is missing.' }
+    if (Test-FileLocked (Join-Path $project 'Temp\UnityLockfile')) { throw 'DataTest Unity project is occupied; sync deferred.' }
     if ((Invoke-Git -GitArgs @('branch','--show-current')) -ne 'DataTest') { throw 'Worktree is not on DataTest.' }
     $state.dataTestSha = Invoke-Git -GitArgs @('rev-parse','HEAD')
     $oldMain = Invoke-Git -GitArgs @('rev-parse','refs/remotes/origin/main')

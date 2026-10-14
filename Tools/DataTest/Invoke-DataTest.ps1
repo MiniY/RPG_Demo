@@ -3,6 +3,7 @@ param(
     [ValidateSet('Smoke','Regression','Performance','Memory','Stress','Soak')]
     [string]$Profile = 'Smoke',
     [string]$Filter = '',
+    [string]$PlatformOverride = '',
     [int]$Seed = 20260929,
     [int]$Loops = 0,
     [int]$TimeoutMinutes = 0,
@@ -92,7 +93,8 @@ try {
     $limitMB = if ($MaxMemoryMB -gt 0) { $MaxMemoryMB } else { [int]$config.memoryLimitMB }
     $limitMinutes = if ($TimeoutMinutes -gt 0) { $TimeoutMinutes } else { [int]$config.unityTimeoutMinutes }
     if ($runLoops -lt 1 -or $runLoops -gt 10000 -or $limitMB -lt 512 -or $limitMinutes -lt 1 -or $limitMinutes -gt 1440) { throw 'Requested resource limits are invalid.' }
-    $platforms = if ($Profile -eq 'Regression') { @('EditMode','PlayMode') } else { @([string]$spec.platform) }
+    if ($PlatformOverride -and $PlatformOverride -notin @('EditMode','PlayMode')) { throw 'PlatformOverride must be EditMode or PlayMode.' }
+    $platforms = if ($PlatformOverride) { @($PlatformOverride) } elseif ($Profile -eq 'Regression') { @('EditMode','PlayMode') } else { @([string]$spec.platform) }
     $testFilter = if ($Filter) { $Filter } else { [string]$spec.filter }
     $runState = 'PASS'
     foreach ($platform in $platforms) {
@@ -220,6 +222,8 @@ try {
     $lines | Set-Content -LiteralPath $reportPath -Encoding UTF8
     if (Test-Path -LiteralPath $activeFile) { Remove-Item -LiteralPath $activeFile -Force }
     if ($runGate) { $runGate.Dispose() }
+    try { & (Join-Path $PSScriptRoot 'Update-DataTestDashboard.ps1') | Out-Null }
+    catch { $_.Exception.Message | Add-Content -LiteralPath (Join-Path $stateDir 'dashboard-errors.log') -Encoding UTF8 }
     Write-Output ($summary | ConvertTo-Json -Depth 8)
 }
 exit $exitCode

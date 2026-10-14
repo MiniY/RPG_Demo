@@ -17,8 +17,10 @@ if(Test-Path -LiteralPath $page){
 $syncPath=Join-Path $root '01_环境与同步\sync-status.json'
 $sync=if(Test-Path -LiteralPath $syncPath){Get-Content -LiteralPath $syncPath -Raw|ConvertFrom-Json}else{$null}
 $runs=@()
-foreach($f in @(Get-ChildItem -LiteralPath $rawDir -Filter 'summary.json' -Recurse -File -ErrorAction SilentlyContinue)){
- try{$runs+=Get-Content -LiteralPath $f.FullName -Raw|ConvertFrom-Json}catch{}
+foreach($directory in @(Get-ChildItem -LiteralPath $rawDir -Directory -ErrorAction SilentlyContinue)){
+ $summaryPath=Join-Path $directory.FullName 'summary.json'
+ if(-not(Test-Path -LiteralPath $summaryPath)){continue}
+ try{$runs+=Get-Content -LiteralPath $summaryPath -Raw|ConvertFrom-Json}catch{}
 }
 $runs=@($runs|Sort-Object startedAt -Descending)
 $latest=if($runs.Count){$runs[0]}else{$null}
@@ -36,14 +38,21 @@ foreach($run in $runs){
   if(-not $leg.metrics -or -not(Test-Path -LiteralPath $leg.metrics)){continue}
   try{
    $m=Get-Content -LiteralPath $leg.metrics -Raw|ConvertFrom-Json
-   $rows+=[pscustomobject]@{runId=$run.runId;startedAt=$run.startedAt;profile=$run.profile;status=$run.status;mainSha=$run.mainSha;dataTestSha=$run.dataTestSha;loops=$m.loops;width=$m.width;height=$m.height;unityVersion=$m.unityVersion;meanMilliseconds=$m.meanMilliseconds;p95Milliseconds=$m.p95Milliseconds;p99Milliseconds=$m.p99Milliseconds;managedBeforeBytes=$m.managedBeforeBytes;managedAfterBytes=$m.managedAfterBytes;unityReservedBeforeBytes=$m.unityReservedBeforeBytes;unityReservedAfterBytes=$m.unityReservedAfterBytes}
+   $settingsHash=''
+   $settingsJson=if($m.PSObject.Properties['settingsJson']){[string]$m.settingsJson}else{''}
+   if($settingsJson){$bytes=[Text.Encoding]::UTF8.GetBytes($settingsJson);$sha=[Security.Cryptography.SHA256]::Create();try{$settingsHash=([BitConverter]::ToString($sha.ComputeHash($bytes))).Replace('-','').ToLowerInvariant()}finally{$sha.Dispose()}}
+   $quality=if($run.PSObject.Properties['quality']){$run.quality}else{$null}
+   $warmup=if($m.PSObject.Properties['warmupCount']){[int]$m.warmupCount}else{0}
+   $p50=if($m.PSObject.Properties['p50Milliseconds']){$m.p50Milliseconds}else{$null}
+   $rows+=[pscustomobject]@{runId=$run.runId;startedAt=$run.startedAt;profile=$run.profile;status=$run.status;mainSha=$run.mainSha;dataTestSha=$run.dataTestSha;machine=$run.machine;seed=$m.baseSeed;loops=$m.loops;warmupCount=$warmup;width=$m.width;height=$m.height;unityVersion=$m.unityVersion;settingsHash=$settingsHash;sampleCount=@($m.generationMilliseconds).Count;nunit=$(if($quality){$quality.nunit}else{'UNKNOWN'});unityExit=$(if($quality){$quality.unityExit}else{'UNKNOWN'});data=$(if($quality){$quality.data}else{'UNKNOWN'});mainFreshness=$(if($quality){$quality.mainFreshness}else{'UNKNOWN'});worktree=$(if($quality){$quality.worktree}else{'UNKNOWN'});meanMilliseconds=$m.meanMilliseconds;p50Milliseconds=$p50;p95Milliseconds=$m.p95Milliseconds;p99Milliseconds=$m.p99Milliseconds;managedBeforeBytes=$m.managedBeforeBytes;managedAfterBytes=$m.managedAfterBytes;unityReservedBeforeBytes=$m.unityReservedBeforeBytes;unityReservedAfterBytes=$m.unityReservedAfterBytes}
   }catch{}
  }
 }
 $trend=Join-Path $trendDir 'map-generator-trend.csv'
 $rows|Sort-Object startedAt|Export-Csv -LiteralPath $trend -NoTypeInformation -Encoding UTF8
-$validPerformance=@($rows|Where-Object {$_.profile -eq 'Performance' -and $_.status -eq 'PASS'}|Sort-Object startedAt)
-$baseline=@($validPerformance|Select-Object -First 1)
+$validPerformance=@($rows|Where-Object {$_.profile -eq 'Performance' -and $_.status -eq 'PASS' -and $_.nunit -eq 'PASS' -and $_.unityExit -eq 'EXIT_0' -and $_.data -eq 'COMPLETE' -and $_.mainFreshness -eq 'CURRENT' -and $_.worktree -eq 'CLEAN' -and $_.settingsHash -and $_.warmupCount -eq 3 -and $_.sampleCount -eq $_.loops}|Sort-Object startedAt)
+$groups=@($validPerformance|Group-Object { "$($_.machine)|$($_.seed)|$($_.loops)|$($_.width)x$($_.height)|$($_.unityVersion)|$($_.settingsHash)" })
+$baselineGroup=@($groups|Where-Object {$_.Count -ge 3}|Sort-Object { @($_.Group|Sort-Object startedAt)[0].startedAt }|Select-Object -First 1)
 $lines=@($marker,'# RPG_Demo DataTest 自动状态','','此页由运行器生成；精确证据以各 Run ID 的 XML、JSON 和 Unity 日志为准。','','## 同步','')
 if($sync){
  $lines+=@("- 最近检查：$($sync.checkedAt)","- 结果：**$($sync.result)**；最近成功：$($sync.lastSuccessfulSyncAt)","- main SHA：$($sync.mainSha)","- DataTest SHA：$($sync.dataTestSha)；待同步提交：$($sync.pendingCommits)","- 冲突：$($sync.conflict)；错误：$($sync.error)")
@@ -57,17 +66,20 @@ if($latest){
  $lines+=@("- [$($latest.runId)](../03_测试运行报告/$($latest.runId).md)：**$($latest.status)**，$($latest.profile)，main $($latest.mainSha)","- NUnit：总数 $($latest.counts.total)，通过 $($latest.counts.passed)，失败 $($latest.counts.failed)；原因：$($latest.reason)")
 }else{$lines+='- 尚无测试运行。'}
 $lines+=@('','## 性能与缺陷','')
-if($baseline.Count){
- $b=$baseline[0]
- $lines+="- 首个完整 Performance Baseline：$($b.runId)，平均 $([math]::Round($b.meanMilliseconds,2)) ms，P95 $([math]::Round($b.p95Milliseconds,2)) ms。"
- $comparable=@($validPerformance|Where-Object {$_.loops -eq $b.loops -and $_.width -eq $b.width -and $_.height -eq $b.height -and $_.unityVersion -eq $b.unityVersion})
- if($comparable.Count -gt 1 -and [double]$b.meanMilliseconds -gt 0){
+if($baselineGroup.Count){
+ $baselineRuns=@($baselineGroup[0].Group|Sort-Object startedAt|Select-Object -First 3)
+ $b=$baselineRuns[0]
+ $baselineMean=($baselineRuns|Measure-Object meanMilliseconds -Average).Average
+ $ids=($baselineRuns.runId -join ', ')
+ $lines+="- Editor 地图生成基线：3 次独立有效运行 $ids；每次 $($b.loops) 个样本，平均运行均值 $([math]::Round($baselineMean,3)) ms。P50/P95/P99 与原始数据见性能基线文档。"
+ $comparable=@($baselineGroup[0].Group|Sort-Object startedAt)
+ if($comparable.Count -gt 3 -and [double]$baselineMean -gt 0){
   $last=$comparable[-1]
-  $delta=(([double]$last.meanMilliseconds-[double]$b.meanMilliseconds)/[double]$b.meanMilliseconds)*100
-  $lines+="- 同条件最新 Performance：$($last.runId)，平均 $([math]::Round($last.meanMilliseconds,2)) ms；相对首个基线 $([math]::Round($delta,2))%。没有确认阈值，差值不自动判为回归。"
- }else{$lines+='- 尚无第二个同条件完整 Performance 样本，无法计算有效变化幅度。'}
-}else{$lines+='- 完整 Performance Baseline：尚未建立；不能判断性能回归。'}
-$lines+=@('','## 高风险与未覆盖','','- 首轮高风险：Editor 批处理在两次 Performance 运行中写出 NUnit XML 后退出超时；这些样本不作为可靠基线。','- 首轮未覆盖：Windows Player 构建与启动、真实玩家输入黑盒、战斗和背包商店全链路、长期场景资源生命周期。','- 性能退化：目前无完整 Performance 基线及后续有效样本，无法判定。')
+  $delta=(([double]$last.meanMilliseconds-[double]$baselineMean)/[double]$baselineMean)*100
+  $lines+="- 同条件后续 Performance：$($last.runId)，平均 $([math]::Round($last.meanMilliseconds,2)) ms；相对三轮基线 $([math]::Round($delta,2))%。没有确认阈值，差值不自动判为回归。"
+ }else{$lines+='- 尚无基线以外的同条件有效样本，不能判断性能回归。'}
+}else{$lines+='- 完整 Performance Baseline：同条件有效独立运行不足 3 次，尚未建立。'}
+$lines+=@('','## 高风险与未覆盖','','- 历史 Editor 批处理曾在 NUnit XML 生成后退出超时；超时运行保留为无效样本，原生退出风险仍需继续观察。','- 未覆盖：Windows Player 构建与启动、真实玩家输入黑盒、战斗和背包商店全链路、长期场景资源生命周期。','- 性能退化：须有基线以外且测试条件一致的有效样本，当前不能自动判定。')
 $lines+=@("- 指标历史：[map-generator-trend.csv](../04_性能基准与趋势/map-generator-trend.csv)（含 BLOCKED 样本，比较时按状态过滤）。","- 未关闭 Bug 记录：$openBugs。未发现不等于没有 Bug。",'- 内存泄漏结论：尚无跨进程长期证据；短循环数据只作为线索。','','## 最近运行','','| Run ID | 模式 | 状态 | main SHA | NUnit 通过/总数 |','| --- | --- | --- | --- | --- |')
 foreach($run in @($runs|Select-Object -First 10)){
  $lines+="| [$($run.runId)](../03_测试运行报告/$($run.runId).md) | $($run.profile) | $($run.status) | $($run.mainSha) | $($run.counts.passed)/$($run.counts.total) |"

@@ -8,7 +8,9 @@ param(
  [Parameter(Mandatory)][string]$Actual,
  [Parameter(Mandatory)][string]$ReproSteps,
  [string]$RunId='',
- [string]$Seed=''
+ [string]$Seed='',
+ [string]$EvidencePath='',
+ [string]$CodeLocation=''
 )
 Set-StrictMode -Version Latest
 $ErrorActionPreference='Stop'
@@ -21,6 +23,18 @@ $hash=[Security.Cryptography.SHA256]::Create().ComputeHash($bytes)
 $id='BUG-'+(($hash[0..5]|ForEach-Object {$_.ToString('X2')}) -join '')
 $path=Join-Path $dir "$id.md"
 $time=[DateTimeOffset]::Now.ToString('o')
+$mainSha='UNVERIFIED'
+$dataTestSha='UNVERIFIED'
+$environment='UNVERIFIED'
+if($RunId){
+ $summaryPath=Join-Path $config.outputRoot "07_测试证据与原始日志\$RunId\summary.json"
+ if(-not(Test-Path -LiteralPath $summaryPath)){throw 'Run ID summary.json not found; refuse unverified association.'}
+ $run=Get-Content -LiteralPath $summaryPath -Raw|ConvertFrom-Json
+ $mainSha=[string]$run.mainSha
+ $dataTestSha=[string]$run.dataTestSha
+ $environment="$($run.platform); Unity $($run.unityVersion); $($run.machine)"
+ if(-not $mainSha){$mainSha='UNVERIFIED'}
+}
 $event="- $time；Run ID：$RunId；Seed：$Seed；实际：$Actual"
 if(Test-Path -LiteralPath $path){
  $text=Get-Content -LiteralPath $path -Raw
@@ -41,7 +55,13 @@ if(Test-Path -LiteralPath $path){
  "- 实际：$Actual",
  "- 复现步骤：$ReproSteps",
  "- Seed：$Seed",
- "- Run ID：$RunId",'',
+ "- Run ID：$RunId",
+ "- main SHA：$mainSha",
+ "- DataTest SHA：$dataTestSha",
+ "- 测试环境：$environment",
+ "- 日志或截图：$EvidencePath",
+ "- 相关代码位置：$CodeLocation",
+ "- 回归验证：待执行",'',
  '## 复现历史','',
  $event,'',
  '## 根因与修复建议','','待证据确认。DataTest 不直接修改 main 业务逻辑。'

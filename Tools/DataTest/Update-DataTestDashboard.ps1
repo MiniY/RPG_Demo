@@ -1,4 +1,4 @@
-[CmdletBinding()]
+﻿[CmdletBinding()]
 param()
 Set-StrictMode -Version Latest
 $ErrorActionPreference='Stop'
@@ -60,7 +60,7 @@ if($baseline.Count){
  $b=$baseline[0]
  $lines+="- 首个完整 Performance Baseline：$($b.runId)，平均 $([math]::Round($b.meanMilliseconds,2)) ms，P95 $([math]::Round($b.p95Milliseconds,2)) ms。"
 }else{$lines+='- 完整 Performance Baseline：尚未建立；不能判断性能回归。'}
-$lines+=@('','## 高风险与未覆盖','','- 高风险：Editor 批处理在两次 Performance 运行中写出 NUnit XML 后退出超时；性能样本暂不作为可靠基线。','- 未覆盖：Windows Player 构建与启动、真实玩家输入黑盒、战斗和背包商店全链路、长期场景资源生命周期。','- 性能退化：目前无完整 Performance 基线及后续有效样本，无法判定。')
+$lines+=@('','## 高风险与未覆盖','','- 首轮高风险：Editor 批处理在两次 Performance 运行中写出 NUnit XML 后退出超时；这些样本不作为可靠基线。','- 首轮未覆盖：Windows Player 构建与启动、真实玩家输入黑盒、战斗和背包商店全链路、长期场景资源生命周期。','- 性能退化：目前无完整 Performance 基线及后续有效样本，无法判定。')
 $lines+=@("- 指标历史：[map-generator-trend.csv](../04_性能基准与趋势/map-generator-trend.csv)（含 BLOCKED 样本，比较时按状态过滤）。","- 未关闭 Bug 记录：$openBugs。未发现不等于没有 Bug。",'- 内存泄漏结论：尚无跨进程长期证据；短循环数据只作为线索。','','## 最近运行','','| Run ID | 模式 | 状态 | main SHA | NUnit 通过/总数 |','| --- | --- | --- | --- | --- |')
 foreach($run in @($runs|Select-Object -First 10)){
  $lines+="| [$($run.runId)](../03_测试运行报告/$($run.runId).md) | $($run.profile) | $($run.status) | $($run.mainSha) | $($run.counts.passed)/$($run.counts.total) |"
@@ -68,4 +68,3 @@ foreach($run in @($runs|Select-Object -First 10)){
 $lines+=@('','## 导航','','- [环境审计](../01_环境与同步/环境审计-2026-10-14.md)','- [首轮覆盖矩阵](../02_测试计划与用例/首轮覆盖矩阵-2026-10-14.md)','- [零基础使用教程](../08_操作手册/RPG_Demo%20DataTest%20测试系统零基础使用教程.md)')
 $lines|Set-Content -LiteralPath $page -Encoding UTF8
 Write-Output $page
-

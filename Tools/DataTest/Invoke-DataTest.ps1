@@ -91,7 +91,7 @@ try {
         $logPath = Join-Path $runDir "$platform.log"
         $metricPath = Join-Path $runDir "$platform-metrics.json"
         $arguments = @(
-            '-batchmode','-nographics','-quit',
+            '-batchmode','-nographics',
             '-projectPath',(Quote-Arg $project),
             '-runTests','-testPlatform',$platform,
             '-testResults',(Quote-Arg $xmlPath),

@@ -17,7 +17,11 @@ public class DataTestMapProbeTests
         public int loops;
         public int width;
         public int height;
+        public int warmupCount;
+        public string settingsJson;
+        public string timingBoundary;
         public double meanMilliseconds;
+        public double p50Milliseconds;
         public double p95Milliseconds;
         public double p99Milliseconds;
         public double maxMilliseconds;
@@ -68,6 +72,8 @@ public class DataTestMapProbeTests
             settings.spawnProtectionRadius = 5;
             settings.roadWidth = 2;
             settings.roadTurnChance = 0.3f;
+            settings.seed = baseSeed;
+            string settingsJson = JsonUtility.ToJson(settings);
 
             for (int i = 0; i < 3; i++)
             {
@@ -83,6 +89,9 @@ public class DataTestMapProbeTests
                 loops = loops,
                 width = settings.mapWidth,
                 height = settings.mapHeight,
+                warmupCount = 3,
+                settingsJson = settingsJson,
+                timingBoundary = "Stopwatch around RandomMapGenerator.Generate(settings); validation and cleanup outside timing",
                 generationMilliseconds = new double[loops],
                 settledManagedBytes = settleEachCycle ? new long[loops] : new long[0],
                 managedBeforeBytes = GC.GetTotalMemory(true),
@@ -119,6 +128,7 @@ public class DataTestMapProbeTests
             double total = 0;
             foreach (double duration in sorted) total += duration;
             result.meanMilliseconds = total / sorted.Length;
+            result.p50Milliseconds = sorted[(int)Math.Ceiling(sorted.Length * 0.50) - 1];
             result.p95Milliseconds = sorted[(int)Math.Ceiling(sorted.Length * 0.95) - 1];
             result.p99Milliseconds = sorted[(int)Math.Ceiling(sorted.Length * 0.99) - 1];
             result.maxMilliseconds = sorted[sorted.Length - 1];

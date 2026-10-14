@@ -39,6 +39,14 @@ $testFilter = ''
 $runLoops = 0
 $isStale = $false
 $verifiedStaleUnityPids = @()
+$nunitStatus = 'NOT_RUN'
+$unityExitStatus = 'NOT_RUN'
+$dataStatus = 'NOT_REQUIRED'
+$mainFreshnessStatus = 'UNKNOWN'
+$worktreeStatus = 'UNKNOWN'
+$settingsPath = Join-Path $project 'ProjectSettings\ProjectSettings.asset'
+$settingsBefore = $null
+$settingsRecovery = $null
 function Invoke-Git([string[]]$GitArgs) {
     $lines = & git -C $project @GitArgs 2>&1
     if ($LASTEXITCODE -ne 0) { throw "git $($GitArgs -join ' ') failed ($LASTEXITCODE): $($lines -join ' ')" }
@@ -51,6 +59,37 @@ function Assert-LockfileFree([string]$Path) {
         $handle = [IO.File]::Open($Path,[IO.FileMode]::Open,[IO.FileAccess]::Read,[IO.FileShare]::None)
         $handle.Dispose()
     } catch { throw "Unity lockfile is held: $Path" }
+}
+function Restore-KnownSettingsPollution {
+    if ($null -eq $settingsBefore) { return }
+    $dirtyPaths = @(Invoke-Git -GitArgs @('status','--porcelain=v1','--untracked-files=all') | Where-Object { $_ })
+    if ($dirtyPaths.Count -eq 0) { $script:worktreeStatus = 'CLEAN'; return }
+    if ($dirtyPaths.Count -ne 1 -or $dirtyPaths[0] -ne 'M ProjectSettings/ProjectSettings.asset') {
+        $script:worktreeStatus = 'DIRTY_UNEXPECTED'
+        return
+    }
+    $after = [IO.File]::ReadAllBytes($settingsPath)
+    $beforeText = [Text.Encoding]::UTF8.GetString($settingsBefore)
+    $afterText = [Text.Encoding]::UTF8.GetString($after)
+    if ($beforeText -notmatch '(?m)^  runInBackground: 0(?=\r?$)' -or $afterText -notmatch '(?m)^  runInBackground: 1(?=\r?$)') {
+        $script:worktreeStatus = 'DIRTY_UNEXPECTED'
+        return
+    }
+    $candidate = [Text.Encoding]::UTF8.GetBytes(($afterText -creplace '(?m)^  runInBackground: 1(?=\r?$)', '  runInBackground: 0'))
+    if ([Convert]::ToBase64String($settingsBefore) -cne [Convert]::ToBase64String($candidate)) {
+        $script:worktreeStatus = 'DIRTY_UNEXPECTED'
+        return
+    }
+    [IO.File]::WriteAllBytes((Join-Path $runDir 'ProjectSettings.polluted.asset'),$after)
+    $diff = & git -C $project diff -- ProjectSettings/ProjectSettings.asset 2>&1
+    $diff | Set-Content -LiteralPath (Join-Path $runDir 'ProjectSettings.pollution.diff') -Encoding UTF8
+    [IO.File]::WriteAllBytes($settingsPath,$settingsBefore)
+    if (Invoke-Git -GitArgs @('status','--porcelain=v1','--untracked-files=all')) {
+        $script:worktreeStatus = 'DIRTY_RESTORE_FAILED'
+        return
+    }
+    $script:worktreeStatus = 'RESTORED_KNOWN_UTF_CHANGE'
+    $script:settingsRecovery = 'Only runInBackground: 0 to 1 was observed; polluted bytes and diff saved; original bytes restored and clean Git verified.'
 }
 try {
     $runGate = [IO.File]::Open($lockFile,[IO.FileMode]::OpenOrCreate,[IO.FileAccess]::ReadWrite,[IO.FileShare]::None)
@@ -68,6 +107,8 @@ try {
     & git -C $project merge-base --is-ancestor $mainSha HEAD 2>$null
     if ($LASTEXITCODE -ne 0) { throw 'DataTest does not contain checked origin/main SHA.' }
     if ((Invoke-Git -GitArgs @('status','--porcelain=v1','--untracked-files=all'))) { throw 'DataTest contains uncommitted files.' }
+    $settingsBefore = [IO.File]::ReadAllBytes($settingsPath)
+    $worktreeStatus = 'CLEAN'
     if (-not (Test-Path -LiteralPath $config.editorPath)) { throw 'Configured Unity Editor executable is missing.' }
     try { $cimUnity = @(Get-CimInstance Win32_Process -Filter "name = 'Unity.exe'" -ErrorAction Stop) }
     catch { throw "Cannot verify Unity process inventory: $($_.Exception.Message)" }
@@ -117,6 +158,7 @@ try {
     if ($PlatformOverride -and $PlatformOverride -notin @('EditMode','PlayMode')) { throw 'PlatformOverride must be EditMode or PlayMode.' }
     $platforms = if ($PlatformOverride) { @($PlatformOverride) } elseif ($Profile -eq 'Regression') { @('EditMode','PlayMode') } else { @([string]$spec.platform) }
     $testFilter = if ($Filter) { $Filter } else { [string]$spec.filter }
+    if ($Profile -in @('Performance','Memory','Stress','Soak','Smoke') -and $testFilter -eq 'DataTestMapProbeTests') { $dataStatus = 'PENDING' }
     $runState = 'PASS'
     foreach ($platform in $platforms) {
         $xmlPath = Join-Path $runDir "$platform.xml"
@@ -144,12 +186,14 @@ try {
         $active | ConvertTo-Json | Set-Content -LiteralPath $activeFile -Encoding UTF8
         $legStarted = [DateTimeOffset]::Now
         $stopReason = ''
+        $xmlAt = $null
         while (-not $proc.WaitForExit(1000)) {
             $proc.Refresh()
             if (Test-Path -LiteralPath (Join-Path $runDir 'cancel.request')) { $stopReason = 'CANCELLED'; break }
             if (([DateTimeOffset]::Now - $legStarted).TotalMinutes -gt $limitMinutes) { $stopReason = 'TIMEOUT'; break }
             if ($proc.WorkingSet64 -gt ($limitMB * 1MB)) { $stopReason = 'MEMORY_LIMIT'; break }
             if (Test-Path -LiteralPath $xmlPath) {
+                if ($null -eq $xmlAt) { $xmlAt = [IO.File]::GetLastWriteTime($xmlPath).ToString('o') }
                 $xmlAge = ([DateTime]::UtcNow - [IO.File]::GetLastWriteTimeUtc($xmlPath)).TotalSeconds
                 if ($xmlAge -gt [int]$config.editorShutdownGraceSeconds) { $stopReason = 'EDITOR_EXIT_TIMEOUT_AFTER_XML'; break }
             }
@@ -157,10 +201,13 @@ try {
         if ($stopReason) {
             $proc.Refresh()
             if (-not $proc.HasExited) { $proc.Kill(); $proc.WaitForExit(30000) | Out-Null }
-            $runState = 'BLOCKED'
+            $runState = if ($stopReason -in @('TIMEOUT','EDITOR_EXIT_TIMEOUT_AFTER_XML')) { 'TIMEOUT' } else { 'BLOCKED' }
             $reason = $stopReason
         }
-        $leg = [ordered]@{platform=$platform;exitCode=$proc.ExitCode;xml=$xmlPath;log=$logPath;metrics=$metricPath;stopReason=$stopReason}
+        if ($null -eq $xmlAt -and (Test-Path -LiteralPath $xmlPath)) { $xmlAt = [IO.File]::GetLastWriteTime($xmlPath).ToString('o') }
+        $processExitAt = [DateTimeOffset]::Now
+        $unityExitStatus = if ($stopReason -in @('TIMEOUT','EDITOR_EXIT_TIMEOUT_AFTER_XML')) { 'TIMEOUT' } elseif ($stopReason) { $stopReason } elseif ($proc.ExitCode -eq 0) { 'EXIT_0' } else { "EXIT_$($proc.ExitCode)" }
+        $leg = [ordered]@{platform=$platform;arguments=$psi.Arguments;startedAt=$legStarted.ToString('o');xmlAt=$xmlAt;processExitAt=$processExitAt.ToString('o');durationSeconds=[math]::Round(($processExitAt-$legStarted).TotalSeconds,3);exitCode=$proc.ExitCode;xml=$xmlPath;log=$logPath;metrics=$metricPath;stopReason=$stopReason}
         $legs += $leg
         $active.unityPid = $null
         $active | ConvertTo-Json | Set-Content -LiteralPath $activeFile -Encoding UTF8
@@ -172,10 +219,20 @@ try {
                 foreach ($name in @('total','passed','failed','skipped','inconclusive')) {
                     $counts[$name] += [int]$node.GetAttribute($name)
                 }
-            } catch { $runState = 'BLOCKED'; $reason = "Invalid NUnit XML: $($_.Exception.Message)" }
-        } else { $runState = 'BLOCKED'; $reason = "NUnit XML missing for $platform." }
+                $nunitStatus = if ([int]$node.GetAttribute('failed') -gt 0) { 'FAIL' } elseif ([int]$node.GetAttribute('passed') -gt 0) { 'PASS' } else { 'INCONCLUSIVE' }
+            } catch { $nunitStatus = 'INVALID_XML'; if ($runState -eq 'PASS') { $runState = 'INVALID'; $reason = "Invalid NUnit XML: $($_.Exception.Message)" } }
+        } else { $nunitStatus = 'MISSING_XML'; if ($runState -eq 'PASS') { $runState = 'INVALID'; $reason = "NUnit XML missing for $platform." } }
+        if ($dataStatus -eq 'PENDING') {
+            try {
+                if (-not (Test-Path -LiteralPath $metricPath)) { throw 'Metrics file missing.' }
+                $metric = Get-Content -LiteralPath $metricPath -Raw | ConvertFrom-Json
+                if ($metric.mode -ne $Profile -or [int]$metric.baseSeed -ne $Seed -or [int]$metric.loops -ne $runLoops -or @($metric.generationMilliseconds).Count -ne $runLoops -or [int]$metric.warmupCount -ne 3 -or -not $metric.settingsJson) { throw 'Metrics configuration or sample count mismatch.' }
+                foreach ($sample in $metric.generationMilliseconds) { if ([double]$sample -le 0 -or [double]::IsNaN([double]$sample) -or [double]::IsInfinity([double]$sample)) { throw 'Invalid sample duration.' } }
+                $dataStatus = 'COMPLETE'
+            } catch { $dataStatus = 'INVALID'; if ($runState -eq 'PASS') { $runState = 'INVALID'; $reason = $_.Exception.Message } }
+        }
         if ($counts.failed -gt 0) {
-            $runState = 'FAIL'
+            if ($runState -eq 'PASS') { $runState = 'FAIL' }
             if (-not $reason) { $reason = "NUnit failed $($counts.failed)." }
         } elseif ($runState -eq 'PASS' -and ($counts.total -eq 0 -or $counts.passed -eq 0)) {
             $runState = 'BLOCKED'
@@ -190,11 +247,12 @@ try {
     $remoteText = ($remote | Out-String).Trim()
     if ($LASTEXITCODE -eq 0 -and $remoteText -match '^([0-9a-f]{40})') {
         $postMainSha = $Matches[1]
+        $mainFreshnessStatus = if ($postMainSha -eq $mainSha) { 'CURRENT' } else { 'STALE' }
         if ($postMainSha -ne $mainSha) {
             $isStale = $true
             if ($runState -eq 'PASS') { $runState = 'STALE'; $reason = 'origin/main changed during the run.' }
         }
-    } else { if ($runState -eq 'PASS') { $runState = 'INCONCLUSIVE'; $reason = 'Could not verify post-run origin/main.' } }
+    } else { $mainFreshnessStatus = 'UNKNOWN'; if ($runState -eq 'PASS') { $runState = 'INCONCLUSIVE'; $reason = 'Could not verify post-run origin/main.' } }
     if ($runState -eq 'PASS') { $exitCode = 0 } else { $exitCode = 1 }
 } catch {
     $runState = 'BLOCKED'
@@ -203,11 +261,21 @@ try {
 } finally {
     $ended = [DateTimeOffset]::Now
     if (-not (Test-Path -LiteralPath $runDir)) { [IO.Directory]::CreateDirectory($runDir) | Out-Null }
+    try { Restore-KnownSettingsPollution }
+    catch { $worktreeStatus = 'RECOVERY_ERROR'; $settingsRecovery = $_.Exception.Message }
+    if ($worktreeStatus -in @('DIRTY_UNEXPECTED','DIRTY_RESTORE_FAILED','RECOVERY_ERROR')) {
+        if ($runState -eq 'PASS') { $runState = 'INVALID'; $reason = 'Unexpected DataTest worktree modification after test.' }
+        $exitCode = 1
+    }
+    if ($dataStatus -eq 'PENDING') { $dataStatus = 'NOT_COLLECTED' }
+    if ($runState -ne 'PASS' -and $exitCode -eq 0) { $exitCode = 1 }
     $summary = [ordered]@{
         runId=$runId;startedAt=$started.ToString('o');endedAt=$ended.ToString('o')
         timezone=[TimeZoneInfo]::Local.Id;profile=$Profile;filter=$testFilter;seed=$Seed
         requestedLoops=$runLoops;isStale=$isStale;allowedStaleUnityPid=$AllowStaleUnityPid;verifiedStaleUnityPids=$verifiedStaleUnityPids;mainSha=$mainSha;dataTestSha=$dataSha;postMainSha=$postMainSha
         status=$runState;reason=$reason;counts=$counts;legs=$legs
+        quality=[ordered]@{nunit=$nunitStatus;unityExit=$unityExitStatus;data=$dataStatus;mainFreshness=$mainFreshnessStatus;worktree=$worktreeStatus;overall=$runState}
+        settingsRecovery=$settingsRecovery
         unityVersion='2022.3.62f3c1';platform='Windows Editor';machine=$env:COMPUTERNAME
         outputDirectory=$runDir
     }
@@ -218,6 +286,8 @@ try {
         "# DataTest 运行 $runId",'',
         "- 状态：**$runState**",
         "- 原因：$reason",
+        "- 分项门禁：NUnit=$nunitStatus；Unity 退出=$unityExitStatus；数据=$dataStatus；main 时效=$mainFreshnessStatus；工作树=$worktreeStatus",
+        "- 设置恢复：$settingsRecovery",
         "- 时间：$($started.ToString('o')) → $($ended.ToString('o'))（$([TimeZoneInfo]::Local.Id)）",
         "- main SHA：$mainSha",
         "- DataTest SHA：$dataSha",

@@ -177,9 +177,9 @@ try {
         if ($counts.failed -gt 0) {
             $runState = 'FAIL'
             if (-not $reason) { $reason = "NUnit failed $($counts.failed)." }
-        } elseif ($runState -eq 'PASS' -and $counts.total -eq 0) {
+        } elseif ($runState -eq 'PASS' -and ($counts.total -eq 0 -or $counts.passed -eq 0)) {
             $runState = 'BLOCKED'
-            $reason = 'No tests matched the requested filter.'
+            $reason = 'No tests passed the requested filter.'
         } elseif ($runState -eq 'PASS' -and $proc.ExitCode -ne 0) {
             $runState = 'BLOCKED'
             $reason = "NUnit XML exists but Unity exited $($proc.ExitCode)."

@@ -43,8 +43,8 @@ public class DataTestMapProbeTests
     public void GenerateMapAndCaptureEditorMetrics()
     {
         string mode = Environment.GetEnvironmentVariable("DATATEST_PROBE_MODE");
-        if (mode != "Performance" && mode != "Memory" && mode != "Stress" && mode != "Soak")
-            Assert.Ignore("DataTest probe only runs in an explicit metrics profile.");
+        if (mode != "Smoke" && mode != "Performance" && mode != "Memory" && mode != "Stress" && mode != "Soak")
+            Assert.Ignore("DataTest probe only runs in an explicit DataTest profile.");
 
         string path = Environment.GetEnvironmentVariable("DATATEST_METRICS_PATH");
         Assert.That(path, Is.Not.Null.And.Not.Empty, "Runner must set an isolated metrics path.");

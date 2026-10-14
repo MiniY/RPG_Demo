@@ -36,13 +36,14 @@ foreach($run in $runs){
   if(-not $leg.metrics -or -not(Test-Path -LiteralPath $leg.metrics)){continue}
   try{
    $m=Get-Content -LiteralPath $leg.metrics -Raw|ConvertFrom-Json
-   $rows+=[pscustomobject]@{runId=$run.runId;startedAt=$run.startedAt;profile=$run.profile;status=$run.status;mainSha=$run.mainSha;dataTestSha=$run.dataTestSha;loops=$m.loops;meanMilliseconds=$m.meanMilliseconds;p95Milliseconds=$m.p95Milliseconds;p99Milliseconds=$m.p99Milliseconds;managedBeforeBytes=$m.managedBeforeBytes;managedAfterBytes=$m.managedAfterBytes;unityReservedBeforeBytes=$m.unityReservedBeforeBytes;unityReservedAfterBytes=$m.unityReservedAfterBytes}
+   $rows+=[pscustomobject]@{runId=$run.runId;startedAt=$run.startedAt;profile=$run.profile;status=$run.status;mainSha=$run.mainSha;dataTestSha=$run.dataTestSha;loops=$m.loops;width=$m.width;height=$m.height;unityVersion=$m.unityVersion;meanMilliseconds=$m.meanMilliseconds;p95Milliseconds=$m.p95Milliseconds;p99Milliseconds=$m.p99Milliseconds;managedBeforeBytes=$m.managedBeforeBytes;managedAfterBytes=$m.managedAfterBytes;unityReservedBeforeBytes=$m.unityReservedBeforeBytes;unityReservedAfterBytes=$m.unityReservedAfterBytes}
   }catch{}
  }
 }
 $trend=Join-Path $trendDir 'map-generator-trend.csv'
 $rows|Sort-Object startedAt|Export-Csv -LiteralPath $trend -NoTypeInformation -Encoding UTF8
-$baseline=@($rows|Where-Object {$_.profile -eq 'Performance' -and $_.status -eq 'PASS'}|Sort-Object startedAt|Select-Object -First 1)
+$validPerformance=@($rows|Where-Object {$_.profile -eq 'Performance' -and $_.status -eq 'PASS'}|Sort-Object startedAt)
+$baseline=@($validPerformance|Select-Object -First 1)
 $lines=@($marker,'# RPG_Demo DataTest 自动状态','','此页由运行器生成；精确证据以各 Run ID 的 XML、JSON 和 Unity 日志为准。','','## 同步','')
 if($sync){
  $lines+=@("- 最近检查：$($sync.checkedAt)","- 结果：**$($sync.result)**；最近成功：$($sync.lastSuccessfulSyncAt)","- main SHA：$($sync.mainSha)","- DataTest SHA：$($sync.dataTestSha)；待同步提交：$($sync.pendingCommits)","- 冲突：$($sync.conflict)；错误：$($sync.error)")
@@ -59,6 +60,12 @@ $lines+=@('','## 性能与缺陷','')
 if($baseline.Count){
  $b=$baseline[0]
  $lines+="- 首个完整 Performance Baseline：$($b.runId)，平均 $([math]::Round($b.meanMilliseconds,2)) ms，P95 $([math]::Round($b.p95Milliseconds,2)) ms。"
+ $comparable=@($validPerformance|Where-Object {$_.loops -eq $b.loops -and $_.width -eq $b.width -and $_.height -eq $b.height -and $_.unityVersion -eq $b.unityVersion})
+ if($comparable.Count -gt 1 -and [double]$b.meanMilliseconds -gt 0){
+  $last=$comparable[-1]
+  $delta=(([double]$last.meanMilliseconds-[double]$b.meanMilliseconds)/[double]$b.meanMilliseconds)*100
+  $lines+="- 同条件最新 Performance：$($last.runId)，平均 $([math]::Round($last.meanMilliseconds,2)) ms；相对首个基线 $([math]::Round($delta,2))%。没有确认阈值，差值不自动判为回归。"
+ }else{$lines+='- 尚无第二个同条件完整 Performance 样本，无法计算有效变化幅度。'}
 }else{$lines+='- 完整 Performance Baseline：尚未建立；不能判断性能回归。'}
 $lines+=@('','## 高风险与未覆盖','','- 首轮高风险：Editor 批处理在两次 Performance 运行中写出 NUnit XML 后退出超时；这些样本不作为可靠基线。','- 首轮未覆盖：Windows Player 构建与启动、真实玩家输入黑盒、战斗和背包商店全链路、长期场景资源生命周期。','- 性能退化：目前无完整 Performance 基线及后续有效样本，无法判定。')
 $lines+=@("- 指标历史：[map-generator-trend.csv](../04_性能基准与趋势/map-generator-trend.csv)（含 BLOCKED 样本，比较时按状态过滤）。","- 未关闭 Bug 记录：$openBugs。未发现不等于没有 Bug。",'- 内存泄漏结论：尚无跨进程长期证据；短循环数据只作为线索。','','## 最近运行','','| Run ID | 模式 | 状态 | main SHA | NUnit 通过/总数 |','| --- | --- | --- | --- | --- |')

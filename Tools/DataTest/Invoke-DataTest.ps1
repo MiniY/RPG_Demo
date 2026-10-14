@@ -264,14 +264,14 @@ try {
     try {
         $postRunStatus = & git -C $project status --porcelain=v1 --untracked-files=all 2>&1
         if ($LASTEXITCODE -ne 0) { throw 'Could not capture post-run Git status.' }
-        $postRunStatus | Set-Content -LiteralPath (Join-Path $runDir 'post-run.git-status.txt') -Encoding UTF8
+        [IO.File]::WriteAllText((Join-Path $runDir 'post-run.git-status.txt'),[string]($postRunStatus | Out-String))
         $postRunDiff = & git -C $project diff --binary -- 2>&1
         if ($LASTEXITCODE -ne 0) { throw 'Could not capture post-run Git diff.' }
-        $postRunDiff | Set-Content -LiteralPath (Join-Path $runDir 'post-run.git-diff.patch') -Encoding UTF8
+        [IO.File]::WriteAllText((Join-Path $runDir 'post-run.git-diff.patch'),[string]($postRunDiff | Out-String))
         Restore-KnownSettingsPollution
         $postRecoveryStatus = & git -C $project status --porcelain=v1 --untracked-files=all 2>&1
         if ($LASTEXITCODE -ne 0) { throw 'Could not capture post-recovery Git status.' }
-        $postRecoveryStatus | Set-Content -LiteralPath (Join-Path $runDir 'post-recovery.git-status.txt') -Encoding UTF8
+        [IO.File]::WriteAllText((Join-Path $runDir 'post-recovery.git-status.txt'),[string]($postRecoveryStatus | Out-String))
     }
     catch { $worktreeStatus = 'RECOVERY_ERROR'; $settingsRecovery = $_.Exception.Message }
     if ($worktreeStatus -in @('DIRTY_UNEXPECTED','DIRTY_RESTORE_FAILED','RECOVERY_ERROR')) {

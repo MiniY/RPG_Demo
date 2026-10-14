@@ -34,6 +34,9 @@ $postMainSha = ''
 $counts = [ordered]@{total=0;passed=0;failed=0;skipped=0;inconclusive=0}
 $legs = @()
 $exitCode = 2
+$testFilter = ''
+$runLoops = 0
+$isStale = $false
 function Invoke-Git([string[]]$GitArgs) {
     $lines = & git -C $project @GitArgs 2>&1
     if ($LASTEXITCODE -ne 0) { throw "git $($GitArgs -join ' ') failed ($LASTEXITCODE): $($lines -join ' ')" }
@@ -91,7 +94,7 @@ try {
         $logPath = Join-Path $runDir "$platform.log"
         $metricPath = Join-Path $runDir "$platform-metrics.json"
         $arguments = @(
-            '-batchmode','-nographics',
+            '-batchmode',
             '-projectPath',(Quote-Arg $project),
             '-runTests','-testPlatform',$platform,
             '-testResults',(Quote-Arg $xmlPath),
@@ -117,6 +120,10 @@ try {
             if (Test-Path -LiteralPath (Join-Path $runDir 'cancel.request')) { $stopReason = 'CANCELLED'; break }
             if (([DateTimeOffset]::Now - $legStarted).TotalMinutes -gt $limitMinutes) { $stopReason = 'TIMEOUT'; break }
             if ($proc.WorkingSet64 -gt ($limitMB * 1MB)) { $stopReason = 'MEMORY_LIMIT'; break }
+            if (Test-Path -LiteralPath $xmlPath) {
+                $xmlAge = ([DateTime]::UtcNow - [IO.File]::GetLastWriteTimeUtc($xmlPath)).TotalSeconds
+                if ($xmlAge -gt [int]$config.editorShutdownGraceSeconds) { $stopReason = 'EDITOR_EXIT_TIMEOUT_AFTER_XML'; break }
+            }
         }
         if ($stopReason) {
             $proc.Refresh()
@@ -138,14 +145,26 @@ try {
                 }
             } catch { $runState = 'BLOCKED'; $reason = "Invalid NUnit XML: $($_.Exception.Message)" }
         } else { $runState = 'BLOCKED'; $reason = "NUnit XML missing for $platform." }
-        if ($proc.ExitCode -ne 0 -or $counts.failed -gt 0) { $runState = 'FAIL'; if (-not $reason) { $reason = "Unity exit $($proc.ExitCode); NUnit failed $($counts.failed)." } }
+        if ($counts.failed -gt 0) {
+            $runState = 'FAIL'
+            if (-not $reason) { $reason = "NUnit failed $($counts.failed)." }
+        } elseif ($runState -eq 'PASS' -and $counts.total -eq 0) {
+            $runState = 'BLOCKED'
+            $reason = 'No tests matched the requested filter.'
+        } elseif ($runState -eq 'PASS' -and $proc.ExitCode -ne 0) {
+            $runState = 'BLOCKED'
+            $reason = "NUnit XML exists but Unity exited $($proc.ExitCode)."
+        }
         if ($runState -ne 'PASS') { break }
     }
     $remote = & git -C $project ls-remote --heads origin main 2>&1
     $remoteText = ($remote | Out-String).Trim()
     if ($LASTEXITCODE -eq 0 -and $remoteText -match '^([0-9a-f]{40})') {
         $postMainSha = $Matches[1]
-        if ($postMainSha -ne $mainSha -and $runState -eq 'PASS') { $runState = 'STALE'; $reason = 'origin/main changed during the run.' }
+        if ($postMainSha -ne $mainSha) {
+            $isStale = $true
+            if ($runState -eq 'PASS') { $runState = 'STALE'; $reason = 'origin/main changed during the run.' }
+        }
     } else { if ($runState -eq 'PASS') { $runState = 'INCONCLUSIVE'; $reason = 'Could not verify post-run origin/main.' } }
     if ($runState -eq 'PASS') { $exitCode = 0 } else { $exitCode = 1 }
 } catch {
@@ -157,8 +176,8 @@ try {
     if (-not (Test-Path -LiteralPath $runDir)) { [IO.Directory]::CreateDirectory($runDir) | Out-Null }
     $summary = [ordered]@{
         runId=$runId;startedAt=$started.ToString('o');endedAt=$ended.ToString('o')
-        timezone=[TimeZoneInfo]::Local.Id;profile=$Profile;filter=$Filter;seed=$Seed
-        requestedLoops=$Loops;allowedStaleUnityPid=$AllowStaleUnityPid;mainSha=$mainSha;dataTestSha=$dataSha;postMainSha=$postMainSha
+        timezone=[TimeZoneInfo]::Local.Id;profile=$Profile;filter=$testFilter;seed=$Seed
+        requestedLoops=$runLoops;isStale=$isStale;allowedStaleUnityPid=$AllowStaleUnityPid;mainSha=$mainSha;dataTestSha=$dataSha;postMainSha=$postMainSha
         status=$runState;reason=$reason;counts=$counts;legs=$legs
         unityVersion='2022.3.62f3c1';platform='Windows Editor';machine=$env:COMPUTERNAME
         outputDirectory=$runDir
@@ -173,8 +192,8 @@ try {
         "- 时间：$($started.ToString('o')) → $($ended.ToString('o'))（$([TimeZoneInfo]::Local.Id)）",
         "- main SHA：$mainSha",
         "- DataTest SHA：$dataSha",
-        "- 结束时远端 main SHA：$postMainSha",
-        "- 测试：$Profile；过滤器：$Filter；Seed：$Seed",
+        "- 结束时远端 main SHA：$postMainSha；是否过期：$isStale",
+        "- 测试：$Profile；过滤器：$testFilter；循环：$runLoops；Seed：$Seed",
         "- 平台：Windows Editor；Unity：2022.3.62f3c1；机器：$env:COMPUTERNAME",
         "- NUnit：总数 $($counts.total)，通过 $($counts.passed)，失败 $($counts.failed)，跳过 $($counts.skipped)，不确定 $($counts.inconclusive)",'',
         '## 原始证据','',
@@ -182,7 +201,14 @@ try {
     )
     foreach ($leg in $legs) {
         $lines += "- [$($leg.platform) XML](../07_测试证据与原始日志/$runId/$($leg.platform).xml)；[Unity 日志](../07_测试证据与原始日志/$runId/$($leg.platform).log)"
-        if (Test-Path -LiteralPath $leg.metrics) { $lines += "- [$($leg.platform) 指标](../07_测试证据与原始日志/$runId/$($leg.platform)-metrics.json)" }
+        if (Test-Path -LiteralPath $leg.metrics) {
+            $lines += "- [$($leg.platform) 指标](../07_测试证据与原始日志/$runId/$($leg.platform)-metrics.json)"
+            try {
+                $m = Get-Content -LiteralPath $leg.metrics -Raw | ConvertFrom-Json
+                $lines += "- 地图生成 Editor 插桩：平均 $([math]::Round($m.meanMilliseconds,2)) ms，P95 $([math]::Round($m.p95Milliseconds,2)) ms，P99 $([math]::Round($m.p99Milliseconds,2)) ms；循环 $($m.loops) 次，地图 $($m.width)×$($m.height)。"
+                $lines += "- 稳定态托管内存：$([math]::Round($m.managedBeforeBytes/1MB,2)) → $([math]::Round($m.managedAfterBytes/1MB,2)) MiB；Unity Reserved：$([math]::Round($m.unityReservedBeforeBytes/1MB,2)) → $([math]::Round($m.unityReservedAfterBytes/1MB,2)) MiB。单轮变化不构成泄漏结论。"
+            } catch { $lines += '- 指标 JSON 解析失败；保留原始文件供复核。' }
+        }
     }
     $lines += @('','## 结论边界','','本运行只覆盖报告列出的 Editor 测试。Player 功能、真实输入黑盒、长期内存泄漏和性能回归未由本运行证明。')
     $lines | Set-Content -LiteralPath $reportPath -Encoding UTF8

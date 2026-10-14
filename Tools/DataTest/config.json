@@ -5,11 +5,36 @@
   "unityTimeoutMinutes": 30,
   "memoryLimitMB": 8192,
   "profiles": {
-    "Smoke": { "platform": "EditMode", "filter": "RandomMapGeneratorTests", "loops": 1 },
-    "Regression": { "platform": "EditMode", "filter": "", "loops": 1 },
-    "Performance": { "platform": "EditMode", "filter": "DataTestMapProbeTests", "loops": 20 },
-    "Memory": { "platform": "EditMode", "filter": "DataTestMapProbeTests", "loops": 20 },
-    "Stress": { "platform": "EditMode", "filter": "DataTestMapProbeTests", "loops": 100 },
-    "Soak": { "platform": "EditMode", "filter": "DataTestMapProbeTests", "loops": 500 }
-  }
+    "Smoke": {
+      "platform": "EditMode",
+      "filter": "RandomMapGeneratorTests",
+      "loops": 1
+    },
+    "Regression": {
+      "platform": "EditMode",
+      "filter": "",
+      "loops": 1
+    },
+    "Performance": {
+      "platform": "EditMode",
+      "filter": "DataTestMapProbeTests",
+      "loops": 20
+    },
+    "Memory": {
+      "platform": "EditMode",
+      "filter": "DataTestMapProbeTests",
+      "loops": 20
+    },
+    "Stress": {
+      "platform": "EditMode",
+      "filter": "DataTestMapProbeTests",
+      "loops": 100
+    },
+    "Soak": {
+      "platform": "EditMode",
+      "filter": "DataTestMapProbeTests",
+      "loops": 500
+    }
+  },
+  "editorShutdownGraceSeconds": 90
 }

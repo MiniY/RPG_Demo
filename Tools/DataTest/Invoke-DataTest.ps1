@@ -103,6 +103,7 @@ try {
         Assert-LockfileFree (Join-Path $project 'Temp\UnityLockfile')
         Assert-LockfileFree 'D:\UnityProjects\RPG_Demo\Temp\UnityLockfile'
         $cimUnity = @($cimUnity | Where-Object { $_.ProcessId -notin $verifiedStaleUnityPids })
+        $others = @($others | Where-Object { $_.Id -notin $verifiedStaleUnityPids })
     }
     if ($cimUnity.Count -gt 0 -or $others.Count -gt 0) {
         throw "Unity process inventory is nonempty (CIM=$($cimUnity.Count), Process=$($others.Count)); project ownership is uncertain."

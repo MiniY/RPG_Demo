@@ -43,6 +43,13 @@ function Invoke-Git([string[]]$GitArgs) {
     return ($lines | Out-String).Trim()
 }
 function Quote-Arg([string]$Value) { return '"' + $Value.Replace('"','\"') + '"' }
+function Assert-LockfileFree([string]$Path) {
+    if (-not (Test-Path -LiteralPath $Path)) { return }
+    try {
+        $handle = [IO.File]::Open($Path,[IO.FileMode]::Open,[IO.FileAccess]::Read,[IO.FileShare]::None)
+        $handle.Dispose()
+    } catch { throw "Unity lockfile is held: $Path" }
+}
 try {
     $runGate = [IO.File]::Open($lockFile,[IO.FileMode]::OpenOrCreate,[IO.FileAccess]::ReadWrite,[IO.FileShare]::None)
     [IO.Directory]::CreateDirectory($runDir) | Out-Null
@@ -71,16 +78,15 @@ try {
         catch [System.Management.Automation.MethodInvocationException] {
             if ($_.Exception.InnerException -isnot [ArgumentException]) { throw }
         }
-        if ((Test-Path -LiteralPath (Join-Path $project 'Temp\UnityLockfile')) -or
-            (Test-Path -LiteralPath 'D:\UnityProjects\RPG_Demo\Temp\UnityLockfile')) {
-            throw 'A Unity project lockfile exists; no stale PID exception allowed.'
-        }
+        Assert-LockfileFree (Join-Path $project 'Temp\UnityLockfile')
+        Assert-LockfileFree 'D:\UnityProjects\RPG_Demo\Temp\UnityLockfile'
         $cimUnity = @($cimUnity | Where-Object { $_.ProcessId -ne $AllowStaleUnityPid })
         $others = @($others | Where-Object { $_.Id -ne $AllowStaleUnityPid })
     }
     if ($cimUnity.Count -gt 0 -or $others.Count -gt 0) {
         throw "Unity process inventory is nonempty (CIM=$($cimUnity.Count), Process=$($others.Count)); project ownership is uncertain."
     }
+    Assert-LockfileFree (Join-Path $project 'Temp\UnityLockfile')
     $spec = $config.profiles.$Profile
     $runLoops = if ($Loops -gt 0) { $Loops } else { [int]$spec.loops }
     $limitMB = if ($MaxMemoryMB -gt 0) { $MaxMemoryMB } else { [int]$config.memoryLimitMB }

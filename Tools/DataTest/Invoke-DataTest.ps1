@@ -1,0 +1,177 @@
+﻿[CmdletBinding()]
+param(
+    [ValidateSet('Smoke','Regression','Performance','Memory','Stress','Soak')]
+    [string]$Profile = 'Smoke',
+    [string]$Filter = '',
+    [int]$Seed = 20260929,
+    [int]$Loops = 0,
+    [int]$TimeoutMinutes = 0,
+    [int]$MaxMemoryMB = 0,
+    [switch]$SkipSync
+)
+Set-StrictMode -Version Latest
+$ErrorActionPreference = 'Stop'
+$config = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'config.json') -Raw | ConvertFrom-Json
+$project = [IO.Path]::GetFullPath($config.projectPath)
+$output = [IO.Path]::GetFullPath($config.outputRoot)
+$stateDir = Join-Path $output '01_环境与同步'
+$reportsDir = Join-Path $output '03_测试运行报告'
+$rawDir = Join-Path $output '07_测试证据与原始日志'
+foreach ($dir in @($stateDir,$reportsDir,$rawDir)) { [IO.Directory]::CreateDirectory($dir) | Out-Null }
+$lockFile = Join-Path $stateDir 'run.lock'
+$activeFile = Join-Path $stateDir 'active-run.json'
+$runId = [DateTimeOffset]::Now.ToString('yyyyMMdd-HHmmss') + '-' + ([guid]::NewGuid().ToString('N').Substring(0,8))
+$runDir = Join-Path $rawDir $runId
+$runGate = $null
+$proc = $null
+$started = [DateTimeOffset]::Now
+$runState = 'BLOCKED'
+$reason = ''
+$mainSha = ''
+$dataSha = ''
+$postMainSha = ''
+$counts = [ordered]@{total=0;passed=0;failed=0;skipped=0;inconclusive=0}
+$legs = @()
+$exitCode = 2
+function Invoke-Git([string[]]$GitArgs) {
+    $lines = & git -C $project @GitArgs 2>&1
+    if ($LASTEXITCODE -ne 0) { throw "git $($GitArgs -join ' ') failed ($LASTEXITCODE): $($lines -join ' ')" }
+    return ($lines | Out-String).Trim()
+}
+function Quote-Arg([string]$Value) { return '"' + $Value.Replace('"','\"') + '"' }
+try {
+    $runGate = [IO.File]::Open($lockFile,[IO.FileMode]::OpenOrCreate,[IO.FileAccess]::ReadWrite,[IO.FileShare]::None)
+    [IO.Directory]::CreateDirectory($runDir) | Out-Null
+    $active = [ordered]@{runId=$runId;startedAt=$started.ToString('o');profile=$Profile;project=$project;runnerPid=$PID;unityPid=$null}
+    $active | ConvertTo-Json | Set-Content -LiteralPath $activeFile -Encoding UTF8
+    if (-not $SkipSync) {
+        & (Join-Path $PSScriptRoot 'Sync-DataTest.ps1') -FromRunner | Out-Null
+        if ($LASTEXITCODE -ne 0) { throw 'Pre-run synchronization did not pass; see sync-status.json.' }
+    }
+    $syncState = Get-Content -LiteralPath (Join-Path $stateDir 'sync-status.json') -Raw | ConvertFrom-Json
+    if ($syncState.result -notin @('MERGED','UNCHANGED')) { throw "Sync state is $($syncState.result)." }
+    $mainSha = [string]$syncState.mainSha
+    $dataSha = Invoke-Git -GitArgs @('rev-parse','HEAD')
+    & git -C $project merge-base --is-ancestor $mainSha HEAD 2>$null
+    if ($LASTEXITCODE -ne 0) { throw 'DataTest does not contain checked origin/main SHA.' }
+    if ((Invoke-Git -GitArgs @('status','--porcelain=v1','--untracked-files=all'))) { throw 'DataTest contains uncommitted files.' }
+    if (-not (Test-Path -LiteralPath $config.editorPath)) { throw 'Configured Unity Editor executable is missing.' }
+    try { $cimUnity = @(Get-CimInstance Win32_Process -Filter "name = 'Unity.exe'" -ErrorAction Stop) }
+    catch { throw "Cannot verify Unity process inventory: $($_.Exception.Message)" }
+    $others = @(Get-Process -Name Unity -ErrorAction SilentlyContinue)
+    if ($cimUnity.Count -gt 0 -or $others.Count -gt 0) {
+        throw "Unity process inventory is nonempty (CIM=$($cimUnity.Count), Process=$($others.Count)); project ownership is uncertain."
+    }
+    $spec = $config.profiles.$Profile
+    $runLoops = if ($Loops -gt 0) { $Loops } else { [int]$spec.loops }
+    $limitMB = if ($MaxMemoryMB -gt 0) { $MaxMemoryMB } else { [int]$config.memoryLimitMB }
+    $limitMinutes = if ($TimeoutMinutes -gt 0) { $TimeoutMinutes } else { [int]$config.unityTimeoutMinutes }
+    if ($runLoops -lt 1 -or $runLoops -gt 10000 -or $limitMB -lt 512 -or $limitMinutes -lt 1 -or $limitMinutes -gt 1440) { throw 'Requested resource limits are invalid.' }
+    $platforms = if ($Profile -eq 'Regression') { @('EditMode','PlayMode') } else { @([string]$spec.platform) }
+    $testFilter = if ($Filter) { $Filter } else { [string]$spec.filter }
+    $runState = 'PASS'
+    foreach ($platform in $platforms) {
+        $xmlPath = Join-Path $runDir "$platform.xml"
+        $logPath = Join-Path $runDir "$platform.log"
+        $metricPath = Join-Path $runDir "$platform-metrics.json"
+        $arguments = @(
+            '-batchmode','-nographics','-quit',
+            '-projectPath',(Quote-Arg $project),
+            '-runTests','-testPlatform',$platform,
+            '-testResults',(Quote-Arg $xmlPath),
+            '-logFile',(Quote-Arg $logPath)
+        )
+        if ($testFilter) { $arguments += @('-testFilter',(Quote-Arg $testFilter)) }
+        $psi = New-Object Diagnostics.ProcessStartInfo
+        $psi.FileName = [string]$config.editorPath
+        $psi.Arguments = $arguments -join ' '
+        $psi.UseShellExecute = $false
+        $psi.CreateNoWindow = $true
+        $psi.EnvironmentVariables['DATATEST_PROBE_MODE'] = $Profile
+        $psi.EnvironmentVariables['DATATEST_PROBE_SEED'] = [string]$Seed
+        $psi.EnvironmentVariables['DATATEST_PROBE_LOOPS'] = [string]$runLoops
+        $psi.EnvironmentVariables['DATATEST_METRICS_PATH'] = $metricPath
+        $proc = [Diagnostics.Process]::Start($psi)
+        $active.unityPid = $proc.Id
+        $active | ConvertTo-Json | Set-Content -LiteralPath $activeFile -Encoding UTF8
+        $legStarted = [DateTimeOffset]::Now
+        $stopReason = ''
+        while (-not $proc.WaitForExit(1000)) {
+            $proc.Refresh()
+            if (Test-Path -LiteralPath (Join-Path $runDir 'cancel.request')) { $stopReason = 'CANCELLED'; break }
+            if (([DateTimeOffset]::Now - $legStarted).TotalMinutes -gt $limitMinutes) { $stopReason = 'TIMEOUT'; break }
+            if ($proc.WorkingSet64 -gt ($limitMB * 1MB)) { $stopReason = 'MEMORY_LIMIT'; break }
+        }
+        if ($stopReason) {
+            $proc.Refresh()
+            if (-not $proc.HasExited) { $proc.Kill(); $proc.WaitForExit(30000) | Out-Null }
+            $runState = 'BLOCKED'
+            $reason = $stopReason
+        }
+        $leg = [ordered]@{platform=$platform;exitCode=$proc.ExitCode;xml=$xmlPath;log=$logPath;metrics=$metricPath;stopReason=$stopReason}
+        $legs += $leg
+        $active.unityPid = $null
+        $active | ConvertTo-Json | Set-Content -LiteralPath $activeFile -Encoding UTF8
+        if (Test-Path -LiteralPath $xmlPath) {
+            try {
+                [xml]$doc = Get-Content -LiteralPath $xmlPath -Raw
+                $node = $doc.'test-run'
+                if (-not $node) { throw 'NUnit test-run node missing.' }
+                foreach ($name in @('total','passed','failed','skipped','inconclusive')) {
+                    $counts[$name] += [int]$node.GetAttribute($name)
+                }
+            } catch { $runState = 'BLOCKED'; $reason = "Invalid NUnit XML: $($_.Exception.Message)" }
+        } else { $runState = 'BLOCKED'; $reason = "NUnit XML missing for $platform." }
+        if ($proc.ExitCode -ne 0 -or $counts.failed -gt 0) { $runState = 'FAIL'; if (-not $reason) { $reason = "Unity exit $($proc.ExitCode); NUnit failed $($counts.failed)." } }
+        if ($runState -ne 'PASS') { break }
+    }
+    $remote = & git -C $project ls-remote --heads origin main 2>&1
+    $remoteText = ($remote | Out-String).Trim()
+    if ($LASTEXITCODE -eq 0 -and $remoteText -match '^([0-9a-f]{40})') {
+        $postMainSha = $Matches[1]
+        if ($postMainSha -ne $mainSha -and $runState -eq 'PASS') { $runState = 'STALE'; $reason = 'origin/main changed during the run.' }
+    } else { if ($runState -eq 'PASS') { $runState = 'INCONCLUSIVE'; $reason = 'Could not verify post-run origin/main.' } }
+    if ($runState -eq 'PASS') { $exitCode = 0 } else { $exitCode = 1 }
+} catch {
+    $runState = 'BLOCKED'
+    $reason = $_.Exception.Message
+    $exitCode = 2
+} finally {
+    $ended = [DateTimeOffset]::Now
+    if (-not (Test-Path -LiteralPath $runDir)) { [IO.Directory]::CreateDirectory($runDir) | Out-Null }
+    $summary = [ordered]@{
+        runId=$runId;startedAt=$started.ToString('o');endedAt=$ended.ToString('o')
+        timezone=[TimeZoneInfo]::Local.Id;profile=$Profile;filter=$Filter;seed=$Seed
+        requestedLoops=$Loops;mainSha=$mainSha;dataTestSha=$dataSha;postMainSha=$postMainSha
+        status=$runState;reason=$reason;counts=$counts;legs=$legs
+        unityVersion='2022.3.62f3c1';platform='Windows Editor';machine=$env:COMPUTERNAME
+        outputDirectory=$runDir
+    }
+    $summaryPath = Join-Path $runDir 'summary.json'
+    $summary | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $summaryPath -Encoding UTF8
+    $reportPath = Join-Path $reportsDir "$runId.md"
+    $lines = @(
+        "# DataTest 运行 $runId",'',
+        "- 状态：**$runState**",
+        "- 原因：$reason",
+        "- 时间：$($started.ToString('o')) → $($ended.ToString('o'))（$([TimeZoneInfo]::Local.Id)）",
+        "- main SHA：$mainSha",
+        "- DataTest SHA：$dataSha",
+        "- 结束时远端 main SHA：$postMainSha",
+        "- 测试：$Profile；过滤器：$Filter；Seed：$Seed",
+        "- 平台：Windows Editor；Unity：2022.3.62f3c1；机器：$env:COMPUTERNAME",
+        "- NUnit：总数 $($counts.total)，通过 $($counts.passed)，失败 $($counts.failed)，跳过 $($counts.skipped)，不确定 $($counts.inconclusive)",'',
+        '## 原始证据','',
+        "- [summary.json](../07_测试证据与原始日志/$runId/summary.json)"
+    )
+    foreach ($leg in $legs) {
+        $lines += "- [$($leg.platform) XML](../07_测试证据与原始日志/$runId/$($leg.platform).xml)；[Unity 日志](../07_测试证据与原始日志/$runId/$($leg.platform).log)"
+        if (Test-Path -LiteralPath $leg.metrics) { $lines += "- [$($leg.platform) 指标](../07_测试证据与原始日志/$runId/$($leg.platform)-metrics.json)" }
+    }
+    $lines += @('','## 结论边界','','本运行只覆盖报告列出的 Editor 测试。Player 功能、真实输入黑盒、长期内存泄漏和性能回归未由本运行证明。')
+    $lines | Set-Content -LiteralPath $reportPath -Encoding UTF8
+    if (Test-Path -LiteralPath $activeFile) { Remove-Item -LiteralPath $activeFile -Force }
+    if ($runGate) { $runGate.Dispose() }
+    Write-Output ($summary | ConvertTo-Json -Depth 8)
+}
+exit $exitCode

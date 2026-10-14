@@ -59,6 +59,21 @@ try {
     try { $cimUnity = @(Get-CimInstance Win32_Process -Filter "name = 'Unity.exe'" -ErrorAction Stop) }
     catch { throw "Cannot verify Unity process inventory: $($_.Exception.Message)" }
     $others = @(Get-Process -Name Unity -ErrorAction SilentlyContinue)
+    if ($AllowStaleUnityPid -gt 0) {
+        $stale = @($cimUnity | Where-Object { $_.ProcessId -eq $AllowStaleUnityPid })
+        if ($stale.Count -ne 1 -or [int]$stale[0].HandleCount -ne 0) { throw 'Stale Unity PID exception could not be verified.' }
+        try { $opened = [Diagnostics.Process]::GetProcessById($AllowStaleUnityPid); $opened.Dispose(); throw 'Unity PID is still openable; no exception allowed.' }
+        catch [ArgumentException] {}
+        catch [System.Management.Automation.MethodInvocationException] {
+            if ($_.Exception.InnerException -isnot [ArgumentException]) { throw }
+        }
+        if ((Test-Path -LiteralPath (Join-Path $project 'Temp\UnityLockfile')) -or
+            (Test-Path -LiteralPath 'D:\UnityProjects\RPG_Demo\Temp\UnityLockfile')) {
+            throw 'A Unity project lockfile exists; no stale PID exception allowed.'
+        }
+        $cimUnity = @($cimUnity | Where-Object { $_.ProcessId -ne $AllowStaleUnityPid })
+        $others = @($others | Where-Object { $_.Id -ne $AllowStaleUnityPid })
+    }
     if ($cimUnity.Count -gt 0 -or $others.Count -gt 0) {
         throw "Unity process inventory is nonempty (CIM=$($cimUnity.Count), Process=$($others.Count)); project ownership is uncertain."
     }
@@ -142,7 +157,7 @@ try {
     $summary = [ordered]@{
         runId=$runId;startedAt=$started.ToString('o');endedAt=$ended.ToString('o')
         timezone=[TimeZoneInfo]::Local.Id;profile=$Profile;filter=$Filter;seed=$Seed
-        requestedLoops=$Loops;mainSha=$mainSha;dataTestSha=$dataSha;postMainSha=$postMainSha
+        requestedLoops=$Loops;allowedStaleUnityPid=$AllowStaleUnityPid;mainSha=$mainSha;dataTestSha=$dataSha;postMainSha=$postMainSha
         status=$runState;reason=$reason;counts=$counts;legs=$legs
         unityVersion='2022.3.62f3c1';platform='Windows Editor';machine=$env:COMPUTERNAME
         outputDirectory=$runDir

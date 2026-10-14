@@ -117,32 +117,26 @@ try {
     try { $cimUnity = @(Get-CimInstance Win32_Process -Filter "name = 'Unity.exe'" -ErrorAction Stop) }
     catch { throw "Cannot verify Unity process inventory: $($_.Exception.Message)" }
     $others = @(Get-Process -Name Unity -ErrorAction SilentlyContinue)
+    $verifiedStaleUnityPids = @()
     if ($AllowStaleUnityPid -gt 0) {
         $stale = @($cimUnity | Where-Object { $_.ProcessId -eq $AllowStaleUnityPid })
-        if ($stale.Count -ne 1 -or [int]$stale[0].HandleCount -ne 0) { throw 'Stale Unity PID exception could not be verified.' }
-        try { $opened = [Diagnostics.Process]::GetProcessById($AllowStaleUnityPid); $opened.Dispose(); throw 'Unity PID is still openable; no exception allowed.' }
-        catch [ArgumentException] {}
-        catch [System.Management.Automation.MethodInvocationException] {
-            if ($_.Exception.InnerException -isnot [ArgumentException]) { throw }
+        $staleProcess = @($others | Where-Object { $_.Id -eq $AllowStaleUnityPid })
+        if ($stale.Count -ne 1 -or [int]$stale[0].HandleCount -ne 0 -or
+            $staleProcess.Count -ne 1 -or [int]$staleProcess[0].HandleCount -ne 0) {
+            throw 'Stale Unity PID exception could not be verified in both process views.'
         }
         Assert-LockfileFree (Join-Path $project 'Temp\UnityLockfile')
         Assert-LockfileFree 'D:\UnityProjects\RPG_Demo\Temp\UnityLockfile'
+        $verifiedStaleUnityPids += $AllowStaleUnityPid
         $cimUnity = @($cimUnity | Where-Object { $_.ProcessId -ne $AllowStaleUnityPid })
         $others = @($others | Where-Object { $_.Id -ne $AllowStaleUnityPid })
     }
-    $verifiedStaleUnityPids = @()
     foreach ($candidate in $cimUnity) {
         if ([int]$candidate.HandleCount -ne 0) { continue }
-        $missing = $false
-        try {
-            $opened = [Diagnostics.Process]::GetProcessById([int]$candidate.ProcessId)
-            $opened.Dispose()
-        } catch [ArgumentException] { $missing = $true }
-        catch [System.Management.Automation.MethodInvocationException] {
-            if ($_.Exception.InnerException -is [ArgumentException]) { $missing = $true }
-            else { throw }
+        $corroborating = @($others | Where-Object { $_.Id -eq $candidate.ProcessId })
+        if ($corroborating.Count -eq 1 -and [int]$corroborating[0].HandleCount -eq 0) {
+            $verifiedStaleUnityPids += [int]$candidate.ProcessId
         }
-        if ($missing) { $verifiedStaleUnityPids += [int]$candidate.ProcessId }
     }
     if ($verifiedStaleUnityPids.Count -gt 0) {
         Assert-LockfileFree (Join-Path $project 'Temp\UnityLockfile')

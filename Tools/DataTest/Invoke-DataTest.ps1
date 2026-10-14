@@ -7,7 +7,8 @@ param(
     [int]$Loops = 0,
     [int]$TimeoutMinutes = 0,
     [int]$MaxMemoryMB = 0,
-    [switch]$SkipSync
+    [switch]$SkipSync,
+    [int]$AllowStaleUnityPid = 0
 )
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'

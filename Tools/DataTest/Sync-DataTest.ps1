@@ -94,6 +94,11 @@ try {
     if ($gate) { $gate.Dispose() }
 }
 $state | ConvertTo-Json -Depth 5
+$dashboardScript = Join-Path $PSScriptRoot 'Update-DataTestDashboard.ps1'
+if (Test-Path -LiteralPath $dashboardScript) {
+    try { & $dashboardScript | Out-Null }
+    catch { $_.Exception.Message | Add-Content -LiteralPath (Join-Path $stateDir 'dashboard-errors.log') -Encoding UTF8 }
+}
 if ($exitCode -eq 0 -and $changed -and $AutoSmoke) {
     & (Join-Path $PSScriptRoot 'Invoke-DataTest.ps1') -Profile Smoke -SkipSync
     exit $LASTEXITCODE

@@ -5,7 +5,7 @@ param(
 )
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
-$config = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'config.json') -Raw | ConvertFrom-Json
+$config = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'config.json') -Raw -Encoding UTF8 | ConvertFrom-Json
 $project = [IO.Path]::GetFullPath($config.projectPath)
 $output = [IO.Path]::GetFullPath($config.outputRoot)
 $stateDir = Join-Path $output '01_环境与同步'
@@ -25,7 +25,7 @@ $state = [ordered]@{
     error = $null
 }
 if (Test-Path -LiteralPath $stateFile) {
-    try { $previous = Get-Content -LiteralPath $stateFile -Raw | ConvertFrom-Json; $state.lastSuccessfulSyncAt = $previous.lastSuccessfulSyncAt } catch {}
+    try { $previous = Get-Content -LiteralPath $stateFile -Raw -Encoding UTF8 | ConvertFrom-Json; $state.lastSuccessfulSyncAt = $previous.lastSuccessfulSyncAt } catch {}
 }
 function Invoke-Git([string[]]$GitArgs) {
     $lines = & git -C $project @GitArgs 2>&1

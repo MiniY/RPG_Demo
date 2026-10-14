@@ -13,7 +13,7 @@ param(
 )
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
-$config = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'config.json') -Raw | ConvertFrom-Json
+$config = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'config.json') -Raw -Encoding UTF8 | ConvertFrom-Json
 $project = [IO.Path]::GetFullPath($config.projectPath)
 $output = [IO.Path]::GetFullPath($config.outputRoot)
 $stateDir = Join-Path $output '01_环境与同步'
@@ -61,7 +61,11 @@ function Assert-LockfileFree([string]$Path) {
     } catch { throw "Unity lockfile is held: $Path" }
 }
 function Restore-KnownSettingsPollution {
-    if ($null -eq $settingsBefore) { return }
+    if ($null -eq $settingsBefore) {
+        $preRunDirty = @(Invoke-Git -GitArgs @('status','--porcelain=v1','--untracked-files=all') | Where-Object { $_ })
+        $script:worktreeStatus = if ($preRunDirty.Count -eq 0) { 'CLEAN' } else { 'DIRTY_PREEXISTING' }
+        return
+    }
     $dirtyPaths = @(Invoke-Git -GitArgs @('status','--porcelain=v1','--untracked-files=all') | Where-Object { $_ })
     if ($dirtyPaths.Count -eq 0) { $script:worktreeStatus = 'CLEAN'; return }
     if ($dirtyPaths.Count -ne 1 -or $dirtyPaths[0] -ne 'M ProjectSettings/ProjectSettings.asset') {
@@ -81,7 +85,7 @@ function Restore-KnownSettingsPollution {
         return
     }
     [IO.File]::WriteAllBytes((Join-Path $runDir 'ProjectSettings.polluted.asset'),$after)
-    $diff = & git -C $project diff -- ProjectSettings/ProjectSettings.asset 2>&1
+    $diff = & git -c core.safecrlf=false -C $project diff -- ProjectSettings/ProjectSettings.asset 2>&1
     $diff | Set-Content -LiteralPath (Join-Path $runDir 'ProjectSettings.pollution.diff') -Encoding UTF8
     [IO.File]::WriteAllBytes($settingsPath,$settingsBefore)
     if (Invoke-Git -GitArgs @('status','--porcelain=v1','--untracked-files=all')) {
@@ -100,7 +104,7 @@ try {
         & (Join-Path $PSScriptRoot 'Sync-DataTest.ps1') -FromRunner | Out-Null
         if ($LASTEXITCODE -ne 0) { throw 'Pre-run synchronization did not pass; see sync-status.json.' }
     }
-    $syncState = Get-Content -LiteralPath (Join-Path $stateDir 'sync-status.json') -Raw | ConvertFrom-Json
+    $syncState = Get-Content -LiteralPath (Join-Path $stateDir 'sync-status.json') -Raw -Encoding UTF8 | ConvertFrom-Json
     if ($syncState.result -notin @('MERGED','UNCHANGED')) { throw "Sync state is $($syncState.result)." }
     $mainSha = [string]$syncState.mainSha
     $dataSha = Invoke-Git -GitArgs @('rev-parse','HEAD')
@@ -213,7 +217,7 @@ try {
         $active | ConvertTo-Json | Set-Content -LiteralPath $activeFile -Encoding UTF8
         if (Test-Path -LiteralPath $xmlPath) {
             try {
-                [xml]$doc = Get-Content -LiteralPath $xmlPath -Raw
+                [xml]$doc = Get-Content -LiteralPath $xmlPath -Raw -Encoding UTF8
                 $node = $doc.'test-run'
                 if (-not $node) { throw 'NUnit test-run node missing.' }
                 foreach ($name in @('total','passed','failed','skipped','inconclusive')) {
@@ -225,7 +229,7 @@ try {
         if ($dataStatus -eq 'PENDING') {
             try {
                 if (-not (Test-Path -LiteralPath $metricPath)) { throw 'Metrics file missing.' }
-                $metric = Get-Content -LiteralPath $metricPath -Raw | ConvertFrom-Json
+                $metric = Get-Content -LiteralPath $metricPath -Raw -Encoding UTF8 | ConvertFrom-Json
                 if ($metric.mode -ne $Profile -or [int]$metric.baseSeed -ne $Seed -or [int]$metric.loops -ne $runLoops -or @($metric.generationMilliseconds).Count -ne $runLoops -or [int]$metric.warmupCount -ne 3 -or -not $metric.settingsJson) { throw 'Metrics configuration or sample count mismatch.' }
                 foreach ($sample in $metric.generationMilliseconds) { if ([double]$sample -le 0 -or [double]::IsNaN([double]$sample) -or [double]::IsInfinity([double]$sample)) { throw 'Invalid sample duration.' } }
                 $dataStatus = 'COMPLETE'
@@ -265,7 +269,7 @@ try {
         $postRunStatus = & git -C $project status --porcelain=v1 --untracked-files=all 2>&1
         if ($LASTEXITCODE -ne 0) { throw 'Could not capture post-run Git status.' }
         [IO.File]::WriteAllText((Join-Path $runDir 'post-run.git-status.txt'),[string]($postRunStatus | Out-String))
-        $postRunDiff = & git -C $project diff --binary -- 2>&1
+        $postRunDiff = & git -c core.safecrlf=false -C $project diff --binary -- 2>&1
         if ($LASTEXITCODE -ne 0) { throw 'Could not capture post-run Git diff.' }
         [IO.File]::WriteAllText((Join-Path $runDir 'post-run.git-diff.patch'),[string]($postRunDiff | Out-String))
         Restore-KnownSettingsPollution
@@ -317,7 +321,7 @@ try {
         if (Test-Path -LiteralPath $leg.metrics) {
             $lines += "- [$($leg.platform) 指标](../07_测试证据与原始日志/$runId/$($leg.platform)-metrics.json)"
             try {
-                $m = Get-Content -LiteralPath $leg.metrics -Raw | ConvertFrom-Json
+                $m = Get-Content -LiteralPath $leg.metrics -Raw -Encoding UTF8 | ConvertFrom-Json
                 $lines += "- 地图生成 Editor 插桩：平均 $([math]::Round($m.meanMilliseconds,2)) ms，P95 $([math]::Round($m.p95Milliseconds,2)) ms，P99 $([math]::Round($m.p99Milliseconds,2)) ms；循环 $($m.loops) 次，地图 $($m.width)×$($m.height)。"
                 $lines += "- 稳定态托管内存：$([math]::Round($m.managedBeforeBytes/1MB,2)) → $([math]::Round($m.managedAfterBytes/1MB,2)) MiB；Unity Reserved：$([math]::Round($m.unityReservedBeforeBytes/1MB,2)) → $([math]::Round($m.unityReservedAfterBytes/1MB,2)) MiB。单轮变化不构成泄漏结论。"
             } catch { $lines += '- 指标 JSON 解析失败；保留原始文件供复核。' }

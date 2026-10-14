@@ -2,7 +2,7 @@
 param()
 Set-StrictMode -Version Latest
 $ErrorActionPreference='Stop'
-$config=Get-Content -LiteralPath (Join-Path $PSScriptRoot 'config.json') -Raw|ConvertFrom-Json
+$config=Get-Content -LiteralPath (Join-Path $PSScriptRoot 'config.json') -Raw -Encoding UTF8|ConvertFrom-Json
 $root=[IO.Path]::GetFullPath($config.outputRoot)
 $center=Join-Path $root '00_测试中心'
 $trendDir=Join-Path $root '04_性能基准与趋势'
@@ -15,12 +15,12 @@ if(Test-Path -LiteralPath $page){
  if((Get-Content -LiteralPath $page -TotalCount 1) -ne $marker){throw 'Dashboard lacks generated marker; refuse overwrite.'}
 }
 $syncPath=Join-Path $root '01_环境与同步\sync-status.json'
-$sync=if(Test-Path -LiteralPath $syncPath){Get-Content -LiteralPath $syncPath -Raw|ConvertFrom-Json}else{$null}
+$sync=if(Test-Path -LiteralPath $syncPath){Get-Content -LiteralPath $syncPath -Raw -Encoding UTF8|ConvertFrom-Json}else{$null}
 $runs=@()
 foreach($directory in @(Get-ChildItem -LiteralPath $rawDir -Directory -ErrorAction SilentlyContinue)){
  $summaryPath=Join-Path $directory.FullName 'summary.json'
  if(-not(Test-Path -LiteralPath $summaryPath)){continue}
- try{$runs+=Get-Content -LiteralPath $summaryPath -Raw|ConvertFrom-Json}catch{}
+ try{$runs+=Get-Content -LiteralPath $summaryPath -Raw -Encoding UTF8|ConvertFrom-Json}catch{}
 }
 $runs=@($runs|Sort-Object startedAt -Descending)
 $latest=if($runs.Count){$runs[0]}else{$null}
@@ -28,7 +28,7 @@ $latestMainPass=@($runs|Where-Object {$sync -and $_.mainSha -eq $sync.mainSha -a
 $bugs=@(Get-ChildItem -LiteralPath $bugsDir -Filter 'BUG-*.md' -File -ErrorAction SilentlyContinue)
 $openBugs=0
 foreach($f in $bugs){
- $line=Get-Content -LiteralPath $f.FullName|Where-Object {$_ -match '^- 状态：'}|Select-Object -First 1
+ $line=Get-Content -LiteralPath $f.FullName -Encoding UTF8|Where-Object {$_ -match '^- 状态：'}|Select-Object -First 1
  if($line -notmatch 'VERIFIED|CLOSED'){$openBugs++}
 }
 $rows=@()
@@ -37,7 +37,7 @@ foreach($run in $runs){
   if(-not $leg){continue}
   if(-not $leg.metrics -or -not(Test-Path -LiteralPath $leg.metrics)){continue}
   try{
-   $m=Get-Content -LiteralPath $leg.metrics -Raw|ConvertFrom-Json
+   $m=Get-Content -LiteralPath $leg.metrics -Raw -Encoding UTF8|ConvertFrom-Json
    $settingsHash=''
    $settingsJson=if($m.PSObject.Properties['settingsJson']){[string]$m.settingsJson}else{''}
    if($settingsJson){$bytes=[Text.Encoding]::UTF8.GetBytes($settingsJson);$sha=[Security.Cryptography.SHA256]::Create();try{$settingsHash=([BitConverter]::ToString($sha.ComputeHash($bytes))).Replace('-','').ToLowerInvariant()}finally{$sha.Dispose()}}

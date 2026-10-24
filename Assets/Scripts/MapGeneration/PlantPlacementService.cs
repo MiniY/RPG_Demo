@@ -10,6 +10,11 @@ public interface IPlantPlacementTarget
     void SetPlacementAvailable(bool available);
 }
 
+public interface IGenerationScopedSceneReuse
+{
+    void PrepareForGenerationReuse();
+}
+
 [Serializable]
 public sealed class PlantPlacementBinding
 {
@@ -70,6 +75,7 @@ public sealed class PlantPlacementService : MonoBehaviour
         new Dictionary<string, Vector2Int>(StringComparer.Ordinal);
     private readonly List<GameObject> reinitializationTargets = new List<GameObject>();
     private Guid? plannedGenerationId;
+    private bool plannedEcology;
 
     public static string[] CurrentLogicalObjectIds =>
         (string[])currentLogicalObjectIds.Clone();
@@ -84,7 +90,17 @@ public sealed class PlantPlacementService : MonoBehaviour
     public IReadOnlyList<PlantPlacementResult> Plan(
         MapGenerationAttempt attempt,
         MapData map,
-        MapPlacementPlan plan)
+        MapPlacementPlan plan) => Plan(attempt, map, plan, false);
+
+    public IReadOnlyList<PlantPlacementResult> Plan(
+        MapGenerationAttempt attempt,
+        MapData map,
+        MapPlacementPlan plan,
+        bool ecologyProfile)
+        => Plan(attempt, map, plan, ecologyProfile, attempt?.AttemptSeed ?? 0);
+
+    public IReadOnlyList<PlantPlacementResult> Plan(MapGenerationAttempt attempt, MapData map,
+        MapPlacementPlan plan, bool ecologyProfile, int placementSeed, Func<Vector2Int, bool> surfaceQualification = null)
     {
         if (attempt == null) throw new ArgumentNullException(nameof(attempt));
         if (map == null) throw new ArgumentNullException(nameof(map));
@@ -103,6 +119,8 @@ public sealed class PlantPlacementService : MonoBehaviour
         List<PlantPlacementResult> results = new List<PlantPlacementResult>();
         foreach (PlantPlacementBinding binding in orderedBindings)
         {
+            if (ecologyProfile && !IsSweetPotato(binding.LogicalObjectId))
+                continue;
             PlantSemanticPlacementRequest request = new PlantSemanticPlacementRequest(
                 new MapPlacementRequest(
                     binding.LogicalObjectId,
@@ -112,10 +130,11 @@ public sealed class PlantPlacementService : MonoBehaviour
                     true),
                 profile);
             PlantPlacementResult result = policy.SelectOptional(
-                attempt.AttemptSeed,
+                placementSeed,
                 map,
                 plan,
-                request);
+                request,
+                surfaceQualification);
             if (result == null)
                 continue;
 
@@ -147,6 +166,7 @@ public sealed class PlantPlacementService : MonoBehaviour
         }
 
         plannedGenerationId = attempt.GenerationId;
+        plannedEcology = ecologyProfile;
         return results.AsReadOnly();
     }
 
@@ -154,6 +174,13 @@ public sealed class PlantPlacementService : MonoBehaviour
         MapRuntimeContext context,
         Guid generationId,
         MapCoordinateBoundary coordinates,
+        out string reason) => TryMaterialize(context, generationId, coordinates, false, out reason);
+
+    public bool TryMaterialize(
+        MapRuntimeContext context,
+        Guid generationId,
+        MapCoordinateBoundary coordinates,
+        bool ecologyProfile,
         out string reason)
     {
         reason = string.Empty;
@@ -178,7 +205,7 @@ public sealed class PlantPlacementService : MonoBehaviour
             return Fail(context, generationId, MapFailureCategory.Lifecycle,
                 "DuplicatePlantMaterialization",
                 "Plant materialization rejected a duplicate Current Generation operation.", out reason);
-        if (plannedGenerationId != generationId)
+        if (plannedGenerationId != generationId || plannedEcology != ecologyProfile)
             return Fail(context, generationId, MapFailureCategory.StaleResult,
                 "StalePlantPlacementResult",
                 "Plant materialization rejected a stale semantic placement result.", out reason);
@@ -242,6 +269,12 @@ public sealed class PlantPlacementService : MonoBehaviour
                 body.position = destination;
             }
             placementTransform.position = destination;
+            if (context.ActivePlacementPlan.Ecology != null)
+            {
+                if (!(target is IGenerationScopedSceneReuse reuse))
+                    return Fail(context, generationId, MapFailureCategory.Configuration, "ZonedSceneReuseMissing", "Accepted scene plant lacks an explicit generation reuse owner.", out reason);
+                reuse.PrepareForGenerationReuse();
+            }
             target.SetPlacementAvailable(true);
 
             if (!context.ActiveRegistry.TryBindInstance(
@@ -268,6 +301,10 @@ public sealed class PlantPlacementService : MonoBehaviour
 
     public bool TryGetMaterializedCell(string logicalObjectId, out Vector2Int cell) =>
         materializedCells.TryGetValue(logicalObjectId, out cell);
+
+    private static bool IsSweetPotato(string logicalId) =>
+        logicalId.StartsWith(SweetPotatoBigLogicalIdPrefix, StringComparison.Ordinal) ||
+        logicalId.StartsWith(SweetPotatoSmallLogicalIdPrefix, StringComparison.Ordinal);
 
     private List<PlantPlacementBinding> ValidateAndOrderBindings(Guid generationId)
     {
@@ -352,12 +389,12 @@ public sealed class PlantPlacementService : MonoBehaviour
     private static void OmitTarget(IPlantPlacementTarget target)
     {
         GameObject targetObject = target.ReinitializationTarget;
-        target.SetPlacementAvailable(false);
         if (targetObject.activeInHierarchy &&
             target is IMapDependentReinitializable reinitializable)
         {
             reinitializable.ReinitializeForMap();
         }
+        target.SetPlacementAvailable(false);
     }
 
     private static bool Fail(

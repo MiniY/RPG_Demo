@@ -74,6 +74,14 @@ public sealed class MonsterPatrolState : BaseMonsterState
     // 在固定巡逻半径内选择下一个随机目标点。
     private void SelectNextDestination()
     {
+        if (aiController.EcologyResident != null)
+        {
+            isWaiting = false; remainingWaitTime = 0f;
+            if (aiController.EcologyResident.TrySelectPatrolDestination(aiController.transform.position, out Vector2 regionalDestination))
+                movementController.SetDestination(regionalDestination);
+            else movementController.Stop();
+            return;
+        }
         Vector2 offset = UnityEngine.Random.insideUnitCircle * aiController.PatrolRadius;
         Vector2 destination = aiController.HomePosition + offset;
 

@@ -22,11 +22,24 @@ public enum TowerRunOperationKind
 }
 
 [DisallowMultipleComponent]
-public sealed class TowerRunCoordinator : MonoBehaviour
+public sealed class TowerRunCoordinator : MonoBehaviour, IEcologyMapSession, IEcologyFloorContext
 {
+#if RPG_DEMO_ECOLOGY_UNITS_CANDIDATE
+    // Only the separately named acceptance Player selects this explicit candidate.
+    public const int GeneratorVersion = 2;
+    public const string ConfigurationIdentity = "random-map-terrain-v2";
+    public const string DefaultProfileId = EcologyRecipeDefinition.UnitsStableCandidateProfileId;
+#elif RPG_DEMO_MONSTER_ECOLOGY_MVP
+    // The isolated Monster acceptance Player replays the production ecology-v1 recipe.
     public const int GeneratorVersion = 1;
     public const string ConfigurationIdentity = "random-map-default-v1";
-    public const string DefaultProfileId = "default";
+    public const string DefaultProfileId = "ecology-v1";
+#else
+    public const int GeneratorVersion = 2;
+    public const string ConfigurationIdentity = "random-map-terrain-v2";
+    // Authorized local remediation default. This independent identity never impersonates the retired profile.
+    public const string DefaultProfileId = EcologyRecipeDefinition.MainV1ProfileId;
+#endif
 
     private MapGenerationController mapController;
     private TowerFloorRuntimeController floorRuntime;
@@ -52,6 +65,29 @@ public sealed class TowerRunCoordinator : MonoBehaviour
     private string failureMessage;
 
     public event Action StateChanged;
+    public bool IsEcologyPlaying => State == TowerRunFlowState.Playing;
+    public bool IsEcologyPreparing => State == TowerRunFlowState.Initializing || State == TowerRunFlowState.Restoring || State == TowerRunFlowState.Transitioning;
+    public float ExitInteractionRadius => floorRuntime != null ? floorRuntime.ExitInteractionRadius : throw new InvalidOperationException("Original floor owner missing.");
+    public Collider2D PlayerMovementFoot => playerDamage != null ? playerDamage.GetComponent<PlayerColliderRoles>()?.MovementCollider : null;
+    public void BindEcologyPlayer(EcologyDamageBarrier barrier, long generation, Func<bool> currentScope)
+    {
+        if (playerDamage == null || PlayerMovementFoot == null) throw new InvalidOperationException("Canonical player health/foot missing.");
+        var actor = playerDamage.gameObject;
+        var hurt = actor.GetComponent<PlayerHurtController>();
+        var combat = actor.GetComponent<EcologyCombatBinding>() ?? actor.AddComponent<EcologyCombatBinding>();
+        var motion = actor.GetComponent<EcologyMotionBody>() ?? actor.AddComponent<EcologyMotionBody>();
+        combat.Bind(barrier, generation, 1, () => currentScope() && playerDamage != null && !playerDamage.IsDefeated);
+        motion.Configure(PlayerMovementFoot, hurt.MovementBlockingLayers, hurt.MovementCollisionSkin);
+        if (!motion.IsReady || combat.MotionFaultRevision != 0) throw new InvalidOperationException("Canonical native movement observer failed.");
+    }
+    public void ReleaseRetiredEcologyPlayer(EcologyDamageBarrier barrier)
+    {
+        if (playerDamage == null) return;
+        var motion = playerDamage.GetComponent<EcologyMotionBody>();
+        if (motion != null && motion.OwnsMotionRoute) motion.ReleaseRetiredScopeForLegacy(barrier);
+        var combat = playerDamage.GetComponent<EcologyCombatBinding>();
+        if (combat != null) combat.ReleaseRetiredScopeForLegacy(barrier);
+    }
     public TowerRunFlowState State { get; private set; } = TowerRunFlowState.StartupChoice;
     public bool HasStagedOperation => operationId != Guid.Empty && stagedRecord != null;
     public bool CanRetryFailedOperation =>
@@ -61,6 +97,7 @@ public sealed class TowerRunCoordinator : MonoBehaviour
     public bool HasEntranceCandidate => entranceCandidate != null;
     public string FailureMessage => failureMessage ?? string.Empty;
     public string FloorDisplayName => currentRecord?.floor?.displayName ?? string.Empty;
+    public int EcologyFloorNumber => (stagedRecord ?? currentRecord)?.floor?.floorNumber ?? 0;
     public TowerRunOperationKind OperationKind => operationKind;
 
     private void Awake()
@@ -99,6 +136,11 @@ public sealed class TowerRunCoordinator : MonoBehaviour
         UnbindScene();
         EnsureSlotStore();
         mapController = FindSceneObject<MapGenerationController>();
+        mapController?.BindEcologySession(this);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        if (mapController != null && mapController.GetComponent<EcologyRegionDebugOverlay>() == null)
+            mapController.gameObject.AddComponent<EcologyRegionDebugOverlay>();
+#endif
         floorRuntime = FindSceneObject<TowerFloorRuntimeController>();
         stats = GameSession.Instance == null ? null : GameSession.Instance.PlayerStats;
         inventory = FindSceneObject<PlayerInventory>();
@@ -141,7 +183,7 @@ public sealed class TowerRunCoordinator : MonoBehaviour
         BeginOperation(TowerRunOperationKind.NewRun, record);
     }
 
-    public void BeginRestoreSlot(int slotNumber)
+    public void BeginRestoreSlot(int slotNumber, string expectedConfirmationToken)
     {
         if (State != TowerRunFlowState.StartupChoice && State != TowerRunFlowState.DeathChoice)
             return;
@@ -151,6 +193,13 @@ public sealed class TowerRunCoordinator : MonoBehaviour
         if (read.state != TowerRunSlotState.Valid || read.record == null)
         {
             Fail(read.message, TowerRunOperationKind.Restore);
+            return;
+        }
+
+        if (string.IsNullOrEmpty(expectedConfirmationToken) ||
+            !string.Equals(read.confirmationToken, expectedConfirmationToken, StringComparison.Ordinal))
+        {
+            Fail("槽位内容已变化，请重新查看后选择恢复。", TowerRunOperationKind.Restore);
             return;
         }
 
@@ -205,7 +254,13 @@ public sealed class TowerRunCoordinator : MonoBehaviour
         TowerRunCheckpointRecord retry = stagedRecord.DeepClone();
 
         if (operationKind == TowerRunOperationKind.NewRun || operationKind == TowerRunOperationKind.FloorTransition)
+        {
+            string requestedProfile = retry.generation.profileId;
             retry.generation = CreateFreshGenerationRecord();
+            if (EcologyRecipeDefinition.ResourcePathFor(requestedProfile) != null)
+                retry.generation.profileId = requestedProfile;
+            retry.schemaVersion = TowerRunCheckpointRecord.CurrentSchemaVersion;
+        }
 
         BeginOperation(operationKind, retry, preserveExistingGates: true);
     }
@@ -274,6 +329,19 @@ public sealed class TowerRunCoordinator : MonoBehaviour
 
         stagedRecord.generation.attemptIndex = successfulAttempt.AttemptIndex;
         stagedRecord.generation.staticBaselineSignature = actualBaseline;
+        if (context.ActivePlacementPlan.Ecology != null)
+        {
+            EcologyEntryIdentity identity = mapController.CaptureEcologyEntryIdentity();
+            stagedRecord.schemaVersion = TowerRunCheckpointRecord.EcologySchemaVersion;
+            stagedRecord.generation.ecology = TowerRunEcologyEntryRecord.From(identity);
+        }
+        else
+        {
+            if (stagedRecord.schemaVersion == TowerRunCheckpointRecord.EcologySchemaVersion)
+            { reason = "精确生态入口不能恢复成旧地图。"; return false; }
+            stagedRecord.schemaVersion = TowerRunCheckpointRecord.CurrentSchemaVersion;
+            stagedRecord.generation.ecology = null;
+        }
 
         if (!TowerRunRuntimeStateBridge.TryApply(
                 stagedRecord,
@@ -320,7 +388,7 @@ public sealed class TowerRunCoordinator : MonoBehaviour
                 : TowerRunFlowState.Initializing;
         PublishStateChanged();
 
-        MapGenerationRequest request = CreateRequest(stagedRecord.generation);
+        MapGenerationRequest request = CreateRequest(stagedRecord.generation, stagedRecord.schemaVersion);
 
         bool generated;
 
@@ -393,7 +461,7 @@ public sealed class TowerRunCoordinator : MonoBehaviour
                     currentRecord.runId,
                     currentRecord.playerName,
                     nextFloor,
-                    CreateFreshGenerationRecord(),
+                    CreateNextFloorGenerationRecord(),
                     stats,
                     inventory,
                     shops,
@@ -478,7 +546,18 @@ public sealed class TowerRunCoordinator : MonoBehaviour
         };
     }
 
-    private static MapGenerationRequest CreateRequest(TowerRunGenerationRecord generation)
+    private TowerRunGenerationRecord CreateNextFloorGenerationRecord()
+    {
+        TowerRunGenerationRecord generation = CreateFreshGenerationRecord();
+        // A versioned, explicitly selected session keeps its content profile on a new floor.
+        // The new entry resolves the current retained version; it never carries the old layout tuple.
+        if (currentRecord != null && currentRecord.schemaVersion == TowerRunCheckpointRecord.EcologySchemaVersion &&
+            EcologyRecipeDefinition.ResourcePathFor(currentRecord.generation.profileId) != null)
+            generation.profileId = currentRecord.generation.profileId;
+        return generation;
+    }
+
+    private static MapGenerationRequest CreateRequest(TowerRunGenerationRecord generation, int schemaVersion)
     {
         int attemptCount = Mathf.Max(1, generation.attemptIndex + 1);
         MapRetryPolicy policy = attemptCount == 1
@@ -490,7 +569,9 @@ public sealed class TowerRunCoordinator : MonoBehaviour
             generation.profileId,
             policy,
             attemptCount,
-            1);
+            1,
+            schemaVersion == TowerRunCheckpointRecord.EcologySchemaVersion ?
+                generation.ecology?.ToIdentity() ?? throw new InvalidOperationException("Versioned ecology entry identity is missing.") : null);
     }
 
     private static MapGenerationAttempt FindSuccessfulAttempt(

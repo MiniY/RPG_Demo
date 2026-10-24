@@ -17,6 +17,8 @@ public sealed class MonsterAttackState : BaseMonsterState
     private AttackPhase currentPhase; // 当前攻击阶段。
     private float remainingPhaseTime; // 当前攻击阶段的剩余时间。
     private Vector2 lockedAttackDirection; // 本轮攻击前摇开始时锁定的方向。
+    private Transform frozenEcologyTarget;
+    private EcologyAttackRequest ecologyWindup;
 
     public override MonsterStateType StateType => MonsterStateType.Attack; // 当前状态固定为攻击。
 
@@ -35,12 +37,24 @@ public sealed class MonsterAttackState : BaseMonsterState
     public override void Enter()
     {
         movementController.Stop();
+        if (attackController.BarrelStrategy != null)
+        {
+            attackController.BarrelStrategy.TryBegin(aiController.CurrentTarget);
+            return;
+        }
         StartAttackCycle();
     }
 
     // 前摇期间允许玩家躲避，命中后完成冷却，再决定连击或恢复追击。
     public override void Tick()
     {
+        BarrelExplosionAttack barrel = attackController.BarrelStrategy;
+        if (barrel != null)
+        {
+            barrel.TickAttack();
+            if (!barrel.IsLatched) aiController.TryChangeState(MonsterStateType.Return);
+            return;
+        }
         Transform leashTarget = aiController.CurrentTarget; // 本次用于检查出生点追击边界的目标。
 
         if (leashTarget != null && !aiController.IsTargetInsideHomeChaseRange(leashTarget))
@@ -51,7 +65,8 @@ public sealed class MonsterAttackState : BaseMonsterState
             return;
         }
 
-        Transform target = aiController.CurrentTarget; // 当前已经确认的攻击目标。
+        Transform target = currentPhase == AttackPhase.Windup && ecologyWindup != null
+            ? frozenEcologyTarget : aiController.CurrentTarget;
 
         if (!IsTargetValid(target))
         {
@@ -67,12 +82,20 @@ public sealed class MonsterAttackState : BaseMonsterState
         if (currentPhase == AttackPhase.Windup)
         {
             // 命中时刻重新验证距离和锁定方向，玩家及时躲开时本次攻击不会造成伤害。
-            attackController.TryDealDamage(target, lockedAttackDirection);
+            if (ecologyWindup != null)
+                attackController.QueueEcologyDamage(ecologyWindup, frozenEcologyTarget, lockedAttackDirection);
+            else
+                attackController.TryDealDamage(target, lockedAttackDirection);
             currentPhase = AttackPhase.Cooldown;
             remainingPhaseTime = attackController.AttackCooldownDuration;
             return;
         }
 
+        if (aiController.EcologyResident != null && aiController.EcologyResident.Excursion.ReturnLatched)
+        {
+            aiController.TryChangeState(MonsterStateType.Return);
+            return;
+        }
         if (aiController.IsCurrentTargetVisible && attackController.IsTargetInRange(target))
         {
             StartAttackCycle();
@@ -85,6 +108,10 @@ public sealed class MonsterAttackState : BaseMonsterState
     // 离开攻击状态时清空本状态的临时攻击数据。
     public override void Exit()
     {
+        attackController.BarrelStrategy?.LeaveAttack();
+        ecologyWindup?.CancelWindup();
+        ecologyWindup = null;
+        frozenEcologyTarget = null;
         movementController.Stop();
         remainingPhaseTime = 0f;
         lockedAttackDirection = Vector2.zero;
@@ -105,6 +132,8 @@ public sealed class MonsterAttackState : BaseMonsterState
 
         currentPhase = AttackPhase.Windup;
         remainingPhaseTime = attackController.AttackWindupDuration;
+        frozenEcologyTarget = target;
+        ecologyWindup = attackController.PrepareEcologyAttack(target);
         attackController.BeginAttack(lockedAttackDirection);
     }
 

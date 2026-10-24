@@ -140,7 +140,7 @@ public sealed class TowerRunIndependentProcessPlayModeTests
             Is.EqualTo(expected.staticBaselineSignature),
             "The reader must retain the baseline persisted by the writer process.");
 
-        Invoke(coordinator, "BeginRestoreSlot", 1);
+        Invoke(coordinator, "BeginRestoreSlot", 1, saved.confirmationToken);
 
         for (int frame = 0; frame < 60 &&
              GetProperty(coordinator, "State").ToString() != "Playing"; frame++)

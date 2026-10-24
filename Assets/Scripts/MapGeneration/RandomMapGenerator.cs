@@ -14,6 +14,11 @@ public static class RandomMapGenerator
     /// <returns>生成完成的地图数据。</returns>
     public static MapData Generate(MapGenerationSettings settings)
     {
+        return Generate(settings, false);
+    }
+
+    public static MapData Generate(MapGenerationSettings settings, bool terrainV2)
+    {
         if (settings == null)
             throw new ArgumentNullException(nameof(settings));
 
@@ -23,6 +28,7 @@ public static class RandomMapGenerator
             settings.mapWidth,
             settings.mapHeight,
             settings.mapOrigin);
+        mapData.GenerationSeed = settings.seed;
 
         System.Random random = new System.Random(settings.seed);
         Vector2Int spawnCell = ClampToPlayableArea(settings.GetSpawnCell(), mapData, settings);
@@ -53,7 +59,10 @@ public static class RandomMapGenerator
             settings.borderSize);
         MapTerrainNestingEnforcer.Enforce(mapData);
 
-        return mapData;
+        return terrainV2
+            ? MapElevationPlanner.AddTwoLevels(
+                mapData, settings.seed, settings.spawnProtectionRadius)
+            : mapData;
     }
 
     /// <summary>

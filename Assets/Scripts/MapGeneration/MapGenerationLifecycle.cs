@@ -7,7 +7,8 @@ public enum MapAttemptOutcome { Succeeded = 0, RetryablePlanningRejection = 1, N
 public sealed class MapGenerationRequest
 {
     public MapGenerationRequest(Guid requestId, int requestedSeed, string profileId = "default",
-        MapRetryPolicy retryPolicy = MapRetryPolicy.StrictSeed, int maxAttempts = 1, int retryPolicyVersion = 1)
+        MapRetryPolicy retryPolicy = MapRetryPolicy.StrictSeed, int maxAttempts = 1, int retryPolicyVersion = 1,
+        EcologyEntryIdentity ecologyEntry = null)
     {
         if (requestId == Guid.Empty) throw new ArgumentException("Request ID cannot be empty.", nameof(requestId));
         if (string.IsNullOrWhiteSpace(profileId)) throw new ArgumentException("Profile ID cannot be empty.", nameof(profileId));
@@ -17,6 +18,7 @@ public sealed class MapGenerationRequest
             throw new ArgumentException("StrictSeed requires one attempt.", nameof(maxAttempts));
         RequestId = requestId; RequestedSeed = requestedSeed; ProfileId = profileId;
         RetryPolicy = retryPolicy; MaxAttempts = maxAttempts; RetryPolicyVersion = retryPolicyVersion;
+        EcologyEntry = ecologyEntry;
     }
     public Guid RequestId { get; }
     public int RequestedSeed { get; }
@@ -24,6 +26,7 @@ public sealed class MapGenerationRequest
     public MapRetryPolicy RetryPolicy { get; }
     public int MaxAttempts { get; }
     public int RetryPolicyVersion { get; }
+    public EcologyEntryIdentity EcologyEntry { get; }
     public MapGenerationAttempt CreateAttempt(int attemptIndex, Guid generationId)
     {
         if (attemptIndex < 0 || attemptIndex >= MaxAttempts) throw new ArgumentOutOfRangeException(nameof(attemptIndex));

@@ -259,7 +259,9 @@ public sealed class TowerRunUiController : MonoBehaviour
             flowSlotButtons[i].interactable = read.state == TowerRunSlotState.Valid;
             flowSlotTexts[i].text = FormatSlot(slotNumber, read);
             flowSlotButtons[i].onClick.RemoveAllListeners();
-            flowSlotButtons[i].onClick.AddListener(() => coordinator.BeginRestoreSlot(slotNumber));
+            string displayedToken = read.confirmationToken;
+            flowSlotButtons[i].onClick.AddListener(
+                () => coordinator.BeginRestoreSlot(slotNumber, displayedToken));
         }
     }
 

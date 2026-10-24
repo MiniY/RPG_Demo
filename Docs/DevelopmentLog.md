@@ -1,3 +1,17 @@
+<!-- ECOLOGY-SUBSYSTEM-COMMIT-20261024-START -->
+# 生态分布子系统本地保存版本
+
+全项目整合保持 `PAUSED_FOR_ECOLOGY_SUBSYSTEM_COMMIT_REVIEW`，旧R3/R4流水线保持STOPPED。本轮仅做生态分布子系统及直接依赖的精确本地保存，不合入main、不写远端、不Build/Player或发布。
+
+本地分支 `codex/ecology-subsystem-20261024`，工作树 `D:/.codex/worktrees/ecology-subsystem/RPG_Demo`，父基线 `f9577ac65eb5d71b6a9790a6b01f456b252d5bcc`；真正main仍 `d9f60d608ea617dadb0ef4ce60553f7b306a0b94`。确切提交SHA由Git日志及 [提交回执](D:/UnityProjects/RPG_Demo/Docs/Integration/EcologySubsystemCommit/Evidence/commit-receipt.json) 查询，避免在提交中自引用自己的SHA。
+
+当前内容 `content-r1:c55fb3b4b0362e8bb59e84f4624fbb22c2f9ef96f3dcd5f61481a92dab9c9802`，1220 pins；原R3/R4 manifest原字节保持。原工作目录3497输入、61路径、三正式槽/两侧档、受验快照与暂停候选均保留。原M00149/50仍FAIL；其生态池失败已在本分支最终E010原生12类型/24activation门禁复验，不修改旧证据。
+
+必要业务验证及来源、精确文件SHA/GUID、采用/排除、保护与回退见 [独立审查报告](D:/UnityProjects/RPG_Demo/Docs/Integration/EcologySubsystemCommit/SUBSYSTEM_COMMIT_REVIEW.md)。E00727/27、E005 writer1/1、E008独占reader1/1、E01013/13均自然exit0、无force/残留、双锁释放。E00310/10断言/自然root0但child grace强制，E004 EditMode15/15断言但退出TIMEOUT；原FAIL/TIMEOUT保留，不作为完整PASS。后者是未解决的Editor退出问题，非已发现生态断言错误；本地功能保存以真实入口/布局/运动/安全/换层/原生池/精确及跨进程保存的有效门禁为依据，main整合时仍需单独处置该工具链问题。
+
+T13/B1 HIGH_RISK、Boss CONTENT_PENDING、全Seed/长期性能/本版本人工体验NOT_RUN保持。历史R4人工4/4只限其原版本。所有旧阶段自动推进语句只作历史，本任务完成即停止，恢复全项目须用户明确授权。
+<!-- ECOLOGY-SUBSYSTEM-COMMIT-20261024-END -->
+
 # RPG_Demo Development Log（开发日志）
 
 > 本文档记录 `RPG_Demo` 的主要开发提交，方便回顾每次提交做了什么、影响了哪些系统、是否已经推送到远程仓库。

@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>Adapts main BaseDamageable defeat events to the MapGeneration lifecycle seam.</summary>
 [DisallowMultipleComponent]
 public sealed class DestructiblePlacementTargetBridge : MonoBehaviour,
-    IDestructiblePlacementTarget
+    IDestructiblePlacementTarget, IGenerationScopedPopulationTarget, IGenerationScopedPreparedPopulationTarget
 {
     private readonly Dictionary<Action, Action<BaseDamageable>> handlers =
         new Dictionary<Action, Action<BaseDamageable>>();
@@ -14,9 +14,13 @@ public sealed class DestructiblePlacementTargetBridge : MonoBehaviour,
     public UnityEngine.Object PlacementInstance =>
         damageable != null ? damageable : GetComponent<BaseDamageable>();
     public GameObject PlacementGameObject => gameObject;
+    public GameObject ReinitializationTarget => gameObject;
 
     public GameObject Spawn(Vector3 position, Quaternion rotation) =>
         ObjectPoolManager.Spawn(gameObject, position, rotation);
+
+    public GameObject SpawnPrepared(Vector3 position, Quaternion rotation, Action<GameObject> prepare) =>
+        ObjectPoolManager.SpawnPrepared(gameObject, position, rotation, prepare);
 
     public void Return(GameObject instance) =>
         ObjectPoolManager.ReturnOrDeactivate(instance);

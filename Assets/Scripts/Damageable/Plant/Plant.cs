@@ -2,18 +2,22 @@ using UnityEngine;
 
 // 植物的通用数据入口，具体行为和动画由独立控制器处理。
 [DisallowMultipleComponent]
-public class Plant : BaseDamageable, IPlantPlacementTarget, IMapDependentReinitializable
+public class Plant : BaseDamageable, IPlantPlacementTarget, IMapDependentReinitializable, IGenerationScopedSceneReuse
 {
     private bool placementAvailable = true;
 
     public Transform PlacementTransform => transform;
     public GameObject ReinitializationTarget => gameObject;
 
+    public void PrepareForGenerationReuse()
+    {
+        if (!gameObject.activeSelf) gameObject.SetActive(true);
+        ResetForGenerationReuse();
+        GetComponent<PlantBehaviorController>()?.CancelTransientMapState();
+    }
+
     public void SetPlacementAvailable(bool available)
     {
-        if (placementAvailable == available)
-            return;
-
         placementAvailable = available;
         foreach (Collider2D plantCollider in GetComponentsInChildren<Collider2D>(true))
             plantCollider.enabled = available && !IsDefeated;

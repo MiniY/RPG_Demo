@@ -20,6 +20,11 @@ public sealed class MonsterReturnState : BaseMonsterState
     // 进入返回状态时清除旧目标，并把出生点设为移动目的地。
     public override void Enter()
     {
+        if (aiController.EcologyResident != null)
+        {
+            aiController.ClearCurrentTarget(); aiController.EcologyResident.RequestReturn();
+            aiController.BeginEcologyReturn(); movementController.Stop(); return;
+        }
         aiController.ClearCurrentTarget();
         movementController.SetDestination(aiController.HomePosition);
     }
@@ -27,6 +32,7 @@ public sealed class MonsterReturnState : BaseMonsterState
     // 返回途中优先响应活动范围内的可见目标，到达出生点后恢复巡逻。
     public override void Tick()
     {
+        if (aiController.TickEcologyReturn()) return;
         Transform visibleTarget = aiController.VisibleTarget; // 感知模块最近一次报告的可见目标。
 
         if (visibleTarget != null && aiController.IsTargetInsideHomeChaseRange(visibleTarget))

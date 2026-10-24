@@ -58,6 +58,11 @@ public sealed class AnimalPlacementService : MonoBehaviour
         MapGenerationAttempt attempt,
         MapData map,
         MapPlacementPlan plan)
+        => Plan(attempt, map, plan, attempt?.AttemptSeed ?? 0);
+
+    public IReadOnlyList<AnimalPlacementResult> Plan(MapGenerationAttempt attempt, MapData map,
+        MapPlacementPlan plan, int placementSeed,
+        Func<AnimalPlacementBinding, Vector2Int, bool> candidateQualification = null)
     {
         if (attempt == null) throw new ArgumentNullException(nameof(attempt));
         if (map == null) throw new ArgumentNullException(nameof(map));
@@ -86,10 +91,11 @@ public sealed class AnimalPlacementService : MonoBehaviour
                     true),
                 profile);
             AnimalPlacementResult result = policy.SelectOptional(
-                attempt.AttemptSeed,
+                placementSeed,
                 map,
                 plan,
-                request);
+                request,
+                candidateQualification != null ? (Func<Vector2Int, bool>)(cell => candidateQualification(binding, cell)) : null);
             if (result == null)
                 continue;
 

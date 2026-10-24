@@ -89,6 +89,25 @@ public sealed class MerchantPlacementService : MonoBehaviour
         return result;
     }
 
+    public MerchantPlacementResult PlanAtCandidate(MapGenerationAttempt attempt, MapData map,
+        MapPlacementPlan plan, int placementSeed, Vector2Int cell)
+    {
+        if (attempt == null || map == null || plan == null || plan.GenerationId != attempt.GenerationId)
+            throw new MapPlanningException("StaleMerchantPlanning", "Candidate merchant requires the original current generation.", false);
+        if (!TryGetTarget(out _, out string reason))
+            throw new MapPlanningException("MerchantTargetUnavailable", reason, false);
+        var request = new MerchantSemanticPlacementRequest(new MapPlacementRequest(MainMerchantLogicalObjectId,
+            MerchantRole, new[] { Vector2Int.zero }, true, true), profile);
+        if (!policy.TryEvaluateCandidate(placementSeed, map, plan, request, cell, out MerchantPlacementResult result, out _))
+            throw new MapPlanningException("NoQualifiedMerchant", "Selected safety merchant failed the original policy.", false);
+        AddReservation(plan, new MapPlacementReservation(MainMerchantLogicalObjectId, MerchantRole,
+            result.PlacementCell, result.FootprintCells, MapPlacementOwnership.SceneBound));
+        AddReservation(plan, new MapPlacementReservation(InteractionApproachLogicalObjectId, InteractionApproachRole,
+            result.InteractionApproachCell, new[] { result.InteractionApproachCell }, MapPlacementOwnership.GenerationScoped));
+        plannedGenerationId = attempt.GenerationId; ShortestPathSteps = result.ShortestPathSteps;
+        return result;
+    }
+
     public bool TryMaterialize(
         MapRuntimeContext context,
         Guid generationId,

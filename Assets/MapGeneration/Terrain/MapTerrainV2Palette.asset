@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76e32e8414b5462bbcc9e50d325ea2a0, type: 3}
+  m_Name: MapTerrainV2Palette
+  m_EditorClassIdentifier:
+  grassAndCliff: {fileID: 11400000, guid: b9d1f915d8e34934a628b3487546de79, type: 2}
+  stairUpperLeft: {fileID: 11400000, guid: d95e072c994ec7a4a97017a9139c46bd, type: 2}
+  stairUpperRight: {fileID: 11400000, guid: 6136747684c912f4f836c22a0435c162, type: 2}
+  stairLowerLeft: {fileID: 11400000, guid: d425c96ebc06c8241a8b1422d68af69c, type: 2}
+  stairLowerRight: {fileID: 11400000, guid: 2189f25e40b86ba4cab46c54f3fc77f0, type: 2}
+  shadowTexture: {fileID: 2800000, guid: 602fa1f666b04e149836dd3c8c415188, type: 3}
+  foamTexture: {fileID: 2800000, guid: 7d7b253071561ad4cb35c49d00c80475, type: 3}

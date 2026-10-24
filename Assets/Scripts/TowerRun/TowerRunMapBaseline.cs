@@ -8,7 +8,8 @@ using UnityEngine;
 /// </summary>
 public static class TowerRunMapBaseline
 {
-    private const string SignatureVersion = "TRB2";
+    private const string LegacySignatureVersion = "TRB2";
+    private const string TerrainSignatureVersion = "TRB3";
 
     public static string Compute(
         MapData map,
@@ -21,7 +22,9 @@ public static class TowerRunMapBaseline
         unchecked
         {
             uint hash = 2166136261;
-            Mix(ref hash, SignatureVersion);
+            string signatureVersion = map.HasElevation
+                ? TerrainSignatureVersion : LegacySignatureVersion;
+            Mix(ref hash, signatureVersion);
             Mix(ref hash, map.Width);
             Mix(ref hash, map.Height);
             Mix(ref hash, map.Origin.x);
@@ -34,12 +37,29 @@ public static class TowerRunMapBaseline
             for (int y = map.Origin.y; y < map.Origin.y + map.Height; y++)
             {
                 for (int x = map.Origin.x; x < map.Origin.x + map.Width; x++)
-                    Mix(ref hash, (int)map.GetCell(new Vector2Int(x, y)).terrainType);
+                {
+                    Vector2Int cell = new Vector2Int(x, y);
+                    Mix(ref hash, (int)map.GetCell(cell).terrainType);
+                    if (map.HasElevation)
+                        Mix(ref hash, map.GetElevation(cell));
+                }
+            }
+
+            if (map.HasElevation)
+            {
+                Mix(ref hash, map.Stairs.Count);
+                foreach (MapStairConnection stair in map.Stairs)
+                {
+                    Mix(ref hash, stair.LowerCell.x);
+                    Mix(ref hash, stair.LowerCell.y);
+                    Mix(ref hash, stair.UpperCell.x);
+                    Mix(ref hash, stair.UpperCell.y);
+                }
             }
 
             HashDecorations(ref hash, decorations);
             HashPlacementPlan(ref hash, placementPlan);
-            return $"{SignatureVersion}-{hash:X8}";
+            return $"{signatureVersion}-{hash:X8}";
         }
     }
 

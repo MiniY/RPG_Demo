@@ -37,6 +37,14 @@ public class MonsterAIController : MonoBehaviour, IMapDependentReinitializable, 
     private Transform currentTarget; // 当前锁定的目标对象。
     private Transform visibleTarget; // 感知模块最近一次报告的可见目标。
     private bool isRunning; // AI 是否正在运行。
+    private EcologyResidentBinding ecologyBinding;
+    public bool EcologyBindingPresentAtAwake { get; private set; }
+    private Guid returnGeneration;
+    private string returnResident;
+    private long returnLease = -1, returnEpisode = -1;
+    private double returnBestScore, returnRetryAt, chaseRetryAt;
+    private int returnRetries;
+    private Vector2 chaseProgressPosition;
 
     public event Action<MonsterStateType> OnStateChanged; // 行为状态改变时发出的事件。
     public event Action<Transform> OnTargetConfirmed; // 候选目标通过持续可见确认时发出的事件。
@@ -53,12 +61,15 @@ public class MonsterAIController : MonoBehaviour, IMapDependentReinitializable, 
     internal float LostTargetDuration => lostTargetDuration; // 向追击状态提供丢失目标后的等待时间。
     internal float ReturnStoppingDistance => returnStoppingDistance; // 向返回状态提供归位停止距离。
     internal Transform VisibleTarget => visibleTarget; // 向行为状态提供感知模块发布的当前可见目标。
+    internal EcologyResidentBinding EcologyResident => ecologyBinding != null && ecologyBinding.IsBound ? ecologyBinding : null;
     internal bool IsCurrentTargetVisible =>
         currentTarget != null && visibleTarget == currentTarget; // 当前锁定目标是否仍被感知模块看见。
 
     // 获取依赖并注册当前已经实现的状态。
     private void Awake()
     {
+        ecologyBinding = GetComponent<EcologyResidentBinding>();
+        EcologyBindingPresentAtAwake = ecologyBinding != null && ecologyBinding.IsBound;
         baseMonster = GetComponent<BaseMonster>();
         movementController = GetComponent<MonsterMovementController>();
         perceptionController = GetComponent<MonsterPerceptionController>();
@@ -74,6 +85,9 @@ public class MonsterAIController : MonoBehaviour, IMapDependentReinitializable, 
     // 启用或从对象池取出时记录出生点并启动巡逻。
     private void OnEnable()
     {
+        // A pooled instance may have awakened under a legacy profile before
+        // this explicit resident component was added to its next activation.
+        ecologyBinding = GetComponent<EcologyResidentBinding>();
         BindDamageableEvents();
         BindPerceptionEvents();
 
@@ -91,9 +105,19 @@ public class MonsterAIController : MonoBehaviour, IMapDependentReinitializable, 
     // 每帧更新当前行为状态。
     private void Update()
     {
+        if (ecologyBinding != null && ecologyBinding.IsBound && !ecologyBinding.CanAct)
+        {
+            if (isRunning) StopAI();
+            return;
+        }
+        if (EcologyResident != null && !isRunning && baseMonster != null && !baseMonster.IsDefeated)
+            ReinitializeForMap();
         if (!isRunning)
             return;
 
+        if (EcologyResident != null && EcologyResident.Excursion.ReturnLatched &&
+            !(currentStateType == MonsterStateType.Attack && EcologyResident.Excursion.CounterattackActive(Time.timeAsDouble)))
+            TryChangeState(MonsterStateType.Return);
         currentState?.Tick();
     }
 
@@ -109,7 +133,7 @@ public class MonsterAIController : MonoBehaviour, IMapDependentReinitializable, 
             ? perceptionController.CurrentVisibleTarget
             : null;
         isTargetConfirmed = false;
-        isRunning = true;
+        isRunning = ecologyBinding == null || !ecologyBinding.IsBound || ecologyBinding.CanAct;
         TryChangeState(MonsterStateType.Patrol);
     }
 
@@ -126,6 +150,24 @@ public class MonsterAIController : MonoBehaviour, IMapDependentReinitializable, 
         if (!isRunning)
             return false;
 
+        BarrelExplosionAttack barrel = attackController.BarrelStrategy;
+        if (barrel != null && barrel.IsLatched && nextStateType != MonsterStateType.Attack &&
+            barrel.CanFinishAndReturn(Math.Max(0d, barrel.ArmedAt + BarrelExplosionAttack.FuseSeconds - Time.timeAsDouble)))
+            return false;
+
+        EcologyResidentBinding resident = EcologyResident;
+        if (resident != null)
+        {
+            if (resident.Excursion.ReturnLatched && nextStateType != MonsterStateType.Return &&
+                !(nextStateType == MonsterStateType.Attack && resident.Excursion.CounterattackActive(Time.timeAsDouble)))
+                nextStateType = MonsterStateType.Return;
+            if (nextStateType == MonsterStateType.Patrol && resident.Excursion.HasPermit) nextStateType = MonsterStateType.Return;
+            if (nextStateType == MonsterStateType.Chase && !resident.BeginPursuit()) nextStateType = MonsterStateType.Return;
+            if (nextStateType == MonsterStateType.Return)
+            {
+                resident.RequestReturn(); resident.Excursion.EndCounterattack();
+            }
+        }
         if (currentState != null && currentState.StateType == nextStateType)
             return true;
 
@@ -159,6 +201,15 @@ public class MonsterAIController : MonoBehaviour, IMapDependentReinitializable, 
     {
         if (target == null || !target.gameObject.activeInHierarchy)
             return false;
+
+        if (EcologyResident != null)
+        {
+            if (EcologyResident.Excursion.ReturnLatched)
+                return currentStateType == MonsterStateType.Attack && EcologyResident.Excursion.CounterattackActive(Time.timeAsDouble) && attackController.IsTargetInRange(target);
+            if (attackController.IsTargetInRange(target))
+                return EcologyResident.TryGetHomeDistance(out int distance, out _) && distance <= EcologyResident.Excursion.MaximumHomeSteps;
+            return EcologyResident.CanPursuePosition(GetComponent<Rigidbody2D>().position, target.position);
+        }
 
         Vector2 offsetFromHome = (Vector2)target.position - homePosition; // 目标相对怪物出生点的偏移量。
         return offsetFromHome.sqrMagnitude <= maxChaseDistanceFromHome * maxChaseDistanceFromHome;
@@ -230,9 +281,74 @@ public class MonsterAIController : MonoBehaviour, IMapDependentReinitializable, 
         if (damageInfo.SourceTransform == null)
             return;
 
+        if (EcologyResident != null && EcologyResident.Excursion.ReturnLatched)
+        {
+            TryChangeState(MonsterStateType.Return);
+            return;
+        }
+
         SetCurrentTarget(damageInfo.SourceTransform);
         ConfirmCurrentTarget();
         TryChangeState(MonsterStateType.Chase);
+    }
+
+    internal void BeginEcologyChaseProgress()
+    {
+        if (EcologyResident == null) return;
+        chaseProgressPosition = GetComponent<Rigidbody2D>().position; chaseRetryAt = Time.timeAsDouble + 1.25d;
+    }
+    internal bool CheckEcologyChaseProgress()
+    {
+        if (EcologyResident == null) return true;
+        Vector2 actual = GetComponent<Rigidbody2D>().position;
+        if ((actual - chaseProgressPosition).sqrMagnitude > .0004f)
+        {
+            chaseProgressPosition = actual; chaseRetryAt = Time.timeAsDouble + 1.25d;
+        }
+        return Time.timeAsDouble < chaseRetryAt;
+    }
+    internal void BeginEcologyReturn()
+    {
+        EcologyResidentBinding resident = EcologyResident;
+        if (resident == null) return;
+        long lease = GetComponent<EcologyCombatBinding>().Lease;
+        if (returnGeneration == resident.GenerationId && returnResident == resident.ResidentId && returnLease == lease && returnEpisode == resident.Excursion.Episode) return;
+        returnGeneration = resident.GenerationId; returnResident = resident.ResidentId; returnLease = lease; returnEpisode = resident.Excursion.Episode;
+        returnBestScore = double.PositiveInfinity; returnRetryAt = Time.timeAsDouble + 1.25d; returnRetries = 0;
+    }
+    internal bool TickEcologyReturn()
+    {
+        EcologyResidentBinding resident = EcologyResident;
+        if (resident == null) return false;
+        double now = Time.timeAsDouble;
+        if (resident.TryGetHomeDistance(out int distance, out Vector2 waypoint))
+        {
+            if (distance == 0)
+            {
+                movementController.Stop();
+                if (!resident.Excursion.HasPermit && !resident.Excursion.ReturnLatched) TryChangeState(MonsterStateType.Patrol);
+                return true;
+            }
+            double score = distance + Vector2.Distance(GetComponent<Rigidbody2D>().position, waypoint);
+            if (score + .02d < returnBestScore) { returnBestScore = score; returnRetryAt = now + 1.25d; }
+            Transform target = visibleTarget;
+            if (target != null && !movementController.IsMovementLocked && attackController.IsTargetInRange(target) &&
+                resident.Excursion.TryReserveCounterattack(now, attackController.AttackWindupDuration + attackController.AttackCooldownDuration))
+            {
+                SetCurrentTarget(target); ConfirmCurrentTarget(); TryChangeState(MonsterStateType.Attack); return true;
+            }
+            movementController.SetDestination(waypoint);
+        }
+        else movementController.Stop();
+        if (now >= returnRetryAt)
+        {
+            returnRetryAt = now + 1.25d;
+            if (++returnRetries >= 3)
+            {
+                movementController.Stop(); resident.FailNavigation("ReturnBlockedOrNoPathAfterThreeWaits");
+            }
+        }
+        return true;
     }
 
     // 怪物被击败时立即停止状态机和移动。

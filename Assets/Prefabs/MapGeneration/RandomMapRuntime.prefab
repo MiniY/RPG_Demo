@@ -636,8 +636,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bd3f805c6e7b9dc904f1e8c3b5678901, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   settings: {fileID: 11400000, guid: e062b38f9cadb0f237a4b1e6a8901234, type: 2}
   tilemapRenderer: {fileID: 6650904316187142650}
   simpleDecorationRenderer: {fileID: 7083376054990191860}
@@ -654,12 +654,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ac2e7f4b5d6a8cb8f3e0d7b2a4567890, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   waterBaseTilemap: {fileID: 2467449417964913327}
   sandBaseTilemap: {fileID: 1566809611504930764}
   grassOverlayTilemap: {fileID: 857503541526503144}
   elevationTilemap: {fileID: 8634444262410821778}
+  terrainV2Palette: {fileID: 11400000, guid: 121b844f806f434b8dc05d81965b9409, type: 2}
   terrainCollisionTilemap: {fileID: 5900044937871938850}
 --- !u!114 &6436714561388822757
 MonoBehaviour:
@@ -671,8 +672,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e5a9b2c74d1f46f8a03e6c9b27584102, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   mapController: {fileID: 2798388526612952683}
   tilemapRenderer: {fileID: 6650904316187142650}
   player: {fileID: 0}
@@ -730,8 +731,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f3a4c9d1e7b24650b8c3d4e5f6017298, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   groundDecorationTilemap: {fileID: 1504668620424561524}
   canopyDecorationTilemap: {fileID: 5368216147010299790}
   decorationCollisionTilemap: {fileID: 3451625485135951729}
@@ -1050,6 +1051,7 @@ GameObject:
   - component: {fileID: 420000000000000010}
   - component: {fileID: 420000000000000012}
   - component: {fileID: 420000000000000011}
+  - component: {fileID: 1821008576273327505}
   m_Layer: 0
   m_Name: RandomMapRuntime
   m_TagString: Untagged
@@ -1084,8 +1086,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c7b0f1a24d8e4e3a9f5c2b6810d47e63, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   mapController: {fileID: 2798388526612952683}
   placementAnchor: {fileID: 0}
   mapAnchoredObjects: []
@@ -1101,8 +1103,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c8f4af4cf35a47c1baa759f282c7ef53, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   runtimeMode: 0
   randomGeneratedAuthority: {fileID: 3384820416454931749}
   legacyStaticAuthority: {fileID: 0}
@@ -1116,8 +1118,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 17a3a6abfd0c4da8aa478820dfb2b001, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &420000000000000002
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1128,8 +1130,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 17a3a6abfd0c4da8aa478820dfb2b002, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &420000000000000003
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1140,8 +1142,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 17a3a6abfd0c4da8aa478820dfb2b004, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &420000000000000004
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1152,8 +1154,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 17a3a6abfd0c4da8aa478820dfb2b005, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   playerFollowCamera: {fileID: 0}
   playerFollowConfiner: {fileID: 0}
 --- !u!114 &420000000000000005
@@ -1166,8 +1168,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 17a3a6abfd0c4da8aa478820dfb2b006, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &420000000000000006
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1178,8 +1180,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 17a3a6abfd0c4da8aa478820dfb2b008, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   merchantTarget: {fileID: 0}
   profile:
     minPathSteps: 8
@@ -1195,8 +1197,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5b5f253b4cf8460c9dfb645e6dde6ea1, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   monsterTarget: {fileID: 0}
   profile:
     minPathSteps: 10
@@ -1215,8 +1217,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bf29487a8c9041df87d48531b769759a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   bindings:
   - logicalObjectId: animal.happy-sheep.1
     animalTransform: {fileID: 0}
@@ -1244,8 +1246,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 119a57a054c84032a75c15d7780bbc5f, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   bindings:
   - logicalObjectId: plant.mushroom-big.1
     plantTransform: {fileID: 0}
@@ -1299,8 +1301,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 469f9b91acf64628a0c465593f64d16c, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   destructiblePrefab: {fileID: 351051980577646650, guid: 32a13702d1192114e95eb89b2617f74e, type: 3}
   profile:
     minPathSteps: 8
@@ -1311,22 +1313,6 @@ MonoBehaviour:
     requiredMinimum: 4
     targetCount: 8
     maximum: 8
---- !u!114 &420000000000000011
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7464507020108064817}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a2b73b6c8ca749e580c5a84d18ab1a42, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
-  mapController: {fileID: 2798388526612952683}
-  minimapController: {fileID: 0}
-  exitPortalPrefab: {fileID: 5809947503129732595, guid: c561c97e770760d42a2f5c7abb75e5ac, type: 3}
-  interactionRadius: 1.5
 --- !u!114 &420000000000000012
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1337,8 +1323,37 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8cf3d61f907b4a2abf694564cba6c8a1, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &420000000000000011
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7464507020108064817}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2b73b6c8ca749e580c5a84d18ab1a42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mapController: {fileID: 2798388526612952683}
+  minimapController: {fileID: 0}
+  exitPortalPrefab: {fileID: 5809947503129732595, guid: c561c97e770760d42a2f5c7abb75e5ac, type: 3}
+  interactionRadius: 1.5
+--- !u!114 &1821008576273327505
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7464507020108064817}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c76c91eba60c4047a80701a96965181, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  profile: {fileID: 11400000, guid: f1f1ff9e10e45b944ad6f47399bead4d, type: 2}
 --- !u!1 &7890253596842868618
 GameObject:
   m_ObjectHideFlags: 0

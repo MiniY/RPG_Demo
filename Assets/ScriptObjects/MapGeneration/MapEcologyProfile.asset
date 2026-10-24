@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34e4053f056e4ad48a53234199dfce72, type: 3}
+  m_Name: MapEcologyProfile
+  m_EditorClassIdentifier: 
+  monster:
+    requiredMinimum: 2
+    cellsPerSpawn: 320
+    maximum: 5
+    minPathSteps: 10
+    maxPathSteps: 80
+    minimumSpacingSteps: 3
+    crossRoleSpacingSteps: 2
+    clusterRadius: 5
+    exitSafetyRadius: 2
+  destructible:
+    requiredMinimum: 4
+    cellsPerSpawn: 180
+    maximum: 8
+    minPathSteps: 8
+    maxPathSteps: 80
+    minimumSpacingSteps: 3
+    crossRoleSpacingSteps: 2
+    clusterRadius: 4
+    exitSafetyRadius: 2
+  monsterSpecies:
+  - typeId: Torch
+    terrains: 5
+    weight: 4
+    variants:
+    - {fileID: 3014392730237608508, guid: af07a9fb402e6934dbed62860d520910, type: 3}
+    - {fileID: 1796432832359257358, guid: d2f7ab4133e6ea749953e5f6c289a46f, type: 3}
+    - {fileID: 1338499225828233506, guid: a19fea235a1d7f84a8febde0649727ba, type: 3}
+    - {fileID: 8232510815165160658, guid: c600084364a26c34bbe0a43d2bd289d7, type: 3}
+  - typeId: TNT
+    terrains: 10
+    weight: 3
+    variants:
+    - {fileID: 3599908422589078787, guid: 374c8f23d7b91b043881862e4bde70f0, type: 3}
+    - {fileID: 2886108516971346115, guid: 39852239ad374a947b0462fd925a90eb, type: 3}
+    - {fileID: 7582475161213555865, guid: d25c27de0cabb854e81ba356017391fc, type: 3}
+    - {fileID: 4423114405437467544, guid: 9c37f8d21adbee74bbbe1ba43ec2ba02, type: 3}
+  - typeId: Barrel
+    terrains: 12
+    weight: 3
+    variants:
+    - {fileID: 2500681258252999856, guid: a6013a10241a142499e6cee42907514d, type: 3}
+    - {fileID: 8536383214533293573, guid: f7b78ce222c0acb4f8507824379e3252, type: 3}
+    - {fileID: 1676990261247832583, guid: 3b66e9dd9eb856a43a669e7141fb929d, type: 3}
+    - {fileID: 4237757983321440913, guid: ba3eb2d463e8ce443b7026f6679d4dfa, type: 3}
+  destructibleSpecies:
+  - typeId: Mushroom_Small
+    terrains: 5
+    weight: 4
+    variants:
+    - {fileID: 351051980577646650, guid: 32a13702d1192114e95eb89b2617f74e, type: 3}
+  - typeId: Mushroom_MidSize
+    terrains: 9
+    weight: 3
+    variants:
+    - {fileID: 1144965671990666889, guid: 57708ff26c03eaa4fa6ed4e5055aef9f, type: 3}
+  - typeId: Mushroom_Big
+    terrains: 6
+    weight: 2
+    variants:
+    - {fileID: 7338236221601652319, guid: bef37e2dff2fdb245a1f1712bd197d7b, type: 3}

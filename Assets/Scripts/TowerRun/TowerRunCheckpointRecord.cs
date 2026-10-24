@@ -126,6 +126,20 @@ public sealed class TowerRunPlayerStatsRecord
 }
 
 [Serializable]
+public sealed class TowerRunEcologyEntryRecord
+{
+    public string recipeVersion, configDigest, contentVersion, footprintVersion, contextIdentity, layoutDigest;
+    public int ecologyAttempt, regionCount, residentCount, merchantCount;
+    public TowerRunEcologyEntryRecord DeepClone() => (TowerRunEcologyEntryRecord)MemberwiseClone();
+    public EcologyEntryIdentity ToIdentity() => new EcologyEntryIdentity(recipeVersion, configDigest, contentVersion,
+        footprintVersion, contextIdentity, layoutDigest, ecologyAttempt, regionCount, residentCount, merchantCount);
+    public static TowerRunEcologyEntryRecord From(EcologyEntryIdentity value) => new TowerRunEcologyEntryRecord {
+        recipeVersion = value.RecipeVersion, configDigest = value.ConfigDigest, contentVersion = value.ContentVersion,
+        footprintVersion = value.FootprintVersion, contextIdentity = value.ContextIdentity, layoutDigest = value.LayoutDigest,
+        ecologyAttempt = value.EcologyAttempt, regionCount = value.RegionCount, residentCount = value.ResidentCount, merchantCount = value.MerchantCount };
+}
+
+[Serializable]
 public sealed class TowerRunGenerationRecord
 {
     public int generatorVersion;
@@ -134,6 +148,7 @@ public sealed class TowerRunGenerationRecord
     public int requestedSeed;
     public int attemptIndex;
     public string staticBaselineSignature;
+    public TowerRunEcologyEntryRecord ecology;
 
     public TowerRunGenerationRecord DeepClone()
     {
@@ -144,7 +159,8 @@ public sealed class TowerRunGenerationRecord
             profileId = profileId,
             requestedSeed = requestedSeed,
             attemptIndex = attemptIndex,
-            staticBaselineSignature = staticBaselineSignature
+            staticBaselineSignature = staticBaselineSignature,
+            ecology = ecology?.DeepClone()
         };
     }
 }
@@ -169,6 +185,7 @@ public sealed class TowerRunFloorRecord
 public sealed class TowerRunCheckpointRecord
 {
     public const int CurrentSchemaVersion = 1;
+    public const int EcologySchemaVersion = 2;
 
     public int schemaVersion = CurrentSchemaVersion;
     public string runId;

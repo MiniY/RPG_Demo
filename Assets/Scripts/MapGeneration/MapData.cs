@@ -1,5 +1,49 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
+
+public enum MapStairVisualComposition
+{
+    Auto,
+    UpperOnly,
+    UpperAndLower
+}
+
+public enum MapStairVisualSide
+{
+    Both,
+    LeftOnly,
+    RightOnly
+}
+
+public enum MapStairVisualPlacement
+{
+    Legacy,
+    Outboard,
+    BoundaryShoulders,
+    WestSideAttached
+}
+
+public readonly struct MapStairConnection
+{
+    public MapStairConnection(Vector2Int lowerCell, Vector2Int upperCell,
+        MapStairVisualComposition visualComposition = MapStairVisualComposition.Auto,
+        MapStairVisualSide visualSide = MapStairVisualSide.Both,
+        MapStairVisualPlacement visualPlacement = MapStairVisualPlacement.Legacy)
+    {
+        LowerCell = lowerCell;
+        UpperCell = upperCell;
+        VisualComposition = visualComposition;
+        VisualSide = visualSide;
+        VisualPlacement = visualPlacement;
+    }
+
+    public Vector2Int LowerCell { get; }
+    public Vector2Int UpperCell { get; }
+    public MapStairVisualComposition VisualComposition { get; }
+    public MapStairVisualSide VisualSide { get; }
+    public MapStairVisualPlacement VisualPlacement { get; }
+}
 
 /// <summary>
 /// 表示一次地图生成得到的二维逻辑数据。
@@ -35,6 +79,10 @@ public sealed class MapData
     /// 保存所有网格单元的二维数组。
     /// </summary>
     private readonly MapCell[,] cells;
+    private readonly List<MapStairConnection> stairs = new List<MapStairConnection>();
+    public IReadOnlyList<MapStairConnection> Stairs => stairs;
+    public bool HasElevation { get; private set; }
+    public int GenerationSeed { get; set; }
 
     /// <summary>
     /// 创建指定尺寸的空地图数据，并把所有单元初始化为草地。
@@ -110,6 +158,81 @@ public sealed class MapData
     {
         EnsureInside(cell);
         cells[cell.x - Origin.x, cell.y - Origin.y].terrainType = terrainType;
+    }
+
+    public int GetElevation(Vector2Int cell) => GetCell(cell).elevation;
+
+    public void SetElevation(Vector2Int cell, int elevation)
+    {
+        EnsureInside(cell);
+        if (elevation < 0)
+            throw new ArgumentOutOfRangeException(nameof(elevation));
+        if (elevation > 0 && !IsWalkable(cell))
+            throw new InvalidOperationException("Only walkable surfaces can be elevated.");
+        cells[cell.x - Origin.x, cell.y - Origin.y].elevation = elevation;
+        if (elevation > 0)
+            HasElevation = true;
+    }
+
+    public void AddStair(Vector2Int lowerCell, Vector2Int upperCell,
+        MapStairVisualComposition visualComposition = MapStairVisualComposition.Auto,
+        MapStairVisualSide visualSide = MapStairVisualSide.Both,
+        MapStairVisualPlacement visualPlacement = MapStairVisualPlacement.Legacy)
+    {
+        if (!IsInside(lowerCell) || !IsInside(upperCell) ||
+            !IsWalkable(lowerCell) || !IsWalkable(upperCell) ||
+            Mathf.Abs(lowerCell.x - upperCell.x) +
+            Mathf.Abs(lowerCell.y - upperCell.y) != 1 ||
+            GetElevation(upperCell) != GetElevation(lowerCell) + 1)
+        {
+            throw new ArgumentException("A stair must join adjacent walkable heights.");
+        }
+        if (IsStairTransition(lowerCell, upperCell))
+            return;
+        stairs.Add(new MapStairConnection(lowerCell, upperCell,
+            visualComposition, visualSide, visualPlacement));
+    }
+
+    public bool IsStairTransition(Vector2Int from, Vector2Int to)
+    {
+        for (int i = 0; i < stairs.Count; i++)
+        {
+            MapStairConnection stair = stairs[i];
+            if ((stair.LowerCell == from && stair.UpperCell == to) ||
+                (stair.LowerCell == to && stair.UpperCell == from))
+                return true;
+        }
+        return false;
+    }
+
+    public bool IsStairCell(Vector2Int cell)
+    {
+        for (int i = 0; i < stairs.Count; i++)
+            if (stairs[i].LowerCell == cell || stairs[i].UpperCell == cell)
+                return true;
+        return false;
+    }
+
+    public bool CanTraverse(Vector2Int from, Vector2Int to)
+    {
+        if (!IsInside(from) || !IsInside(to) || !IsWalkable(from) || !IsWalkable(to) ||
+            Mathf.Abs(from.x - to.x) + Mathf.Abs(from.y - to.y) != 1)
+            return false;
+        return GetElevation(from) == GetElevation(to) || IsStairTransition(from, to);
+    }
+
+    public MapData Copy()
+    {
+        MapData copy = new MapData(Width, Height, Origin)
+        {
+            SpawnCell = SpawnCell,
+            ExitCell = ExitCell,
+            HasElevation = HasElevation,
+            GenerationSeed = GenerationSeed
+        };
+        Array.Copy(cells, copy.cells, cells.Length);
+        copy.stairs.AddRange(stairs);
+        return copy;
     }
 
     /// <summary>

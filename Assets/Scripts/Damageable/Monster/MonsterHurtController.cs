@@ -14,6 +14,10 @@ public class MonsterHurtController : MonoBehaviour
     private MonsterMovementController movementController; // 怪物普通移动控制器。
     private Rigidbody2D body; // 执行受击位移的二维刚体。
     private Coroutine hurtCoroutine; // 当前受击协程。
+    private bool ecologyHurtActive;
+    private float ecologyHurtElapsed;
+    private Vector2 ecologyHurtHome;
+    private Vector2 ecologyHurtOut;
 
     // 初始化怪物逻辑组件引用。
     private void Awake()
@@ -74,7 +78,58 @@ public class MonsterHurtController : MonoBehaviour
 
         StopHurtCoroutine();
         movementController?.SetMovementLocked(true);
+        EcologyMotionBody motion = GetComponent<EcologyMotionBody>();
+        if (motion != null && motion.OwnsMotionRoute)
+        {
+            if (!motion.IsReady)
+            {
+                movementController?.SetMovementLocked(false);
+                return;
+            }
+            ecologyHurtHome = body.position;
+            Vector2 direction = ecologyHurtHome - (Vector2)damageSourcePosition;
+            if (direction.sqrMagnitude <= 0.0001f)
+                direction = Vector2.left;
+            ecologyHurtOut = ecologyHurtHome + direction.normalized * knockbackDistance;
+            ecologyHurtElapsed = 0f;
+            ecologyHurtActive = true;
+            return;
+        }
         hurtCoroutine = StartCoroutine(PlayHurtCoroutine(damageSourcePosition));
+    }
+
+    private void FixedUpdate()
+    {
+        if (!ecologyHurtActive)
+            return;
+        EcologyMotionBody motion = GetComponent<EcologyMotionBody>();
+        if (motion == null || !motion.IsReady)
+        {
+            StopHurtCoroutine();
+            return;
+        }
+        ecologyHurtElapsed += Time.fixedDeltaTime;
+        Vector2 target;
+        if (knockbackOutDuration > 0f && ecologyHurtElapsed < knockbackOutDuration)
+        {
+            float progress = Mathf.Clamp01(ecologyHurtElapsed / knockbackOutDuration);
+            progress = progress * progress * (3f - 2f * progress);
+            target = Vector2.LerpUnclamped(ecologyHurtHome, ecologyHurtOut, progress);
+        }
+        else
+        {
+            float progress = knockbackReturnDuration <= 0f ? 1f :
+                Mathf.Clamp01((ecologyHurtElapsed - knockbackOutDuration) / knockbackReturnDuration);
+            progress = progress * progress * (3f - 2f * progress);
+            target = Vector2.LerpUnclamped(ecologyHurtOut, ecologyHurtHome, progress);
+        }
+        motion.Request(target, EcologyMotionKind.Hurt);
+        if (ecologyHurtElapsed >= knockbackOutDuration + knockbackReturnDuration)
+        {
+            ecologyHurtActive = false;
+            // The intent retains Hurt priority after control unlocks; no position write follows here.
+            movementController?.SetMovementLocked(false);
+        }
     }
 
     // 执行后退再回到原位的完整位移过程。
@@ -133,6 +188,8 @@ public class MonsterHurtController : MonoBehaviour
     // 停止当前正在播放的受击位移。
     private void StopHurtCoroutine()
     {
+        ecologyHurtActive = false;
+        ecologyHurtElapsed = 0f;
         if (hurtCoroutine != null)
         {
             StopCoroutine(hurtCoroutine);

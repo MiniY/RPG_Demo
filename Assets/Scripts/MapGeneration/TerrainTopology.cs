@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 /// <summary>
@@ -6,6 +8,89 @@ using UnityEngine;
 /// </summary>
 public static class TerrainTopology
 {
+    /// <summary>
+    /// Reject V2.1 elevated inner corners that the current 16-state top tiles cannot express.
+    /// Call this from the V2.1 pre-commit planning path; legacy recipes retain their own rules.
+    /// </summary>
+    public static void ValidateV21RenderableTopology(MapData mapData)
+    {
+        IReadOnlyList<string> unsupported = FindUnsupportedV21InnerCorners(mapData);
+        if (unsupported.Count > 0)
+            throw new MapPlanningException("V21DiagonalCornerUnsupported",
+                "No verified 3x3 Sprite combination for " +
+                string.Join("; ", unsupported), false);
+    }
+
+    public static IReadOnlyList<string> FindUnsupportedV21InnerCorners(MapData mapData)
+    {
+        return FormatCorners(EnumerateV21InnerCorners(mapData));
+    }
+
+    public static void ValidateV21RenderableTopology(MapData mapData, MapStage1ProjectionPlan prepared)
+    {
+        if (prepared == null) throw new ArgumentNullException(nameof(prepared));
+        var unresolved = prepared.EvaluateCorners(mapData).Where(d => !d.Resolved).ToArray();
+        if (unresolved.Length > 0)
+            throw new MapPlanningException("V21DiagonalCornerUnsupported",
+                "No verified prepared 3x3 combination for " + string.Join("; ", unresolved.Select(d =>
+                    "H" + d.Level + " " + d.Cell + " " + d.Direction + ":" + d.Reason)), false);
+    }
+
+    public static IReadOnlyList<string> FindUnsupportedV21InnerCorners(MapData mapData, MapStage1ProjectionPlan prepared)
+    {
+        if (prepared == null) throw new ArgumentNullException(nameof(prepared));
+        var unresolved = new List<InnerCorner>();
+        foreach (var decision in prepared.EvaluateCorners(mapData))
+            if (!decision.Resolved) unresolved.Add(new InnerCorner(decision.Cell, decision.Level,
+                decision.Direction, decision.DiagonalLevel));
+        return FormatCorners(unresolved);
+    }
+
+    internal readonly struct InnerCorner
+    {
+        internal InnerCorner(Vector2Int cell, int level, string direction, int diagonalLevel)
+        { Cell = cell; Level = level; Direction = direction; DiagonalLevel = diagonalLevel; }
+        internal Vector2Int Cell { get; }
+        internal int Level { get; }
+        internal string Direction { get; }
+        internal int DiagonalLevel { get; }
+    }
+
+    private static IReadOnlyList<string> FormatCorners(IEnumerable<InnerCorner> corners)
+    {
+        var rows = new List<string>();
+        foreach (var group in corners.GroupBy(c => c.Cell))
+            rows.Add("H" + group.First().Level + " (" + group.Key.x + "," + group.Key.y + ") " +
+                string.Join(",", group.Select(c => c.Direction)));
+        return rows;
+    }
+
+    internal static IReadOnlyList<InnerCorner> EnumerateV21InnerCorners(MapData mapData)
+    {
+        if (mapData == null)
+            throw new ArgumentNullException(nameof(mapData));
+
+        var unsupported = new List<InnerCorner>();
+        for (int y = mapData.Origin.y + 1;
+             y < mapData.Origin.y + mapData.Height - 1; y++)
+        for (int x = mapData.Origin.x + 1;
+             x < mapData.Origin.x + mapData.Width - 1; x++)
+        {
+            var cell = new Vector2Int(x, y);
+            int level = mapData.GetElevation(cell);
+            if (level == 0) continue;
+            bool Same(int dx, int dy) =>
+                mapData.GetElevation(cell + new Vector2Int(dx, dy)) == level;
+            void Add(string direction, int dx, int dy) => unsupported.Add(new InnerCorner(cell, level,
+                direction, mapData.GetElevation(cell + new Vector2Int(dx, dy))));
+            if (Same(0, 1) && Same(1, 0) && !Same(1, 1)) Add("NE", 1, 1);
+            if (Same(0, 1) && Same(-1, 0) && !Same(-1, 1)) Add("NW", -1, 1);
+            if (Same(0, -1) && Same(1, 0) && !Same(1, -1)) Add("SE", 1, -1);
+            if (Same(0, -1) && Same(-1, 0) && !Same(-1, -1)) Add("SW", -1, -1);
+        }
+        return unsupported;
+    }
+
     /// <summary>
     /// 计算 Sand Base（沙地底层）在指定单元需要显示的边界。
     /// </summary>

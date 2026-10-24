@@ -147,7 +147,8 @@ public sealed class AnimalPlacementPolicy
         int mapSeed,
         MapData map,
         MapPlacementPlan plan,
-        AnimalSemanticPlacementRequest request)
+        AnimalSemanticPlacementRequest request,
+        Func<Vector2Int, bool> candidateQualification = null)
     {
         ValidateArguments(map, plan, request);
         Dictionary<Vector2Int, int> spawnDistances = BuildSpawnDistances(map, plan);
@@ -170,6 +171,8 @@ public sealed class AnimalPlacementPolicy
                 {
                     continue;
                 }
+
+                if (candidateQualification != null && !candidateQualification(candidate)) continue;
 
                 uint score = MapSemanticPlacementPrimitives.StableScore(
                     mapSeed,

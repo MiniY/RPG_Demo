@@ -8,6 +8,8 @@ using UnityEngine.Tilemaps;
 [CreateAssetMenu(fileName = "MapGenerationSettings", menuName = "RPG Demo/Map Generation Settings")]
 public class MapGenerationSettings : ScriptableObject
 {
+    [Tooltip("Independent R3 native projected faces and ground-root qualification; legacy and Stage1 remain opt-out.")]
+    public bool remediationProjectedSurfaces;
     /// <summary>
     /// 当前随机地图算法的数据版本。
     /// </summary>

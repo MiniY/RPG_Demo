@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 // 控制怪物 Visual 子物体的动画表现，不负责行为决策、移动或伤害。
@@ -8,6 +9,7 @@ public class MonsterAnimationController : MonoBehaviour
     [SerializeField] private MonsterAttackController attackController; // 父物体上的怪物攻击模块。
     [SerializeField] private Animator animator; // Visual 子物体上的动画控制器。
     [SerializeField] private SpriteRenderer spriteRenderer; // Visual 子物体上的精灵渲染器。
+    [SerializeField] private BaseMonster monster; // 父物体上的受击与死亡事件来源。
 
     [Header("Animator 参数")]
     [SerializeField] private string isMovingParameterName = "IsMoving"; // 控制 Idle 和 Move 切换的布尔参数名。
@@ -18,12 +20,19 @@ public class MonsterAnimationController : MonoBehaviour
     [SerializeField] private bool movementSpriteFacesLeft = true; // Idle 和 Walking 的原始水平精灵是否默认朝左。
     [SerializeField] private bool horizontalAttackSpriteFacesLeft = false; // 水平攻击原始精灵是否朝左；Torch_Blue 的 Attack_Right 素材朝右。
 
+    [Header("缺少专用帧时的视觉反馈")]
+    [SerializeField, Min(0f)] private float hurtFlashDuration = 0.12f;
+    [SerializeField, Min(0f)] private float deathFadeDuration = 0.4f;
+
     private int isMovingParameterHash; // IsMoving 参数的哈希值。
     private int attackParameterHash; // Attack 参数的哈希值。
     private int attackDirectionParameterHash; // AttackDirection 参数的哈希值。
     private bool hasIsMovingParameter; // Animator 是否包含可用的 IsMoving 布尔参数。
     private bool hasAttackParameter; // Animator 是否包含可用的 Attack 触发参数。
     private bool hasAttackDirectionParameter; // Animator 是否包含可用的 AttackDirection 整数参数。
+    private Coroutine feedbackCoroutine;
+    private Color normalColor;
+    private bool defeatedVisual;
 
     // 初始化父物体行为引用和当前 Visual 上的 Animator。
     private void Awake()
@@ -40,12 +49,29 @@ public class MonsterAnimationController : MonoBehaviour
         if (spriteRenderer == null)
             spriteRenderer = GetComponent<SpriteRenderer>();
 
+        if (monster == null)
+            monster = GetComponentInParent<BaseMonster>();
+
+        if (spriteRenderer != null)
+            normalColor = spriteRenderer.color;
+
         CacheAnimatorParameters();
     }
 
     // 启用时监听父物体的移动表现事件，并同步当前动画状态。
     private void OnEnable()
     {
+        defeatedVisual = false;
+        if (feedbackCoroutine != null)
+        {
+            StopCoroutine(feedbackCoroutine);
+            feedbackCoroutine = null;
+        }
+        if (spriteRenderer != null)
+            spriteRenderer.color = normalColor;
+        if (animator != null)
+            animator.enabled = true;
+
         if (movementController != null)
         {
             movementController.OnMovementChanged += HandleMovementChanged;
@@ -59,11 +85,27 @@ public class MonsterAnimationController : MonoBehaviour
             attackController.OnAttackStarted -= HandleAttackStarted;
             attackController.OnAttackStarted += HandleAttackStarted;
         }
+
+        if (monster != null)
+        {
+            monster.OnDamaged += HandleDamaged;
+            monster.OnDefeated += HandleDefeated;
+        }
     }
 
     // 禁用时取消监听，避免对象池复用后重复订阅。
     private void OnDisable()
     {
+        if (monster != null)
+        {
+            monster.OnDamaged -= HandleDamaged;
+            monster.OnDefeated -= HandleDefeated;
+        }
+        if (feedbackCoroutine != null)
+        {
+            StopCoroutine(feedbackCoroutine);
+            feedbackCoroutine = null;
+        }
         if (movementController != null)
         {
             movementController.OnMovementChanged -= HandleMovementChanged;
@@ -125,7 +167,7 @@ public class MonsterAnimationController : MonoBehaviour
     // 只在参数真实存在时设置移动动画，避免 Animator 报错。
     private void ApplyMovementAnimation(bool isMoving)
     {
-        if (animator == null || !hasIsMovingParameter)
+        if (defeatedVisual || animator == null || !hasIsMovingParameter)
             return;
 
         animator.SetBool(isMovingParameterHash, isMoving);
@@ -134,7 +176,7 @@ public class MonsterAnimationController : MonoBehaviour
     // 根据目标方向选择并触发一次四方向攻击动画。
     public bool PlayAttack(Vector2 attackDirection)
     {
-        if (animator == null || !hasAttackParameter || !hasAttackDirectionParameter)
+        if (defeatedVisual || animator == null || !hasAttackParameter || !hasAttackDirectionParameter)
             return false;
 
         if (attackDirection.sqrMagnitude <= 0.0001f && movementController != null)
@@ -147,6 +189,63 @@ public class MonsterAnimationController : MonoBehaviour
         animator.ResetTrigger(attackParameterHash);
         animator.SetTrigger(attackParameterHash);
         return true;
+    }
+
+    private void HandleDamaged(BaseDamageable source, DamageInfo damageInfo)
+    {
+        if (source != monster || defeatedVisual || spriteRenderer == null)
+            return;
+
+        if (feedbackCoroutine != null)
+            StopCoroutine(feedbackCoroutine);
+        feedbackCoroutine = StartCoroutine(FlashHurt());
+    }
+
+    private IEnumerator FlashHurt()
+    {
+        spriteRenderer.color = new Color(1f, 0.45f, 0.45f, normalColor.a);
+        if (hurtFlashDuration > 0f)
+            yield return new WaitForSeconds(hurtFlashDuration);
+        if (!defeatedVisual)
+            spriteRenderer.color = normalColor;
+        feedbackCoroutine = null;
+    }
+
+    private void HandleDefeated(BaseDamageable source)
+    {
+        if (source != monster || defeatedVisual)
+            return;
+
+        defeatedVisual = true;
+        if (feedbackCoroutine != null)
+            StopCoroutine(feedbackCoroutine);
+        feedbackCoroutine = null;
+        if (animator != null)
+            animator.enabled = false;
+        if (spriteRenderer != null)
+            feedbackCoroutine = StartCoroutine(FadeDeath());
+    }
+
+    private IEnumerator FadeDeath()
+    {
+        Color start = spriteRenderer.color;
+        if (deathFadeDuration <= 0f)
+        {
+            spriteRenderer.color = new Color(start.r, start.g, start.b, 0f);
+            feedbackCoroutine = null;
+            yield break;
+        }
+
+        float elapsed = 0f;
+        while (elapsed < deathFadeDuration)
+        {
+            elapsed += Time.deltaTime;
+            Color color = start;
+            color.a = Mathf.Lerp(start.a, 0f, Mathf.Clamp01(elapsed / deathFadeDuration));
+            spriteRenderer.color = color;
+            yield return null;
+        }
+        feedbackCoroutine = null;
     }
 
     // 水平移动时根据原始素材朝向翻转精灵，垂直移动时保留上一次水平朝向。

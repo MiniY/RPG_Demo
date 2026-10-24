@@ -11,6 +11,9 @@ public struct MapCell
     /// </summary>
     public MapTerrainType terrainType;
 
+    /// <summary>Discrete height of the walkable surface, independent of its material.</summary>
+    public int elevation;
+
     /// <summary>
     /// 根据地形类型判断该单元是否允许玩家行走。
     /// </summary>

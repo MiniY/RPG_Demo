@@ -34,6 +34,7 @@ public sealed class TowerFloorRuntimeController : MonoBehaviour, IMapRuntimeRead
     public Guid CurrentGenerationId => currentGenerationId;
     public int TargetCount => targets.Count;
     public int DefeatedTargetCount => defeatedTargets.Count;
+    public float ExitInteractionRadius => interactionRadius;
 
     private void Awake()
     {

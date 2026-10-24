@@ -138,7 +138,7 @@ public static class MapMinimapRasterizer
             {
                 Vector2Int cell = mapData.Origin + new Vector2Int(localX, localY);
                 int pixelIndex = localY * mapData.Width + localX;
-                pixels[pixelIndex] = GetTerrainColor(
+                Color32 terrainColor = GetTerrainColor(
                     mapData.GetCell(cell).terrainType,
                     grassColor,
                     waterColor,
@@ -148,6 +148,15 @@ public static class MapMinimapRasterizer
                     forestColor,
                     mountainColor,
                     fallbackColor);
+                int elevation = mapData.GetElevation(cell);
+                if (elevation > 0)
+                {
+                    float shade = Mathf.Clamp01(0.12f * elevation);
+                    terrainColor = Color32.Lerp(terrainColor, mountainColor, shade);
+                }
+                if (mapData.IsStairCell(cell))
+                    terrainColor = pathColor;
+                pixels[pixelIndex] = terrainColor;
             }
         }
 

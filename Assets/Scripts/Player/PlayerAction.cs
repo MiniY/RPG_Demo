@@ -27,6 +27,7 @@ public class PlayerAction : MonoBehaviour, IMapTransitionResettable
     private bool isSpeedBoostActive; // 左 Ctrl 是否处于加速状态。
     private bool isControlLocked; // 受击击退等外部行为是否正在临时接管玩家控制。
     private Coroutine pendingAttackCoroutine; // 等待命中帧的攻击协程。
+    private EcologyAttackRequest ecologyWindup;
 
     public event Action<int> OnAttackPerformed; // 玩家执行攻击时通知动画系统。
 
@@ -56,6 +57,9 @@ public class PlayerAction : MonoBehaviour, IMapTransitionResettable
         UnbindInput();
         StopAllCoroutines();
         pendingAttackCoroutine = null;
+        ecologyWindup?.CancelWindup();
+        ecologyWindup = null;
+        GetComponent<EcologyCombatBinding>()?.RetireLease();
         isControlLocked = false;
         moveInput = Vector2.zero;
     }
@@ -135,7 +139,8 @@ public class PlayerAction : MonoBehaviour, IMapTransitionResettable
         float appliedMoveSpeed = moveSpeed + (isSpeedBoostActive ? speedBoostAmount : 0f);
         Vector2 nextPosition = rb.position + moveInput * appliedMoveSpeed * Time.fixedDeltaTime;
 
-        rb.MovePosition(nextPosition);
+        if (!EcologyMotionBody.TryRequest(transform, nextPosition, EcologyMotionKind.Normal))
+            rb.MovePosition(nextPosition);
     }
 
     // 准备攻击方向，并记录本次攻击目标。
@@ -235,11 +240,16 @@ public class PlayerAction : MonoBehaviour, IMapTransitionResettable
         int preparedDirectionIndex = PrepareAttackDirection();
         BaseDamageable attackTarget = preparedAttackTarget;
 
+        EcologyCombatBinding.TryPrepare(transform, attackTarget != null ? attackTarget.transform : null,
+            out EcologyAttackRequest preparedEcologyAttack);
         OnAttackPerformed?.Invoke(preparedDirectionIndex);
         if (pendingAttackCoroutine != null)
             StopCoroutine(pendingAttackCoroutine);
-
-        pendingAttackCoroutine = StartCoroutine(DealDamageAfterDelay(attackTarget));
+        ecologyWindup?.CancelWindup();
+        ecologyWindup = preparedEcologyAttack;
+        pendingAttackCoroutine = preparedEcologyAttack != null
+            ? StartCoroutine(DealEcologyDamageAfterDelay(attackTarget, preparedEcologyAttack))
+            : StartCoroutine(DealDamageAfterDelay(attackTarget));
         preparedAttackTarget = null;
     }
 
@@ -261,6 +271,9 @@ public class PlayerAction : MonoBehaviour, IMapTransitionResettable
     /// <summary>Clears movement and attack transient state before a committed map relocation.</summary>
     public void ResetMapTransitionState()
     {
+        ecologyWindup?.CancelWindup();
+        ecologyWindup = null;
+        GetComponent<EcologyCombatBinding>()?.RetireLease();
         moveInput = Vector2.zero;
         preparedAttackTarget = null;
 
@@ -290,10 +303,38 @@ public class PlayerAction : MonoBehaviour, IMapTransitionResettable
         pendingAttackCoroutine = null;
     }
 
+    // 新生态请求在原到期时入队，原伤害接收器仍拥有生命值与受伤事件。
+    private IEnumerator DealEcologyDamageAfterDelay(BaseDamageable attackTarget, EcologyAttackRequest request)
+    {
+        if (attackHitDelay > 0f)
+            yield return new WaitForSeconds(attackHitDelay);
+
+        // Keep the original player's delayed eligibility: active, same level, alive; no new range rule.
+        request.Queue(() => IsEcologyTargetEligible(attackTarget), () =>
+        {
+            float before = attackTarget.CurrentHealth;
+            DealDamageToTarget(attackTarget);
+            return attackTarget.CurrentHealth < before;
+        });
+        pendingAttackCoroutine = null;
+        if (ReferenceEquals(ecologyWindup, request))
+            ecologyWindup = null;
+    }
+
+    private bool IsEcologyTargetEligible(BaseDamageable target)
+    {
+        return target != null && target.gameObject.activeInHierarchy && !target.IsDefeated &&
+               MapElevationRuntimeQuery.SameLevel(transform.position, target.transform.position);
+    }
+
     // 对指定可破坏对象造成伤害。
     private void DealDamageToTarget(BaseDamageable attackTarget)
     {
         if (attackTarget == null || !attackTarget.gameObject.activeInHierarchy)
+            return;
+
+        if (!MapElevationRuntimeQuery.SameLevel(transform.position,
+                attackTarget.transform.position))
             return;
 
         if (attackTarget.IsDefeated)
@@ -319,6 +360,9 @@ public class PlayerAction : MonoBehaviour, IMapTransitionResettable
         foreach (BaseDamageable damageable in damageables)
         {
             if (damageable == null || !damageable.gameObject.activeInHierarchy)
+                continue;
+            if (!MapElevationRuntimeQuery.SameLevel(transform.position,
+                    damageable.transform.position))
                 continue;
 
             Vector2 offset = damageable.transform.position - transform.position;

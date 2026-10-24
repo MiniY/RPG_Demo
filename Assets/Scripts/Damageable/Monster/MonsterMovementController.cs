@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 [RequireComponent(typeof(Rigidbody2D))]
 // 统一处理怪物的二维移动、停止和朝向，不负责决定移动目标。
@@ -21,6 +23,19 @@ public class MonsterMovementController : MonoBehaviour
     private Vector2 facingDirection = Vector2.down; // 怪物当前面对方向。
     private readonly RaycastHit2D[] movementHits = new RaycastHit2D[8]; // 单次移动检测复用的碰撞结果数组。
     private ContactFilter2D movementContactFilter; // 移动前形状投射使用的碰撞过滤条件。
+    private readonly List<Vector2Int> terrainPath = new List<Vector2Int>();
+    private MapData terrainPathMap;
+    private Vector2Int terrainPathTarget;
+    private int terrainPathIndex;
+    private SortingGroup visualSortingGroup;
+    private SpriteRenderer[] visualRenderers;
+    private int[] originalSortingOrders;
+    private int originalGroupOrder;
+    private EcologyMovementStatus navigationStatus;
+    public EcologyMovementStatus NavigationStatus => navigationStatus;
+    public int MovementBlockingLayers => obstacleLayers.value;
+    public float MovementCollisionSkin => collisionSkinWidth;
+    public float MoveSpeed => moveSpeed;
 
     public event Action<bool> OnMovementChanged; // 移动状态变化时通知动画表现模块。
     public event Action<Vector2> OnFacingDirectionChanged; // 面对方向变化时通知动画表现模块。
@@ -36,6 +51,16 @@ public class MonsterMovementController : MonoBehaviour
         body = GetComponent<Rigidbody2D>();
         ConfigureRigidbody();
         ConfigureMovementContactFilter();
+        visualSortingGroup = GetComponentInChildren<SortingGroup>(true);
+        if (visualSortingGroup != null)
+            originalGroupOrder = visualSortingGroup.sortingOrder;
+        else
+        {
+            visualRenderers = GetComponentsInChildren<SpriteRenderer>(true);
+            originalSortingOrders = new int[visualRenderers.Length];
+            for (int i = 0; i < visualRenderers.Length; i++)
+                originalSortingOrders[i] = visualRenderers[i].sortingOrder;
+        }
     }
 
     // 在固定时间步中执行实际移动。
@@ -44,16 +69,30 @@ public class MonsterMovementController : MonoBehaviour
         MoveTowardsDestination();
     }
 
+    private void LateUpdate()
+    {
+        int heightOffset = MapElevationRuntimeQuery.GetElevation(transform.position) * 10;
+        if (visualSortingGroup != null)
+            visualSortingGroup.sortingOrder = originalGroupOrder + heightOffset;
+        else if (visualRenderers != null)
+            for (int i = 0; i < visualRenderers.Length; i++)
+                if (visualRenderers[i] != null)
+                    visualRenderers[i].sortingOrder = originalSortingOrders[i] + heightOffset;
+    }
+
     // 禁用或回收到对象池时停止移动。
     private void OnDisable()
     {
         isMovementLocked = false;
         Stop();
+        var resident = GetComponent<EcologyResidentBinding>();
+        if (resident != null && resident.IsBound) navigationStatus = EcologyMovementStatus.Retired;
     }
 
     // 设置新的移动目标位置。
     public void SetDestination(Vector2 targetPosition)
     {
+        navigationStatus = EcologyMovementStatus.Moving;
         destination = targetPosition;
         hasDestination = true;
     }
@@ -67,7 +106,10 @@ public class MonsterMovementController : MonoBehaviour
     // 停止怪物移动并清除当前目标位置。
     public void Stop()
     {
+        navigationStatus = EcologyMovementStatus.Idle;
         hasDestination = false;
+        terrainPath.Clear();
+        terrainPathMap = null;
 
         if (body != null)
             body.velocity = Vector2.zero;
@@ -98,12 +140,35 @@ public class MonsterMovementController : MonoBehaviour
             return;
         }
 
-        Vector2 offset = destination - body.position;
-        float distance = offset.magnitude;
-
-        if (distance <= stoppingDistance)
+        if (!TryTerrainWaypoint(out Vector2 moveTarget))
         {
             Stop();
+            var resident = GetComponent<EcologyResidentBinding>();
+            if (resident != null && resident.IsBound) navigationStatus = resident.CanAct ? EcologyMovementStatus.NoPath : EcologyMovementStatus.Retired;
+            return;
+        }
+        Vector2 offset = moveTarget - body.position;
+        float distance = offset.magnitude;
+
+        var returnResident = GetComponent<EcologyResidentBinding>();
+        bool needsCompleteHome = returnResident != null && returnResident.IsBound && returnResident.Excursion.ReturnLatched &&
+            returnResident.TryGetHomeDistance(out int remainingHomeDistance, out _) && remainingHomeDistance > 0;
+        // A waypoint tolerance cannot certify that a returning full foot is home.
+        // Finish the remaining sub-step instead of stopping just outside its domain.
+        if (distance <= stoppingDistance && !needsCompleteHome)
+        {
+            var resident = GetComponent<EcologyResidentBinding>();
+            if (resident != null && resident.IsBound)
+            {
+                bool arrived = (destination - body.position).sqrMagnitude <= stoppingDistance * stoppingDistance ||
+                    resident.Excursion.ReturnLatched && resident.TryGetHomeDistance(out int homeDistance, out _) && homeDistance == 0;
+                Stop(); navigationStatus = arrived ? EcologyMovementStatus.Arrived : EcologyMovementStatus.Blocked;
+                return;
+            }
+            if (terrainPathIndex < terrainPath.Count)
+                terrainPathIndex++;
+            else
+                Stop();
             return;
         }
 
@@ -124,18 +189,76 @@ public class MonsterMovementController : MonoBehaviour
         if (allowedMoveDistance <= 0.0001f)
         {
             Stop();
+            navigationStatus = EcologyMovementStatus.Blocked;
             return;
         }
 
         Vector2 nextPosition = body.position + direction * allowedMoveDistance;
         bool wasBlocked = allowedMoveDistance + 0.0001f < requestedMoveDistance;
 
-        body.MovePosition(nextPosition);
+        if (!EcologyMotionBody.TryRequest(transform, nextPosition, EcologyMotionKind.Normal))
+            body.MovePosition(nextPosition);
         SetMoving(true);
 
-        if (wasBlocked ||
-            (destination - nextPosition).sqrMagnitude <= stoppingDistance * stoppingDistance)
-            hasDestination = false;
+        if (wasBlocked)
+        {
+            Stop();
+            navigationStatus = EcologyMovementStatus.Blocked;
+            return;
+        }
+        if ((moveTarget - nextPosition).sqrMagnitude <=
+            stoppingDistance * stoppingDistance)
+        {
+            var resident = GetComponent<EcologyResidentBinding>();
+            if (resident != null && resident.IsBound) return; // Confirm regional arrival from the next actual body pose.
+            if (terrainPathIndex < terrainPath.Count)
+                terrainPathIndex++;
+            else
+                hasDestination = false;
+        }
+    }
+
+    private bool TryTerrainWaypoint(out Vector2 waypoint)
+    {
+        waypoint = destination;
+        var resident = GetComponent<EcologyResidentBinding>();
+        if (resident != null && resident.IsBound)
+            return resident.TryMovementWaypoint(body.position, destination, out waypoint);
+        if (!MapElevationRuntimeQuery.TryGetActiveMap(out MapData map,
+                out MapCoordinateBoundary coordinates))
+            return true;
+
+        Vector2Int currentCell = coordinates.WorldToCell(body.position);
+        Vector2Int targetCell = coordinates.WorldToCell(destination);
+        if (!map.IsInside(currentCell) || !map.IsInside(targetCell) ||
+            !map.IsWalkable(currentCell) || !map.IsWalkable(targetCell))
+            return false;
+        if (currentCell == targetCell)
+        {
+            terrainPath.Clear();
+            return true;
+        }
+
+        bool needsPath = terrainPathMap != map || terrainPathTarget != targetCell ||
+            terrainPathIndex >= terrainPath.Count ||
+            (terrainPath.Count > 0 && currentCell != terrainPath[terrainPathIndex - 1] &&
+             currentCell != terrainPath[terrainPathIndex]);
+        if (needsPath)
+        {
+            terrainPathMap = map;
+            terrainPathTarget = targetCell;
+            if (!MapElevationRuntimeQuery.TryFindPath(map, currentCell,
+                    targetCell, terrainPath))
+                return false;
+            terrainPathIndex = 1;
+        }
+        while (terrainPathIndex < terrainPath.Count &&
+               ((Vector2)coordinates.CellToWorld(terrainPath[terrainPathIndex]) - body.position)
+               .sqrMagnitude <= stoppingDistance * stoppingDistance)
+            terrainPathIndex++;
+        if (terrainPathIndex < terrainPath.Count)
+            waypoint = coordinates.CellToWorld(terrainPath[terrainPathIndex]);
+        return true;
     }
 
     // 把怪物刚体配置为脚本驱动，避免玩家的物理碰撞直接推动怪物。
@@ -175,6 +298,11 @@ public class MonsterMovementController : MonoBehaviour
             RaycastHit2D hit = movementHits[hitIndex]; // 当前检测到的障碍物。
 
             if (hit.collider == null)
+                continue;
+
+            // A cast starting in a slight overlap reports distance zero even when
+            // this step is separating the Monster from the obstacle.
+            if (hit.distance <= 0f && Vector2.Dot(hit.normal, direction) > 0f)
                 continue;
 
             float distanceBeforeObstacle = Mathf.Max(0f, hit.distance - collisionSkinWidth);

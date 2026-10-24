@@ -223,6 +223,45 @@ public class TowerRunSlotStoreTests
     }
 
     [Test]
+    public void Commit_WhenSlotChangesInsideReplacementWindow_RequiresFreshConfirmation()
+    {
+        string root = CreateTemporaryRoot();
+
+        try
+        {
+            ConcurrentMutationFileSystem fileSystem = new ConcurrentMutationFileSystem();
+            TowerRunSlotStore store = new TowerRunSlotStore(root, CreatePolicy(), fileSystem);
+            TowerRunCheckpointRecord original = CreateValidRecord();
+            original.runId = "original";
+            Assert.That(store.TryCommit(1, original, false).succeeded, Is.True);
+            string confirmationToken = store.ReadSlot(1).confirmationToken;
+
+            TowerRunCheckpointRecord concurrent = CreateValidRecord();
+            concurrent.runId = "concurrent";
+            concurrent.floor.floorNumber = 2;
+            concurrent.floor.displayName = "第 2 层";
+            concurrent.savedAtUtc = DateTime.UtcNow.ToString("O");
+            fileSystem.MutateDestinationBeforeNextReplace = UnityEngine.JsonUtility.ToJson(concurrent, true);
+
+            TowerRunCheckpointRecord replacement = CreateValidRecord();
+            replacement.runId = "replacement";
+            TowerRunSlotWriteResult result = store.TryCommit(
+                1,
+                replacement,
+                true,
+                confirmationToken);
+
+            Assert.That(result.succeeded, Is.False);
+            Assert.That(result.requiresOverwriteConfirmation, Is.True);
+            Assert.That(store.ReadSlot(1).record.runId, Is.EqualTo("concurrent"));
+        }
+        finally
+        {
+            DeleteTemporaryRoot(root);
+        }
+    }
+
+    [Test]
     public void ReadSlot_WhenCorruptContentsChange_ChangesConfirmationToken()
     {
         string root = CreateTemporaryRoot();
@@ -415,6 +454,31 @@ public class TowerRunSlotStoreTests
 
             inner.ReplaceFile(source, destination, backup);
             replacedFormalPaths.Add(destination);
+        }
+    }
+
+    private sealed class ConcurrentMutationFileSystem : ITowerRunFileSystem
+    {
+        private readonly TowerRunPhysicalFileSystem inner = new TowerRunPhysicalFileSystem();
+
+        public string MutateDestinationBeforeNextReplace { get; set; }
+
+        public TowerRunFileProbeState ProbeFile(string path) => inner.ProbeFile(path);
+        public string ReadAllText(string path) => inner.ReadAllText(path);
+        public void WriteAllText(string path, string contents) => inner.WriteAllText(path, contents);
+        public void CreateDirectory(string path) => inner.CreateDirectory(path);
+        public void MoveFile(string source, string destination) => inner.MoveFile(source, destination);
+        public void DeleteFile(string path) => inner.DeleteFile(path);
+
+        public void ReplaceFile(string source, string destination, string backup)
+        {
+            if (MutateDestinationBeforeNextReplace != null)
+            {
+                File.WriteAllText(destination, MutateDestinationBeforeNextReplace);
+                MutateDestinationBeforeNextReplace = null;
+            }
+
+            inner.ReplaceFile(source, destination, backup);
         }
     }
 

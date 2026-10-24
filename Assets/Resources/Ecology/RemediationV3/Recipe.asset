@@ -1,0 +1,82 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28de044ccef04482ae9dc57038fea5e3, type: 3}
+  m_Name: Units_Remediation_R3
+  m_EditorClassIdentifier: 
+  configurationDigest: e5c61979fd4ac982d3613e97ef60fce4e8cd7fe721388bd5bdc8ca93a861ad5f
+  candidateProfileId: ecology-zoning-units-remediation-v3
+  bossContentPending: 1
+  retainedSettings: {fileID: 11400000, guid: f48a6c5ff3ea47e38a22befd505fe04c, type: 2}
+  retainedPopulation: {fileID: 11400000, guid: f415232fd61f4e4fab3da42d23b50a7f, type: 2}
+  retainedContentManifest: {fileID: 4900000, guid: 399c2d1f7c9f4fc29c265366e9b2b607, type: 3}
+  retainedTerrain: {fileID: 11400000, guid: c2c11b7db3754fa1b5cab984c5856b4c, type: 2}
+  ecotypes:
+  - typeId: prefab.374c8f23d7b91b043881862e4bde70f0
+    prefab: {fileID: 3599908422589078787, guid: 374c8f23d7b91b043881862e4bde70f0, type: 3}
+    terrains: 10
+    weight: 3
+    isBoss: 0
+  - typeId: prefab.39852239ad374a947b0462fd925a90eb
+    prefab: {fileID: 2886108516971346115, guid: 39852239ad374a947b0462fd925a90eb, type: 3}
+    terrains: 10
+    weight: 3
+    isBoss: 0
+  - typeId: prefab.41b26def55e8a594fa74cb14c736dda8
+    prefab: {fileID: 2779544006700868050, guid: 41b26def55e8a594fa74cb14c736dda8, type: 3}
+    terrains: 12
+    weight: 3
+    isBoss: 0
+  - typeId: prefab.9c37f8d21adbee74bbbe1ba43ec2ba02
+    prefab: {fileID: 4423114405437467544, guid: 9c37f8d21adbee74bbbe1ba43ec2ba02, type: 3}
+    terrains: 10
+    weight: 3
+    isBoss: 0
+  - typeId: prefab.a19fea235a1d7f84a8febde0649727ba
+    prefab: {fileID: 1338499225828233506, guid: a19fea235a1d7f84a8febde0649727ba, type: 3}
+    terrains: 5
+    weight: 4
+    isBoss: 0
+  - typeId: prefab.b13948c00e6994b4cb69af35db102416
+    prefab: {fileID: 2947095731514098050, guid: b13948c00e6994b4cb69af35db102416, type: 3}
+    terrains: 12
+    weight: 3
+    isBoss: 0
+  - typeId: prefab.af07a9fb402e6934dbed62860d520910
+    prefab: {fileID: 3014392730237608508, guid: af07a9fb402e6934dbed62860d520910, type: 3}
+    terrains: 5
+    weight: 4
+    isBoss: 0
+  - typeId: prefab.a2a6895803e166e438f35b4985b973a0
+    prefab: {fileID: 7796111171253102460, guid: a2a6895803e166e438f35b4985b973a0, type: 3}
+    terrains: 12
+    weight: 3
+    isBoss: 0
+  - typeId: prefab.c600084364a26c34bbe0a43d2bd289d7
+    prefab: {fileID: 8232510815165160658, guid: c600084364a26c34bbe0a43d2bd289d7, type: 3}
+    terrains: 5
+    weight: 4
+    isBoss: 0
+  - typeId: prefab.d25c27de0cabb854e81ba356017391fc
+    prefab: {fileID: 7582475161213555865, guid: d25c27de0cabb854e81ba356017391fc, type: 3}
+    terrains: 10
+    weight: 3
+    isBoss: 0
+  - typeId: prefab.d2f7ab4133e6ea749953e5f6c289a46f
+    prefab: {fileID: 1796432832359257358, guid: d2f7ab4133e6ea749953e5f6c289a46f, type: 3}
+    terrains: 5
+    weight: 4
+    isBoss: 0
+  - typeId: prefab.ec0c787dc21a1e94b92a1e05abb92b00
+    prefab: {fileID: 1506173336525476895, guid: ec0c787dc21a1e94b92a1e05abb92b00, type: 3}
+    terrains: 12
+    weight: 3
+    isBoss: 0

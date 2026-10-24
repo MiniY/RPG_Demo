@@ -159,7 +159,8 @@ public sealed class PlantPlacementPolicy
         int mapSeed,
         MapData map,
         MapPlacementPlan plan,
-        PlantSemanticPlacementRequest request)
+        PlantSemanticPlacementRequest request,
+        Func<Vector2Int, bool> surfaceQualification = null)
     {
         ValidateArguments(map, plan, request);
         Dictionary<Vector2Int, int> spawnDistances = BuildSpawnDistances(map, plan);
@@ -170,6 +171,7 @@ public sealed class PlantPlacementPolicy
             for (int y = map.Origin.y; y < map.Origin.y + map.Height; y++)
             {
                 Vector2Int candidate = new Vector2Int(x, y);
+                if (surfaceQualification != null && !surfaceQualification(candidate)) continue;
                 if (!TryEvaluateCandidate(
                         map,
                         plan,

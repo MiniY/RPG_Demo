@@ -48,6 +48,7 @@ GameObject:
   - component: {fileID: 3799152854970841327}
   - component: {fileID: 3418749479048909312}
   - component: {fileID: 5551134208712346001}
+  - component: {fileID: 2916530709167011003}
   m_Layer: 6
   m_Name: Torch_Blue
   m_TagString: Damageable
@@ -244,13 +245,25 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0c25fbb3424a479c918cfa3cddb9aa05, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
-  attackDamage: 10
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackDamage: 5
   attackRange: 1.2
   attackWindupDuration: 0.25
   attackCooldownDuration: 0.35
   minimumFacingDot: 0.7
+--- !u!114 &2916530709167011003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3014392730237608508}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b584cc1098930804f8291a95a0da4cbe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3530145738213049363
 GameObject:
   m_ObjectHideFlags: 0
@@ -325,7 +338,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 5
   m_Sprite: {fileID: -1579235568731923194, guid: 3d0f25b11b493c44a9c654ec362546b3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -374,8 +387,11 @@ MonoBehaviour:
   attackController: {fileID: 5551134208712346001}
   animator: {fileID: 20332892973276085}
   spriteRenderer: {fileID: 2405492412295635577}
+  monster: {fileID: 0}
   isMovingParameterName: IsMoving
   attackParameterName: Attack
   attackDirectionParameterName: AttackDirection
   movementSpriteFacesLeft: 1
   horizontalAttackSpriteFacesLeft: 0
+  hurtFlashDuration: 0.12
+  deathFadeDuration: 0.4

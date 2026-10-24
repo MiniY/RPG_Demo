@@ -28,6 +28,8 @@ public class MapTilemapRenderer : MonoBehaviour
     /// </summary>
     [SerializeField] private Tilemap elevationTilemap;
 
+    [SerializeField] private MapTerrainV2Palette terrainV2Palette;
+
     /// <summary>
     /// 只负责产生基础地形碰撞、不负责显示的碰撞 Tilemap。
     /// </summary>
@@ -43,6 +45,7 @@ public class MapTilemapRenderer : MonoBehaviour
     /// 最近一次成功投影到 Tilemap 的地图数据，仅用于兼容现有边界消费者。
     /// </summary>
     private MapData lastRenderedMap;
+    private MapElevationProjector elevationProjector;
 
     /// <summary>
     /// 获取 Water Base（水体底层），供控制器和编辑器工具使用。
@@ -73,6 +76,7 @@ public class MapTilemapRenderer : MonoBehaviour
     /// 获取地表 Tilemap，供控制器和编辑器工具使用。
     /// </summary>
     public Tilemap GroundTilemap => waterBaseTilemap;
+    public MapTerrainV2Palette TerrainV2Palette => terrainV2Palette;
 
     /// <summary>
     /// 获取隐藏碰撞 Tilemap，供控制器和编辑器工具使用。
@@ -106,10 +110,21 @@ public class MapTilemapRenderer : MonoBehaviour
     /// <param name="settings">包含 Tile（瓦片）引用的地图配置。</param>
     public void Render(MapData mapData, MapGenerationSettings settings)
     {
+        RenderBase(mapData, settings);
+        elevationProjector.Render(mapData, terrainV2Palette, settings.remediationProjectedSurfaces);
+        MapSurfaceV4Policy.Project(mapData, this, settings);
+        lastRenderedMap = mapData;
+    }
+
+    private void RenderBase(MapData mapData, MapGenerationSettings settings)
+    {
         if (mapData == null)
             throw new System.ArgumentNullException(nameof(mapData));
 
         ValidateReferences(settings);
+        if (mapData.HasElevation &&
+            (terrainV2Palette == null || !terrainV2Palette.IsComplete))
+            throw new MissingReferenceException("Terrain V2 projection requires a complete palette.");
 
         BoundsInt bounds = new BoundsInt(
             mapData.Origin.x,
@@ -149,7 +164,9 @@ public class MapTilemapRenderer : MonoBehaviour
                 {
                     TerrainBoundaryMask grassMask =
                         TerrainTopology.GetGrassBoundaryMask(mapData, cell);
-                    grassTiles[index] = settings.grassAutotileSet.GetTile(grassMask);
+                    grassTiles[index] = mapData.HasElevation
+                        ? terrainV2Palette.GrassAndCliff.GetTile(grassMask)
+                        : settings.grassAutotileSet.GetTile(grassMask);
                 }
 
                 if (TerrainTopology.UsesElevation(terrainType))
@@ -178,7 +195,81 @@ public class MapTilemapRenderer : MonoBehaviour
         ApplyTiles(terrainCollisionTilemap, bounds, collisionTiles);
 
         ConfigureRenderers(settings);
+        if (elevationProjector == null)
+            elevationProjector = new MapElevationProjector(this);
+    }
+
+    /// <summary>
+    /// Stage 1 fixture only: render the normal base and collision layers, then render
+    /// the elevation projection once with an explicitly supplied V2.1 candidate palette.
+    /// The existing Render entry and serialized V2 palette remain the legacy visual recipe.
+    /// </summary>
+    public void RenderStandardTerrainV21(MapData mapData, MapGenerationSettings settings,
+        MapTerrainV2Palette candidatePalette)
+    {
+        if (candidatePalette == null || !candidatePalette.IsComplete)
+            throw new MissingReferenceException("Stage 1 V2.1 candidate palette is incomplete.");
+        RenderBase(mapData, settings);
+        elevationProjector.RenderStandardTerrainV21(mapData, candidatePalette);
+        MapSurfaceV4Policy.Project(mapData, this, settings);
         lastRenderedMap = mapData;
+    }
+
+    public void RenderStandardTerrainV21(MapData mapData, MapGenerationSettings settings,
+        MapTerrainV2Palette candidatePalette, MapTerrainV2Palette h2Palette)
+    {
+        if (h2Palette == null || !h2Palette.IsComplete)
+            throw new MissingReferenceException("Stage 1.1 H2 color palette is incomplete.");
+        RenderBase(mapData, settings);
+        elevationProjector.RenderStandardTerrainV21(mapData, candidatePalette, h2Palette);
+        MapSurfaceV4Policy.Project(mapData, this, settings);
+        lastRenderedMap = mapData;
+    }
+
+    /// <summary>Explicit Stage1 south-stair projection; existing recipes do not opt in.</summary>
+    public void RenderStandardTerrainV21(MapData mapData, MapGenerationSettings settings,
+        MapTerrainV2Palette candidatePalette, MapTerrainV2Palette h2Palette,
+        MapStage1SouthStairProjectionRequest southStair)
+    {
+        if (candidatePalette == null || !candidatePalette.IsComplete ||
+            h2Palette == null || !h2Palette.IsComplete)
+            throw new MissingReferenceException("Stage 1 V2.1 candidate palettes are incomplete.");
+        if (southStair == null)
+            throw new System.ArgumentNullException(nameof(southStair));
+        // Reject invalid requests before RenderBase can replace the current map.
+        MapStage1SouthStairProjectionRequest.Projection projection = southStair.Prepare(mapData);
+        RenderBase(mapData, settings);
+        elevationProjector.RenderStandardTerrainV21(mapData, candidatePalette, h2Palette, projection);
+        MapSurfaceV4Policy.Project(mapData, this, settings);
+        lastRenderedMap = mapData;
+    }
+
+    /// <summary>Prepare the explicit, audited Stage1 native composition without replacing the current map.</summary>
+    public MapStage1ProjectionPlan PrepareStandardTerrainV21(MapData mapData, MapGenerationSettings settings,
+        MapTerrainV2Palette candidatePalette, MapTerrainV2Palette h2Palette,
+        MapStage1SouthStairProjectionRequest southStair, MapStage1CornerSources cornerSources)
+    {
+        if (mapData == null) throw new System.ArgumentNullException(nameof(mapData));
+        ValidateReferences(settings);
+        if (candidatePalette == null || !candidatePalette.IsComplete || h2Palette == null || !h2Palette.IsComplete)
+            throw new MapPlanningException("Stage1ProjectionPaletteIncomplete", "Stage1 candidate palettes are incomplete.", false);
+        if (elevationProjector == null) elevationProjector = new MapElevationProjector(this);
+        return elevationProjector.PrepareStage1(mapData, settings, candidatePalette, h2Palette, southStair, cornerSources);
+    }
+
+    /// <summary>Consume one validated preparation. This diagnostic projection does not grant Commit or GameplayReady.</summary>
+    public void RenderPreparedStandardTerrainV21(MapData mapData, MapGenerationSettings settings, MapStage1ProjectionPlan prepared)
+    {
+        if (prepared == null) throw new System.ArgumentNullException(nameof(prepared));
+        prepared.Validate(this, mapData, settings);
+        try
+        {
+            RenderBase(mapData, settings);
+            elevationProjector.RenderPreparedStage1(prepared);
+            MapSurfaceV4Policy.Project(mapData, this, settings);
+        lastRenderedMap = mapData;
+        }
+        catch { Clear(); throw; }
     }
 
     /// <summary>
@@ -191,7 +282,14 @@ public class MapTilemapRenderer : MonoBehaviour
         ClearTilemap(grassOverlayTilemap);
         ClearTilemap(elevationTilemap);
         ClearTilemap(terrainCollisionTilemap);
+        elevationProjector?.Clear();
+        MapSurfaceV4Policy.Clear(this);
         lastRenderedMap = null;
+    }
+
+    private void OnDestroy()
+    {
+        elevationProjector?.Dispose();
     }
 
     /// <summary>

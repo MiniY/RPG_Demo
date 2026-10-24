@@ -211,7 +211,13 @@ public static class MapSimpleDecorationGenerator
                 Vector2Int cell =
                     anchorCell + new Vector2Int(offsetX, offsetY);
 
-                if (!mapData.IsInside(cell) || !mapData.IsWalkable(cell))
+                if (!mapData.IsInside(cell) || !mapData.IsWalkable(cell) ||
+                    mapData.GetElevation(cell) != mapData.GetElevation(anchorCell) ||
+                    mapData.IsStairCell(cell) ||
+                    (mapData.IsInside(cell + Vector2Int.up) &&
+                     mapData.IsStairCell(cell + Vector2Int.up)) ||
+                    (mapData.IsInside(cell + Vector2Int.down) &&
+                     mapData.IsStairCell(cell + Vector2Int.down)))
                     return false;
 
                 MapTerrainType terrainType = mapData.GetCell(cell).terrainType;

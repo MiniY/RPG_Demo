@@ -27,11 +27,16 @@ public sealed class MonsterChaseState : BaseMonsterState
     {
         movementController.Stop();
         remainingLostTargetTime = aiController.LostTargetDuration;
+        aiController.BeginEcologyChaseProgress();
     }
 
     // 每帧读取目标事实，可见时追击，短暂不可见时等待，超时或越界时脱战返回。
     public override void Tick()
     {
+        if (!aiController.CheckEcologyChaseProgress())
+        {
+            movementController.Stop(); aiController.TryChangeState(MonsterStateType.Return); return;
+        }
         Transform target = aiController.CurrentTarget; // 当前已经锁定的追击目标。
 
         if (target == null ||

@@ -368,6 +368,8 @@ public sealed class DestructiblePlacementService : MonoBehaviour
         return false;
     }
 
+    public void RetireForEcologyProfile() => RetireActiveInstances();
+
     private void RetireActiveInstances()
     {
         foreach (ActiveDestructible active in activeInstances.Values)

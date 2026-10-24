@@ -14,7 +14,11 @@ public class MonsterAttackController : MonoBehaviour
 
     public event Action<Vector2> OnAttackStarted; // 攻击开始时把锁定方向通知动画表现模块。
 
-    public float AttackRange => attackRange; // 对外提供攻击范围。
+    public float AttackRange => BarrelStrategy != null ? BarrelStrategy.TriggerRadius : attackRange; // 对外提供攻击范围。
+    internal BarrelExplosionAttack BarrelStrategy
+    {
+        get { var strategy = GetComponent<BarrelExplosionAttack>(); return strategy != null && strategy.isActiveAndEnabled ? strategy : null; }
+    }
     public float AttackWindupDuration => attackWindupDuration; // 对外提供攻击前摇时间。
     public float AttackCooldownDuration => attackCooldownDuration; // 对外提供攻击冷却时间。
 
@@ -30,7 +34,10 @@ public class MonsterAttackController : MonoBehaviour
     // 判断目标当前是否位于近战攻击范围内。
     public bool IsTargetInRange(Transform target)
     {
+        if (BarrelStrategy != null) return BarrelStrategy.CanTrigger(target);
         if (target == null || !target.gameObject.activeInHierarchy)
+            return false;
+        if (!MapElevationRuntimeQuery.SameLevel(transform.position, target.position))
             return false;
 
         Vector2 closestTargetPoint = GetClosestTargetPoint(target); // 玩家碰撞体距离怪物最近的世界坐标。
@@ -59,6 +66,26 @@ public class MonsterAttackController : MonoBehaviour
             return false;
 
         return damageController.TakeDamage(attackDamage, transform);
+    }
+
+    // An explicit binding is required on both participants; legacy attacks keep their original path.
+    public EcologyAttackRequest PrepareEcologyAttack(Transform target)
+    {
+        EcologyCombatBinding.TryPrepare(transform, target, out EcologyAttackRequest request);
+        return request;
+    }
+
+    public bool QueueEcologyDamage(EcologyAttackRequest request, Transform target, Vector2 attackDirection)
+    {
+        if (request == null || !request.MatchesParticipants(transform, target))
+            return false;
+        return request.Queue(() => isActiveAndEnabled && CanHitTarget(target, attackDirection),
+            () => TryDealDamage(target, attackDirection));
+    }
+
+    private void OnDisable()
+    {
+        GetComponent<EcologyCombatBinding>()?.RetireLease();
     }
 
     // 判断目标在命中时刻是否仍位于攻击范围和锁定方向的正面。

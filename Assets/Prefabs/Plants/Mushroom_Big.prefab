@@ -96,6 +96,7 @@ GameObject:
   - component: {fileID: 5537029437939653312}
   - component: {fileID: 6203440209250603608}
   - component: {fileID: 6792554342081909398}
+  - component: {fileID: 8801168661465314875}
   m_Layer: 6
   m_Name: Mushroom_Big
   m_TagString: Damageable
@@ -205,6 +206,18 @@ MonoBehaviour:
   visualObject: {fileID: 1474304383619712720}
   flashInterval: 0.05
   flashCount: 2
+--- !u!114 &8801168661465314875
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7338236221601652319}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6e4201e34ed4ff8a8138cbf53c4f8bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8956827315669565947
 GameObject:
   m_ObjectHideFlags: 0

@@ -128,9 +128,15 @@ public sealed class TowerRunFlowPlayModeTests
         AssertPlaying(coordinator, "第 1 层");
 
         yield return new WaitForSecondsRealtime(0.65f);
-        Assert.That(tutorialTarget.activeInHierarchy, Is.True,
-            "The previous life pool-return coroutine must not retire the reused target.");
-        Assert.That(GetBoolProperty(tutorialTarget, "BaseDamageable", "IsDefeated"), Is.False);
+        foreach (MapObjectRegistryEntry entry in bootstrap.Context.ActiveRegistry.Entries)
+        {
+            if (entry.Role != MonsterPlacementService.MonsterRole)
+                continue;
+            GameObject currentTarget = ResolveGameObject(entry.Instance);
+            Assert.That(currentTarget?.activeInHierarchy, Is.True,
+                "A previous generation must not retire a current Monster.");
+            Assert.That(GetBoolProperty(currentTarget, "BaseDamageable", "IsDefeated"), Is.False);
+        }
 
         DefeatAllRoleTargets(bootstrap.Context, MonsterPlacementService.MonsterRole);
         yield return null;
@@ -616,7 +622,7 @@ public sealed class TowerRunFlowPlayModeTests
             "Audio preferences must survive an equivalent independent runtime rebuild.");
         saved = (TowerRunSlotReadResult)Invoke(coordinator, "ReadSlot", 1);
         Assert.That(saved.state, Is.EqualTo(TowerRunSlotState.Valid), saved.message);
-        Invoke(coordinator, "BeginRestoreSlot", 1);
+        Invoke(coordinator, "BeginRestoreSlot", 1, saved.confirmationToken);
         yield return null;
         AssertPlaying(coordinator, "新手关卡");
 
@@ -667,7 +673,7 @@ public sealed class TowerRunFlowPlayModeTests
             Is.EqualTo(targetHealthBeforeDeath),
             "A pending attack from the defeated life must be cancelled before its hit frame.");
 
-        Invoke(coordinator, "BeginRestoreSlot", 1);
+        Invoke(coordinator, "BeginRestoreSlot", 1, saved.confirmationToken);
         yield return null;
         AssertPlaying(coordinator, "新手关卡");
         AssertFreshSpawnExploration(minimap);
@@ -680,13 +686,67 @@ public sealed class TowerRunFlowPlayModeTests
         DefeatPlayer();
         yield return null;
         Assert.That(GetProperty(coordinator, "State").ToString(), Is.EqualTo("DeathChoice"));
-        Invoke(coordinator, "BeginRestoreSlot", 1);
+        Invoke(coordinator, "BeginRestoreSlot", 1, saved.confirmationToken);
         yield return null;
         AssertPlaying(coordinator, "新手关卡");
         AssertFreshSpawnExploration(minimap);
         Assert.That(secondDeathRegistry.IsRetired, Is.True);
         AssertSingleRuntimeOwners();
         Assert.That(Time.timeScale, Is.EqualTo(1f));
+    }
+
+    [UnityTest]
+    public IEnumerator StartupRestoreRejectsSlotChangedAfterTheChoiceWasRendered()
+    {
+        yield return SceneManager.LoadSceneAsync("SampleScene", LoadSceneMode.Single);
+        yield return null;
+
+        MonoBehaviour coordinator = FindBehaviour("TowerRunCoordinator");
+        MonoBehaviour runUi = FindBehaviour("TowerRunUiController");
+        Assert.That(coordinator, Is.Not.Null);
+        Assert.That(runUi, Is.Not.Null);
+        AssertIsolatedSlotRoot(coordinator);
+
+        Invoke(coordinator, "ReturnToStartupChoice");
+        Invoke(coordinator, "BeginNewRun");
+        yield return null;
+        AssertPlaying(coordinator, "新手关卡");
+
+        Invoke(runUi, "OpenSettings");
+        InvokePrivate(runUi, "ShowSavePage");
+        InvokePrivate(runUi, "BeginSaveRequest");
+        InvokePrivate(runUi, "SelectSaveSlot", 1);
+        TowerRunSlotReadResult displayed =
+            (TowerRunSlotReadResult)Invoke(coordinator, "ReadSlot", 1);
+        Assert.That(displayed.state, Is.EqualTo(TowerRunSlotState.Valid), displayed.message);
+        Invoke(runUi, "CloseSettings");
+
+        Invoke(coordinator, "ReturnToStartupChoice");
+        yield return null;
+
+        TowerRunCheckpointRecord concurrent = displayed.record.DeepClone();
+        concurrent.runId = "concurrent-run";
+        concurrent.savedAtUtc = System.DateTime.UtcNow.ToString("O");
+        TowerRunSlotStore slotStore = GetPrivateField<TowerRunSlotStore>(coordinator, "slotStore");
+        TowerRunSlotWriteResult concurrentWrite = slotStore.TryCommit(
+            1,
+            concurrent,
+            true,
+            displayed.confirmationToken);
+        Assert.That(concurrentWrite.succeeded, Is.True, concurrentWrite.message);
+
+        Button[] restoreButtons = GetPrivateField<Button[]>(runUi, "flowSlotButtons");
+        restoreButtons[0].onClick.Invoke();
+        yield return null;
+
+        Assert.That(
+            GetProperty(coordinator, "State").ToString(),
+            Is.EqualTo("Failure"),
+            "A restore choice must be rejected when the displayed slot record changed before click.");
+        Assert.That(
+            (string)GetProperty(coordinator, "FailureMessage"),
+            Does.Contain("变化"));
+        Assert.That(slotStore.ReadSlot(1).record.runId, Is.EqualTo("concurrent-run"));
     }
 
     [UnityTest]
@@ -697,9 +757,35 @@ public sealed class TowerRunFlowPlayModeTests
 
         MonoBehaviour coordinator = FindBehaviour("TowerRunCoordinator");
         AssertIsolatedSlotRoot(coordinator);
+        IEnumerator BeginNewRunWithOriginalRetry()
+        {
+            bool finiteRejection = false;
+            void ObserveRejection(string message, string stack, LogType type)
+            {
+                if (type != LogType.Error || !message.StartsWith("Map generation failed [EcologyBudgetExhaustedOnFixedTerrain]:", System.StringComparison.Ordinal)) return;
+                finiteRejection = true;
+                LogAssert.Expect(LogType.Error, message);
+                var staged = GetPrivateField<TowerRunCheckpointRecord>(coordinator, "stagedRecord");
+                string output = System.Environment.GetEnvironmentVariable("RPG_DEMO_REMEDIATION_EVIDENCE");
+                if (staged != null && !string.IsNullOrEmpty(output))
+                    File.WriteAllText(Path.Combine(output, "DeathNewRun-Rejection-" + System.Guid.NewGuid().ToString("N") + ".json"), JsonUtility.ToJson(staged, true));
+            }
+            Application.logMessageReceived += ObserveRejection;
+            try
+            {
+                Invoke(coordinator, "BeginNewRun"); yield return null;
+                for (int retry = 0; retry < 3 && GetProperty(coordinator, "State").ToString() == "Failure"; retry++)
+                {
+                    Assert.That(finiteRejection, Is.True, "Only the declared finite terrain-quality rejection may use the original Retry action.");
+                    Assert.That((bool)GetProperty(coordinator, "CanRetryFailedOperation"), Is.True);
+                    finiteRejection = false;
+                    Invoke(coordinator, "RetryFailedOperation"); yield return null;
+                }
+            }
+            finally { Application.logMessageReceived -= ObserveRejection; }
+        }
         Invoke(coordinator, "ReturnToStartupChoice");
-        Invoke(coordinator, "BeginNewRun");
-        yield return null;
+        yield return BeginNewRunWithOriginalRetry();
         AssertPlaying(coordinator, "新手关卡");
 
         GameObject runtimeRoot = FindRootObject(SceneManager.GetActiveScene(), "RandomMapRuntime");
@@ -723,8 +809,7 @@ public sealed class TowerRunFlowPlayModeTests
         DefeatPlayer();
         yield return null;
         Assert.That(GetProperty(coordinator, "State").ToString(), Is.EqualTo("DeathChoice"));
-        Invoke(coordinator, "BeginNewRun");
-        yield return null;
+        yield return BeginNewRunWithOriginalRetry();
         AssertPlaying(coordinator, "新手关卡");
 
         MapData newMap = minimap.DisplayedMap;
@@ -943,7 +1028,8 @@ public sealed class TowerRunFlowPlayModeTests
         GameObject first = null;
         int defeated = 0;
 
-        foreach (MapObjectRegistryEntry entry in context.ActiveRegistry.Entries)
+        foreach (MapObjectRegistryEntry entry in
+                 new System.Collections.Generic.List<MapObjectRegistryEntry>(context.ActiveRegistry.Entries))
         {
             if (entry.Role != role)
                 continue;

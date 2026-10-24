@@ -27,6 +27,7 @@ public sealed class MapPlacementRequest
 public sealed class MapPlacementReservation
 {
     private readonly Vector2Int[] occupiedCells;
+    private readonly IReadOnlyList<Vector2Int> occupiedView;
     public MapPlacementReservation(string logicalObjectId, string role, Vector2Int anchorCell,
         IEnumerable<Vector2Int> occupiedCells, MapPlacementOwnership ownership)
     {
@@ -35,12 +36,19 @@ public sealed class MapPlacementReservation
         LogicalObjectId = logicalObjectId; Role = role; AnchorCell = anchorCell;
         this.occupiedCells = new List<Vector2Int>(occupiedCells ?? throw new ArgumentNullException(nameof(occupiedCells))).ToArray();
         if (this.occupiedCells.Length == 0) throw new ArgumentException("A reservation must occupy a cell.", nameof(occupiedCells));
+        occupiedView = this.occupiedCells;
         Ownership = ownership;
     }
+    private MapPlacementReservation(MapPlacementReservation source)
+        : this(source.LogicalObjectId, source.Role, source.AnchorCell, source.OccupiedCells, source.Ownership)
+    {
+        occupiedView = Array.AsReadOnly(occupiedCells);
+    }
+    internal MapPlacementReservation FrozenCopy() => new MapPlacementReservation(this);
     public string LogicalObjectId { get; }
     public string Role { get; }
     public Vector2Int AnchorCell { get; }
-    public IReadOnlyList<Vector2Int> OccupiedCells => occupiedCells;
+    public IReadOnlyList<Vector2Int> OccupiedCells => occupiedView;
     public MapPlacementOwnership Ownership { get; }
 }
 
@@ -80,25 +88,69 @@ public sealed class MapPlacementPlan
     private readonly List<MapPlacementReservation> reservations = new List<MapPlacementReservation>();
     private readonly HashSet<string> logicalIds = new HashSet<string>(StringComparer.Ordinal);
     private readonly MapCellOccupancy occupancy = new MapCellOccupancy();
+    private IReadOnlyList<MapPlacementReservation> frozenReservations;
+    private MapCellOccupancy frozenOccupancy;
     public MapPlacementPlan(Guid generationId)
     {
         if (generationId == Guid.Empty) throw new ArgumentException("Generation ID cannot be empty.", nameof(generationId));
         GenerationId = generationId;
     }
     public Guid GenerationId { get; }
-    public IReadOnlyList<MapPlacementReservation> Reservations => reservations;
-    public int ReservationCount => reservations.Count;
-    public int OccupiedCellCount => occupancy.Count;
+    public MapEcologyLayout Ecology { get; private set; }
+    public IReadOnlyList<MapPlacementReservation> Reservations => frozenReservations ?? reservations;
+    public int ReservationCount => Reservations.Count;
+    public int OccupiedCellCount => (frozenOccupancy ?? occupancy).Count;
     public bool TryAdd(MapPlacementReservation reservation, out string reason)
     {
+        if (Ecology != null) { reason = "PlacementPlanFrozen"; return false; }
         if (reservation == null) throw new ArgumentNullException(nameof(reservation));
         if (!logicalIds.Add(reservation.LogicalObjectId)) { reason = $"Duplicate logical object ID: {reservation.LogicalObjectId}."; return false; }
         if (!occupancy.TryReserve(reservation.LogicalObjectId, reservation.OccupiedCells, out Vector2Int conflict))
         { logicalIds.Remove(reservation.LogicalObjectId); reason = $"Cell {conflict} is already reserved."; return false; }
         reservations.Add(reservation); reason = null; return true;
     }
-    public bool IsOccupied(Vector2Int cell) => occupancy.IsOccupied(cell);
-    internal MapCellOccupancy CreateOccupancyCopy() => occupancy.Copy();
+    public bool TryAttachEcology(MapEcologyLayout layout, out string reason)
+    {
+        reason = null;
+        if (layout == null || layout.GenerationId != GenerationId)
+        { reason = "StaleEcologyLayout"; return false; }
+        if (Ecology != null)
+        {
+            if (ReferenceEquals(Ecology, layout)) return true;
+            reason = "PlacementPlanFrozen"; return false;
+        }
+        var copied = new List<MapPlacementReservation>(reservations.Count);
+        var copiedOccupancy = new MapCellOccupancy();
+        var byId = new Dictionary<string, MapPlacementReservation>(StringComparer.Ordinal);
+        int monsters = 0;
+        foreach (MapPlacementReservation reservation in reservations)
+        {
+            if (reservation == null || byId.ContainsKey(reservation.LogicalObjectId))
+            { reason = "InvalidEcologyReservation"; return false; }
+            MapPlacementReservation frozen = reservation.FrozenCopy();
+            if (!copiedOccupancy.TryReserve(frozen.LogicalObjectId, frozen.OccupiedCells, out _))
+            { reason = "EcologyReservationConflict"; return false; }
+            byId.Add(frozen.LogicalObjectId, frozen); copied.Add(frozen);
+            if (frozen.Role == MonsterPlacementService.MonsterRole) monsters++;
+        }
+        if (monsters != layout.Residents.Count)
+        { reason = "EcologyResidentReservationCount"; return false; }
+        foreach (MapEcologyResident resident in layout.Residents)
+        {
+            if (!byId.TryGetValue(resident.Id, out MapPlacementReservation reservation) ||
+                reservation.Role != MonsterPlacementService.MonsterRole ||
+                reservation.Ownership != MapPlacementOwnership.GenerationScoped ||
+                reservation.AnchorCell != layout.CellAt(resident.InitialNode))
+            { reason = "EcologyResidentReservationMismatch"; return false; }
+        }
+        // Publish only after rebuilding the complete snapshot. Old escaped builder
+        // lists/arrays cannot alter either the reservations or their occupancy.
+        frozenReservations = copied.AsReadOnly(); frozenOccupancy = copiedOccupancy;
+        Ecology = layout;
+        return true;
+    }
+    public bool IsOccupied(Vector2Int cell) => (frozenOccupancy ?? occupancy).IsOccupied(cell);
+    internal MapCellOccupancy CreateOccupancyCopy() => (frozenOccupancy ?? occupancy).Copy();
 }
 
 public sealed class MapPlanningException : Exception
@@ -132,6 +184,26 @@ public static class MapStaticPlacementPlanner
             exitClearanceCells.RemoveAll(plan.IsOccupied);
             if (exitClearanceCells.Count > 0)
                 Add(plan, "map.exit", "ExitClearanceReservation", map.ExitCell, exitClearanceCells);
+        }
+
+        if (map.Stairs.Count > 0)
+        {
+            HashSet<Vector2Int> stairClearance = new HashSet<Vector2Int>();
+            foreach (MapStairConnection stair in map.Stairs)
+            {
+                stairClearance.Add(stair.LowerCell);
+                stairClearance.Add(stair.UpperCell);
+                Vector2Int lowerApproach = stair.LowerCell +
+                    (stair.LowerCell - stair.UpperCell);
+                Vector2Int upperApproach = stair.UpperCell +
+                    (stair.UpperCell - stair.LowerCell);
+                if (map.IsInside(lowerApproach) && map.IsWalkable(lowerApproach))
+                    stairClearance.Add(lowerApproach);
+                if (map.IsInside(upperApproach) && map.IsWalkable(upperApproach))
+                    stairClearance.Add(upperApproach);
+            }
+            Add(plan, "map.stairs", "StairClearanceReservation",
+                map.Stairs[0].LowerCell, stairClearance);
         }
 
         if (decorations == null || settings.simpleDecorationPalette == null) return plan;

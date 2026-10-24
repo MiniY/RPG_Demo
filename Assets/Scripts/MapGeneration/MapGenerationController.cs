@@ -17,11 +17,19 @@ public class MapGenerationController : MonoBehaviour
     private MapSimpleDecorationData lastGeneratedSimpleDecorations;
     private MapIntegrationOrchestrator orchestrator;
     private MapGenerationRequest requestedGeneration;
+    private IEcologyMapSession ecologySession;
+    private EcologyRecipeDefinition zoningRecipe;
+    private EcologyRecipeDefinition[] configuredRetainedRecipes;
+    private EcologyEcotypeDefinition[] zoningTypes;
+    private EcologyPlanningAttemptResult zoningAccepted;
+    private EcologyMapRuntime zoningRuntime;
+    public EcologyMapRuntime EcologyRuntime => zoningRuntime;
+    public void BindEcologySession(IEcologyMapSession session) => ecologySession = session;
 
     public event Action<MapData> MapGenerated;
     public event Action MapCleared;
 
-    public MapGenerationSettings Settings => settings;
+    public MapGenerationSettings Settings => zoningRecipe != null ? zoningRecipe.Settings : settings;
     public MapTilemapRenderer TilemapRenderer => tilemapRenderer;
     public MapSimpleDecorationRenderer SimpleDecorationRenderer => simpleDecorationRenderer;
     public Transform Player => player;
@@ -52,9 +60,47 @@ public class MapGenerationController : MonoBehaviour
         }
 
         EnsureOrchestrator();
+        MapGenerationRequest request = requestedGeneration ??
+            new MapGenerationRequest(Guid.NewGuid(), settings.seed);
+        if (EcologyRecipeDefinition.IsRetiredProfile(request.ProfileId))
+        { FailPreGenerationConfiguration("RetiredPurchasedMonsterContent", EcologyRecipeDefinition.RetiredContentMessage); return; }
+        if (EcologyRecipeDefinition.IsArchiveOnlyProfile(request.ProfileId))
+        { FailPreGenerationConfiguration("ArchivedEcologyContent", EcologyRecipeDefinition.ArchiveOnlyMessage(request.ProfileId)); return; }
+        zoningRuntime?.Dispose(); zoningRuntime = null; zoningAccepted = null;
+        string zoningResource = EcologyRecipeDefinition.ResourcePathFor(request.ProfileId);
+        bool zoning = zoningResource != null;
+        zoningRecipe = null;
+        zoningTypes = null;
+        if (zoning)
+        {
+            if (ecologySession == null || ecologySession.PlayerMovementFoot == null)
+            { FailPreGenerationConfiguration("ZoningInputsMissing", "Retained zoning inputs, canonical Player foot and original session are required."); return; }
+            try
+            {
+                zoningRecipe = ResolveRetainedEcologyRecipe(request.ProfileId, request.EcologyEntry);
+                if (zoningRecipe == null)
+                { FailPreGenerationConfiguration("ExactRetainedEcologyRecipeUnavailable", "The exact requested content is absent from the finite retained catalog."); return; }
+                zoningTypes = zoningRecipe.ResolveTypes();
+                if (request.EcologyEntry != null) zoningRecipe.VerifyRetainedSourceFiles(true);
+                if (request.EcologyEntry != null && (request.EcologyEntry.RecipeVersion != zoningRecipe.RecipeVersion ||
+                    request.EcologyEntry.ConfigDigest != zoningRecipe.ConfigurationDigest || request.EcologyEntry.ContentVersion != zoningRecipe.ContentVersion))
+                    throw new InvalidOperationException("ExactEcologyRecipeUnavailable");
+            }
+            catch (Exception error)
+            { FailPreGenerationConfiguration("RetainedEcologyContentMismatch", error.Message); return; }
+            if (!string.Equals(zoningRecipe.DeclaredProfileId, request.ProfileId, StringComparison.Ordinal))
+            { FailPreGenerationConfiguration("ZoningProfileMismatch", "The explicitly selected retained recipe has a different content profile."); return; }
+        }
+        if (!zoning && request.EcologyEntry != null)
+        { FailPreGenerationConfiguration("UnknownRetainedEcologyProfile", "A versioned ecology entry cannot fall through to a legacy profile."); return; }
+        bool terrainV2 = string.Equals(request.ProfileId, "terrain-v2", StringComparison.Ordinal) ||
+            string.Equals(request.ProfileId, MapEcologyProfile.XiaoSuProfileId, StringComparison.Ordinal) || zoning;
+        bool ecologyProfile = string.Equals(
+            request.ProfileId, MapEcologyProfile.ProfileId, StringComparison.Ordinal) || terrainV2;
         MerchantPlacementService merchantPlacementService = null;
         MonsterPlacementService monsterPlacementService = null;
         DestructiblePlacementService destructiblePlacementService = null;
+        MapEcologyPopulationService ecologyPopulationService = null;
         AnimalPlacementService animalPlacementService = null;
         PlantPlacementService plantPlacementService = null;
         if (bootstrap != null)
@@ -95,6 +141,24 @@ public class MapGenerationController : MonoBehaviour
             }
             destructiblePlacementService = destructiblePlacementServices[0];
 
+            MapEcologyPopulationService[] ecologyServices =
+                GetComponentsInParent<MapEcologyPopulationService>(true);
+            if (ecologyProfile && ecologyServices.Length != 1)
+            {
+                FailPreGenerationConfiguration(
+                    "EcologyPopulationOwnerCount",
+                    $"Ecology profile requires exactly one population service; " +
+                    $"found {ecologyServices.Length}.");
+                return;
+            }
+            if (ecologyServices.Length > 1)
+            {
+                FailPreGenerationConfiguration("EcologyPopulationOwnerCount",
+                    "Multiple ecology population services are not allowed.");
+                return;
+            }
+            ecologyPopulationService = ecologyServices.Length == 1 ? ecologyServices[0] : null;
+
             AnimalPlacementService[] animalPlacementServices =
                 GetComponentsInParent<AnimalPlacementService>(true);
             if (animalPlacementServices.Length != 1)
@@ -119,24 +183,31 @@ public class MapGenerationController : MonoBehaviour
             }
             plantPlacementService = plantPlacementServices[0];
         }
-        MapGenerationRequest request = requestedGeneration ?? new MapGenerationRequest(Guid.NewGuid(), settings.seed);
         MapGenerationExecutionResult result = orchestrator.Execute(
             request,
-            GeneratePending,
+            attempt => GeneratePending(attempt, terrainV2),
             (attempt, pending) => BuildPlacementPlan(
                 attempt,
                 pending,
                 merchantPlacementService,
                 monsterPlacementService,
                 destructiblePlacementService,
+                ecologyPopulationService,
                 animalPlacementService,
-                plantPlacementService),
+                plantPlacementService,
+                ecologyProfile, request.ProfileId),
             ProjectCommitted);
 
         if (!result.Succeeded)
         {
             Debug.LogError($"Map generation failed [{result.Failure.Code}]: {result.Failure.Reason}", this);
             return;
+        }
+
+        if (zoning)
+        {
+            zoningRuntime = new EcologyMapRuntime(orchestrator.Context, zoningAccepted, zoningTypes, ecologySession, transform);
+            zoningRuntime.ConfigurePopulation(ecologyPopulationService);
         }
 
         PlayerSpawnService[] spawnServices = GetComponentsInParent<PlayerSpawnService>(true);
@@ -168,42 +239,63 @@ public class MapGenerationController : MonoBehaviour
             Debug.LogError($"Required Merchant materialization failed: {merchantFailure}", this);
             return;
         }
-        if (monsterPlacementService != null &&
-            !monsterPlacementService.TryMaterialize(
-                orchestrator.Context,
-                result.GenerationId.Value,
-                tilemapRenderer.Coordinates,
-                out string monsterFailure))
+        if (ecologyProfile)
         {
-            Debug.LogError($"Required Monster materialization failed: {monsterFailure}", this);
-            return;
+            destructiblePlacementService?.RetireForEcologyProfile();
+            GameObject legacyMonster = monsterPlacementService?.ReinitializationTarget;
+            if (legacyMonster != null)
+                legacyMonster.SetActive(false);
+
+            if (plantPlacementService != null &&
+                !plantPlacementService.TryMaterialize(
+                    orchestrator.Context, result.GenerationId.Value,
+                    tilemapRenderer.Coordinates, true, out string ecologyPlantFailure))
+            {
+                Debug.LogError($"Ecology Plant materialization failed: {ecologyPlantFailure}", this);
+                return;
+            }
+            string ecologyFailure = "Ecology population service is missing.";
+            if (ecologyPopulationService == null ||
+                !ecologyPopulationService.TryMaterialize(
+                    orchestrator.Context, result.GenerationId.Value,
+                    tilemapRenderer.Coordinates, out ecologyFailure))
+            {
+                Debug.LogError($"Ecology materialization failed: {ecologyFailure}", this);
+                return;
+            }
         }
-        if (destructiblePlacementService != null &&
-            !destructiblePlacementService.TryMaterialize(
-                orchestrator.Context,
-                result.GenerationId.Value,
-                tilemapRenderer.Coordinates,
-                out string destructibleFailure))
+        else
         {
-            Debug.LogError($"Destructible materialization failed: {destructibleFailure}", this);
-            return;
+            ecologyPopulationService?.RetireForLegacyProfile();
+            if (monsterPlacementService != null &&
+                !monsterPlacementService.TryMaterialize(
+                    orchestrator.Context, result.GenerationId.Value,
+                    tilemapRenderer.Coordinates, out string monsterFailure))
+            {
+                Debug.LogError($"Required Monster materialization failed: {monsterFailure}", this);
+                return;
+            }
+            if (destructiblePlacementService != null &&
+                !destructiblePlacementService.TryMaterialize(
+                    orchestrator.Context, result.GenerationId.Value,
+                    tilemapRenderer.Coordinates, out string destructibleFailure))
+            {
+                Debug.LogError($"Destructible materialization failed: {destructibleFailure}", this);
+                return;
+            }
         }
         if (animalPlacementService != null &&
             !animalPlacementService.TryMaterialize(
-                orchestrator.Context,
-                result.GenerationId.Value,
-                tilemapRenderer.Coordinates,
-                out string animalFailure))
+                orchestrator.Context, result.GenerationId.Value,
+                tilemapRenderer.Coordinates, out string animalFailure))
         {
             Debug.LogError($"Animal materialization failed: {animalFailure}", this);
             return;
         }
-        if (plantPlacementService != null &&
+        if (!ecologyProfile && plantPlacementService != null &&
             !plantPlacementService.TryMaterialize(
-                orchestrator.Context,
-                result.GenerationId.Value,
-                tilemapRenderer.Coordinates,
-                out string plantFailure))
+                orchestrator.Context, result.GenerationId.Value,
+                tilemapRenderer.Coordinates, out string plantFailure))
         {
             Debug.LogError($"Plant materialization failed: {plantFailure}", this);
             return;
@@ -243,8 +335,10 @@ public class MapGenerationController : MonoBehaviour
         MapDependentReinitializationService reinitializationService = reinitializationServices[0];
         IReadOnlyList<GameObject> reinitializationTargets = BuildReinitializationTargets(
             monsterPlacementService,
+            ecologyPopulationService,
             animalPlacementService,
-            plantPlacementService);
+            plantPlacementService,
+            ecologyProfile);
         if (!reinitializationService.TryReinitialize(
                 orchestrator.Context,
                 result.GenerationId.Value,
@@ -342,6 +436,9 @@ public class MapGenerationController : MonoBehaviour
             return;
         }
 
+        // The restore finalizer applies the complete checkpoint before the player acquires a live ecology motion lease.
+        zoningRuntime?.FinalizeBeforeReady();
+
         MapLifecycleTransitions.Advance(context, MapLifecyclePhase.Ready);
         if (!orchestrator.PublishGameplayReady(result.GenerationId.Value))
         {
@@ -433,14 +530,27 @@ public class MapGenerationController : MonoBehaviour
         orchestrator = new MapIntegrationOrchestrator(context);
     }
 
-    private MapPendingGeneration GeneratePending(MapGenerationAttempt attempt)
+    private MapPendingGeneration GeneratePending(MapGenerationAttempt attempt, bool terrainV2)
     {
-        MapGenerationSettings attemptSettings = Instantiate(settings);
+        MapGenerationSettings attemptSettings = Instantiate(Settings);
         attemptSettings.seed = attempt.AttemptSeed;
         try
         {
-            MapData map = RandomMapGenerator.Generate(attemptSettings);
-            MapSimpleDecorationData decorations = MapSimpleDecorationGenerator.Generate(map, attemptSettings);
+            EcologyRetainedTerrainGenerator retained = zoningRecipe != null ? zoningRecipe.TerrainGenerator : null;
+            MapData map;
+            if (attemptSettings is MapSurfaceV4Settings && terrainV2)
+            {
+                // Same fixed seed and original finite candidate order. Qualify
+                // imported native faces against the actual complete player foot.
+                if (retained == null) throw new InvalidOperationException("R4 requires its retained numerical strategy.");
+                map = retained.GenerateWithElevationQualification(attemptSettings, true,
+                    candidate => MapSurfaceV4Policy.HasNativeStairAccess(candidate, attemptSettings,
+                        tilemapRenderer, simpleDecorationRenderer, ecologySession.PlayerMovementFoot));
+            }
+            else map = retained != null ? retained.Generate(attemptSettings, terrainV2) : RandomMapGenerator.Generate(attemptSettings, terrainV2);
+            MapSimpleDecorationData decorations = retained != null ? retained.GenerateDecorations(map, attemptSettings) : MapSimpleDecorationGenerator.Generate(map, attemptSettings);
+            if (attemptSettings.remediationProjectedSurfaces)
+                decorations = MapSurfaceV4Policy.FilterDecorations(map, decorations, attemptSettings, tilemapRenderer.TerrainV2Palette);
             return new MapPendingGeneration(attempt.GenerationId, map, decorations);
         }
         finally
@@ -456,29 +566,117 @@ public class MapGenerationController : MonoBehaviour
         MerchantPlacementService merchantPlacementService,
         MonsterPlacementService monsterPlacementService,
         DestructiblePlacementService destructiblePlacementService,
+        MapEcologyPopulationService ecologyPopulationService,
         AnimalPlacementService animalPlacementService,
-        PlantPlacementService plantPlacementService)
+        PlantPlacementService plantPlacementService,
+        bool ecologyProfile, string profileId)
     {
+        if (EcologyRecipeDefinition.ResourcePathFor(profileId) != null)
+        {
+            zoningAccepted = EcologyJointPlacementPlanner.Build(attempt, pending.Map, pending.Decorations, Settings,
+                tilemapRenderer, simpleDecorationRenderer, ecologySession.PlayerMovementFoot, merchantPlacementService,
+                plantPlacementService, ecologyPopulationService, animalPlacementService,
+                zoningRecipe.ResolveTerritoryRecipe((ecologySession as IEcologyFloorContext)?.EcologyFloorNumber ?? 0),
+                zoningTypes, ecologySession.ExitInteractionRadius, requestedGeneration?.EcologyEntry?.EcologyAttempt, zoningRecipe.Population);
+            if (!zoningAccepted.Succeeded)
+                throw new MapPlanningException("EcologyBudgetExhaustedOnFixedTerrain", string.Join(";", zoningAccepted.Failures), false);
+            EcologyEntryIdentity expected = requestedGeneration?.EcologyEntry;
+            if (expected != null)
+            {
+                EcologyEntryIdentity actual = CaptureEcologyEntryIdentity();
+                if (actual.RecipeVersion != expected.RecipeVersion || actual.ConfigDigest != expected.ConfigDigest || actual.ContentVersion != expected.ContentVersion ||
+                    actual.FootprintVersion != expected.FootprintVersion || actual.ContextIdentity != expected.ContextIdentity || actual.LayoutDigest != expected.LayoutDigest ||
+                    actual.EcologyAttempt != expected.EcologyAttempt || actual.RegionCount != expected.RegionCount || actual.ResidentCount != expected.ResidentCount || actual.MerchantCount != expected.MerchantCount)
+                    throw new MapPlanningException("EcologyEntryReconstructionMismatch", "Exact recorded attempt, content, footprint, context, digest or count manifest differs.", false);
+            }
+            return zoningAccepted.Plan;
+        }
         MapPlacementPlan plan = MapStaticPlacementPlanner.Build(
             attempt.GenerationId,
             pending.Map,
             pending.Decorations,
             settings);
         merchantPlacementService?.Plan(attempt, pending.Map, plan);
-        monsterPlacementService?.Plan(attempt, pending.Map, plan);
-        destructiblePlacementService?.Plan(attempt, pending.Map, plan);
-        animalPlacementService?.Plan(attempt, pending.Map, plan);
-        plantPlacementService?.Plan(attempt, pending.Map, plan);
+        if (ecologyProfile)
+        {
+            plantPlacementService?.Plan(attempt, pending.Map, plan, true);
+            if (ecologyPopulationService == null)
+                throw new MapPlanningException("EcologyServiceMissing",
+                    "Ecology population service is required for ecology-v1.", false);
+            ecologyPopulationService.Plan(attempt, pending.Map, plan, profileId);
+            animalPlacementService?.Plan(attempt, pending.Map, plan);
+        }
+        else
+        {
+            // The default profile preserves the exact TRB2 placement order.
+            monsterPlacementService?.Plan(attempt, pending.Map, plan);
+            destructiblePlacementService?.Plan(attempt, pending.Map, plan);
+            animalPlacementService?.Plan(attempt, pending.Map, plan);
+            plantPlacementService?.Plan(attempt, pending.Map, plan);
+        }
         return plan;
+    }
+
+    public EcologyEntryIdentity CaptureEcologyEntryIdentity()
+    {
+        if (zoningAccepted == null || !zoningAccepted.Succeeded || zoningRecipe == null)
+            throw new InvalidOperationException("No accepted retained ecology entry exists.");
+        MapEcologyLayout layout = zoningAccepted.Plan.Ecology;
+        int merchants = 0;
+        foreach (var reservation in zoningAccepted.Plan.Reservations)
+            if (reservation.Role == MerchantPlacementService.MerchantRole) merchants++;
+        return new EcologyEntryIdentity(zoningRecipe.RecipeVersion, zoningRecipe.ConfigurationDigest, zoningRecipe.ContentVersion,
+            layout.FootprintVersion, layout.GeometryIdentity, layout.Signature, layout.AcceptedAttempt,
+            layout.Regions.Count, layout.Residents.Count, merchants);
+    }
+
+    /// <summary>Explicit finite direct references; configure only while the owning session is gated.</summary>
+    public void ConfigureRetainedEcologyRecipes(IReadOnlyList<EcologyRecipeDefinition> recipes)
+    {
+        if (recipes == null) throw new ArgumentNullException(nameof(recipes));
+        if (ecologySession != null && (ecologySession.IsEcologyPlaying || ecologySession.IsEcologyPreparing))
+            throw new InvalidOperationException("Cannot change retained content during an active or preparing map.");
+        var copy = new EcologyRecipeDefinition[recipes.Count]; var unique = new HashSet<EcologyRecipeDefinition>();
+        for (int i = 0; i < copy.Length; i++)
+        {
+            if (recipes[i] == null || !unique.Add(recipes[i])) throw new ArgumentException("Retained catalog contains a missing or duplicate reference.");
+            copy[i] = recipes[i];
+        }
+        configuredRetainedRecipes = copy;
+    }
+
+    private EcologyRecipeDefinition ResolveRetainedEcologyRecipe(string profile, EcologyEntryIdentity expected)
+    {
+        if (configuredRetainedRecipes == null)
+            return Resources.Load<EcologyRecipeDefinition>(EcologyRecipeDefinition.ResourcePathFor(profile));
+        EcologyRecipeDefinition found = null;
+        foreach (var candidate in configuredRetainedRecipes)
+        {
+            if (candidate.DeclaredProfileId != profile) continue;
+            if (expected == null) return candidate; // First explicitly registered current version for this profile.
+            if (candidate.RecipeVersion != expected.RecipeVersion || candidate.ConfigurationDigest != expected.ConfigDigest) continue;
+            candidate.ResolveTypes();
+            if (candidate.ContentVersion != expected.ContentVersion) continue;
+            if (found != null) throw new InvalidOperationException("AmbiguousRetainedEcologyVersion");
+            found = candidate;
+        }
+        return found; // An explicit catalog never falls back to current Resources/default.
     }
 
     private static IReadOnlyList<GameObject> BuildReinitializationTargets(
         MonsterPlacementService monsterPlacementService,
+        MapEcologyPopulationService ecologyPopulationService,
         AnimalPlacementService animalPlacementService,
-        PlantPlacementService plantPlacementService)
+        PlantPlacementService plantPlacementService,
+        bool ecologyProfile)
     {
         List<GameObject> targets = new List<GameObject>();
-        if (monsterPlacementService != null)
+        if (ecologyProfile && ecologyPopulationService != null)
+        {
+            foreach (GameObject target in ecologyPopulationService.MonsterReinitializationTargets)
+                targets.Add(target);
+        }
+        else if (monsterPlacementService != null)
             targets.Add(monsterPlacementService.ReinitializationTarget);
         if (animalPlacementService != null)
         {
@@ -497,10 +695,15 @@ public class MapGenerationController : MonoBehaviour
     {
         lastGeneratedMap = pending.Map;
         lastGeneratedSimpleDecorations = pending.Decorations;
-        tilemapRenderer.Render(lastGeneratedMap, settings);
+        tilemapRenderer.Render(lastGeneratedMap, Settings);
         if (simpleDecorationRenderer != null)
-            simpleDecorationRenderer.Render(lastGeneratedSimpleDecorations, lastGeneratedMap, settings);
+            simpleDecorationRenderer.Render(lastGeneratedSimpleDecorations, lastGeneratedMap, Settings);
 
+        if (Settings is MapSurfaceV4Settings)
+        {
+            var visual = tilemapRenderer.GroundTilemap.transform.parent.GetComponentInChildren<MapSurfaceV4Visuals>();
+            if (visual != null) visual.AddDecorationShadows(lastGeneratedMap, lastGeneratedSimpleDecorations);
+        }
         MapGenerated?.Invoke(lastGeneratedMap);
 
         if (logGenerationSummary)
@@ -518,6 +721,8 @@ public class MapGenerationController : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(tilemapRenderer.Coordinates.CellToWorld(lastGeneratedMap, lastGeneratedMap.ExitCell), 0.35f);
     }
+
+    private void OnDisable() { zoningRuntime?.Dispose(); zoningRuntime = null; }
 
     private void FailPlayerSpawnConfiguration(Guid generationId, string code, string reason)
     {

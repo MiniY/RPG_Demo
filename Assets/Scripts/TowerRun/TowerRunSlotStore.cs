@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using UnityEngine;
 
 public enum TowerRunFileProbeState
@@ -135,6 +136,10 @@ public sealed class TowerRunCompatibilityPolicy
         "generatorVersion", "configurationIdentity", "profileId", "requestedSeed",
         "attemptIndex", "staticBaselineSignature"
     };
+    private static readonly string[] RequiredEcologyProperties = {
+        "recipeVersion", "configDigest", "contentVersion", "footprintVersion", "contextIdentity", "layoutDigest",
+        "ecologyAttempt", "regionCount", "residentCount", "merchantCount"
+    };
     private static readonly string[] RequiredPlayerProperties = { "stats", "inventory", "shops" };
     private static readonly string[] RequiredStatsProperties =
     {
@@ -166,10 +171,37 @@ public sealed class TowerRunCompatibilityPolicy
             return TowerRunSlotState.Corrupt;
         }
 
-        if (record.schemaVersion != SchemaVersion)
+        if (record.generation != null && EcologyRecipeDefinition.IsRetiredProfile(record.generation.profileId))
+        {
+            message = EcologyRecipeDefinition.RetiredContentMessage;
+            return TowerRunSlotState.Incompatible;
+        }
+
+        // User-confirmed forward upgrade: preserve R3 bytes; its original Build remains the supported reader.
+        if (record.generation != null && EcologyRecipeDefinition.IsArchiveOnlyProfile(record.generation.profileId))
+        {
+            message = EcologyRecipeDefinition.ArchiveOnlyMessage(record.generation.profileId);
+            return TowerRunSlotState.Incompatible;
+        }
+
+        bool zonedProfile = record.generation != null && EcologyRecipeDefinition.ResourcePathFor(record.generation.profileId) != null;
+        bool supportedEcology = SchemaVersion == TowerRunCheckpointRecord.CurrentSchemaVersion && zonedProfile &&
+            record.schemaVersion == TowerRunCheckpointRecord.EcologySchemaVersion;
+        if (record.schemaVersion != SchemaVersion && !supportedEcology ||
+            zonedProfile && record.schemaVersion != TowerRunCheckpointRecord.EcologySchemaVersion)
         {
             message = "存档格式版本不支持。";
             return TowerRunSlotState.Incompatible;
+        }
+        if (supportedEcology)
+        {
+            try
+            {
+                if (record.generation.ecology == null) throw new ArgumentException("Missing ecology entry.");
+                record.generation.ecology.ToIdentity();
+            }
+            catch (ArgumentException)
+            { message = "生态入口的精确版本或计数不完整。"; return TowerRunSlotState.Corrupt; }
         }
 
         if (string.IsNullOrWhiteSpace(record.runId) ||
@@ -188,11 +220,14 @@ public sealed class TowerRunCompatibilityPolicy
             return TowerRunSlotState.Corrupt;
         }
 
-        if (record.generation.generatorVersion != GeneratorVersion ||
-            !string.Equals(
-                record.generation.configurationIdentity,
-                ConfigurationIdentity,
-                StringComparison.Ordinal))
+        bool currentGeneration = record.generation.generatorVersion == GeneratorVersion &&
+            string.Equals(record.generation.configurationIdentity,
+                ConfigurationIdentity, StringComparison.Ordinal);
+        bool legacyGeneration = GeneratorVersion == 2 &&
+            record.generation.generatorVersion == 1 &&
+            string.Equals(record.generation.configurationIdentity,
+                "random-map-default-v1", StringComparison.Ordinal);
+        if (!currentGeneration && !legacyGeneration)
         {
             message = "地图生成版本或配置身份不兼容。";
             return TowerRunSlotState.Incompatible;
@@ -219,6 +254,7 @@ public sealed class TowerRunCompatibilityPolicy
             return state;
 
         if (!HasRequiredPersistedProperties(rawJson) ||
+            record.schemaVersion == TowerRunCheckpointRecord.EcologySchemaVersion && !HasRequiredEcologyPersistedProperties(rawJson) ||
             string.IsNullOrWhiteSpace(record.playerName) ||
             string.IsNullOrWhiteSpace(record.savedAtUtc) ||
             !DateTime.TryParseExact(
@@ -347,6 +383,13 @@ public sealed class TowerRunCompatibilityPolicy
         }
 
         return true;
+    }
+
+    private static bool HasRequiredEcologyPersistedProperties(string json)
+    {
+        return PersistedJsonParser.TryParse(json, out PersistedJsonNode root) &&
+            TryGetObject(root, "generation", out PersistedJsonNode generation) &&
+            TryGetObject(generation, "ecology", out PersistedJsonNode ecology) && HasObjectProperties(ecology, RequiredEcologyProperties);
     }
 
     private static bool HasObjectProperties(PersistedJsonNode node, string[] propertyNames)
@@ -700,6 +743,49 @@ public sealed class TowerRunSlotStore
     {
         ValidateSlotNumber(slotNumber);
 
+        Mutex slotMutex = null;
+        bool lockTaken = false;
+
+        try
+        {
+            string mutexName = "RPGDemo.TowerRunSlot." + ComputeConfirmationToken(
+                Path.GetFullPath(GetSlotPath(slotNumber)).ToUpperInvariant());
+            slotMutex = new Mutex(false, mutexName);
+
+            try
+            {
+                lockTaken = slotMutex.WaitOne(TimeSpan.FromSeconds(1));
+            }
+            catch (AbandonedMutexException)
+            {
+                lockTaken = true;
+                return WriteUncertainFailure("上一次槽位写入异常中断，请先核验该槽位再重试。");
+            }
+
+            if (!lockTaken)
+                return WriteFailure("该槽位正在由另一实例写入，请稍后重试。");
+
+            return TryCommitUnderLock(slotNumber, record, overwriteConfirmed, expectedConfirmationToken);
+        }
+        catch (Exception exception)
+        {
+            return WriteFailure($"无法安全锁定槽位，原记录未被替换。{Environment.NewLine}{exception.Message}");
+        }
+        finally
+        {
+            if (lockTaken)
+                slotMutex.ReleaseMutex();
+
+            slotMutex?.Dispose();
+        }
+    }
+
+    private TowerRunSlotWriteResult TryCommitUnderLock(
+        int slotNumber,
+        TowerRunCheckpointRecord record,
+        bool overwriteConfirmed,
+        string expectedConfirmationToken)
+    {
         TowerRunSlotState candidateState = compatibility.Evaluate(record, out string candidateMessage);
 
         if (candidateState != TowerRunSlotState.Valid)
@@ -723,12 +809,7 @@ public sealed class TowerRunSlotStore
         if (existing.state != TowerRunSlotState.Empty &&
             !string.Equals(existing.confirmationToken, expectedConfirmationToken, StringComparison.Ordinal))
         {
-            return new TowerRunSlotWriteResult
-            {
-                succeeded = false,
-                requiresOverwriteConfirmation = true,
-                message = "槽位内容已变化，请重新查看后确认覆盖。"
-            };
+            return SlotChangedFailure();
         }
 
         string slotPath = GetSlotPath(slotNumber);
@@ -747,6 +828,10 @@ public sealed class TowerRunSlotStore
                 return WriteFailure("当前无法可靠访问该槽位，请稍后重试。原记录未被替换。");
 
             hadExistingFile = formalProbe == TowerRunFileProbeState.Exists;
+
+            if (hadExistingFile != (existing.state != TowerRunSlotState.Empty))
+                return SlotChangedFailure();
+
             fileSystem.CreateDirectory(rootDirectory);
             TowerRunCheckpointRecord committed = record.DeepClone();
             committed.savedAtUtc = DateTime.UtcNow.ToString("O");
@@ -778,6 +863,28 @@ public sealed class TowerRunSlotStore
 
             replacementCompleted = true;
 
+            if (hadExistingFile)
+            {
+                if (fileSystem.ProbeFile(backupPath) != TowerRunFileProbeState.Exists)
+                    return WriteUncertainFailure("无法核验实际被替换的旧记录，请重新核验该槽位。");
+
+                string displacedToken = ComputeConfirmationToken(fileSystem.ReadAllText(backupPath));
+
+                if (!string.Equals(displacedToken, existing.confirmationToken, StringComparison.Ordinal))
+                {
+                    bool restored = RestorePreviousFormalRecord(
+                        slotNumber,
+                        slotPath,
+                        backupPath,
+                        temporaryPath,
+                        hadExistingFile,
+                        expectedCommittedToken);
+                    return restored
+                        ? SlotChangedFailure()
+                        : WriteUncertainFailure("被替换的记录已变化，且无法确认其已恢复。请重新核验该槽位。");
+                }
+            }
+
             TowerRunSlotReadResult committedRead = ReadSlot(slotNumber);
 
             if (committedRead.state != TowerRunSlotState.Valid ||
@@ -788,10 +895,12 @@ public sealed class TowerRunSlotStore
                     StringComparison.Ordinal))
             {
                 bool restored = RestorePreviousFormalRecord(
+                    slotNumber,
                     slotPath,
                     backupPath,
                     temporaryPath,
-                    hadExistingFile);
+                    hadExistingFile,
+                    expectedCommittedToken);
                 return restored
                     ? WriteFailure("正式槽位写入后的校验失败，原记录已恢复。")
                     : WriteUncertainFailure("正式槽位写入后的校验失败，且无法确认原记录已恢复。请重新核验该槽位。");
@@ -806,7 +915,13 @@ public sealed class TowerRunSlotStore
         catch (Exception exception)
         {
             if (replacementCompleted &&
-                !RestorePreviousFormalRecord(slotPath, backupPath, temporaryPath, hadExistingFile))
+                !RestorePreviousFormalRecord(
+                    slotNumber,
+                    slotPath,
+                    backupPath,
+                    temporaryPath,
+                    hadExistingFile,
+                    expectedCommittedToken))
             {
                 return WriteUncertainFailure(
                     $"槽位写入失败，且无法确认原记录已恢复。请重新核验该槽位。{Environment.NewLine}{exception.Message}");
@@ -858,13 +973,20 @@ public sealed class TowerRunSlotStore
     }
 
     private bool RestorePreviousFormalRecord(
+        int slotNumber,
         string slotPath,
         string backupPath,
         string discardedPath,
-        bool hadExistingFile)
+        bool hadExistingFile,
+        string expectedCurrentToken)
     {
         try
         {
+            TowerRunSlotReadResult current = ReadSlot(slotNumber);
+
+            if (!string.Equals(current.confirmationToken, expectedCurrentToken, StringComparison.Ordinal))
+                return false;
+
             TowerRunFileProbeState backupProbe = fileSystem.ProbeFile(backupPath);
             TowerRunFileProbeState slotProbe = fileSystem.ProbeFile(slotPath);
 
@@ -952,6 +1074,16 @@ public sealed class TowerRunSlotStore
         {
             succeeded = false,
             message = string.IsNullOrWhiteSpace(message) ? "槽位保存失败。" : message
+        };
+    }
+
+    private static TowerRunSlotWriteResult SlotChangedFailure()
+    {
+        return new TowerRunSlotWriteResult
+        {
+            succeeded = false,
+            requiresOverwriteConfirmation = true,
+            message = "槽位内容已变化，请重新查看后确认覆盖。"
         };
     }
 

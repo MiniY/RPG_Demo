@@ -60,7 +60,7 @@ internal static class MapSemanticPlacementPrimitives
             foreach (Vector2Int direction in CardinalDirections)
             {
                 Vector2Int next = current + direction;
-                if (!map.IsInside(next) || !map.IsWalkable(next) ||
+                if (!map.CanTraverse(current, next) ||
                     blocked.Contains(next) || distances.ContainsKey(next))
                 {
                     continue;

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.Tilemaps;
@@ -22,6 +23,10 @@ public sealed class MapSimpleDecorationRenderer : MonoBehaviour
     /// 保存树桩和散落岩石阻挡区域的隐藏碰撞 Tilemap（瓦片地图）。
     /// </summary>
     [SerializeField] private Tilemap decorationCollisionTilemap;
+    private readonly Dictionary<int, Tilemap> elevatedGroundLayers =
+        new Dictionary<int, Tilemap>();
+    private readonly Dictionary<int, Tilemap> elevatedCanopyLayers =
+        new Dictionary<int, Tilemap>();
 
     /// <summary>
     /// 最近一次成功渲染的简单装饰物数量。
@@ -103,6 +108,10 @@ public sealed class MapSimpleDecorationRenderer : MonoBehaviour
 
         groundDecorationTilemap.CompressBounds();
         canopyDecorationTilemap.CompressBounds();
+        foreach (Tilemap layer in elevatedGroundLayers.Values)
+            layer.CompressBounds();
+        foreach (Tilemap layer in elevatedCanopyLayers.Values)
+            layer.CompressBounds();
         decorationCollisionTilemap.CompressBounds();
         ConfigureRenderers(settings);
     }
@@ -120,6 +129,16 @@ public sealed class MapSimpleDecorationRenderer : MonoBehaviour
 
         if (decorationCollisionTilemap != null)
             decorationCollisionTilemap.ClearAllTiles();
+        foreach (Tilemap layer in elevatedGroundLayers.Values)
+        {
+            layer.ClearAllTiles();
+            layer.GetComponent<TilemapRenderer>().enabled = false;
+        }
+        foreach (Tilemap layer in elevatedCanopyLayers.Values)
+        {
+            layer.ClearAllTiles();
+            layer.GetComponent<TilemapRenderer>().enabled = false;
+        }
 
         PlacementCount = 0;
         GroundTileCount = 0;
@@ -148,10 +167,11 @@ public sealed class MapSimpleDecorationRenderer : MonoBehaviour
                 continue;
 
             Vector3Int tileCell = new Vector3Int(cell.x, cell.y, 0);
-            Tilemap targetTilemap = tilePart.RenderLayer ==
-                                    MapSimpleDecorationRenderLayer.Canopy
-                ? canopyDecorationTilemap
-                : groundDecorationTilemap;
+            bool canopy = tilePart.RenderLayer == MapSimpleDecorationRenderLayer.Canopy;
+            int elevation = mapData.GetElevation(placement.AnchorCell);
+            Tilemap targetTilemap = elevation == 0
+                ? (canopy ? canopyDecorationTilemap : groundDecorationTilemap)
+                : GetElevatedLayer(elevation, canopy);
 
             if (targetTilemap.HasTile(tileCell))
                 continue;
@@ -166,6 +186,24 @@ public sealed class MapSimpleDecorationRenderer : MonoBehaviour
         }
 
         return renderedAnyPart;
+    }
+
+    private Tilemap GetElevatedLayer(int elevation, bool canopy)
+    {
+        Dictionary<int, Tilemap> cache = canopy
+            ? elevatedCanopyLayers : elevatedGroundLayers;
+        if (cache.TryGetValue(elevation, out Tilemap layer) && layer != null)
+            return layer;
+
+        Tilemap original = canopy ? canopyDecorationTilemap : groundDecorationTilemap;
+        GameObject layerObject = new GameObject(
+            $"GeneratedDecoration{elevation}{(canopy ? "Canopy" : "Ground")}");
+        layerObject.transform.SetParent(original.transform.parent, false);
+        layer = layerObject.AddComponent<Tilemap>();
+        TilemapRenderer renderer = layerObject.AddComponent<TilemapRenderer>();
+        renderer.sortingLayerID = original.GetComponent<TilemapRenderer>().sortingLayerID;
+        cache[elevation] = layer;
+        return layer;
     }
 
     /// <summary>
@@ -212,6 +250,14 @@ public sealed class MapSimpleDecorationRenderer : MonoBehaviour
             canopyDecorationTilemap,
             settings.simpleDecorationCanopySortingOrder,
             true);
+        foreach (KeyValuePair<int, Tilemap> layer in elevatedGroundLayers)
+            ConfigureRenderer(layer.Value,
+                settings.simpleDecorationGroundSortingOrder + layer.Key * 10,
+                layer.Value.GetUsedTilesCount() > 0);
+        foreach (KeyValuePair<int, Tilemap> layer in elevatedCanopyLayers)
+            ConfigureRenderer(layer.Value,
+                settings.simpleDecorationCanopySortingOrder + layer.Key * 10,
+                layer.Value.GetUsedTilesCount() > 0);
         ConfigureRenderer(decorationCollisionTilemap, 0, false);
     }
 

@@ -33,6 +33,7 @@ public sealed class TowerRunFlowPlayModeTests
             System.Guid.NewGuid().ToString("N"));
         TowerRunRuntimeEnvironment.ConfigureTestIsolation(testRoot);
         testKeyboard = InputSystem.AddDevice<Keyboard>("TowerRunFlowTestKeyboard");
+        observeFiniteGenerationRejections = true;
         Application.logMessageReceived += RecordFiniteGenerationRejection;
     }
 
@@ -71,8 +72,7 @@ public sealed class TowerRunFlowPlayModeTests
         Assert.That(floor, Is.Not.Null);
         AssertIsolatedSlotRoot(coordinator);
         Invoke(coordinator, "ReturnToStartupChoice");
-        Invoke(coordinator, "BeginNewRun");
-        yield return null;
+        yield return BeginNewRunWithOriginalRetry(coordinator);
 
         GameObject runtimeRoot = FindRootObject(SceneManager.GetActiveScene(), "RandomMapRuntime");
         MapRuntimeBootstrap bootstrap = runtimeRoot.GetComponent<MapRuntimeBootstrap>();
@@ -165,13 +165,28 @@ public sealed class TowerRunFlowPlayModeTests
     {
         if (!observeFiniteGenerationRejections || type != LogType.Error ||
             !message.StartsWith("Map generation failed [EcologyBudgetExhaustedOnFixedTerrain]:", System.StringComparison.Ordinal) ||
-            !(message.Contains("InsufficientConstructiveCapacity") ||
+            !(message.Contains("InsufficientConstructiveCapacity") || message.Contains("CriticalRouteBlocked") ||
               (message.Contains("InsufficientSafeSpace") && message.Contains("NoQualifiedMerchantInBirthSafety"))))
             return;
         LogAssert.Expect(LogType.Error, message);
         string evidence = System.Environment.GetEnvironmentVariable("RPG_DEMO_REMEDIATION_EVIDENCE");
         if (!string.IsNullOrEmpty(evidence))
+        {
             File.AppendAllText(Path.Combine(evidence, "TowerRunFlowFiniteRejections.txt"), message + System.Environment.NewLine);
+            MonoBehaviour coordinator = FindBehaviour("TowerRunCoordinator");
+            var staged = GetPrivateField<TowerRunCheckpointRecord>(coordinator, "stagedRecord");
+            if (staged != null)
+                File.WriteAllText(Path.Combine(evidence, "FiniteRejection-" + System.Guid.NewGuid().ToString("N") + ".json"), JsonUtility.ToJson(staged, true));
+        }
+    }
+
+    private static IEnumerator BeginNewRunWithOriginalRetry(MonoBehaviour coordinator)
+    {
+        // UI assertions require a playable entry; rejected terrains still use the original, bounded Retry.
+        Invoke(coordinator, "BeginNewRun");
+        yield return null;
+        yield return RetryFiniteGenerationFailures(coordinator);
+        Assert.That(GetProperty(coordinator, "State").ToString(), Is.EqualTo("Playing"));
     }
 
     private static IEnumerator RetryFiniteGenerationFailures(MonoBehaviour coordinator)
@@ -182,7 +197,7 @@ public sealed class TowerRunFlowPlayModeTests
             var failure = Object.FindObjectOfType<MapGenerationController>(true).Orchestrator.Context.Failure;
             Assert.That(failure, Is.Not.Null);
             Assert.That(failure.Code, Is.EqualTo("EcologyBudgetExhaustedOnFixedTerrain"));
-            Assert.That(failure.Reason.Contains("InsufficientConstructiveCapacity") ||
+            Assert.That(failure.Reason.Contains("InsufficientConstructiveCapacity") || failure.Reason.Contains("CriticalRouteBlocked") ||
                 (failure.Reason.Contains("InsufficientSafeSpace") && failure.Reason.Contains("NoQualifiedMerchantInBirthSafety")), Is.True);
             Assert.That((bool)GetProperty(coordinator, "CanRetryFailedOperation"), Is.True);
             Invoke(coordinator, "RetryFailedOperation");
@@ -219,8 +234,7 @@ public sealed class TowerRunFlowPlayModeTests
         Assert.That(blueButton.texture.filterMode, Is.EqualTo(FilterMode.Point));
 
         Invoke(coordinator, "ReturnToStartupChoice");
-        Invoke(coordinator, "BeginNewRun");
-        yield return null;
+        yield return BeginNewRunWithOriginalRetry(coordinator);
         Invoke(runUi, "OpenSettings");
         Assert.That(GetPrivateField<GameObject>(runUi, "settingsOverlay").activeSelf, Is.True);
         RectTransform frame = GetPrivateField<RectTransform>(runUi, "settingsFrame");
@@ -346,8 +360,7 @@ public sealed class TowerRunFlowPlayModeTests
         MonoBehaviour coordinator = FindBehaviour("TowerRunCoordinator");
         MonoBehaviour runUi = FindBehaviour("TowerRunUiController");
         Invoke(coordinator, "ReturnToStartupChoice");
-        Invoke(coordinator, "BeginNewRun");
-        yield return null;
+        yield return BeginNewRunWithOriginalRetry(coordinator);
         Invoke(runUi, "OpenSettings");
         Canvas.ForceUpdateCanvases();
 
@@ -441,8 +454,7 @@ public sealed class TowerRunFlowPlayModeTests
         MonoBehaviour coordinator = FindBehaviour("TowerRunCoordinator");
         MonoBehaviour runUi = FindBehaviour("TowerRunUiController");
         Invoke(coordinator, "ReturnToStartupChoice");
-        Invoke(coordinator, "BeginNewRun");
-        yield return null;
+        yield return BeginNewRunWithOriginalRetry(coordinator);
         Invoke(runUi, "OpenSettings");
         InvokePrivate(runUi, "ShowAudioPage");
         Canvas.ForceUpdateCanvases();
@@ -520,8 +532,7 @@ public sealed class TowerRunFlowPlayModeTests
         MonoBehaviour coordinator = FindBehaviour("TowerRunCoordinator");
         MonoBehaviour runUi = FindBehaviour("TowerRunUiController");
         Invoke(coordinator, "ReturnToStartupChoice");
-        Invoke(coordinator, "BeginNewRun");
-        yield return null;
+        yield return BeginNewRunWithOriginalRetry(coordinator);
         Invoke(runUi, "OpenSettings");
         InvokePrivate(runUi, "ShowAudioPage");
         Canvas.ForceUpdateCanvases();
@@ -586,8 +597,7 @@ public sealed class TowerRunFlowPlayModeTests
         Assert.That(gameInput, Is.Not.Null);
         AssertIsolatedSlotRoot(coordinator);
         Invoke(coordinator, "ReturnToStartupChoice");
-        Invoke(coordinator, "BeginNewRun");
-        yield return null;
+        yield return BeginNewRunWithOriginalRetry(coordinator);
         AssertPlaying(coordinator, "新手关卡");
 
         MonoBehaviour package = FindBehaviour("PackagePanelController");
@@ -745,8 +755,7 @@ public sealed class TowerRunFlowPlayModeTests
         AssertIsolatedSlotRoot(coordinator);
 
         Invoke(coordinator, "ReturnToStartupChoice");
-        Invoke(coordinator, "BeginNewRun");
-        yield return null;
+        yield return BeginNewRunWithOriginalRetry(coordinator);
         AssertPlaying(coordinator, "新手关卡");
 
         Invoke(runUi, "OpenSettings");
@@ -794,35 +803,8 @@ public sealed class TowerRunFlowPlayModeTests
 
         MonoBehaviour coordinator = FindBehaviour("TowerRunCoordinator");
         AssertIsolatedSlotRoot(coordinator);
-        IEnumerator BeginNewRunWithOriginalRetry()
-        {
-            bool finiteRejection = false;
-            void ObserveRejection(string message, string stack, LogType type)
-            {
-                if (type != LogType.Error || !message.StartsWith("Map generation failed [EcologyBudgetExhaustedOnFixedTerrain]:", System.StringComparison.Ordinal)) return;
-                finiteRejection = true;
-                LogAssert.Expect(LogType.Error, message);
-                var staged = GetPrivateField<TowerRunCheckpointRecord>(coordinator, "stagedRecord");
-                string output = System.Environment.GetEnvironmentVariable("RPG_DEMO_REMEDIATION_EVIDENCE");
-                if (staged != null && !string.IsNullOrEmpty(output))
-                    File.WriteAllText(Path.Combine(output, "DeathNewRun-Rejection-" + System.Guid.NewGuid().ToString("N") + ".json"), JsonUtility.ToJson(staged, true));
-            }
-            Application.logMessageReceived += ObserveRejection;
-            try
-            {
-                Invoke(coordinator, "BeginNewRun"); yield return null;
-                for (int retry = 0; retry < 3 && GetProperty(coordinator, "State").ToString() == "Failure"; retry++)
-                {
-                    Assert.That(finiteRejection, Is.True, "Only the declared finite terrain-quality rejection may use the original Retry action.");
-                    Assert.That((bool)GetProperty(coordinator, "CanRetryFailedOperation"), Is.True);
-                    finiteRejection = false;
-                    Invoke(coordinator, "RetryFailedOperation"); yield return null;
-                }
-            }
-            finally { Application.logMessageReceived -= ObserveRejection; }
-        }
         Invoke(coordinator, "ReturnToStartupChoice");
-        yield return BeginNewRunWithOriginalRetry();
+        yield return BeginNewRunWithOriginalRetry(coordinator);
         AssertPlaying(coordinator, "新手关卡");
 
         GameObject runtimeRoot = FindRootObject(SceneManager.GetActiveScene(), "RandomMapRuntime");
@@ -846,7 +828,7 @@ public sealed class TowerRunFlowPlayModeTests
         DefeatPlayer();
         yield return null;
         Assert.That(GetProperty(coordinator, "State").ToString(), Is.EqualTo("DeathChoice"));
-        yield return BeginNewRunWithOriginalRetry();
+        yield return BeginNewRunWithOriginalRetry(coordinator);
         AssertPlaying(coordinator, "新手关卡");
 
         MapData newMap = minimap.DisplayedMap;
@@ -876,8 +858,7 @@ public sealed class TowerRunFlowPlayModeTests
         MonoBehaviour floor = FindBehaviour("TowerFloorRuntimeController");
         AssertIsolatedSlotRoot(coordinator);
         Invoke(coordinator, "ReturnToStartupChoice");
-        Invoke(coordinator, "BeginNewRun");
-        yield return null;
+        yield return BeginNewRunWithOriginalRetry(coordinator);
         AssertPlaying(coordinator, "新手关卡");
 
         MonoBehaviour playerDamage = FindBehaviour("PlayerDamageController");

@@ -90,12 +90,16 @@ def git_head() -> str:
 
 
 def source_is_dirty() -> bool:
-    status = subprocess.check_output(
-        ["git", "status", "--porcelain=v1", "--untracked-files=all", "--",
-         "Assets", "Packages", "ProjectSettings", "Tools/ArchitectureAudit"],
+    scope = ["Assets", "Packages", "ProjectSettings", "Tools/ArchitectureAudit"]
+    # Attribute changes can leave stat-only M markers even when Git reports no content diff.
+    tracked = subprocess.check_output(
+        ["git", "diff", "--name-only", "HEAD", "--", *scope],
         cwd=ROOT, text=True, encoding="utf-8", errors="replace")
-    return any("/__pycache__/" not in line.replace("\\", "/")
-               and not line.endswith(".pyc") for line in status.splitlines())
+    untracked = subprocess.check_output(
+        ["git", "ls-files", "--others", "--exclude-standard", "--", *scope],
+        cwd=ROOT, text=True, encoding="utf-8", errors="replace")
+    return any("/__pycache__/" not in name.replace("\\", "/")
+               and not name.endswith(".pyc") for name in (tracked + untracked).splitlines())
 
 
 def runtime_evidence_is_current(item: dict) -> bool:

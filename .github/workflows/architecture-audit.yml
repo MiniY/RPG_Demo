@@ -1,0 +1,27 @@
+name: Architecture audit snapshot
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Check architecture snapshot
+        run: python Tools/ArchitectureAudit/update.py --check
+      - name: Explain manual review boundary
+        if: failure()
+        run: |
+          echo 'Architecture snapshot differs from source or viewer template.'
+          echo 'Run Tools/ArchitectureAudit/update.ps1 on a clean local main, review GRAPH-CHANGES.json, and include generated files in a reviewed change.'
+          echo 'This workflow does not run Unity or update ISSUES.md conclusions.'

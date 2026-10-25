@@ -1,0 +1,606 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RPG_Demo 架构审计查看器</title>
+<style>
+:root {
+  --page: #181818;
+  --panel: #202020;
+  --surface: #272727;
+  --hover: #303030;
+  --line: #383838;
+  --text: #f5f5f5;
+  --muted: #b8b8b8;
+  --subtle: #969696;
+  --accent: #b58bfa;
+  --accent-wash: #30283c;
+  --warning: #d0a777;
+  --pending: #a9c4da;
+  color-scheme: dark;
+  font-family: "Segoe UI Variable", "Segoe UI", "Microsoft YaHei UI", sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--page);
+}
+* { box-sizing: border-box; }
+body { margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; background: var(--page); }
+button, input, select { font: inherit; }
+button, select, summary { cursor: pointer; }
+button, input, select {
+  min-height: 36px;
+  border: 1px solid #464646;
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  padding: 7px 10px;
+}
+button:hover, .row:hover { background: var(--hover); }
+button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+input, select { width: 100%; }
+input::placeholder { color: var(--subtle); }
+input:focus, select:focus { border-color: var(--accent); }
+button:disabled { color: #858585; cursor: not-allowed; opacity: .62; }
+a { color: #ded3f3; text-underline-offset: 2px; overflow-wrap: anywhere; }
+a:hover { color: #f2e9ff; }
+code { font: 12px/1.5 Consolas, "Cascadia Code", monospace; overflow-wrap: anywhere; white-space: normal; }
+h1, h2, h3, p { margin-top: 0; }
+h1 { font-size: 20px; line-height: 1.3; letter-spacing: -.02em; margin-bottom: 3px; }
+h2 { font-size: 16px; line-height: 1.35; margin-bottom: 9px; }
+h3 { font-size: 14px; line-height: 1.4; margin-bottom: 6px; }
+p { margin-bottom: 9px; line-height: 1.6; }
+.muted, .sub { color: var(--muted); }
+.eyebrow, .region { font-size: 11px; font-weight: 650; color: var(--muted); letter-spacing: .01em; }
+header {
+  min-height: 82px;
+  padding: 13px 20px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  background: #1b1b1b;
+}
+.head-main { min-width: 0; }
+.head-main p { margin: 0; color: var(--muted); font-size: 12px; }
+.head-side { display: flex; align-items: center; gap: 18px; min-width: 0; }
+.stats { display: flex; gap: 0; flex: none; }
+.stat-card { min-width: 88px; padding: 0 12px; border-left: 1px solid var(--line); font-size: 11px; color: var(--muted); }
+.stat-card strong { display: block; color: var(--text); font-size: 18px; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.version { max-width: 345px; color: var(--subtle); font-size: 11px; line-height: 1.35; overflow-wrap: anywhere; }
+.head-side > .help { display: none; }
+.shell { display: grid; grid-template-columns: 296px minmax(0, 1fr) 352px; flex: 1; min-height: 0; }
+aside, .detail { min-width: 0; padding: 15px 16px; overflow: auto; background: var(--panel); scrollbar-color: #5d5d5d var(--panel); scrollbar-width: thin; }
+aside { border-right: 1px solid var(--line); }
+.detail { border-left: 1px solid var(--line); font-size: 14px; }
+main {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  background-color: #1a1a1a;
+  background-image: radial-gradient(rgba(255,255,255,.035) .7px, transparent .7px);
+  background-size: 24px 24px;
+}
+.panel-block { padding: 0 0 17px; margin: 0 0 17px; border-bottom: 1px solid var(--line); }
+.panel-block:last-child { border-bottom: 0; }
+.panel-block h2 { margin: 3px 0 9px; }
+label { display: block; margin: 11px 0 6px; font-size: 13px; font-weight: 600; }
+#search { min-height: 42px; background: #292929; border-color: #565656; }
+.quick-start { margin: 12px 0; padding: 0; border: 1px solid var(--line); border-radius: 8px; background: #252525; color: var(--muted); }
+.quick-start summary { padding: 8px 10px; color: var(--text); font-size: 12px; font-weight: 600; }
+.quick-start[open] { border-color: #5b4b73; }
+.quick-start ol { padding: 0 12px 10px 30px; margin: 0; font-size: 12px; line-height: 1.55; }
+.quick-start a { display: inline-block; margin: 0 10px 10px; font-size: 12px; }
+.examples, .controls { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 9px; }
+.examples button { min-height: 32px; padding: 5px 9px; font-size: 12px; }
+.filter-shortcut { margin-top: 9px; width: 100%; text-align: left; background: transparent; border-color: var(--line); color: var(--muted); }
+.filter-shortcut:hover { color: var(--text); }
+.controls button { flex: 1; min-width: 115px; font-size: 12px; }
+.result-meta { margin: 0 0 7px; color: var(--muted); font-size: 12px; }
+#results { max-height: none; overflow: visible; }
+.row {
+  display: block;
+  width: 100%;
+  min-height: 58px;
+  padding: 8px 9px;
+  margin: 0;
+  border: 0;
+  border-bottom: 1px solid #343434;
+  border-radius: 0;
+  background: transparent;
+  text-align: left;
+}
+.row:hover { background: #2d2d2d; }
+.row.is-selected { background: var(--accent-wash); box-shadow: inset 3px 0 var(--accent); }
+.row small { display: block; margin-top: 4px; color: var(--subtle); font-size: 11px; line-height: 1.35; overflow-wrap: anywhere; }
+.result-title { display: block; margin-top: 5px; font-size: 13px; font-weight: 650; }
+.badge { display: inline-block; padding: 2px 6px; margin-right: 5px; border: 1px solid #646464; border-radius: 5px; color: #ddd; font-size: 11px; line-height: 1.35; vertical-align: baseline; }
+.badge.good { border-color: #6f9c89; color: #b5ddca; }
+.badge.warn { border-color: #9e7b53; color: #e2bf98; }
+.badge.pending { border-color: #6f91a9; color: #c2d8e9; }
+.help { margin-top: 9px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: #252525; color: var(--muted); font-size: 12px; }
+.help summary { color: var(--text); font-weight: 600; }
+.help p, .help li { margin: 8px 0 0; line-height: 1.55; }
+.help ul { padding-left: 18px; }
+.help[open] { background: #292929; }
+.filter-tip { margin-top: 10px; color: var(--subtle); font-size: 11px; line-height: 1.5; }
+.graphbar { z-index: 2; display: flex; align-items: center; gap: 8px; margin: 12px 12px 0; padding: 8px 9px; border: 1px solid #414141; border-radius: 9px; background: #222222f2; }
+.graphbar .caption { flex: 1; min-width: 0; color: var(--muted); font-size: 12px; line-height: 1.35; }
+.graphbar button { min-height: 32px; padding: 5px 8px; font-size: 12px; white-space: nowrap; }
+.mode-pill { flex: none; padding: 4px 8px; border-radius: 6px; background: #303030; color: var(--text); font-size: 11px; white-space: nowrap; }
+.direction-controls { display: flex; gap: 3px; padding-left: 8px; border-left: 1px solid var(--line); }
+.direction-controls button { border-color: transparent; background: transparent; }
+.direction-controls button[aria-pressed=true] { border-color: #725a96; background: var(--accent-wash); color: #f3eaff; }
+.graph-note { z-index: 1; margin: 5px 14px 0; color: var(--subtle); font-size: 12px; line-height: 1.4; }
+.canvas { width: 100%; min-height: 0; flex: 1; cursor: grab; touch-action: none; }
+.canvas:active { cursor: grabbing; }
+.legend { z-index: 2; max-height: 32%; overflow: auto; margin: 0 12px 10px; padding: 8px 10px; border-top: 1px solid var(--line); background: #202020ed; color: var(--muted); font-size: 11px; line-height: 1.5; }
+.legend strong { color: var(--text); font-size: 12px; }
+.legend .legend-row { display: inline-block; margin: 2px 10px 0 0; white-space: nowrap; }
+.legend .help { display: inline-block; margin: 0 0 0 5px; padding: 3px 7px; vertical-align: middle; }
+.legend .help p { max-width: 450px; }
+.line { display: inline-block; width: 25px; height: 2px; margin-right: 6px; vertical-align: middle; background: #98989c; }
+.line.textual { height: 0; border-top: 2px dashed #98989c; background: none; }
+.line.unknown { height: 0; border-top: 2px dotted #b1b1b4; background: none; }
+.color-key { display: inline-block; width: 9px; height: 9px; margin: 0 4px; border-radius: 50%; }
+.color-key.risk { background: var(--warning); }
+.color-key.unverified { border: 2px solid var(--pending); background: #202020; }
+.edge-wrap { cursor: pointer; }
+.edge { fill: none; stroke: #96969c; stroke-width: 1.8; opacity: .82; transition: opacity .12s, stroke-width .12s; }
+.edge-wrap:hover .edge, .edge-wrap.active .edge { stroke: var(--accent); stroke-width: 3; opacity: 1; }
+.edge.textual { stroke-dasharray: 5 5; }
+.edge.unknown { stroke-dasharray: 2 4; }
+.edge.risk { stroke: var(--warning); }
+.edge.unverified { stroke: var(--pending); }
+.edge.overview { stroke: #777; stroke-width: 1; opacity: .22; }
+.edge.chain { stroke-width: 2.5; }
+.edge-wrap.active .edge, .edge-wrap:hover .edge { stroke: var(--accent); }
+.edge-hit { fill: none; stroke: transparent; stroke-width: 20; }
+.edge-label { opacity: 0; pointer-events: none; transition: opacity .12s; }
+.edge-wrap:hover .edge-label, .edge-wrap.active .edge-label { opacity: 1; }
+.edge-label rect { fill: #323035; stroke: #716481; stroke-width: 1; }
+.edge-label text { fill: #f6f3fa; font-size: 11px; text-anchor: middle; }
+.edge-wrap.dim .edge { opacity: .12; }
+.edge-wrap:focus-visible .edge { stroke: var(--accent); stroke-width: 3; }
+.node { cursor: pointer; }
+.node rect.node-body { fill: #292929; stroke: #626262; stroke-width: 1.25; }
+.node.selected rect.node-body { fill: var(--accent-wash); stroke: var(--accent); stroke-width: 2.3; }
+.node.active-system rect.node-body { fill: var(--accent-wash); stroke: var(--accent); stroke-width: 2; }
+.node:hover rect.node-body { fill: #323232; stroke: #bebebe; }
+.node:focus-visible rect.node-body { stroke: #d8c3ff; stroke-width: 3; }
+.node .node-bar { fill: #999; }
+.node[data-kind=script] .node-bar { fill: #a1a8b3; }
+.node[data-kind=prefab] .node-bar { fill: #baa68c; }
+.node[data-kind=gameobject] .node-bar { fill: #9cabb6; }
+.node[data-kind=component] .node-bar { fill: #b1aab8; }
+.node[data-kind=scene] .node-bar { fill: #9fb9b2; }
+.node[data-kind=system] .node-bar { fill: #aaa; }
+.node .node-icon { fill: #202020; stroke: #696969; stroke-width: 1; }
+.node .glyph { fill: #e0e0e0; font-size: 11px; font-weight: 700; text-anchor: middle; pointer-events: none; }
+.node .node-title { fill: #f5f5f5; font-size: 13px; font-weight: 650; text-anchor: start; pointer-events: none; }
+.node .node-sub { fill: #bebebe; font-size: 11px; text-anchor: start; pointer-events: none; }
+.node .risk-dot { fill: var(--warning); }
+.node .pending-dot { fill: #262626; stroke: var(--pending); stroke-width: 2; stroke-dasharray: 2 1; }
+.node.dim { opacity: .34; }
+.node:hover { opacity: 1; }
+.detail-head { margin: 0 0 10px; padding: 0 0 10px; border-bottom: 1px solid var(--line); }
+.detail-head h2 { margin: 2px 0 0; }
+.detail-head .help { margin-top: 8px; }
+.card { margin: 0; padding: 14px 0; border-bottom: 1px solid var(--line); background: transparent; }
+.node-detail .card:first-child, .edge-detail .card:first-child { margin: 0 0 4px; padding: 12px; border: 1px solid #554568; border-radius: 9px; background: #2a2530; }
+.node-detail .card:first-child h3, .edge-detail .card:first-child h3 { margin: 4px 0; font-size: 17px; }
+.card p { margin: 5px 0 8px; }
+.card .sub { line-height: 1.5; }
+.card .next { margin-top: 7px; padding: 10px; border-radius: 7px; background: #292929; }
+.connection { padding: 10px 0; border-bottom: 1px solid #343434; font-size: 13px; line-height: 1.55; }
+.connection:last-child { border-bottom: 0; }
+.connection .meta { display: block; margin: 5px 0; color: var(--muted); font-size: 12px; }
+.connection .meaning { display: block; margin: 5px 0; color: var(--text); }
+.connection a { display: inline-block; margin-top: 4px; }
+.jump { display: inline-block; min-height: 32px; margin: 4px 4px 3px 0; padding: 4px 8px; font-size: 12px; }
+.warning { color: #e2bf98; }
+.success { color: #b5ddca; }
+.empty { padding: 8px 0; color: var(--muted); }
+.path-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.path-actions button { min-height: 32px; padding: 4px 9px; font-size: 12px; }
+.copy-status { color: var(--muted); font-size: 12px; }
+::-webkit-scrollbar { width: 9px; height: 9px; }
+::-webkit-scrollbar-track { background: var(--panel); }
+::-webkit-scrollbar-thumb { border: 2px solid var(--panel); border-radius: 8px; background: #5d5d5d; }
+@media (max-width: 1240px) {
+  .shell { grid-template-columns: 276px minmax(0, 1fr) 328px; }
+  .version { max-width: 230px; }
+}
+@media (max-width: 1100px) {
+  body { height: auto; min-height: 100vh; overflow: auto; }
+  .shell { grid-template-columns: 276px minmax(0, 1fr); grid-template-rows: 660px auto; }
+  .detail { grid-column: 1 / -1; max-height: none; border-left: 0; border-top: 1px solid var(--line); }
+}
+@media (max-width: 760px) {
+  header { display: block; }
+  .head-side { justify-content: space-between; margin-top: 12px; }
+  .shell { display: block; }
+  aside { max-height: 470px; }
+  main { height: 600px; }
+  .detail { max-height: none; }
+  .graphbar { flex-wrap: wrap; }
+  .graphbar .caption { flex-basis: 100%; order: 2; }
+  .direction-controls { padding-left: 0; border-left: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .edge, .edge-label { transition: none; }
+}
+</style>
+</head>
+<body>
+<header id="area1">
+  <div class="head-main"><span class="eyebrow">区域 1 · 项目对象地图</span><h1>RPG_Demo 架构审计查看器</h1><p>从一个脚本或 Prefab 出发，找它连接了什么、证据在哪里。第一次用请从左侧的 3 步开始。</p></div>
+  <div class="head-side"><div class="stats"><div class="stat-card"><strong id="nodeStat">—</strong>可查对象</div><div class="stat-card"><strong id="edgeStat">—</strong>连接线索</div></div><div class="version" id="headMeta"></div><details class="help"><summary>这些数字怎么算？点击展开</summary><p id="kindStats"></p><p>数量表示文件和对象条目，不表示游戏运行了多少次，也不表示这些连接全部通过测试。</p></details></div>
+</header>
+<div class="shell">
+  <aside aria-label="查找与筛选">
+    <section class="panel-block" id="area2"><span class="region">区域 2 · 先找到一个名字</span><h2>找对象</h2>
+      <label for="search">输入脚本、Prefab 或物体名称</label><input id="search" placeholder="例如 Torch_Blue、PlayerInventory" autocomplete="off">
+      <div class="examples"><button type="button" data-example="Torch_Blue">试试 Torch_Blue</button><button type="button" data-example="PlayerInventory">试试 PlayerInventory</button></div>
+      <button class="filter-shortcut" id="filterShortcut" type="button">按流程或问题编号找</button>
+      <details class="quick-start" id="quickStart"><summary>第一次使用？展开 3 步</summary><ol><li>点中央的“Monster”系统卡片。</li><li>在左侧结果中点 Torch_Blue。</li><li>在右侧读“它是什么”和“在哪里”。</li></ol><a href="VIEWER-TUTORIAL.md">打开零基础实操教程</a></details>
+      <details class="help"><summary>对象和节点是什么意思？点击展开</summary><p>这里的“对象”是项目里可查的一项：脚本、Prefab 文件、Scene 中的 GameObject 或它身上的 Component。图上的一张小卡片就是一个节点。</p><p><b>白话解释：</b>把节点当作目录里的一个条目，先找名字再看它和谁相连。</p></details>
+    </section>
+    <section class="panel-block" id="area3"><span class="region">区域 3 · 点结果进入详情</span><h2>匹配的对象</h2><div id="resultCount" class="result-meta" aria-live="polite"></div><div id="results"></div></section>
+    <section class="panel-block" id="area4"><span class="region">区域 4 · 只看关心的范围</span><h2>缩小范围或按步骤找</h2>
+      <label for="chainFilter">跟着哪条游戏流程看？</label><select id="chainFilter"><option value="">不限定流程</option><option value="map">A 地图生成</option><option value="combat">B 战斗与奖励</option><option value="inventory">C 背包与 UI</option></select>
+      <div id="chainNav"></div>
+      <label for="issueJump">直接跳到某个问题</label><select id="issueJump"><option value="">先不定位问题</option></select>
+      <label for="system">只看哪个系统？</label><select id="system"><option value="">所有系统</option></select>
+      <details class="help" id="moreFilters"><summary>更多筛选：对象类型与问题状态</summary><label for="kind">只看哪种对象？</label><select id="kind"><option value="">所有类型</option></select><label for="issueFilter">只看哪种问题状态？</label><select id="issueFilter"><option value="">所有问题状态</option><option value="Confirmed Defect">已确认问题</option><option value="Suspected Risk">风险线索</option><option value="Design Concern">设计关切</option><option value="Unverified">还没验证</option></select><p>“已确认问题”要看复现条件；没有被标记的问题不等于已通过检查。</p></details>
+      <div class="filter-tip">选流程或问题编号会先清掉旧条件；之后再加系统、类型、状态会叠加。点左侧结果后，中间和右侧才切换。</div>
+      <details class="help"><summary>这些筛选项怎么选？点击展开</summary><p>“系统”像文件夹；“类型”区分脚本、Prefab、场景物体和组件；“问题状态”表示目前查到哪一步，不是故障数量。</p><p><b>白话解释：</b>先用一个条件缩小范围；如果突然变成 0 条，就撤掉一个条件。</p></details>
+      <div class="controls"><button id="overview" type="button">回到系统总览</button><button id="clear" type="button">清空搜索和筛选</button></div>
+    </section>
+  </aside>
+  <main id="area5" aria-label="连接图">
+    <div class="graphbar"><span id="modeBadge" class="mode-pill">区域 5 · 系统总览</span><div class="caption" id="graphCaption">先点一个系统，再从左侧结果选具体对象。</div><div class="direction-controls" aria-label="连接方向筛选"><button type="button" data-direction="all" aria-pressed="true">全部</button><button type="button" data-direction="in" aria-pressed="false">谁指向它</button><button type="button" data-direction="out" aria-pressed="false">它指向谁</button></div><button id="zoomIn" type="button">＋</button><button id="zoomOut" type="button">－</button><button id="resetView" type="button">还原视图</button></div>
+    <div class="graph-note" id="graphNote">这里先显示“项目有哪些区域”；点系统卡片会筛出该区域的对象。</div>
+    <svg class="canvas" id="svg" role="img" aria-label="项目对象连接图，可点击节点卡片和连线"><g id="viewport"></g></svg>
+    <section class="legend" id="area6" aria-label="线条说明"><span class="region">区域 6 · 线条怎么读</span><br><strong>箭头看引用方向，线型看证据</strong>
+      <span class="legend-row"><i class="line"></i>实线：文件引用或核对过的源码</span><span class="legend-row"><i class="line textual"></i>虚线：只找到代码文字</span><span class="legend-row"><i class="line unknown"></i>点线：源码已核，运行仍待证</span>
+      <span class="legend-row"><i class="color-key risk"></i>琥珀色：关联问题 <i class="color-key unverified"></i>蓝灰空心点：待验证</span>
+      <details class="help"><summary>箭头和线能说明什么？</summary><p>箭头表示记录的来源指向目标：例如 Prefab 包含 GameObject、组件引用脚本。灰色系统汇总线和“仅文字匹配”没有箭头。箭头不表示 Unity 已运行到这里，也不保证文字匹配是真实调用。</p><p><b>白话解释：</b>先顺着箭头找到来源和去向，再点线看证据与验证状态。</p></details>
+    </section>
+  </main>
+  <section class="detail" id="area7" aria-label="对象和连接说明"><div class="detail-head"><span class="region">区域 7 · 看清这是什么、凭什么连接</span><h2>对象与连接说明</h2><details class="help"><summary>右侧面板怎么看？点击展开</summary><p>点卡片或左侧结果，看一个对象的位置、谁指向它、它指向谁和相关问题；点中央连线，看这条连接的来源和验证状态。</p><p><b>白话解释：</b>左侧负责找，中间负责看附近，右侧负责解释和给出核查入口。</p></details></div><div id="detailBody"></div></section>
+</div>
+<script>
+const graph=/*__GRAPH_DATA__*/;
+const $=id=>document.getElementById(id);
+const nodes=new Map(graph.nodes.map(n=>[n.id,n]));
+const edgesById=new Map(graph.edges.map(e=>[e.id,e]));
+const issuesByNode=new Map(),incoming=new Map(),outgoing=new Map();
+for(const issue of graph.issues||[])for(const id of issue.nodes){
+  if(!issuesByNode.has(id))issuesByNode.set(id,[]);
+  issuesByNode.get(id).push(issue);
+}
+for(const edge of graph.edges){
+  if(!incoming.has(edge.target))incoming.set(edge.target,[]);
+  if(!outgoing.has(edge.source))outgoing.set(edge.source,[]);
+  incoming.get(edge.target).push(edge);
+  outgoing.get(edge.source).push(edge);
+}
+const chainEdges=id=>graph.edges.filter(e=>(e.chainIds||[]).includes(id));
+const kindNames={script:'脚本',prefab:'Prefab 文件',scene:'场景文件',gameobject:'游戏对象',component:'组件',data:'数据资产',resource:'美术资源',animator:'动画控制器',animation:'动画片段','package script':'Unity 包脚本','package asset':'Unity 包资源'};
+const relationNames={'serialized reference':'Inspector／文件引用',hierarchy:'父子层级',dependency:'名称线索',call:'方法调用',event:'事件传递',generation:'生成或放置','data flow':'数据传递'};
+const evidenceNames={'Unity YAML GUID':'Unity 文件中的资源引用','Unity YAML hierarchy':'Unity 文件中的父子记录','UnityEvent YAML':'Unity 文件中的事件绑定','C# text match':'C# 文字匹配','reviewed source line':'人工核对的源码行'};
+const validationNames={static:'文件中可见','textual only':'仅文字线索','source confirmed; runtime unverified':'源码已核，运行待证','source confirmed; runtime evidence stale or unavailable':'源码已核，旧运行证据不可沿用','runtime confirmed; isolated Unity snapshot':'隔离 Unity 测试已证'};
+const issueNames={'Confirmed Defect':'已确认问题','Suspected Risk':'风险线索','Design Concern':'设计关切',Unverified:'还没验证'};
+let selected=null,mode='overview',scale=1,dx=0,dy=0,drag=null,directionFilter='all',activeEdgeId=null;
+const escapeHtml=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pathUrl=(path,line)=>{
+  const root=graph.root==='.'?new URL('../../',location.href).href:'file:///'+graph.root.replaceAll('\\','/')+'/';
+  return new URL(path,root).href+(line?'#L'+line:'');
+};
+const nameForKind=kind=>kindNames[kind]||kind;
+const nameForValidation=value=>validationNames[value]||value;
+const nameForIssue=value=>issueNames[value]||value;
+const nameForRelation=(value,relation='')=>relation==='prefab source'?'Prefab 继承来源':relation==='contains GameObject'?'包含游戏对象':relation==='contains child'?'包含子对象':relation==='has Component'?'挂载组件':relationNames[value]||value;
+function statusTone(value){return value==='textual only'?'warn':value==='runtime confirmed; isolated Unity snapshot'?'good':value?.startsWith('source confirmed')?'pending':''}
+function validationExplain(value){
+  if(value==='textual only')return '只找到了名称；先读源码，不能直接称为方法调用。';
+  if(value==='source confirmed; runtime unverified')return '具体源码位置已核对；当前运行时是否经过这里还要另查。';
+  if(value==='source confirmed; runtime evidence stale or unavailable')return '源码位置已核对，但旧 Unity 测试与当前文件不再匹配，不能把旧通过结果算作当前运行验证。';
+  if(value==='runtime confirmed; isolated Unity snapshot')return '匹配的隔离 Unity 测试已通过；结论只适用于该测试覆盖的条件。';
+  return 'Unity 文件里能看到这项配置或引用；运行时行为仍需另查。';
+}
+function addOption(select,value){const option=document.createElement('option');option.value=value;option.textContent=value;select.append(option)}
+for(const system of [...new Set(graph.nodes.map(n=>n.system))].sort())addOption($('system'),system);
+for(const kind of [...new Set(graph.nodes.map(n=>n.kind))].sort()){
+  const option=document.createElement('option');option.value=kind;option.textContent=nameForKind(kind)+' · '+kind;$('kind').append(option);
+}
+for(const issue of graph.issues||[]){
+  const option=document.createElement('option');option.value=issue.id;option.textContent=issue.id+' · '+issue.title;$('issueJump').append(option);
+}
+const counts={};for(const node of graph.nodes)counts[node.kind]=(counts[node.kind]||0)+1;
+$('nodeStat').textContent=graph.nodes.length.toLocaleString('zh-CN');
+$('edgeStat').textContent=graph.edges.length.toLocaleString('zh-CN');
+const scanTime=graph.generatedAtUtc?new Date(graph.generatedAtUtc).toLocaleString('zh-CN'):'未知';
+const branch=graph.sourceBranch||'未记录';
+const sourceState=graph.sourceDirty===true?'生成时含未提交源码':graph.sourceDirty===false?'生成时源码无未提交修改':'源码改动状态未记录';
+$('headMeta').textContent=`来源 ${branch} · 生成时 HEAD ${(graph.head||'未知').slice(0,10)} · ${scanTime} · ${sourceState} · 当前是否仍一致：未检查；人工结论需复核`;
+$('kindStats').textContent=['script','prefab','scene','gameobject','component'].map(k=>nameForKind(k)+' '+(counts[k]||0)).join(' · ');
+function filtered(){
+  const query=$('search').value.trim().toLowerCase(),system=$('system').value,kind=$('kind').value,issue=$('issueFilter').value,chain=$('chainFilter').value;
+  const chainNodes=chain?new Set(chainEdges(chain).flatMap(e=>[e.source,e.target])):null;
+  return graph.nodes.filter(n=>(!query||(n.label+' '+n.path+' '+n.id).toLowerCase().includes(query))&&(!system||n.system===system)&&(!kind||n.kind===kind)&&(!issue||(issuesByNode.get(n.id)||[]).some(x=>x.status===issue))&&(!chainNodes||chainNodes.has(n.id))).sort((a,b)=>a.label.localeCompare(b.label));
+}
+function updateChainNav(){
+  const id=$('chainFilter').value;
+  if(!id){$('chainNav').replaceChildren();return}
+  const edges=chainEdges(id);
+  $('chainNav').innerHTML=`<details class="help" open><summary>逐条查看流程连接（${edges.length} 条）</summary><p>这是一组已核对的连接，排列不代表游戏执行顺序。点一条查看它的来源对象，再点线核对证据。</p>${edges.map((e,i)=>`<div class="connection"><button class="jump" type="button" data-id="${escapeHtml(e.source)}">连接 ${i+1} · ${escapeHtml(e.sourceMethod||nodes.get(e.source)?.label)}</button><small class="muted">指向：${escapeHtml(e.targetMethod||nodes.get(e.target)?.label)}</small></div>`).join('')}</details>`;
+  $('chainNav').querySelectorAll('.jump').forEach(el=>el.onclick=()=>selectNode(el.dataset.id));
+}
+function updateResults(){
+  const hasCondition=['search','system','kind','issueFilter','chainFilter'].some(id=>String($(id).value).trim());
+  if(!hasCondition){
+    $('resultCount').textContent='还没开始查找 · 项目共有 '+graph.nodes.length+' 个可查对象';
+    $('results').innerHTML='<div class="empty">先输入一个名字，或点中央的“Monster”等系统卡片。这里才会列出具体结果。</div>';
+    return;
+  }
+  const matches=filtered();
+  $('resultCount').textContent=matches.length+' 个匹配对象'+(matches.length>120?' · 先显示前 120 个，请加关键词缩小范围':'');
+  if(!matches.length){
+    $('results').innerHTML='<div class="empty">当前搜索和筛选条件没有结果。这不代表项目里不存在该对象；试着缩短名称，或清掉一个筛选条件。</div><button id="emptyClear" type="button">清空条件，从头找</button>';
+    $('emptyClear').onclick=clearAll;
+    return;
+  }
+  $('results').innerHTML=matches.slice(0,120).map(n=>`<button class="row" type="button" data-id="${escapeHtml(n.id)}"><span class="badge">${escapeHtml(nameForKind(n.kind))}</span>${(issuesByNode.get(n.id)||[]).map(x=>`<span class="badge ${x.status==='Unverified'?'pending':'warn'}">${escapeHtml(x.id)}</span>`).join('')}<span class="result-title">${escapeHtml(n.label)}</span><small>${escapeHtml(n.path)}</small></button>`).join('');
+  $('results').querySelectorAll('[data-id]').forEach(el=>el.onclick=()=>selectNode(el.dataset.id));
+  syncResultSelection();
+}
+function syncResultSelection(){
+  for(const row of $('results').querySelectorAll('.row')){
+    const active=row.dataset.id===selected;
+    row.classList.toggle('is-selected',active);
+    row.setAttribute('aria-current',active?'true':'false');
+  }
+}
+function revealResults(){document.querySelector('aside').scrollTop=0}
+function renderEmptyDetail(message){
+  $('detailBody').className='empty-detail';
+  $('detailBody').innerHTML=`<div class="card"><h3>先选一个对象</h3><p>${escapeHtml(message||'点中央的系统卡片，再点左侧的具体结果；也可以直接搜索 Torch_Blue。')}</p><div class="next"><b>接下来做什么？</b><br>选中后先看“它是什么”，再看“来源位置”，最后看它与谁相连。</div></div><div class="card"><h3>这里的线能证明什么？</h3><p>线提供查找入口。点中央的线，右侧会改为说明“连接从哪里来、验证到哪一步”。箭头只表示已知引用方向。</p></div>`;
+  $('area7').scrollTop=0;
+}
+function connectionRow(edge,direction,showExplain=true){
+  const other=nodes.get(direction==='in'?edge.source:edge.target);
+  const relation=nameForRelation(edge.relationType,edge.relation);
+  const evidence=edge.evidence?`<a href="${escapeHtml(pathUrl(edge.evidence.path,edge.evidence.line))}">打开证据位置：${escapeHtml(edge.evidence.path)}:${edge.evidence.line}</a>`:'';
+  const runtime=edge.runtimeEvidence?`<br><a href="${escapeHtml(pathUrl(edge.runtimeEvidence.path,0))}">打开 Unity 测试结果：${escapeHtml(edge.runtimeEvidence.test)}</a>`:'';
+  const methods=edge.sourceMethod||edge.targetMethod?`<span class="meta">具体方法：${escapeHtml(edge.sourceMethod||'未记录')} → ${escapeHtml(edge.targetMethod||'未记录')}</span>`:'';
+  return `<div class="connection"><button class="jump" type="button" data-id="${escapeHtml(other?.id||'')}">${escapeHtml(other?.label||'未知对象')}</button><span class="badge">${escapeHtml(relation)}</span><span class="badge ${statusTone(edge.validation)}">${escapeHtml(nameForValidation(edge.validation))}</span><span class="meaning">${escapeHtml(edge.relation)}</span><span class="meta">证据来源：${escapeHtml(evidenceNames[edge.evidenceType]||edge.evidenceType||'未记录')} · 置信度：${escapeHtml(edge.confidence==='high'?'定位较直接':'仍需核对')}${edge.occurrences>1?' · '+edge.occurrences+' 处':''}</span>${methods}${edge.dataFlow?`<span class="meta">传递的数据：${escapeHtml(edge.dataFlow)}</span>`:''}${showExplain?`<button class="jump" type="button" data-detail-edge="${escapeHtml(edge.id)}">看这条线的解释</button><br>`:''}${evidence}${runtime}</div>`;
+}
+function impact(id){
+  const seen=new Set([id]),queue=[id],layers=[];
+  for(let depth=0;depth<2;depth++){
+    const next=[];
+    for(const item of queue)for(const edge of incoming.get(item)||[])if(!seen.has(edge.source)){seen.add(edge.source);next.push(edge.source)}
+    layers.push(next);queue.splice(0,queue.length,...next);
+  }
+  return layers;
+}
+function bindDetailJumps(){
+  $('detailBody').querySelectorAll('[data-id]').forEach(el=>el.onclick=()=>selectNode(el.dataset.id));
+  $('detailBody').querySelectorAll('[data-detail-edge]').forEach(el=>el.onclick=()=>{const edge=edgesById.get(el.dataset.detailEdge);if(edge)showEdge(edge)});
+}
+async function copyText(value){
+  if(navigator.clipboard?.writeText){
+    const copied=await Promise.race([
+      navigator.clipboard.writeText(value).then(()=>true,()=>false),
+      new Promise(resolve=>setTimeout(()=>resolve(false),800))
+    ]);
+    if(copied)return true;
+  }
+  const source=$('sourcePathText'),range=document.createRange(),selection=window.getSelection();
+  range.selectNodeContents(source);selection.removeAllRanges();selection.addRange(range);
+  try{if(document.execCommand('copy')){selection.removeAllRanges();return true}}catch(_){}
+  return false;
+}
+function directionMeaning(edge){
+  if(edge.relationType==='dependency'||edge.validation==='textual only')return null;
+  if(edge.relation==='prefab source')return '左侧 Prefab Variant 引用右侧基础 Prefab；这表示资源来源，不证明实例已出现。';
+  if(edge.relation==='contains GameObject'||edge.relation==='contains child')return '来源对象包含目标游戏对象。';
+  if(edge.relation==='has Component')return '来源游戏对象挂载目标组件。';
+  if(edge.relationType==='serialized reference')return '来源文件或组件在 Unity 序列化数据中引用目标资源。';
+  if(edge.relationType==='event')return '来源事件或绑定指向目标；具体触发条件需看源码或运行证据。';
+  if(edge.relationType==='call')return '已核对的源码中，来源方法调用目标方法；运行时触发仍看验证状态。';
+  if(edge.relationType==='generation')return '已核对的源码中，来源生成或取出目标对象。';
+  if(edge.relationType==='data flow')return '已核对的源码中，数据由来源传向目标。';
+  return null;
+}
+function showEdge(edge){
+  const meaning=directionMeaning(edge),symbol=meaning?'→':'—';
+  $('detailBody').className='edge-detail';
+  $('detailBody').innerHTML=`<div class="card"><h3>这条线连接了谁？</h3><p><button class="jump" type="button" data-id="${escapeHtml(edge.source)}">${escapeHtml(nodes.get(edge.source)?.label)}</button> ${symbol} <button class="jump" type="button" data-id="${escapeHtml(edge.target)}">${escapeHtml(nodes.get(edge.target)?.label)}</button></p><p><b>${escapeHtml(nameForRelation(edge.relationType,edge.relation))}</b> · ${escapeHtml(meaning||'只发现来源文本与目标名称的匹配，方向不能当作真实调用或依赖。')}</p></div><div class="card"><h3>验证到哪一步？</h3><span class="badge ${statusTone(edge.validation)}">${escapeHtml(nameForValidation(edge.validation))}</span><p>${escapeHtml(validationExplain(edge.validation))}</p><p class="sub">关系类型、引用方向、证据级别是三件不同的事。</p></div><div class="card"><h3>证据从哪里来？</h3>${connectionRow(edge,'out',false)}</div><div class="card"><h3>接下来怎么核对？</h3><p>先点上面的源码位置，看指定行和上下文；如果有测试 XML，再核对用例名称与条件。最后在 Unity Inspector 或 Play Mode 中检查实际对象。</p></div>`;
+  activeEdgeId=edge.id;bindDetailJumps();$('area7').scrollTop=0;draw();
+}
+function selectNode(id){
+  const node=nodes.get(id);if(!node)return;
+  $('detailBody').className='node-detail';
+  selected=id;mode='focus';activeEdgeId=null;resetView();
+  syncResultSelection();
+  const ins=incoming.get(id)||[],outs=outgoing.get(id)||[],impactLayers=impact(id),issues=issuesByNode.get(id)||[];
+  const summary=node.responsibility?`<p>${escapeHtml(node.responsibility)}</p><a href="${escapeHtml(pathUrl(node.path,node.responsibilityEvidenceLine))}">查看这段说明依据的源码</a>`:`<p>这是一个${escapeHtml(nameForKind(node.kind))}。从下方位置与连接入手，确认它在项目中的具体作用。</p>`;
+  const issueHtml=issues.length?`<div class="card"><h3>关联的问题或注意事项（${issues.length}）</h3>${issues.map(issue=>`<div class="connection"><span class="badge ${issue.status==='Unverified'?'pending':'warn'}">${escapeHtml(issue.id)} · ${escapeHtml(nameForIssue(issue.status))}</span><strong>${escapeHtml(issue.title)}</strong><p>这里表示有关联；是否真的发生，请看复现条件。</p><a href="${escapeHtml(pathUrl(issue.evidence.split('#')[0],0))}">打开问题清单</a></div>`).join('')}</div>`:'';
+  const fullPath=graph.root+'\\'+node.path.replaceAll('/','\\');
+  $('detailBody').innerHTML=`<div class="card"><span class="badge">${escapeHtml(nameForKind(node.kind))}</span><h3>${escapeHtml(node.label)}</h3><p>${escapeHtml(node.system)} 系统中的一项。</p></div><div class="card"><h3>它是什么？</h3>${summary}</div><div class="card"><h3>在项目哪里？</h3><p><code id="sourcePathText">${escapeHtml(fullPath)}</code>:${node.line}</p><div class="path-actions"><a href="${escapeHtml(pathUrl(node.path,node.line))}">打开来源文件</a><button id="copySourcePath" type="button">复制路径</button><span class="copy-status" id="copyStatus" role="status" aria-live="polite"></span></div><p class="sub">脚本在 IDE 看；Prefab、GameObject 和组件请回 Unity 的 Project、Hierarchy、Inspector 对照。</p></div>${issueHtml}<div class="card"><h3>谁指向它？（${ins.length}）</h3><p class="sub">也叫“上游”；先理解为哪些文件或对象指向这里。</p>${ins.length?ins.slice(0,80).map(edge=>connectionRow(edge,'in')).join(''):'<div class="empty">扫描范围内没有发现。动态调用仍可能存在，不能据此说没人用。</div>'}</div><div class="card"><h3>它指向谁？（${outs.length}）</h3><p class="sub">也叫“下游”；这些线的含义和可靠程度要逐条点开看。</p>${outs.length?outs.slice(0,80).map(edge=>connectionRow(edge,'out')).join(''):'<div class="empty">扫描范围内没有发现出边。</div>'}</div><div class="card"><h3>改动它时还要留意谁？</h3><p>向前查 1 步有 ${impactLayers[0].length} 项，2 步另有 ${impactLayers[1].length} 项。这只是排查清单，不表示它们运行时一定受影响。</p>${impactLayers.flat().slice(0,18).map(otherId=>`<button class="jump" type="button" data-id="${escapeHtml(otherId)}">${escapeHtml(nodes.get(otherId)?.label||otherId)}</button>`).join('')}</div><div class="card"><h3>建议下一步</h3><div class="next">先打开来源文件，确认名字和引用。要判断行为是否真实发生，再看对应 Unity 测试或在 Play Mode 中观察。</div></div>`;
+  bindDetailJumps();
+  $('copySourcePath').onclick=async()=>{$('copyStatus').textContent=await copyText(fullPath)?'已复制':'剪贴板不可用，路径已选中；按 Ctrl+C';};
+  $('area7').scrollTop=0;draw();
+}
+function svgEl(tag,attrs={}){const element=document.createElementNS('http://www.w3.org/2000/svg',tag);for(const [key,value] of Object.entries(attrs))element.setAttribute(key,String(value));return element}
+function layout(list,width,height){
+  const positions=new Map(),cols=width<500?2:width<850?3:4,rows=Math.ceil(list.length/cols);
+  list.forEach((node,i)=>positions.set(node.id,{x:(i%cols+.5)*width/cols,y:(Math.floor(i/cols)+.5)*height/rows}));
+  return positions;
+}
+const glyphs={script:'CS',prefab:'PF',gameobject:'GO',component:'CP',scene:'SC',data:'DA',resource:'AR',animator:'AN',animation:'CL',system:'SY'};
+function edgePriority(edge){return edge.relationType==='hierarchy'?0:edge.relation==='prefab source'?1:edge.evidenceType==='reviewed source line'?2:edge.validation==='textual only'?5:3}
+function pickedSide(edges,side,limit,seen){
+  const picked=[];
+  for(const edge of [...edges].sort((a,b)=>edgePriority(a)-edgePriority(b))){
+    const id=side==='in'?edge.source:edge.target;
+    if(id===selected||seen.has(id)||!nodes.has(id))continue;
+    seen.add(id);picked.push(id);if(picked.length>=limit)break;
+  }
+  return picked;
+}
+function addMarkers(view){
+  const defs=svgEl('defs');
+  for(const [name,color] of [['normal','#96969c'],['risk','#d0a777'],['unverified','#a9c4da'],['active','#b58bfa']]){
+    const marker=svgEl('marker',{id:'arrow-'+name,viewBox:'0 0 10 10',refX:8.3,refY:5,markerWidth:8,markerHeight:8,orient:'auto',markerUnits:'userSpaceOnUse'});
+    marker.append(svgEl('path',{d:'M1 1.5 L8.5 5 L1 8.5 Z',fill:color}));defs.append(marker);
+  }
+  view.append(defs);
+}
+function edgeGeometry(source,target,width,height,offset=0){
+  const horizontal=Math.abs(target.x-source.x)>=Math.abs(target.y-source.y);
+  let x1,y1,x2,y2;
+  if(horizontal){const sign=target.x>=source.x?1:-1;x1=source.x+sign*width/2;y1=source.y+offset;x2=target.x-sign*width/2;y2=target.y+offset}
+  else{const sign=target.y>=source.y?1:-1;x1=source.x+offset;y1=source.y+sign*height/2;x2=target.x+offset;y2=target.y-sign*height/2}
+  const bend=horizontal?Math.max(20,Math.abs(x2-x1)*.48):Math.max(20,Math.abs(y2-y1)*.48);
+  const d=horizontal?`M${x1},${y1} C${x1+(x2>=x1?bend:-bend)},${y1} ${x2-(x2>=x1?bend:-bend)},${y2} ${x2},${y2}`:`M${x1},${y1} C${x1},${y1+(y2>=y1?bend:-bend)} ${x2},${y2-(y2>=y1?bend:-bend)} ${x2},${y2}`;
+  return {d,mx:(x1+x2)/2,my:(y1+y2)/2};
+}
+function drawNode(view,node,point,width,height){
+  const nodeIssues=issuesByNode.get(node.id)||[],issueClass=nodeIssues.some(issue=>issue.status==='Unverified')?' unverified':nodeIssues.length?' risk':'';
+  const activeClass=node.kind==='system'&&$('system').value===node.system?' active-system':'';
+  const group=svgEl('g',{class:'node'+issueClass+activeClass+(node.id===selected?' selected':''),transform:`translate(${point.x},${point.y})`,'data-kind':node.kind,role:'button',tabindex:0,'aria-label':node.kind==='system'?'筛选 '+node.system+' 系统':'查看 '+node.label+'，'+nameForKind(node.kind)});
+  group.append(svgEl('rect',{class:'node-body',x:-width/2,y:-height/2,width,height,rx:9}));
+  group.append(svgEl('rect',{class:'node-bar',x:-width/2,y:-height/2,width:4,height,rx:2}));
+  const iconX=-width/2+24;
+  group.append(svgEl('rect',{class:'node-icon',x:iconX-16,y:-17,width:32,height:34,rx:6}));
+  const glyph=svgEl('text',{class:'glyph',x:iconX,y:4});glyph.textContent=glyphs[node.kind]||'AS';group.append(glyph);
+  const title=svgEl('text',{class:'node-title',x:-width/2+48,y:-3});title.textContent=node.label;group.append(title);
+  const subtitle=svgEl('text',{class:'node-sub',x:-width/2+48,y:14});subtitle.textContent=node.kind==='system'?graph.nodes.filter(item=>item.system===node.system).length+' 个对象':nameForKind(node.kind);group.append(subtitle);
+  if(nodeIssues.length)group.append(svgEl('circle',{class:nodeIssues.some(issue=>issue.status==='Unverified')?'pending-dot':'risk-dot',cx:width/2-10,cy:-height/2+10,r:3.5}));
+  const tip=svgEl('title');tip.textContent=node.kind==='system'?node.system+' 系统 · 点后筛选左侧列表':node.label+' · '+node.path;group.append(tip);
+  const open=()=>{
+    if(node.kind==='system'){
+      $('search').value='';$('chainFilter').value='';$('issueJump').value='';$('kind').value='';$('issueFilter').value='';$('system').value=node.system;
+      updateChainNav();updateResults();selected=null;mode='overview';resetView();
+      renderEmptyDetail('已选“'+node.system+'”系统。现在从左侧结果中点一个具体对象。');draw();revealResults();
+    }else selectNode(node.id);
+  };
+  group.onclick=open;group.onkeydown=event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();open()}};
+  view.append(group);
+  const maxWidth=width-59;
+  while(title.getComputedTextLength()>maxWidth&&title.textContent.length>2)title.textContent=title.textContent.slice(0,-2)+'…';
+}
+function draw(){
+  const svg=$('svg'),box=svg.getBoundingClientRect(),w=Math.max(320,box.width),h=Math.max(100,box.height),view=$('viewport');
+  view.replaceChildren();addMarkers(view);
+  let visible=[],shownEdges=[],positions;
+  document.querySelector('.direction-controls').style.display=mode==='overview'?'none':'flex';
+  if(mode==='overview'){
+    const systems=[...new Set(graph.nodes.map(n=>n.system))].sort();
+    visible=systems.map(system=>({id:'system:'+system,label:system,kind:'system',system}));
+    positions=layout(visible,w,h);
+    $('modeBadge').textContent='区域 5 · 系统总览';
+    $('graphCaption').textContent=$('system').value?'已选 '+$('system').value+'；从左侧结果选择具体对象':'点一个系统卡片，再从左侧结果选具体对象';
+    $('graphNote').textContent='卡片表示对象分组；灰色细线只汇总跨系统连接数量，不表示调用或方向。';
+    const cross=new Map();
+    for(const edge of graph.edges){
+      const a=nodes.get(edge.source),b=nodes.get(edge.target);if(!a||!b||a.system===b.system)continue;
+      const key=[a.system,b.system].sort().join('↔');cross.set(key,(cross.get(key)||0)+1);
+    }
+    shownEdges=[...cross].sort((a,b)=>b[1]-a[1]).slice(0,24).map(([key,count])=>{const [a,b]=key.split('↔');return{source:'system:'+a,target:'system:'+b,relation:count+' 条跨系统连接线索',validation:'static'}});
+  }else{
+    const node=nodes.get(selected);if(!node)return;
+    const all=[...(incoming.get(selected)||[]),...(outgoing.get(selected)||[])];
+    const sideLimit=Math.max(2,Math.min(7,Math.floor((h-32)/65))),seen=new Set([selected]);
+    const left=directionFilter==='out'?[]:pickedSide(incoming.get(selected)||[],'in',sideLimit,seen);
+    const right=directionFilter==='in'?[]:pickedSide(outgoing.get(selected)||[],'out',sideLimit,seen);
+    visible=[node,...left.map(id=>nodes.get(id)),...right.map(id=>nodes.get(id))];
+    positions=new Map([[selected,{x:w/2,y:h/2}]]);
+    const lane=w<500?Math.max(85,w*.19):Math.max(88,Math.min(110,w*.16));
+    left.forEach((id,i)=>positions.set(id,{x:lane,y:(i+1)*h/(left.length+1)}));
+    right.forEach((id,i)=>positions.set(id,{x:w-lane,y:(i+1)*h/(right.length+1)}));
+    shownEdges=all.filter(edge=>positions.has(edge.source)&&positions.has(edge.target)&&(directionFilter==='all'||directionFilter==='in'&&edge.target===selected||directionFilter==='out'&&edge.source===selected));
+    $('modeBadge').textContent='区域 5 · 对象附近';
+    $('graphCaption').textContent=node.label+' · 当前画出 '+(visible.length-1)+' 个相邻对象';
+    $('graphNote').textContent='左边是“谁指向它”，右边是“它指向谁”；只画部分相邻对象，完整列表在右侧。箭头不等于运行已验证。';
+  }
+  const cardWidth=mode==='overview'?Math.min(168,w/4.1):w<500?116:w<620?138:162,cardHeight=mode==='overview'?58:62;
+  const parallel=new Map();
+  for(const edge of shownEdges){
+    const a=positions.get(edge.source),b=positions.get(edge.target);if(!a||!b)continue;
+    const related=(graph.issues||[]).filter(issue=>(edge.issueIds||[]).includes(issue.id));
+    const issueClass=related.some(issue=>issue.status==='Unverified')?'unverified':related.length?'risk':'';
+    const evidenceClass=edge.validation==='textual only'?'textual':edge.validation?.startsWith('source confirmed')?'unknown':'';
+    const pair=[edge.source,edge.target].sort().join('|'),offset=(parallel.get(pair)||0)*7;parallel.set(pair,(parallel.get(pair)||0)+1);
+    const shape=edgeGeometry(a,b,cardWidth,cardHeight,offset);
+    const wrap=svgEl('g',{class:'edge-wrap'+(edge.id===activeEdgeId?' active':''),role:edge.evidence?'button':'presentation',tabindex:edge.evidence?0:-1,'aria-label':edge.evidence?'查看连接证据：'+edge.relation:edge.relation});
+    if(mode==='overview')wrap.style.cursor='default';
+    const directed=mode!=='overview'&&!!directionMeaning(edge),marker=edge.id===activeEdgeId?'active':issueClass==='risk'?'risk':issueClass==='unverified'?'unverified':'normal';
+    const attributes={d:shape.d,class:'edge '+evidenceClass+' '+issueClass+(mode==='overview'?' overview':'')+((edge.chainIds||[]).includes($('chainFilter').value)&&$('chainFilter').value?' chain':'')};
+    if(directed)attributes['marker-end']='url(#arrow-'+marker+')';
+    wrap.append(svgEl('path',attributes));
+    if(edge.evidence){
+      wrap.append(svgEl('path',{d:shape.d,class:'edge-hit','pointer-events':'stroke','data-edge-id':edge.id}));
+      wrap.onclick=()=>showEdge(edge);wrap.onkeydown=event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();showEdge(edge)}};
+      wrap.onmouseenter=()=>{for(const item of view.querySelectorAll('.edge-wrap'))if(item!==wrap)item.classList.add('dim')};
+      wrap.onmouseleave=()=>{for(const item of view.querySelectorAll('.edge-wrap'))item.classList.remove('dim')};
+    }
+    const label=svgEl('g',{class:'edge-label',transform:`translate(${shape.mx},${shape.my-12})`});
+    const words=mode==='overview'?edge.relation:nameForRelation(edge.relationType,edge.relation),labelWidth=Math.min(170,Math.max(68,words.length*11+18));
+    label.append(svgEl('rect',{x:-labelWidth/2,y:-11,width:labelWidth,height:23,rx:5}));
+    const labelText=svgEl('text',{y:4});labelText.textContent=words;label.append(labelText);wrap.append(label);
+    const tip=svgEl('title');tip.textContent=edge.relation+(directed?' · 来源指向目标':' · 无执行方向')+(related.length?' · '+related.map(issue=>issue.id).join(', '):'');wrap.append(tip);
+    view.append(wrap);
+  }
+  for(const node of visible)drawNode(view,node,positions.get(node.id),cardWidth,cardHeight);
+  applyTransform();
+}
+function applyTransform(){$('viewport').setAttribute('transform',`translate(${dx},${dy}) scale(${scale})`)}
+function resetView(){scale=1;dx=0;dy=0;applyTransform()}
+function clearFields(){$('search').value='';$('system').value='';$('kind').value='';$('issueFilter').value='';$('issueJump').value='';$('chainFilter').value=''}
+function clearAll(){clearFields();updateChainNav();updateResults();selected=null;activeEdgeId=null;directionFilter='all';syncDirectionButtons();mode='overview';resetView();renderEmptyDetail();draw();document.querySelector('aside').scrollTop=0}
+function applyExample(term){clearFields();$('search').value=term;updateChainNav();updateResults();selected=null;mode='overview';resetView();renderEmptyDetail('已填入“'+term+'”。从左侧匹配结果选一个对象。');draw();revealResults()}
+$('search').oninput=updateResults;
+$('system').onchange=()=>{updateResults();if(mode==='overview')draw()};
+$('kind').onchange=updateResults;
+$('issueFilter').onchange=updateResults;
+$('chainFilter').onchange=()=>{
+  if($('chainFilter').value){$('search').value='';$('system').value='';$('kind').value='';$('issueFilter').value='';$('issueJump').value=''}
+  updateChainNav();updateResults();selected=null;mode='overview';resetView();renderEmptyDetail('流程已选好。展开左侧步骤，或从匹配结果选一个对象。');draw();
+};
+$('issueJump').onchange=()=>{
+  const issue=(graph.issues||[]).find(item=>item.id===$('issueJump').value);
+  if(issue?.nodes?.length){
+    $('search').value='';$('system').value='';$('kind').value='';$('chainFilter').value='';$('issueFilter').value=issue.status;
+    $('moreFilters').open=true;updateChainNav();updateResults();selectNode(issue.nodes[0]);
+  }
+};
+$('overview').onclick=()=>{selected=null;activeEdgeId=null;mode='overview';resetView();renderEmptyDetail('已回到系统总览。左侧搜索和筛选条件仍保留；点系统卡片会重新筛选该系统。');draw()};
+$('clear').onclick=clearAll;
+for(const button of document.querySelectorAll('[data-example]'))button.onclick=()=>applyExample(button.dataset.example);
+function syncDirectionButtons(){for(const button of document.querySelectorAll('[data-direction]'))button.setAttribute('aria-pressed',String(button.dataset.direction===directionFilter))}
+for(const button of document.querySelectorAll('[data-direction]'))button.onclick=()=>{directionFilter=button.dataset.direction;activeEdgeId=null;syncDirectionButtons();draw()};
+$('zoomIn').onclick=()=>{scale=Math.min(4,scale*1.25);applyTransform()};
+$('zoomOut').onclick=()=>{scale=Math.max(.3,scale/1.25);applyTransform()};
+$('resetView').onclick=resetView;
+$('filterShortcut').onclick=()=>$('area4').scrollIntoView({block:'start',behavior:'smooth'});
+$('svg').addEventListener('wheel',event=>{event.preventDefault();scale=Math.max(.3,Math.min(4,scale*(event.deltaY<0?1.1:.9)));applyTransform()},{passive:false});
+$('svg').addEventListener('pointerdown',event=>{if(event.target.closest('.node')||event.target.closest('[data-edge-id]'))return;drag={x:event.clientX-dx,y:event.clientY-dy};$('svg').setPointerCapture(event.pointerId)});
+$('svg').addEventListener('pointermove',event=>{if(!drag)return;dx=event.clientX-drag.x;dy=event.clientY-drag.y;applyTransform()});
+$('svg').addEventListener('pointerup',()=>drag=null);
+$('svg').addEventListener('pointercancel',()=>drag=null);
+window.addEventListener('resize',draw);
+new ResizeObserver(draw).observe($('svg'));
+updateResults();renderEmptyDetail();draw();
+</script>
+</body></html>

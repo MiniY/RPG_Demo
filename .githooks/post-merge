@@ -1,0 +1,6 @@
+#!/bin/sh
+root=$(git rev-parse --show-toplevel) || exit 0
+script="$root/Tools/ArchitectureAudit/update.py"
+[ -f "$script" ] || exit 0
+python "$script" --hook post-merge || echo "Architecture audit update needs attention; run Tools/ArchitectureAudit/update.ps1 on main." >&2
+exit 0

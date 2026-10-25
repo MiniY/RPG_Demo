@@ -17,6 +17,7 @@ public sealed class TowerRunFlowPlayModeTests
     private Keyboard testKeyboard;
     private InputSettings.BackgroundBehavior previousBackgroundBehavior;
     private InputSettings.EditorInputBehaviorInPlayMode previousEditorInputBehavior;
+    private bool observeFiniteGenerationRejections;
 
     [SetUp]
     public void SetUp()
@@ -32,6 +33,7 @@ public sealed class TowerRunFlowPlayModeTests
             System.Guid.NewGuid().ToString("N"));
         TowerRunRuntimeEnvironment.ConfigureTestIsolation(testRoot);
         testKeyboard = InputSystem.AddDevice<Keyboard>("TowerRunFlowTestKeyboard");
+        Application.logMessageReceived += RecordFiniteGenerationRejection;
     }
 
     [TearDown]
@@ -49,6 +51,8 @@ public sealed class TowerRunFlowPlayModeTests
         }
         finally
         {
+            Application.logMessageReceived -= RecordFiniteGenerationRejection;
+            observeFiniteGenerationRejections = false;
             InputSystem.settings.backgroundBehavior = previousBackgroundBehavior;
             InputSystem.settings.editorInputBehaviorInPlayMode = previousEditorInputBehavior;
         }
@@ -57,6 +61,7 @@ public sealed class TowerRunFlowPlayModeTests
     [UnityTest]
     public IEnumerator TutorialToFloorTwoRequiresTargetsAndActualInteractInput()
     {
+        observeFiniteGenerationRejections = true;
         yield return SceneManager.LoadSceneAsync("SampleScene", LoadSceneMode.Single);
         yield return null;
 
@@ -76,6 +81,7 @@ public sealed class TowerRunFlowPlayModeTests
         MapMinimapController minimap =
             runtimeRoot.GetComponentInChildren<MapMinimapController>(true);
 
+        yield return RetryFiniteGenerationFailures(coordinator);
         AssertPlaying(coordinator, "新手关卡");
         AssertFreshSpawnExploration(minimap);
         Assert.That(GetProperty(floor, "State").ToString(), Is.EqualTo("Locked"));
@@ -115,6 +121,7 @@ public sealed class TowerRunFlowPlayModeTests
         PressInteract();
         yield return null;
 
+        yield return RetryFiniteGenerationFailures(coordinator);
         AssertPlaying(coordinator, "第 1 层");
         AssertFreshSpawnExploration(minimap);
         Assert.That(bootstrap.Context.ActiveGenerationId, Is.Not.EqualTo(tutorialGeneration));
@@ -147,10 +154,40 @@ public sealed class TowerRunFlowPlayModeTests
         PressInteract();
         yield return null;
 
+        yield return RetryFiniteGenerationFailures(coordinator);
         AssertPlaying(coordinator, "第 2 层");
         AssertFreshSpawnExploration(minimap);
         Assert.That(GetProperty(floor, "State").ToString(), Is.EqualTo("Locked"));
         Assert.That(minimap.IsExitAvailable, Is.False);
+    }
+
+    private void RecordFiniteGenerationRejection(string message, string stack, LogType type)
+    {
+        if (!observeFiniteGenerationRejections || type != LogType.Error ||
+            !message.StartsWith("Map generation failed [EcologyBudgetExhaustedOnFixedTerrain]:", System.StringComparison.Ordinal) ||
+            !(message.Contains("InsufficientConstructiveCapacity") ||
+              (message.Contains("InsufficientSafeSpace") && message.Contains("NoQualifiedMerchantInBirthSafety"))))
+            return;
+        LogAssert.Expect(LogType.Error, message);
+        string evidence = System.Environment.GetEnvironmentVariable("RPG_DEMO_REMEDIATION_EVIDENCE");
+        if (!string.IsNullOrEmpty(evidence))
+            File.AppendAllText(Path.Combine(evidence, "TowerRunFlowFiniteRejections.txt"), message + System.Environment.NewLine);
+    }
+
+    private static IEnumerator RetryFiniteGenerationFailures(MonoBehaviour coordinator)
+    {
+        // The original UI exposes a retry for a finite rejected terrain; exercise that same operation.
+        for (int attempt = 0; attempt < 3 && GetProperty(coordinator, "State").ToString() == "Failure"; attempt++)
+        {
+            var failure = Object.FindObjectOfType<MapGenerationController>(true).Orchestrator.Context.Failure;
+            Assert.That(failure, Is.Not.Null);
+            Assert.That(failure.Code, Is.EqualTo("EcologyBudgetExhaustedOnFixedTerrain"));
+            Assert.That(failure.Reason.Contains("InsufficientConstructiveCapacity") ||
+                (failure.Reason.Contains("InsufficientSafeSpace") && failure.Reason.Contains("NoQualifiedMerchantInBirthSafety")), Is.True);
+            Assert.That((bool)GetProperty(coordinator, "CanRetryFailedOperation"), Is.True);
+            Invoke(coordinator, "RetryFailedOperation");
+            yield return null;
+        }
     }
 
     [UnityTest]

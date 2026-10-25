@@ -1,0 +1,23 @@
+[
+  {"path":"Assets/Scripts/GameInput.cs","responsibility":"将 Battle、Interact 等输入映射为玩法事件，先检查输入门禁。","line":204},
+  {"path":"Assets/Scripts/Player/PlayerAction.cs","responsibility":"处理攻击体力、目标选择、动画通知与延迟伤害结算。","line":214},
+  {"path":"Assets/Scripts/Damageable/BaseDamageable.cs","responsibility":"统一维护可受击对象的生命、受击/死亡事件、奖励与回收。","line":78},
+  {"path":"Assets/Scripts/Damageable/Monster/MonsterAIController.cs","responsibility":"装配并切换怪物 Patrol/Search/Chase/Attack/Return 行为状态。","line":67},
+  {"path":"Assets/Scripts/MapGeneration/MonsterPlacementService.cs","responsibility":"规划 Monster 位置，物化时搬移并重绑定场景内目标。","line":150},
+  {"path":"Assets/Scripts/MapGeneration/DestructiblePlacementService.cs","responsibility":"规划代际可摧毁物，并从 Prefab 取得实例、绑定清理。","line":233},
+  {"path":"Assets/Scripts/MapGeneration/MapRuntimeBootstrap.cs","responsibility":"依据显式模式和权威根对象选择正式地图运行入口。","line":125},
+  {"path":"Assets/Scripts/MapGeneration/MapIntegrationOrchestrator.cs","responsibility":"协调地图生成、放置计划校验、Commit、旧代退休与地形投影。","line":55},
+  {"path":"Assets/Scripts/MapGeneration/MapGenerationController.cs","responsibility":"统筹地图物化、玩家定位、相机与 finalizer，最终发布 GameplayReady。","line":122},
+  {"path":"Assets/Scripts/RewardPickup.cs","responsibility":"地面奖励在触发器中请求背包接收，成功后播放拾取并回收。","line":49},
+  {"path":"Assets/Scripts/PlayerInventory.cs","responsibility":"拥有当前物品栈数量，接收拾取/交易并在成功后发布变化。","line":181},
+  {"path":"Assets/Scripts/UI/PackageGridUI.cs","responsibility":"监听背包变化，读取当前 ItemStacks 并重建可见格子。","line":53},
+  {"path":"Assets/Scripts/Shop/ShopTradeController.cs","responsibility":"验证并提交购买时的 Gold、商品与背包状态变化。","line":320},
+  {"path":"Assets/Scripts/GameSaveService.cs","responsibility":"维护会话运行数据的内存快照；此处 TrySave 不写正式槽位。","line":193},
+  {"path":"Assets/Scripts/TowerRun/TowerRunSlotStore.cs","responsibility":"提交与读取 Tower Run 正式槽位记录及覆盖保护。","line":696},
+  {"path":"Assets/Scripts/TowerRunCoordinator.cs","responsibility":"协调新 Run、恢复、换层、楼层入口保存及 staged 状态应用。","line":167},
+  {"path":"Assets/Scripts/TowerFloorRuntimeController.cs","responsibility":"追踪本代 Required 目标死亡，控制黑洞开放和出口交互门禁。","line":116},
+  {"path":"Assets/Scripts/MapGeneration/MapMinimapController.cs","responsibility":"根据地图代际数据生成小地图图像、迷雾与出口显示。","line":307},
+  {"path":"Assets/Scripts/MapGeneration/CameraBindingService.cs","responsibility":"地图生成后把相机绑定到已定位的玩家目标。","line":1},
+  {"path":"Assets/Scripts/UI/TowerRunUiController.cs","responsibility":"展示 Run/三槽状态并处理设置页的保存、恢复与音量交互。","line":148},
+  {"path":"Assets/Prefabs/Monsters/Torch/Torch_Blue.prefab","responsibility":"当前 Torch_Blue 主 Prefab；父对象含怪物行为，Visual 子对象承载 Animator。","line":1}
+]

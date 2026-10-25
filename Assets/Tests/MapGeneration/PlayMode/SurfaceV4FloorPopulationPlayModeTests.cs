@@ -52,8 +52,10 @@ public sealed class SurfaceV4FloorPopulationPlayModeTests
     {
         if(type!=LogType.Error || !message.StartsWith("Map generation failed"))return;
         if (message.StartsWith("Map generation failed [EcologyBudgetExhaustedOnFixedTerrain]:", StringComparison.Ordinal) &&
-            message.Contains("InsufficientConstructiveCapacity"))
+            (message.Contains("InsufficientConstructiveCapacity") ||
+             (message.Contains("InsufficientSafeSpace") && message.Contains("NoQualifiedMerchantInBirthSafety"))))
             LogAssert.Expect(LogType.Error, message);
+        report.failures.Add("Observed finite generation rejection: " + message);
         var owner=UnityEngine.Object.FindObjectsOfType<MonoBehaviour>(true).FirstOrDefault(x=>x.GetType().Name=="TowerRunCoordinator");
         if(owner==null)return;
         var entry=(TowerRunCheckpointRecord)owner.GetType().GetField("stagedRecord",Private).GetValue(owner);

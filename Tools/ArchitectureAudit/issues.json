@@ -1,0 +1,9 @@
+[
+  {"id":"AA-01","status":"Unverified","priority":"P1","title":"Monster 视觉与边缘追击待复验","nodes":["Assets/Prefabs/Monsters/Torch/Torch_Blue.prefab","Assets/Animations/Monsters/Torch_Blue/Torch_Blue_Visual.controller","Assets/Scripts/Damageable/Monster/MonsterMovementController.cs"],"evidence":"Docs/architecture-audit/ISSUES.md#aa-01"},
+  {"id":"AA-02","status":"Confirmed Defect","priority":"P2","title":"多个奖励接收者发生部分提交（条件性）","nodes":["Assets/Scripts/RewardPickup.cs","Assets/Scripts/PlayerInventory.cs"],"evidence":"Docs/architecture-audit/ISSUES.md#aa-02"},
+  {"id":"AA-03","status":"Design Concern","priority":"P2","title":"背包变化会重建全部可见格子","nodes":["Assets/Scripts/PlayerInventory.cs","Assets/Scripts/UI/PackageGridUI.cs"],"evidence":"Docs/architecture-audit/ISSUES.md#aa-03"},
+  {"id":"AA-04","status":"Design Concern","priority":"P2","title":"每次攻击全局搜索 BaseDamageable","nodes":["Assets/Scripts/Player/PlayerAction.cs"],"evidence":"Docs/architecture-audit/ISSUES.md#aa-04"},
+  {"id":"AA-05","status":"Design Concern","priority":"P2","title":"地图 Commit 后仍有可失败阶段","nodes":["Assets/Scripts/MapGeneration/MapIntegrationOrchestrator.cs","Assets/Scripts/MapGeneration/MapGenerationController.cs"],"evidence":"Docs/architecture-audit/ISSUES.md#aa-05"},
+  {"id":"AA-06","status":"Design Concern","priority":"P2","title":"内存 TrySave 与正式槽位易混淆","nodes":["Assets/Scripts/GameSaveService.cs","Assets/Scripts/TowerRun/TowerRunSlotStore.cs"],"evidence":"Docs/architecture-audit/ISSUES.md#aa-06"},
+  {"id":"AA-07","status":"Design Concern","priority":"P3","title":"遗留摆放适配器仍挂载","nodes":["Assets/Scripts/MapGeneration/MapGeneratedObjectPlacementAdapter.cs"],"evidence":"Docs/architecture-audit/ISSUES.md#aa-07"}
+]

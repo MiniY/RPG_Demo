@@ -1,0 +1,138 @@
+using System;
+using System.IO;
+using System.Linq;
+using UnityEditor;
+using UnityEditor.Build.Reporting;
+using UnityEngine;
+
+/// <summary>Builds the isolated Monster ecology acceptance Player from the real SampleScene.</summary>
+public static class MapAcceptanceBuild
+{
+    [Serializable] private sealed class PlayerBuildEvidence
+    {
+        public string result, path, unity, scene;
+        public int errors, warnings;
+        public ulong bytes;
+        public bool development;
+        public string[] defines, packedSourceAssets;
+    }
+    public static void BuildUnitsArtCandidatesWindows()
+    {
+        throw new InvalidOperationException(EcologyRecipeDefinition.RetiredContentMessage);
+    }
+    public static void BuildMainSurfaceV4Windows()
+    {
+        string root = Environment.GetEnvironmentVariable("RPG_DEMO_ACCEPTANCE_ROOT");
+        if (string.IsNullOrWhiteSpace(root)) throw new InvalidOperationException("An explicit acceptance output root is required.");
+        var retained = Resources.Load<EcologyRecipeDefinition>(EcologyRecipeDefinition.ResourcePathFor(EcologyRecipeDefinition.MainV1ProfileId));
+        retained.ResolveTypes(); retained.VerifyRetainedSourceFiles(true);
+        try
+        {
+            foreach (bool development in new[] { true, false })
+            {
+                Environment.SetEnvironmentVariable("RPG_DEMO_ACCEPTANCE_ROOT", Path.Combine(root, development ? "Development" : "Normal"));
+                BuildCore(development ? "RPG_Demo_Main_20261025_Dev" : "RPG_Demo_Main_20261025",
+                    development ? BuildOptions.Development | BuildOptions.DetailedBuildReport : BuildOptions.DetailedBuildReport,
+                    "RPG_DEMO_TERRAIN_V2_MVP", "RPG_DEMO_ECOLOGY_REMEDIATION", "RPG_DEMO_SURFACE_V4");
+            }
+        }
+        finally { Environment.SetEnvironmentVariable("RPG_DEMO_ACCEPTANCE_ROOT", root); }
+    }
+
+    public static void BuildRemediationWindows()
+    {
+        string root = Environment.GetEnvironmentVariable("RPG_DEMO_ACCEPTANCE_ROOT");
+        if (string.IsNullOrWhiteSpace(root)) throw new InvalidOperationException("An explicit acceptance output root is required.");
+        foreach (string profile in new[] { EcologyRecipeDefinition.RemediationProfileId })
+        {
+            var retained = Resources.Load<EcologyRecipeDefinition>(EcologyRecipeDefinition.ResourcePathFor(profile));
+            if (retained == null) throw new InvalidOperationException("The retained recipe is missing.");
+            retained.ResolveTypes(); retained.VerifyRetainedSourceFiles(true);
+        }
+        try
+        {
+            foreach (bool development in new[] { true, false })
+            {
+                Environment.SetEnvironmentVariable("RPG_DEMO_ACCEPTANCE_ROOT", Path.Combine(root, development ? "Development" : "Normal"));
+                BuildCore(development ? "RPG_Demo_Remediation_R3_Dev" : "RPG_Demo_Remediation_R3",
+                    development ? BuildOptions.Development | BuildOptions.DetailedBuildReport : BuildOptions.DetailedBuildReport,
+                    "RPG_DEMO_TERRAIN_V2_MVP", "RPG_DEMO_ECOLOGY_REMEDIATION");
+            }
+        }
+        finally { Environment.SetEnvironmentVariable("RPG_DEMO_ACCEPTANCE_ROOT", root); }
+    }
+    public static void BuildMonsterEcologyWindows()
+    {
+        Build("RPG_Demo_MonsterEcology_MVP", "RPG_DEMO_MONSTER_ECOLOGY_MVP");
+    }
+
+    public static void BuildTerrainV2Windows()
+    {
+        Build("RPG_Demo_TerrainV2_MVP", "RPG_DEMO_TERRAIN_V2_MVP");
+    }
+
+    public static void BuildXiaoSuIntegratedWindows()
+    {
+        throw new InvalidOperationException(EcologyRecipeDefinition.RetiredContentMessage);
+    }
+
+    private static void Build(string productName, params string[] acceptanceDefines)
+    {
+        BuildCore(productName, BuildOptions.None, acceptanceDefines);
+    }
+    private static void BuildCore(string productName, BuildOptions buildOptions, params string[] acceptanceDefines)
+    {
+        string root = Environment.GetEnvironmentVariable("RPG_DEMO_ACCEPTANCE_ROOT");
+        if (string.IsNullOrWhiteSpace(root))
+            throw new InvalidOperationException("Set RPG_DEMO_ACCEPTANCE_ROOT for the build output.");
+
+        string[] scenes = EditorBuildSettings.scenes
+            .Where(scene => scene.enabled)
+            .Select(scene => scene.path)
+            .ToArray();
+        if (scenes.Length != 1 || scenes[0] != "Assets/Scenes/SampleScene.unity")
+            throw new InvalidOperationException("The acceptance Player requires the real SampleScene build entry.");
+
+        string outputDirectory = Path.Combine(root, "MVP_Windows_x64");
+        Directory.CreateDirectory(outputDirectory);
+        string executable = Path.Combine(outputDirectory, productName + ".exe");
+        string originalCompany = PlayerSettings.companyName;
+        string originalProduct = PlayerSettings.productName;
+        try
+        {
+            // A distinct Player identity keeps all acceptance saves away from the user's formal slots.
+            PlayerSettings.companyName = "CodexMapAcceptance";
+            PlayerSettings.productName = productName;
+            string originalGraphOutput = Environment.GetEnvironmentVariable("RPG_DEMO_PLAYER_GRAPH_OUTPUT");
+            try { Environment.SetEnvironmentVariable("RPG_DEMO_PLAYER_GRAPH_OUTPUT", root); MainConsolidationPlayerSourceGraph.Export(); }
+            finally { Environment.SetEnvironmentVariable("RPG_DEMO_PLAYER_GRAPH_OUTPUT", originalGraphOutput); }
+            BuildReport report = BuildPipeline.BuildPlayer(new BuildPlayerOptions
+            {
+                scenes = scenes,
+                locationPathName = executable,
+                target = BuildTarget.StandaloneWindows64,
+                options = buildOptions,
+                extraScriptingDefines = acceptanceDefines
+            });
+            File.WriteAllText(Path.Combine(root, "BuildReport.json"), JsonUtility.ToJson(new PlayerBuildEvidence
+                {
+                    result = report.summary.result.ToString(), path = executable, unity = Application.unityVersion,
+                    scene = scenes[0], errors = (int)report.summary.totalErrors,
+                    warnings = (int)report.summary.totalWarnings, bytes = report.summary.totalSize,
+                    development = (buildOptions & BuildOptions.Development) != 0, defines = acceptanceDefines,
+                    packedSourceAssets = report.packedAssets.SelectMany(p => p.contents).Select(p => p.sourceAssetPath)
+                        .Where(p => !string.IsNullOrEmpty(p)).Distinct().OrderBy(p => p, StringComparer.Ordinal).ToArray()
+                }, true));
+            if (report.summary.result != BuildResult.Succeeded)
+                throw new InvalidOperationException("Player build failed: " + report.summary.result);
+            Debug.Log("Map acceptance Player: " + executable +
+                "; bytes=" + report.summary.totalSize);
+        }
+        finally
+        {
+            PlayerSettings.companyName = originalCompany;
+            PlayerSettings.productName = originalProduct;
+            AssetDatabase.SaveAssets();
+        }
+    }
+}

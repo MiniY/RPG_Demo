@@ -428,13 +428,26 @@ public sealed class DamageableRewardLoopPlayModeTests
 
         Assert.That(coordinator, Is.Not.Null);
         MethodInfo returnToStartup = coordinator.GetType().GetMethod("ReturnToStartupChoice");
-        MethodInfo beginNewRun = coordinator.GetType().GetMethod("BeginNewRun");
+        MethodInfo beginOperation = coordinator.GetType().GetMethod(
+            "BeginOperation", BindingFlags.Instance | BindingFlags.NonPublic);
         PropertyInfo state = coordinator.GetType().GetProperty("State");
         Assert.That(returnToStartup, Is.Not.Null);
-        Assert.That(beginNewRun, Is.Not.Null);
+        Assert.That(beginOperation, Is.Not.Null);
         Assert.That(state, Is.Not.Null);
         returnToStartup.Invoke(coordinator, null);
-        beginNewRun.Invoke(coordinator, null);
+        // These regressions exercise the retained SceneBound Torch/destructible recipe.
+        // New adventures now use MainV1, whose pooled actors intentionally replace those targets.
+        FieldInfo baselineField = coordinator.GetType().GetField(
+            "newRunBaseline", BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.That(baselineField, Is.Not.Null);
+        var record = ((TowerRunCheckpointRecord)baselineField.GetValue(coordinator)).DeepClone();
+        record.runId = System.Guid.NewGuid().ToString("D");
+        record.generation.profileId = "default";
+        record.generation.requestedSeed = 20260929;
+        record.generation.attemptIndex = 0;
+        record.generation.staticBaselineSignature = string.Empty;
+        beginOperation.Invoke(coordinator, new object[] {
+            System.Enum.Parse(beginOperation.GetParameters()[0].ParameterType, "NewRun"), record, false });
         yield return null;
         Assert.That(state.GetValue(coordinator).ToString(), Is.EqualTo("Playing"));
 

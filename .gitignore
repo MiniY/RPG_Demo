@@ -45,3 +45,8 @@ Desktop.ini
 /Tools/**/.local/
 **/__pycache__/
 /Docs/MapGeneration/Ecology/Evidence/
+
+# Paid Enemy Pack pixels stay local. Reviewed importer metadata may be public.
+/Assets/_Resources/Tiny Swords Enemy Pack/**/*
+!/Assets/_Resources/Tiny Swords Enemy Pack/**/
+!/Assets/_Resources/Tiny Swords Enemy Pack/**/*.meta

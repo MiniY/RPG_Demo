@@ -1,0 +1,1417 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!29 &1
+OcclusionCullingSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_OcclusionBakeSettings:
+    smallestOccluder: 5
+    smallestHole: 0.25
+    backfaceThreshold: 100
+  m_SceneGUID: 00000000000000000000000000000000
+  m_OcclusionCullingData: {fileID: 0}
+--- !u!104 &2
+RenderSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 9
+  m_Fog: 0
+  m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  m_FogMode: 3
+  m_FogDensity: 0.01
+  m_LinearFogStart: 0
+  m_LinearFogEnd: 300
+  m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
+  m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
+  m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
+  m_AmbientIntensity: 1
+  m_AmbientMode: 3
+  m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
+  m_SkyboxMaterial: {fileID: 0}
+  m_HaloStrength: 0.5
+  m_FlareStrength: 1
+  m_FlareFadeSpeed: 3
+  m_HaloTexture: {fileID: 0}
+  m_SpotCookie: {fileID: 10001, guid: 0000000000000000e000000000000000, type: 0}
+  m_DefaultReflectionMode: 0
+  m_DefaultReflectionResolution: 128
+  m_ReflectionBounces: 1
+  m_ReflectionIntensity: 1
+  m_CustomReflection: {fileID: 0}
+  m_Sun: {fileID: 0}
+  m_UseRadianceAmbientProbe: 0
+--- !u!157 &3
+LightmapSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 12
+  m_GIWorkflowMode: 1
+  m_GISettings:
+    serializedVersion: 2
+    m_BounceScale: 1
+    m_IndirectOutputScale: 1
+    m_AlbedoBoost: 1
+    m_EnvironmentLightingMode: 0
+    m_EnableBakedLightmaps: 0
+    m_EnableRealtimeLightmaps: 0
+  m_LightmapEditorSettings:
+    serializedVersion: 12
+    m_Resolution: 2
+    m_BakeResolution: 40
+    m_AtlasSize: 1024
+    m_AO: 0
+    m_AOMaxDistance: 1
+    m_CompAOExponent: 1
+    m_CompAOExponentDirect: 0
+    m_ExtractAmbientOcclusion: 0
+    m_Padding: 2
+    m_LightmapParameters: {fileID: 0}
+    m_LightmapsBakeMode: 1
+    m_TextureCompression: 1
+    m_FinalGather: 0
+    m_FinalGatherFiltering: 1
+    m_FinalGatherRayCount: 256
+    m_ReflectionCompression: 2
+    m_MixedBakeMode: 2
+    m_BakeBackend: 1
+    m_PVRSampling: 1
+    m_PVRDirectSampleCount: 32
+    m_PVRSampleCount: 512
+    m_PVRBounces: 2
+    m_PVREnvironmentSampleCount: 256
+    m_PVREnvironmentReferencePointCount: 2048
+    m_PVRFilteringMode: 1
+    m_PVRDenoiserTypeDirect: 1
+    m_PVRDenoiserTypeIndirect: 1
+    m_PVRDenoiserTypeAO: 1
+    m_PVRFilterTypeDirect: 0
+    m_PVRFilterTypeIndirect: 0
+    m_PVRFilterTypeAO: 0
+    m_PVREnvironmentMIS: 1
+    m_PVRCulling: 1
+    m_PVRFilteringGaussRadiusDirect: 1
+    m_PVRFilteringGaussRadiusIndirect: 5
+    m_PVRFilteringGaussRadiusAO: 2
+    m_PVRFilteringAtrousPositionSigmaDirect: 0.5
+    m_PVRFilteringAtrousPositionSigmaIndirect: 2
+    m_PVRFilteringAtrousPositionSigmaAO: 1
+    m_ExportTrainingData: 0
+    m_TrainingDataDestination: TrainingData
+    m_LightProbeSampleCountMultiplier: 4
+  m_LightingDataAsset: {fileID: 0}
+  m_LightingSettings: {fileID: 0}
+--- !u!196 &4
+NavMeshSettings:
+  serializedVersion: 2
+  m_ObjectHideFlags: 0
+  m_BuildSettings:
+    serializedVersion: 3
+    agentTypeID: 0
+    agentRadius: 0.5
+    agentHeight: 2
+    agentSlope: 45
+    agentClimb: 0.4
+    ledgeDropHeight: 0
+    maxJumpAcrossDistance: 0
+    minRegionArea: 2
+    manualCellSize: 0
+    cellSize: 0.16666667
+    manualTileSize: 0
+    tileSize: 256
+    buildHeightMesh: 0
+    maxJobWorkers: 0
+    preserveTilesOutsideBounds: 0
+    debug:
+      m_Flags: 0
+  m_NavMeshData: {fileID: 0}
+--- !u!1 &1884913495
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1884913497}
+  - component: {fileID: 1884913496}
+  m_Layer: 0
+  m_Name: EnemyPackPreview
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1884913496
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1884913495}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a329f62250d2d754d827d48bfb19440a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  entries:
+  - id: Bear
+    category: MainEnemy
+    variant: Default
+    direction: Source facing only
+    prefab: {fileID: 3162903215610933174, guid: 4a9c2ffcc2e92fa40b9a17241c170b4d, type: 3}
+    states:
+    - name: Idle
+      clip: {fileID: 7400000, guid: ef5042e9315f8b147b4f14e2bba5df70, type: 2}
+      frames:
+      - {fileID: -1638670693, guid: f319fcf54a134234bad0f9792e84a1ec, type: 3}
+      - {fileID: -465071812, guid: f319fcf54a134234bad0f9792e84a1ec, type: 3}
+      - {fileID: 1670892416, guid: f319fcf54a134234bad0f9792e84a1ec, type: 3}
+      - {fileID: -1357873680, guid: f319fcf54a134234bad0f9792e84a1ec, type: 3}
+      - {fileID: -344979402, guid: f319fcf54a134234bad0f9792e84a1ec, type: 3}
+      - {fileID: -164550176, guid: f319fcf54a134234bad0f9792e84a1ec, type: 3}
+      - {fileID: 422669617, guid: f319fcf54a134234bad0f9792e84a1ec, type: 3}
+      - {fileID: -1077498565, guid: f319fcf54a134234bad0f9792e84a1ec, type: 3}
+      durationsMs: 6400000064000000640000006400000064000000640000006400000064000000
+      loop: 1
+    - name: Attack
+      clip: {fileID: 7400000, guid: 2982413e29c152a49b76bedb80439fc1, type: 2}
+      frames:
+      - {fileID: -1265207687, guid: 9f408387af6b61a449e57c1e4bfc440a, type: 3}
+      - {fileID: -201640374, guid: 9f408387af6b61a449e57c1e4bfc440a, type: 3}
+      - {fileID: 553162982, guid: 9f408387af6b61a449e57c1e4bfc440a, type: 3}
+      - {fileID: 2123604279, guid: 9f408387af6b61a449e57c1e4bfc440a, type: 3}
+      - {fileID: 975230133, guid: 9f408387af6b61a449e57c1e4bfc440a, type: 3}
+      - {fileID: -702680903, guid: 9f408387af6b61a449e57c1e4bfc440a, type: 3}
+      - {fileID: -717032518, guid: 9f408387af6b61a449e57c1e4bfc440a, type: 3}
+      - {fileID: 1673092647, guid: 9f408387af6b61a449e57c1e4bfc440a, type: 3}
+      - {fileID: -1106499705, guid: 9f408387af6b61a449e57c1e4bfc440a, type: 3}
+      durationsMs: 640000006400000064000000640000006400000064000000640000006400000064000000
+      loop: 0
+    - name: Run
+      clip: {fileID: 7400000, guid: 2520986fbc9c8354dbc951d58b9b5b61, type: 2}
+      frames:
+      - {fileID: 1611920516, guid: 73cd53275b922d94e8f175d8c3488a55, type: 3}
+      - {fileID: 2134516584, guid: 73cd53275b922d94e8f175d8c3488a55, type: 3}
+      - {fileID: -1423018820, guid: 73cd53275b922d94e8f175d8c3488a55, type: 3}
+      - {fileID: 537805134, guid: 73cd53275b922d94e8f175d8c3488a55, type: 3}
+      - {fileID: 11941809, guid: 73cd53275b922d94e8f175d8c3488a55, type: 3}
+      durationsMs: 6400000064000000640000006400000064000000
+      loop: 1
+  - id: Bomb_Fish
+    category: MainEnemy
+    variant: Default
+    direction: Source facing only
+    prefab: {fileID: 1727686476670969700, guid: bd9c98e4433893e41b9966c3dc1fae9e, type: 3}
+    states:
+    - name: Idle
+      clip: {fileID: 7400000, guid: 94b58e18fa8fc9748a687b9aa57a2d32, type: 2}
+      frames:
+      - {fileID: -1250181204, guid: f5f534bfe26af6a4aab8d7cee49d2ade, type: 3}
+      - {fileID: -883137714, guid: f5f534bfe26af6a4aab8d7cee49d2ade, type: 3}
+      - {fileID: -924736932, guid: f5f534bfe26af6a4aab8d7cee49d2ade, type: 3}
+      - {fileID: 152551330, guid: f5f534bfe26af6a4aab8d7cee49d2ade, type: 3}
+      - {fileID: -740832883, guid: f5f534bfe26af6a4aab8d7cee49d2ade, type: 3}
+      - {fileID: 1851438967, guid: f5f534bfe26af6a4aab8d7cee49d2ade, type: 3}
+      - {fileID: -1715133634, guid: f5f534bfe26af6a4aab8d7cee49d2ade, type: 3}
+      - {fileID: 998678598, guid: f5f534bfe26af6a4aab8d7cee49d2ade, type: 3}
+      durationsMs: 6400000064000000640000006400000064000000640000006400000064000000
+      loop: 1
+    - name: Run
+      clip: {fileID: 7400000, guid: 48ce3995f281f8f4aadbe79fb811b33b, type: 2}
+      frames:
+      - {fileID: 613639917, guid: 0bea55136fde9de4abf09864dfff0e02, type: 3}
+      - {fileID: -1584760384, guid: 0bea55136fde9de4abf09864dfff0e02, type: 3}
+      - {fileID: -2094495609, guid: 0bea55136fde9de4abf09864dfff0e02, type: 3}
+      - {fileID: 1400915563, guid: 0bea55136fde9de4abf09864dfff0e02, type: 3}
+      - {fileID: -2055292001, guid: 0bea55136fde9de4abf09864dfff0e02, type: 3}
+      - {fileID: 393894823, guid: 0bea55136fde9de4abf09864dfff0e02, type: 3}
+      durationsMs: 640000006400000064000000640000006400000064000000
+      loop: 1
+    - name: Shoot
+      clip: {fileID: 7400000, guid: bd5c29a6f5869fa4faa47bd2f811497c, type: 2}
+      frames:
+      - {fileID: 1577882214, guid: 6b6ae87a12541ea4eaf6f171b816a44f, type: 3}
+      - {fileID: 1359185896, guid: 6b6ae87a12541ea4eaf6f171b816a44f, type: 3}
+      - {fileID: -2074355765, guid: 6b6ae87a12541ea4eaf6f171b816a44f, type: 3}
+      - {fileID: -760842960, guid: 6b6ae87a12541ea4eaf6f171b816a44f, type: 3}
+      - {fileID: -1941092105, guid: 6b6ae87a12541ea4eaf6f171b816a44f, type: 3}
+      - {fileID: 541253695, guid: 6b6ae87a12541ea4eaf6f171b816a44f, type: 3}
+      - {fileID: 1425927892, guid: 6b6ae87a12541ea4eaf6f171b816a44f, type: 3}
+      durationsMs: 64000000640000006400000064000000640000006400000064000000
+      loop: 0
+  - id: Bumblebee
+    category: MainEnemy
+    variant: Default
+    direction: Source facing only
+    prefab: {fileID: 8845453553543677821, guid: 452a57836f817604db85deb89e18f710, type: 3}
+    states:
+    - name: Idle
+      clip: {fileID: 7400000, guid: fe82d6cdd25aefd44ae44abd2ecf9beb, type: 2}
+      frames:
+      - {fileID: 532028387, guid: f7fc957a634f4204787c1f8de9a9d2a4, type: 3}
+      - {fileID: -1444075074, guid: f7fc957a634f4204787c1f8de9a9d2a4, type: 3}
+      - {fileID: 392458944, guid: f7fc957a634f4204787c1f8de9a9d2a4, type: 3}
+      - {fileID: 1648975600, guid: f7fc957a634f4204787c1f8de9a9d2a4, type: 3}
+      - {fileID: -53774190, guid: f7fc957a634f4204787c1f8de9a9d2a4, type: 3}
+      - {fileID: -2071987637, guid: f7fc957a634f4204787c1f8de9a9d2a4, type: 3}
+      - {fileID: -2092958205, guid: f7fc957a634f4204787c1f8de9a9d2a4, type: 3}
+      - {fileID: -1922381251, guid: f7fc957a634f4204787c1f8de9a9d2a4, type: 3}
+      durationsMs: 6400000064000000640000006400000064000000640000006400000064000000
+      loop: 1
+    - name: Attack
+      clip: {fileID: 7400000, guid: 2df55e64f54dc8c49b574f1fec56a3ff, type: 2}
+      frames:
+      - {fileID: 1649529805, guid: 3ecba53fa50dab747b3930ede3b3187a, type: 3}
+      - {fileID: 396940582, guid: 3ecba53fa50dab747b3930ede3b3187a, type: 3}
+      - {fileID: 1194081163, guid: 3ecba53fa50dab747b3930ede3b3187a, type: 3}
+      - {fileID: -396122590, guid: 3ecba53fa50dab747b3930ede3b3187a, type: 3}
+      - {fileID: 446013926, guid: 3ecba53fa50dab747b3930ede3b3187a, type: 3}
+      - {fileID: -789132963, guid: 3ecba53fa50dab747b3930ede3b3187a, type: 3}
+      - {fileID: -1792072124, guid: 3ecba53fa50dab747b3930ede3b3187a, type: 3}
+      - {fileID: 853715629, guid: 3ecba53fa50dab747b3930ede3b3187a, type: 3}
+      - {fileID: 1297971341, guid: 3ecba53fa50dab747b3930ede3b3187a, type: 3}
+      - {fileID: 834556884, guid: 3ecba53fa50dab747b3930ede3b3187a, type: 3}
+      - {fileID: 944408299, guid: 3ecba53fa50dab747b3930ede3b3187a, type: 3}
+      durationsMs: 6400000064000000640000006400000064000000640000006400000064000000640000006400000064000000
+      loop: 0
+    - name: Move
+      clip: {fileID: 7400000, guid: 3b40d4b6ac76d114fa5454fbcf14e7ac, type: 2}
+      frames:
+      - {fileID: 1524917891, guid: 3a104c11361aed5478f13fa775bc30cf, type: 3}
+      - {fileID: 177381131, guid: 3a104c11361aed5478f13fa775bc30cf, type: 3}
+      - {fileID: -2100958308, guid: 3a104c11361aed5478f13fa775bc30cf, type: 3}
+      - {fileID: 1272111775, guid: 3a104c11361aed5478f13fa775bc30cf, type: 3}
+      durationsMs: 64000000640000006400000064000000
+      loop: 1
+  - id: Giant_Bat
+    category: MainEnemy
+    variant: Default
+    direction: Source facing only
+    prefab: {fileID: 3609201039303517216, guid: adb6f44e5dca86141bd27b2cf76b64e4, type: 3}
+    states:
+    - name: Idle
+      clip: {fileID: 7400000, guid: 4f37e3060b376954c803b3308e301991, type: 2}
+      frames:
+      - {fileID: -1426995852, guid: 9d5f10d7a6455db4c9a58cbf1e019d68, type: 3}
+      - {fileID: 491783566, guid: 9d5f10d7a6455db4c9a58cbf1e019d68, type: 3}
+      - {fileID: -960297666, guid: 9d5f10d7a6455db4c9a58cbf1e019d68, type: 3}
+      - {fileID: 926107979, guid: 9d5f10d7a6455db4c9a58cbf1e019d68, type: 3}
+      - {fileID: 1534148650, guid: 9d5f10d7a6455db4c9a58cbf1e019d68, type: 3}
+      - {fileID: 1245514288, guid: 9d5f10d7a6455db4c9a58cbf1e019d68, type: 3}
+      durationsMs: 640000006400000064000000640000006400000064000000
+      loop: 1
+    - name: Attack
+      clip: {fileID: 7400000, guid: 5a3f643b9ea9ddc4babb154ad75f8ba5, type: 2}
+      frames:
+      - {fileID: 593412993, guid: 44cdfbc17711af84e873884a2bfd7611, type: 3}
+      - {fileID: 1333049487, guid: 44cdfbc17711af84e873884a2bfd7611, type: 3}
+      - {fileID: -1017139072, guid: 44cdfbc17711af84e873884a2bfd7611, type: 3}
+      - {fileID: -170207473, guid: 44cdfbc17711af84e873884a2bfd7611, type: 3}
+      - {fileID: -1488945652, guid: 44cdfbc17711af84e873884a2bfd7611, type: 3}
+      - {fileID: 1650725140, guid: 44cdfbc17711af84e873884a2bfd7611, type: 3}
+      - {fileID: 1981343117, guid: 44cdfbc17711af84e873884a2bfd7611, type: 3}
+      durationsMs: 64000000640000006400000064000000640000006400000064000000
+      loop: 0
+    - name: Move
+      clip: {fileID: 7400000, guid: f2f950496828d5e4183f3814964f7aae, type: 2}
+      frames:
+      - {fileID: 1501850247, guid: 95e9adf70606fde4a9cca4d68ea56cab, type: 3}
+      - {fileID: 2121883450, guid: 95e9adf70606fde4a9cca4d68ea56cab, type: 3}
+      - {fileID: -632340021, guid: 95e9adf70606fde4a9cca4d68ea56cab, type: 3}
+      - {fileID: -182640342, guid: 95e9adf70606fde4a9cca4d68ea56cab, type: 3}
+      durationsMs: 64000000640000006400000064000000
+      loop: 1
+  - id: Gnoll
+    category: MainEnemy
+    variant: Default
+    direction: Source facing only
+    prefab: {fileID: 3451507336110920648, guid: 256966e9037cb2b4fae8221a45245345, type: 3}
+    states:
+    - name: Idle
+      clip: {fileID: 7400000, guid: 2870df64a66d88343b4d45c7e680ae69, type: 2}
+      frames:
+      - {fileID: 385419408, guid: 7e2f2ec10491de2488738f02dc9334a4, type: 3}
+      - {fileID: -2111853294, guid: 7e2f2ec10491de2488738f02dc9334a4, type: 3}
+      - {fileID: 970303839, guid: 7e2f2ec10491de2488738f02dc9334a4, type: 3}
+      - {fileID: 2110323464, guid: 7e2f2ec10491de2488738f02dc9334a4, type: 3}
+      - {fileID: 125868239, guid: 7e2f2ec10491de2488738f02dc9334a4, type: 3}
+      - {fileID: -1390867493, guid: 7e2f2ec10491de2488738f02dc9334a4, type: 3}
+      durationsMs: 640000006400000064000000640000006400000064000000
+      loop: 1
+    - name: Hit
+      clip: {fileID: 7400000, guid: 3a372abd5e1a6af48b1402b0e328156a, type: 2}
+      frames:
+      - {fileID: -1599955304, guid: e3052d2456d5f8c418c078fc1b6089cf, type: 3}
+      - {fileID: 491634949, guid: e3052d2456d5f8c418c078fc1b6089cf, type: 3}
+      durationsMs: 6400000064000000
+      loop: 0
+    - name: Throw
+      clip: {fileID: 7400000, guid: f3bbcde67d1629c4c9502063ed76712a, type: 2}
+      frames:
+      - {fileID: -1483507202, guid: a567e6902cfa787499812d700da56feb, type: 3}
+      - {fileID: -179558618, guid: a567e6902cfa787499812d700da56feb, type: 3}
+      - {fileID: 604816089, guid: a567e6902cfa787499812d700da56feb, type: 3}
+      - {fileID: 1204471742, guid: a567e6902cfa787499812d700da56feb, type: 3}
+      - {fileID: -781272524, guid: a567e6902cfa787499812d700da56feb, type: 3}
+      - {fileID: 1030361647, guid: a567e6902cfa787499812d700da56feb, type: 3}
+      - {fileID: -296907763, guid: a567e6902cfa787499812d700da56feb, type: 3}
+      - {fileID: -1014100937, guid: a567e6902cfa787499812d700da56feb, type: 3}
+      durationsMs: 6400000064000000640000006400000064000000640000006400000064000000
+      loop: 0
+    - name: Walk
+      clip: {fileID: 7400000, guid: 89b9d27bd17dffc4b97ad4013ecf1081, type: 2}
+      frames:
+      - {fileID: 2020989218, guid: ce8a7eaf211a51342af631168bdc2ed1, type: 3}
+      - {fileID: -925729011, guid: ce8a7eaf211a51342af631168bdc2ed1, type: 3}
+      - {fileID: 1165494609, guid: ce8a7eaf211a51342af631168bdc2ed1, type: 3}
+      - {fileID: -1335158580, guid: ce8a7eaf211a51342af631168bdc2ed1, type: 3}
+      - {fileID: -769427039, guid: ce8a7eaf211a51342af631168bdc2ed1, type: 3}
+      - {fileID: 1937140548, guid: ce8a7eaf211a51342af631168bdc2ed1, type: 3}
+      - {fileID: 873248916, guid: ce8a7eaf211a51342af631168bdc2ed1, type: 3}
+      - {fileID: 2043429370, guid: ce8a7eaf211a51342af631168bdc2ed1, type: 3}
+      durationsMs: 6400000064000000640000006400000064000000640000006400000064000000
+      loop: 1
+  - id: Gnome
+    category: MainEnemy
+    variant: Default
+    direction: Source facing only
+    prefab: {fileID: 7183746338059670385, guid: 59d5406504ddb964ba522b85d4c8bfca, type: 3}
+    states:
+    - name: Idle
+      clip: {fileID: 7400000, guid: d70a7ec47ca19cb4b91320df8db91f87, type: 2}
+      frames:
+      - {fileID: -1469419834, guid: f65ccf8c94c85f64db289d5739a2f9d5, type: 3}
+      - {fileID: 1300274077, guid: f65ccf8c94c85f64db289d5739a2f9d5, type: 3}
+      - {fileID: -512854158, guid: f65ccf8c94c85f64db289d5739a2f9d5, type: 3}
+      - {fileID: -2138834096, guid: f65ccf8c94c85f64db289d5739a2f9d5, type: 3}
+      - {fileID: -1634317945, guid: f65ccf8c94c85f64db289d5739a2f9d5, type: 3}
+      - {fileID: -537634510, guid: f65ccf8c94c85f64db289d5739a2f9d5, type: 3}
+      - {fileID: -433993090, guid: f65ccf8c94c85f64db289d5739a2f9d5, type: 3}
+      - {fileID: -772085466, guid: f65ccf8c94c85f64db289d5739a2f9d5, type: 3}
+      durationsMs: 6400000064000000640000006400000064000000640000006400000064000000
+      loop: 1
+    - name: Attack
+      clip: {fileID: 7400000, guid: d35de0e5ca8c9604e923ee55afcb784b, type: 2}
+      frames:
+      - {fileID: 883011911, guid: 20e5060e05e99bf409ad1ef482cfa023, type: 3}
+      - {fileID: -575128547, guid: 20e5060e05e99bf409ad1ef482cfa023, type: 3}
+      - {fileID: 1803737709, guid: 20e5060e05e99bf409ad1ef482cfa023, type: 3}
+      - {fileID: 1289222020, guid: 20e5060e05e99bf409ad1ef482cfa023, type: 3}
+      - {fileID: -1807360929, guid: 20e5060e05e99bf409ad1ef482cfa023, type: 3}
+      - {fileID: 1706895147, guid: 20e5060e05e99bf409ad1ef482cfa023, type: 3}
+      - {fileID: 666118253, guid: 20e5060e05e99bf409ad1ef482cfa023, type: 3}
+      durationsMs: 64000000640000006400000064000000640000006400000064000000
+      loop: 0
+    - name: Run
+      clip: {fileID: 7400000, guid: ac52de4f72f2dc8409e1bdc640028bdb, type: 2}
+      frames:
+      - {fileID: -252127030, guid: faa9997264b7ad44c859b356e4a31447, type: 3}
+      - {fileID: 963327608, guid: faa9997264b7ad44c859b356e4a31447, type: 3}
+      - {fileID: 72282296, guid: faa9997264b7ad44c859b356e4a31447, type: 3}
+      - {fileID: 366121922, guid: faa9997264b7ad44c859b356e4a31447, type: 3}
+      - {fileID: 757430643, guid: faa9997264b7ad44c859b356e4a31447, type: 3}
+      - {fileID: 1086967718, guid: faa9997264b7ad44c859b356e4a31447, type: 3}
+      durationsMs: 640000006400000064000000640000006400000064000000
+      loop: 1
+  - id: Harpoon_Shark
+    category: MainEnemy
+    variant: Default
+    direction: Source facing only
+    prefab: {fileID: 1798508151742162496, guid: a83f55291fc1dd649b9e9fc134aaf703, type: 3}
+    states:
+    - name: Idle
+      clip: {fileID: 7400000, guid: 106b45c2c6ff0d342bb71012ca0bf639, type: 2}
+      frames:
+      - {fileID: -565248549, guid: 234eaa7e1d35e684ba1ba287ec1906fc, type: 3}
+      - {fileID: -697229252, guid: 234eaa7e1d35e684ba1ba287ec1906fc, type: 3}
+      - {fileID: -800439559, guid: 234eaa7e1d35e684ba1ba287ec1906fc, type: 3}
+      - {fileID: -807158523, guid: 234eaa7e1d35e684ba1ba287ec1906fc, type: 3}
+      - {fileID: -1833294866, guid: 234eaa7e1d35e684ba1ba287ec1906fc, type: 3}
+      - {fileID: -498577025, guid: 234eaa7e1d35e684ba1ba287ec1906fc, type: 3}
+      - {fileID: -1264426945, guid: 234eaa7e1d35e684ba1ba287ec1906fc, type: 3}
+      - {fileID: -587743826, guid: 234eaa7e1d35e684ba1ba287ec1906fc, type: 3}
+      durationsMs: 6400000064000000640000006400000064000000640000006400000064000000
+      loop: 1
+    - name: Run
+      clip: {fileID: 7400000, guid: a30ad22d5a08f1f43aafd065006f7c24, type: 2}
+      frames:
+      - {fileID: -1770358350, guid: 07417c6916583a64e958540e5d8f7987, type: 3}
+      - {fileID: 930766351, guid: 07417c6916583a64e958540e5d8f7987, type: 3}
+      - {fileID: -1625987004, guid: 07417c6916583a64e958540e5d8f7987, type: 3}
+      - {fileID: 1809225519, guid: 07417c6916583a64e958540e5d8f7987, type: 3}
+      - {fileID: 609507473, guid: 07417c6916583a64e958540e5d8f7987, type: 3}
+      - {fileID: 1064221903, guid: 07417c6916583a64e958540e5d8f7987, type: 3}
+      durationsMs: 640000006400000064000000640000006400000064000000
+      loop: 1
+    - name: Throw
+      clip: {fileID: 7400000, guid: 87dd7dd7b4078b04dbc3405473422813, type: 2}
+      frames:
+      - {fileID: -2093779363, guid: 43cbb828637223b49b7862132dfd3190, type: 3}
+      - {fileID: -1994290336, guid: 43cbb828637223b49b7862132dfd3190, type: 3}
+      - {fileID: -410568753, guid: 43cbb828637223b49b7862132dfd3190, type: 3}
+      - {fileID: 1660173410, guid: 43cbb828637223b49b7862132dfd3190, type: 3}
+      - {fileID: -1751701333, guid: 43cbb828637223b49b7862132dfd3190, type: 3}
+      - {fileID: -50635102, guid: 43cbb828637223b49b7862132dfd3190, type: 3}
+      - {fileID: -434335363, guid: 43cbb828637223b49b7862132dfd3190, type: 3}
+      - {fileID: 947567743, guid: 43cbb828637223b49b7862132dfd3190, type: 3}
+      durationsMs: 6400000064000000640000006400000064000000640000006400000064000000
+      loop: 0
+  - id: Hex_Shaman
+    category: MainEnemy
+    variant: Default
+    direction: Source facing only
+    prefab: {fileID: 2039887474910225765, guid: b9260a571a470e646877322c586dcf7a, type: 3}
+    states:
+    - name: Idle
+      clip: {fileID: 7400000, guid: e54fedaebe030a9449e9e9c2919f6c4e, type: 2}
+      frames:
+      - {fileID: 1815512003, guid: d828b25f1ef84e542ae71190c018201c, type: 3}
+      - {fileID: -546611942, guid: d828b25f1ef84e542ae71190c018201c, type: 3}
+      - {fileID: -543180056, guid: d828b25f1ef84e542ae71190c018201c, type: 3}
+      - {fileID: -630618218, guid: d828b25f1ef84e542ae71190c018201c, type: 3}
+      - {fileID: 169985269, guid: d828b25f1ef84e542ae71190c018201c, type: 3}
+      - {fileID: 1986563519, guid: d828b25f1ef84e542ae71190c018201c, type: 3}
+      - {fileID: 1278817878, guid: d828b25f1ef84e542ae71190c018201c, type: 3}
+      - {fileID: -1757111900, guid: d828b25f1ef84e542ae71190c018201c, type: 3}
+      durationsMs: 6400000064000000640000006400000064000000640000006400000064000000
+      loop: 1
+    - name: Attack
+      clip: {fileID: 7400000, guid: f078ba9353734d1429f09f3df8ec13b1, type: 2}
+      frames:
+      - {fileID: -1360785588, guid: 1f3af8e27d25db1458395a9db6c88e75, type: 3}
+      - {fileID: -1650899782, guid: 1f3af8e27d25db1458395a9db6c88e75, type: 3}
+      - {fileID: 133586397, guid: 1f3af8e27d25db1458395a9db6c88e75, type: 3}
+      - {fileID: -159066063, guid: 1f3af8e27d25db1458395a9db6c88e75, type: 3}
+      - {fileID: -1165984551, guid: 1f3af8e27d25db1458395a9db6c88e75, type: 3}
+      - {fileID: 1634315472, guid: 1f3af8e27d25db1458395a9db6c88e75, type: 3}
+      - {fileID: 23907719, guid: 1f3af8e27d25db1458395a9db6c88e75, type: 3}
+      - {fileID: 1377219325, guid: 1f3af8e27d25db1458395a9db6c88e75, type: 3}
+      - {fileID: 1024941723, guid: 1f3af8e27d25db1458395a9db6c88e75, type: 3}
+      - {fileID: 958418461, guid: 1f3af8e27d25db1458395a9db6c88e75, type: 3}
+      durationsMs: 64000000640000006400000064000000640000006400000064000000640000006400000064000000
+      loop: 0
+    - name: Run
+      clip: {fileID: 7400000, guid: 0aa33912ccfe6d043b525b08e9e39341, type: 2}
+      frames:
+      - {fileID: 1198913276, guid: 9c5587e73ec8d0d41a55887239d27cc0, type: 3}
+      - {fileID: -16845683, guid: 9c5587e73ec8d0d41a55887239d27cc0, type: 3}
+      - {fileID: 1221630445, guid: 9c5587e73ec8d0d41a55887239d27cc0, type: 3}
+      - {fileID: 1687020957, guid: 9c5587e73ec8d0d41a55887239d27cc0, type: 3}
+      durationsMs: 64000000640000006400000064000000
+      loop: 1
+  - id: Imp
+    category: MainEnemy
+    variant: Default
+    direction: Source facing only
+    prefab: {fileID: 8479311255464802812, guid: 7d5dc57c2dcc85b41947eb8433e2e871, type: 3}
+    states:
+    - name: Idle
+      clip: {fileID: 7400000, guid: 83247e37aeb0b334c839ee5f15dec03d, type: 2}
+      frames:
+      - {fileID: -1166136831, guid: 348d70f72af055f4fb0af1e17c6f9b1c, type: 3}
+      - {fileID: -522498285, guid: 348d70f72af055f4fb0af1e17c6f9b1c, type: 3}
+      - {fileID: -873184341, guid: 348d70f72af055f4fb0af1e17c6f9b1c, type: 3}
+      - {fileID: -131143322, guid: 348d70f72af055f4fb0af1e17c6f9b1c, type: 3}
+      - {fileID: 859635715, guid: 348d70f72af055f4fb0af1e17c6f9b1c, type: 3}
+      - {fileID: -127798480, guid: 348d70f72af055f4fb0af1e17c6f9b1c, type: 3}
+      - {fileID: 52355852, guid: 348d70f72af055f4fb0af1e17c6f9b1c, type: 3}
+      - {fileID: -1335740190, guid: 348d70f72af055f4fb0af1e17c6f9b1c, type: 3}
+      durationsMs: 6400000064000000640000006400000064000000640000006400000064000000
+      loop: 1
+    - name: Attack_End
+      clip: {fileID: 7400000, guid: a559299f754e0204d831d300d6b656f2, type: 2}
+      frames:
+      - {fileID: -1369166663, guid: 08d4f5b425ea81f4cb0138892824c457, type: 3}
+      - {fileID: 182703977, guid: 08d4f5b425ea81f4cb0138892824c457, type: 3}
+      - {fileID: 771174927, guid: 08d4f5b425ea81f4cb0138892824c457, type: 3}
+      - {fileID: -1853235802, guid: 08d4f5b425ea81f4cb0138892824c457, type: 3}
+      durationsMs: 64000000640000006400000064000000
+      loop: 0
+    - name: Attack_Loop
+      clip: {fileID: 7400000, guid: 90bc7ad852987c94c8f753ac8f6762e8, type: 2}
+      frames:
+      - {fileID: 1297369004, guid: fa2a1114452cc6f4689cd4023988d5e0, type: 3}
+      - {fileID: -869139033, guid: fa2a1114452cc6f4689cd4023988d5e0, type: 3}
+      - {fileID: 1968287717, guid: fa2a1114452cc6f4689cd4023988d5e0, type: 3}
+      - {fileID: 2076886321, guid: fa2a1114452cc6f4689cd4023988d5e0, type: 3}
+      durationsMs: 64000000640000006400000064000000
+      loop: 1
+    - name: Attack_Start
+      clip: {fileID: 7400000, guid: a2ffc2f6ee8106d46810dab01fee9661, type: 2}
+      frames:
+      - {fileID: 2038537434, guid: 56b2586b88a221c4b81e468f7e101854, type: 3}
+      - {fileID: -861195599, guid: 56b2586b88a221c4b81e468f7e101854, type: 3}
+      - {fileID: 136634423, guid: 56b2586b88a221c4b81e468f7e101854, type: 3}
+      - {fileID: -1668974426, guid: 56b2586b88a221c4b81e468f7e101854, type: 3}
+      durationsMs: 64000000640000006400000064000000
+      loop: 0
+    - name: Move
+      clip: {fileID: 7400000, guid: 23ee3e1c4ccf716479bacf9c82f5a35f, type: 2}
+      frames:
+      - {fileID: -1967568767, guid: 157e70b7471b8f443818cc0906f7ea66, type: 3}
+      - {fileID: -2123336478, guid: 157e70b7471b8f443818cc0906f7ea66, type: 3}
+      - {fileID: -1953948379, guid: 157e70b7471b8f443818cc0906f7ea66, type: 3}
+      - {fileID: 539008585, guid: 157e70b7471b8f443818cc0906f7ea66, type: 3}
+      - {fileID: 1608668279, guid: 157e70b7471b8f443818cc0906f7ea66, type: 3}
+      - {fileID: 955366044, guid: 157e70b7471b8f443818cc0906f7ea66, type: 3}
+      durationsMs: 640000006400000064000000640000006400000064000000
+      loop: 1
+  - id: Lizard
+    category: MainEnemy
+    variant: Default
+    direction: Source facing only
+    prefab: {fileID: 1109775549156300387, guid: f4ecb484eda738040bc71b12d1819e36, type: 3}
+    states:
+    - name: Idle
+      clip: {fileID: 7400000, guid: d18c96170993ba6469245550860bfc67, type: 2}
+      frames:
+      - {fileID: 415044867, guid: dcb5cc43a21bef7469f79a09d85e1e6d, type: 3}
+      - {fileID: -459921785, guid: dcb5cc43a21bef7469f79a09d85e1e6d, type: 3}
+      - {fileID: 1582203815, guid: dcb5cc43a21bef7469f79a09d85e1e6d, type: 3}
+      - {fileID: -592044476, guid: dcb5cc43a21bef7469f79a09d85e1e6d, type: 3}
+      - {fileID: 1350641711, guid: dcb5cc43a21bef7469f79a09d85e1e6d, type: 3}
+      - {fileID: 1033306930, guid: dcb5cc43a21bef7469f79a09d85e1e6d, type: 3}
+      - {fileID: -30299025, guid: dcb5cc43a21bef7469f79a09d85e1e6d, type: 3}
+      durationsMs: 64000000640000006400000064000000640000006400000064000000
+      loop: 1
+    - name: Attack
+      clip: {fileID: 7400000, guid: eb355f7b0ffbfd24cad43437c1840d13, type: 2}
+      frames:
+      - {fileID: 1077787068, guid: 4de0abc25e7c226479c830990e8b339a, type: 3}
+      - {fileID: 91544407, guid: 4de0abc25e7c226479c830990e8b339a, type: 3}
+      - {fileID: 263496510, guid: 4de0abc25e7c226479c830990e8b339a, type: 3}
+      - {fileID: 856190966, guid: 4de0abc25e7c226479c830990e8b339a, type: 3}
+      - {fileID: 1315077772, guid: 4de0abc25e7c226479c830990e8b339a, type: 3}
+      - {fileID: 58121166, guid: 4de0abc25e7c226479c830990e8b339a, type: 3}
+      - {fileID: -394013632, guid: 4de0abc25e7c226479c830990e8b339a, type: 3}
+      - {fileID: -227860666, guid: 4de0abc25e7c226479c830990e8b339a, type: 3}
+      - {fileID: 745920867, guid: 4de0abc25e7c226479c830990e8b339a, type: 3}
+      durationsMs: 640000006400000064000000640000006400000064000000640000006400000064000000
+      loop: 0
+    - name: Hit
+      clip: {fileID: 7400000, guid: 01143f8fd48342448b5a6a3463ce479b, type: 2}
+      frames:
+      - {fileID: -1511696274, guid: 0bafa32aed5c7e14f9e907d7f2094464, type: 3}
+      - {fileID: 1102116442, guid: 0bafa32aed5c7e14f9e907d7f2094464, type: 3}
+      durationsMs: 6400000064000000
+      loop: 0
+    - name: Run
+      clip: {fileID: 7400000, guid: 9b366aa4452f1a2409970e3bb8d7c2ed, type: 2}
+      frames:
+      - {fileID: -1767609062, guid: 551e697405082f244ab922bcf965d64e, type: 3}
+      - {fileID: -2089441071, guid: 551e697405082f244ab922bcf965d64e, type: 3}
+      - {fileID: -486477773, guid: 551e697405082f244ab922bcf965d64e, type: 3}
+      - {fileID: -628359995, guid: 551e697405082f244ab922bcf965d64e, type: 3}
+      - {fileID: 1627591524, guid: 551e697405082f244ab922bcf965d64e, type: 3}
+      - {fileID: 562214534, guid: 551e697405082f244ab922bcf965d64e, type: 3}
+      durationsMs: 640000006400000064000000640000006400000064000000
+      loop: 1
+  - id: Minotaur
+    category: MainEnemy
+    variant: Default
+    direction: Source facing only
+    prefab: {fileID: 6185381108175109844, guid: eb3caa0034175924f84921b2251cbd75, type: 3}
+    states:
+    - name: Idle
+      clip: {fileID: 7400000, guid: 84977d1aff13cf045ad4a27a0dc2aaa9, type: 2}
+      frames:
+      - {fileID: -1134939981, guid: 844d8c5abfb7f544d9dfd4e2d430a315, type: 3}
+      - {fileID: -1448994102, guid: 844d8c5abfb7f544d9dfd4e2d430a315, type: 3}
+      - {fileID: 1771356364, guid: 844d8c5abfb7f544d9dfd4e2d430a315, type: 3}
+      - {fileID: 1117127361, guid: 844d8c5abfb7f544d9dfd4e2d430a315, type: 3}
+      - {fileID: -80543621, guid: 844d8c5abfb7f544d9dfd4e2d430a315, type: 3}
+      - {fileID: -1891968653, guid: 844d8c5abfb7f544d9dfd4e2d430a315, type: 3}
+      - {fileID: -2037219124, guid: 844d8c5abfb7f544d9dfd4e2d430a315, type: 3}
+      - {fileID: 1255514839, guid: 844d8c5abfb7f544d9dfd4e2d430a315, type: 3}
+      - {fileID: 1071270522, guid: 844d8c5abfb7f544d9dfd4e2d430a315, type: 3}
+      - {fileID: -102993088, guid: 844d8c5abfb7f544d9dfd4e2d430a315, type: 3}
+      - {fileID: -978912743, guid: 844d8c5abfb7f544d9dfd4e2d430a315, type: 3}
+      - {fileID: 916069251, guid: 844d8c5abfb7f544d9dfd4e2d430a315, type: 3}
+      - {fileID: 1057065562, guid: 844d8c5abfb7f544d9dfd4e2d430a315, type: 3}
+      - {fileID: -1176511244, guid: 844d8c5abfb7f544d9dfd4e2d430a315, type: 3}
+      - {fileID: 1544298284, guid: 844d8c5abfb7f544d9dfd4e2d430a315, type: 3}
+      - {fileID: 1392024734, guid: 844d8c5abfb7f544d9dfd4e2d430a315, type: 3}
+      durationsMs: 64000000640000006400000064000000640000006400000064000000640000006400000064000000640000006400000064000000640000006400000064000000
+      loop: 1
+    - name: Attack
+      clip: {fileID: 7400000, guid: bd8af6f17c416a440a193393c582d3fc, type: 2}
+      frames:
+      - {fileID: 1592877671, guid: f101c2abb02a4b84dbdfb8c3e7f2e0d6, type: 3}
+      - {fileID: -1084220421, guid: f101c2abb02a4b84dbdfb8c3e7f2e0d6, type: 3}
+      - {fileID: -1917959056, guid: f101c2abb02a4b84dbdfb8c3e7f2e0d6, type: 3}
+      - {fileID: 632425813, guid: f101c2abb02a4b84dbdfb8c3e7f2e0d6, type: 3}
+      - {fileID: -712758902, guid: f101c2abb02a4b84dbdfb8c3e7f2e0d6, type: 3}
+      - {fileID: -1206807005, guid: f101c2abb02a4b84dbdfb8c3e7f2e0d6, type: 3}
+      - {fileID: -268389470, guid: f101c2abb02a4b84dbdfb8c3e7f2e0d6, type: 3}
+      - {fileID: -308534941, guid: f101c2abb02a4b84dbdfb8c3e7f2e0d6, type: 3}
+      - {fileID: 1318853032, guid: f101c2abb02a4b84dbdfb8c3e7f2e0d6, type: 3}
+      - {fileID: -645867076, guid: f101c2abb02a4b84dbdfb8c3e7f2e0d6, type: 3}
+      - {fileID: -1223722998, guid: f101c2abb02a4b84dbdfb8c3e7f2e0d6, type: 3}
+      - {fileID: 7053269, guid: f101c2abb02a4b84dbdfb8c3e7f2e0d6, type: 3}
+      durationsMs: 640000006400000064000000640000006400000064000000640000006400000064000000640000006400000064000000
+      loop: 0
+    - name: Guard
+      clip: {fileID: 7400000, guid: 771ac91867fc5d24ca12492a0ccefe87, type: 2}
+      frames:
+      - {fileID: -1691615984, guid: c1edf55f9868aa74b9277866a8d285ba, type: 3}
+      - {fileID: 99061611, guid: c1edf55f9868aa74b9277866a8d285ba, type: 3}
+      - {fileID: -1653352939, guid: c1edf55f9868aa74b9277866a8d285ba, type: 3}
+      - {fileID: -100771363, guid: c1edf55f9868aa74b9277866a8d285ba, type: 3}
+      - {fileID: 842064368, guid: c1edf55f9868aa74b9277866a8d285ba, type: 3}
+      - {fileID: 103898557, guid: c1edf55f9868aa74b9277866a8d285ba, type: 3}
+      - {fileID: 1356920444, guid: c1edf55f9868aa74b9277866a8d285ba, type: 3}
+      - {fileID: 1202528382, guid: c1edf55f9868aa74b9277866a8d285ba, type: 3}
+      - {fileID: -1379338201, guid: c1edf55f9868aa74b9277866a8d285ba, type: 3}
+      - {fileID: 1545420163, guid: c1edf55f9868aa74b9277866a8d285ba, type: 3}
+      - {fileID: 1933472417, guid: c1edf55f9868aa74b9277866a8d285ba, type: 3}
+      durationsMs: 6400000064000000640000006400000064000000640000006400000064000000640000006400000064000000
+      loop: 0
+    - name: Walk
+      clip: {fileID: 7400000, guid: 2f507a811b87c5746b4d6493ac462eb0, type: 2}
+      frames:
+      - {fileID: 1463821744, guid: f56f47b35662d1d48a4ee9a2071fa3af, type: 3}
+      - {fileID: -2043760479, guid: f56f47b35662d1d48a4ee9a2071fa3af, type: 3}
+      - {fileID: 293161357, guid: f56f47b35662d1d48a4ee9a2071fa3af, type: 3}
+      - {fileID: -972122541, guid: f56f47b35662d1d48a4ee9a2071fa3af, type: 3}
+      - {fileID: 958666399, guid: f56f47b35662d1d48a4ee9a2071fa3af, type: 3}
+      - {fileID: -1464989538, guid: f56f47b35662d1d48a4ee9a2071fa3af, type: 3}
+      - {fileID: -1200261195, guid: f56f47b35662d1d48a4ee9a2071fa3af, type: 3}
+      - {fileID: -812702087, guid: f56f47b35662d1d48a4ee9a2071fa3af, type: 3}
+      durationsMs: 6400000064000000640000006400000064000000640000006400000064000000
+      loop: 1
+  - id: Paddle_Shark
+    category: MainEnemy
+    variant: Default
+    direction: Source facing only
+    prefab: {fileID: 9041120523511882469, guid: ba49a892ef087c44091162c913138ee5, type: 3}
+    states:
+    - name: Idle
+      clip: {fileID: 7400000, guid: 662093be784afc74da202e01ffcb7003, type: 2}
+      frames:
+      - {fileID: -817185984, guid: a9d2bbfdf614daa488dffa492bc06458, type: 3}
+      - {fileID: 1611925549, guid: a9d2bbfdf614daa488dffa492bc06458, type: 3}
+      - {fileID: -1471857723, guid: a9d2bbfdf614daa488dffa492bc06458, type: 3}
+      - {fileID: 786257106, guid: a9d2bbfdf614daa488dffa492bc06458, type: 3}
+      - {fileID: 418653898, guid: a9d2bbfdf614daa488dffa492bc06458, type: 3}
+      - {fileID: 1060015229, guid: a9d2bbfdf614daa488dffa492bc06458, type: 3}
+      - {fileID: 225927240, guid: a9d2bbfdf614daa488dffa492bc06458, type: 3}
+      - {fileID: 2059919780, guid: a9d2bbfdf614daa488dffa492bc06458, type: 3}
+      durationsMs: 6400000064000000640000006400000064000000640000006400000064000000
+      loop: 1
+    - name: Attack
+      clip: {fileID: 7400000, guid: 0733877aa50982c41b07b01a0392ec5b, type: 2}
+      frames:
+      - {fileID: -58373943, guid: ee1607b0b2ba9324bb507276fcbd6100, type: 3}
+      - {fileID: 144306360, guid: ee1607b0b2ba9324bb507276fcbd6100, type: 3}
+      - {fileID: 1569059883, guid: ee1607b0b2ba9324bb507276fcbd6100, type: 3}
+      - {fileID: 1582725639, guid: ee1607b0b2ba9324bb507276fcbd6100, type: 3}
+      - {fileID: -89949308, guid: ee1607b0b2ba9324bb507276fcbd6100, type: 3}
+      - {fileID: -809423926, guid: ee1607b0b2ba9324bb507276fcbd6100, type: 3}
+      durationsMs: 640000006400000064000000640000006400000064000000
+      loop: 0
+    - name: Row
+      clip: {fileID: 7400000, guid: df4ae72c1595a7d46b714509e1efc1e1, type: 2}
+      frames:
+      - {fileID: -1719349475, guid: d2bd2eff20b3a624f96940812aae424c, type: 3}
+      - {fileID: 1195124256, guid: d2bd2eff20b3a624f96940812aae424c, type: 3}
+      - {fileID: -14891624, guid: d2bd2eff20b3a624f96940812aae424c, type: 3}
+      - {fileID: 1995612760, guid: d2bd2eff20b3a624f96940812aae424c, type: 3}
+      - {fileID: -1343911182, guid: d2bd2eff20b3a624f96940812aae424c, type: 3}
+      - {fileID: 258775564, guid: d2bd2eff20b3a624f96940812aae424c, type: 3}
+      - {fileID: -1587005985, guid: d2bd2eff20b3a624f96940812aae424c, type: 3}
+      durationsMs: 64000000640000006400000064000000640000006400000064000000
+      loop: 0
+    - name: Run
+      clip: {fileID: 7400000, guid: 19c81db40b52aa441b61abd87344e72f, type: 2}
+      frames:
+      - {fileID: -1725852450, guid: 6932ec7b78f96cf48a7d4ac860224176, type: 3}
+      - {fileID: 1984776625, guid: 6932ec7b78f96cf48a7d4ac860224176, type: 3}
+      - {fileID: 934090406, guid: 6932ec7b78f96cf48a7d4ac860224176, type: 3}
+      - {fileID: -594587688, guid: 6932ec7b78f96cf48a7d4ac860224176, type: 3}
+      - {fileID: -388486790, guid: 6932ec7b78f96cf48a7d4ac860224176, type: 3}
+      - {fileID: -141557999, guid: 6932ec7b78f96cf48a7d4ac860224176, type: 3}
+      durationsMs: 640000006400000064000000640000006400000064000000
+      loop: 1
+  - id: Panda
+    category: MainEnemy
+    variant: Default
+    direction: Source facing only
+    prefab: {fileID: 8408379295315320073, guid: 5bcce0bfafc783148bcc9d6fc96b7c2b, type: 3}
+    states:
+    - name: Idle
+      clip: {fileID: 7400000, guid: 7a0749161e77f0a47997f6575f64d4ef, type: 2}
+      frames:
+      - {fileID: -901117182, guid: 1ccc80a6c2670e244b7ed817a80a9323, type: 3}
+      - {fileID: 1970556839, guid: 1ccc80a6c2670e244b7ed817a80a9323, type: 3}
+      - {fileID: 1782353496, guid: 1ccc80a6c2670e244b7ed817a80a9323, type: 3}
+      - {fileID: -285436612, guid: 1ccc80a6c2670e244b7ed817a80a9323, type: 3}
+      - {fileID: 1522329461, guid: 1ccc80a6c2670e244b7ed817a80a9323, type: 3}
+      - {fileID: 268780202, guid: 1ccc80a6c2670e244b7ed817a80a9323, type: 3}
+      - {fileID: -760553646, guid: 1ccc80a6c2670e244b7ed817a80a9323, type: 3}
+      - {fileID: -952802754, guid: 1ccc80a6c2670e244b7ed817a80a9323, type: 3}
+      - {fileID: 475358034, guid: 1ccc80a6c2670e244b7ed817a80a9323, type: 3}
+      - {fileID: -342457042, guid: 1ccc80a6c2670e244b7ed817a80a9323, type: 3}
+      durationsMs: 64000000640000006400000064000000640000006400000064000000640000006400000064000000
+      loop: 1
+    - name: Attack
+      clip: {fileID: 7400000, guid: 02c5aab65d733c74798ed286ad7d4d62, type: 2}
+      frames:
+      - {fileID: -1579690373, guid: 95c82070420b8464c8875eb265515dad, type: 3}
+      - {fileID: 418214755, guid: 95c82070420b8464c8875eb265515dad, type: 3}
+      - {fileID: 11275366, guid: 95c82070420b8464c8875eb265515dad, type: 3}
+      - {fileID: -1011780643, guid: 95c82070420b8464c8875eb265515dad, type: 3}
+      - {fileID: 492026032, guid: 95c82070420b8464c8875eb265515dad, type: 3}
+      - {fileID: -2080198672, guid: 95c82070420b8464c8875eb265515dad, type: 3}
+      - {fileID: 214854408, guid: 95c82070420b8464c8875eb265515dad, type: 3}
+      - {fileID: 1517956328, guid: 95c82070420b8464c8875eb265515dad, type: 3}
+      - {fileID: 1317882144, guid: 95c82070420b8464c8875eb265515dad, type: 3}
+      - {fileID: -1540362664, guid: 95c82070420b8464c8875eb265515dad, type: 3}
+      - {fileID: -1967442562, guid: 95c82070420b8464c8875eb265515dad, type: 3}
+      - {fileID: -1091013346, guid: 95c82070420b8464c8875eb265515dad, type: 3}
+      - {fileID: -1578393317, guid: 95c82070420b8464c8875eb265515dad, type: 3}
+      durationsMs: 64000000640000006400000064000000640000006400000064000000640000006400000064000000640000006400000064000000
+      loop: 0
+    - name: Guard
+      clip: {fileID: 7400000, guid: d5303ef1b4aa6b844ab1f653061b4bea, type: 2}
+      frames:
+      - {fileID: -2013911024, guid: b23372fa5e804c245a0c9c1f29f0e8cf, type: 3}
+      - {fileID: -452707183, guid: b23372fa5e804c245a0c9c1f29f0e8cf, type: 3}
+      - {fileID: -2037431869, guid: b23372fa5e804c245a0c9c1f29f0e8cf, type: 3}
+      - {fileID: 1027343409, guid: b23372fa5e804c245a0c9c1f29f0e8cf, type: 3}
+      - {fileID: -618498621, guid: b23372fa5e804c245a0c9c1f29f0e8cf, type: 3}
+      - {fileID: 1408114973, guid: b23372fa5e804c245a0c9c1f29f0e8cf, type: 3}
+      - {fileID: 286902383, guid: b23372fa5e804c245a0c9c1f29f0e8cf, type: 3}
+      - {fileID: 386443807, guid: b23372fa5e804c245a0c9c1f29f0e8cf, type: 3}
+      durationsMs: 6400000064000000640000006400000064000000640000006400000064000000
+      loop: 0
+    - name: Run
+      clip: {fileID: 7400000, guid: 1a883c0118940f44c908a56df4c686b0, type: 2}
+      frames:
+      - {fileID: -2090920554, guid: 74d6c259a7b603146a5f7175f2d3dd86, type: 3}
+      - {fileID: 175451017, guid: 74d6c259a7b603146a5f7175f2d3dd86, type: 3}
+      - {fileID: 1140508845, guid: 74d6c259a7b603146a5f7175f2d3dd86, type: 3}
+      - {fileID: 1475881449, guid: 74d6c259a7b603146a5f7175f2d3dd86, type: 3}
+      - {fileID: 251382048, guid: 74d6c259a7b603146a5f7175f2d3dd86, type: 3}
+      - {fileID: 537657458, guid: 74d6c259a7b603146a5f7175f2d3dd86, type: 3}
+      durationsMs: 640000006400000064000000640000006400000064000000
+      loop: 1
+  - id: Pig_Rider_Spear_Goblin
+    category: ExtraCreature
+    variant: Default
+    direction: Source facing only
+    prefab: {fileID: 4626464383902842508, guid: 7fa48352e8e7acb47ae3223ea15ba364, type: 3}
+    states:
+    - name: Idle
+      clip: {fileID: 7400000, guid: 08cfe7a488a0553438fae8b1e46313bc, type: 2}
+      frames:
+      - {fileID: 1275988690, guid: 55f7c261273521f408a102acb07fca74, type: 3}
+      - {fileID: -799600564, guid: 55f7c261273521f408a102acb07fca74, type: 3}
+      - {fileID: -973930375, guid: 55f7c261273521f408a102acb07fca74, type: 3}
+      - {fileID: 245654696, guid: 55f7c261273521f408a102acb07fca74, type: 3}
+      - {fileID: -1465471350, guid: 55f7c261273521f408a102acb07fca74, type: 3}
+      - {fileID: 82413647, guid: 55f7c261273521f408a102acb07fca74, type: 3}
+      - {fileID: -2060153447, guid: 55f7c261273521f408a102acb07fca74, type: 3}
+      - {fileID: -1619793446, guid: 55f7c261273521f408a102acb07fca74, type: 3}
+      durationsMs: 6400000064000000640000006400000064000000640000006400000064000000
+      loop: 1
+    - name: Attack
+      clip: {fileID: 7400000, guid: cb9bfefe692c137468d7f0639e7215f0, type: 2}
+      frames:
+      - {fileID: 1693077209, guid: 3d7e35441cfac3340ab54b7d1834d5a1, type: 3}
+      - {fileID: -11787890, guid: 3d7e35441cfac3340ab54b7d1834d5a1, type: 3}
+      - {fileID: -1765995214, guid: 3d7e35441cfac3340ab54b7d1834d5a1, type: 3}
+      - {fileID: 277323704, guid: 3d7e35441cfac3340ab54b7d1834d5a1, type: 3}
+      - {fileID: 224199793, guid: 3d7e35441cfac3340ab54b7d1834d5a1, type: 3}
+      - {fileID: 1481738791, guid: 3d7e35441cfac3340ab54b7d1834d5a1, type: 3}
+      - {fileID: 1602988045, guid: 3d7e35441cfac3340ab54b7d1834d5a1, type: 3}
+      durationsMs: 64000000640000006400000064000000640000006400000064000000
+      loop: 0
+    - name: Run
+      clip: {fileID: 7400000, guid: c4130a0968b2b5f4c83eb8d620d5a292, type: 2}
+      frames:
+      - {fileID: 697084962, guid: 870b47c1ae0d48c4e8965f3a385c35ef, type: 3}
+      - {fileID: 160743695, guid: 870b47c1ae0d48c4e8965f3a385c35ef, type: 3}
+      - {fileID: 41241887, guid: 870b47c1ae0d48c4e8965f3a385c35ef, type: 3}
+      - {fileID: 277601927, guid: 870b47c1ae0d48c4e8965f3a385c35ef, type: 3}
+      durationsMs: 64000000640000006400000064000000
+      loop: 1
+  - id: Skull
+    category: MainEnemy
+    variant: Default
+    direction: Source facing only
+    prefab: {fileID: 2084678569476690065, guid: f85085762abb1b341b289862d2dd234d, type: 3}
+    states:
+    - name: Idle
+      clip: {fileID: 7400000, guid: e3a374ff99cc6d64d8d62a8b73099fd1, type: 2}
+      frames:
+      - {fileID: -410065100, guid: 9ffff6feeec952c4bb0513e30e92f9c3, type: 3}
+      - {fileID: -515143207, guid: 9ffff6feeec952c4bb0513e30e92f9c3, type: 3}
+      - {fileID: 983744775, guid: 9ffff6feeec952c4bb0513e30e92f9c3, type: 3}
+      - {fileID: 610239252, guid: 9ffff6feeec952c4bb0513e30e92f9c3, type: 3}
+      - {fileID: 139816979, guid: 9ffff6feeec952c4bb0513e30e92f9c3, type: 3}
+      - {fileID: -548186883, guid: 9ffff6feeec952c4bb0513e30e92f9c3, type: 3}
+      - {fileID: -1175727, guid: 9ffff6feeec952c4bb0513e30e92f9c3, type: 3}
+      - {fileID: -1875254225, guid: 9ffff6feeec952c4bb0513e30e92f9c3, type: 3}
+      durationsMs: 6400000064000000640000006400000064000000640000006400000064000000
+      loop: 1
+    - name: Attack
+      clip: {fileID: 7400000, guid: 3057a3383dbad1f4c848d293415a9456, type: 2}
+      frames:
+      - {fileID: -977182631, guid: 17798a450c4b2cd448dba742515845ce, type: 3}
+      - {fileID: -767147874, guid: 17798a450c4b2cd448dba742515845ce, type: 3}
+      - {fileID: -424829396, guid: 17798a450c4b2cd448dba742515845ce, type: 3}
+      - {fileID: -1732359507, guid: 17798a450c4b2cd448dba742515845ce, type: 3}
+      - {fileID: -1750266840, guid: 17798a450c4b2cd448dba742515845ce, type: 3}
+      - {fileID: -1445196422, guid: 17798a450c4b2cd448dba742515845ce, type: 3}
+      - {fileID: -126200078, guid: 17798a450c4b2cd448dba742515845ce, type: 3}
+      durationsMs: 64000000640000006400000064000000640000006400000064000000
+      loop: 0
+    - name: Guard
+      clip: {fileID: 7400000, guid: 4a34dd16bf8b86642a45d2b247b6a421, type: 2}
+      frames:
+      - {fileID: -129946660, guid: e929f168caadd424a92b2f71d3377c41, type: 3}
+      - {fileID: 1815322706, guid: e929f168caadd424a92b2f71d3377c41, type: 3}
+      - {fileID: 665145162, guid: e929f168caadd424a92b2f71d3377c41, type: 3}
+      - {fileID: 1771720017, guid: e929f168caadd424a92b2f71d3377c41, type: 3}
+      - {fileID: 176636663, guid: e929f168caadd424a92b2f71d3377c41, type: 3}
+      - {fileID: 298085146, guid: e929f168caadd424a92b2f71d3377c41, type: 3}
+      - {fileID: -971983421, guid: e929f168caadd424a92b2f71d3377c41, type: 3}
+      durationsMs: 64000000640000006400000064000000640000006400000064000000
+      loop: 0
+    - name: Run
+      clip: {fileID: 7400000, guid: 88e80921df629434f960cb9123a5f81f, type: 2}
+      frames:
+      - {fileID: -41445301, guid: e198b971a2453e443bddd35b7bd38b68, type: 3}
+      - {fileID: 778676646, guid: e198b971a2453e443bddd35b7bd38b68, type: 3}
+      - {fileID: 1235973951, guid: e198b971a2453e443bddd35b7bd38b68, type: 3}
+      - {fileID: -913286091, guid: e198b971a2453e443bddd35b7bd38b68, type: 3}
+      - {fileID: -1804264152, guid: e198b971a2453e443bddd35b7bd38b68, type: 3}
+      - {fileID: 423169314, guid: e198b971a2453e443bddd35b7bd38b68, type: 3}
+      durationsMs: 640000006400000064000000640000006400000064000000
+      loop: 1
+  - id: Slingshot_Gnome
+    category: MainEnemy
+    variant: Default
+    direction: Source facing only
+    prefab: {fileID: 2540883654407490383, guid: 9d190210089a7d24bb5a454e10fc657e, type: 3}
+    states:
+    - name: Idle
+      clip: {fileID: 7400000, guid: 8a9447032d0d0294c9cc462030234034, type: 2}
+      frames:
+      - {fileID: -1389179704, guid: e97f62ca9cfd1c041ba6067d79d430ab, type: 3}
+      - {fileID: -422578916, guid: e97f62ca9cfd1c041ba6067d79d430ab, type: 3}
+      - {fileID: 358421798, guid: e97f62ca9cfd1c041ba6067d79d430ab, type: 3}
+      - {fileID: -335462445, guid: e97f62ca9cfd1c041ba6067d79d430ab, type: 3}
+      - {fileID: 1773906985, guid: e97f62ca9cfd1c041ba6067d79d430ab, type: 3}
+      - {fileID: 1638916340, guid: e97f62ca9cfd1c041ba6067d79d430ab, type: 3}
+      - {fileID: -125004328, guid: e97f62ca9cfd1c041ba6067d79d430ab, type: 3}
+      - {fileID: -1637907464, guid: e97f62ca9cfd1c041ba6067d79d430ab, type: 3}
+      - {fileID: 855627900, guid: e97f62ca9cfd1c041ba6067d79d430ab, type: 3}
+      - {fileID: 1288312846, guid: e97f62ca9cfd1c041ba6067d79d430ab, type: 3}
+      durationsMs: 64000000640000006400000064000000640000006400000064000000640000006400000064000000
+      loop: 1
+    - name: Run
+      clip: {fileID: 7400000, guid: b1420f3c7d42ab24da4c59a835df404d, type: 2}
+      frames:
+      - {fileID: -105676190, guid: bf51cf9bbcaa9b84eb7ff3a3870f237a, type: 3}
+      - {fileID: -779364763, guid: bf51cf9bbcaa9b84eb7ff3a3870f237a, type: 3}
+      - {fileID: -1439129335, guid: bf51cf9bbcaa9b84eb7ff3a3870f237a, type: 3}
+      - {fileID: -1077626370, guid: bf51cf9bbcaa9b84eb7ff3a3870f237a, type: 3}
+      - {fileID: -1118931942, guid: bf51cf9bbcaa9b84eb7ff3a3870f237a, type: 3}
+      - {fileID: -1862543203, guid: bf51cf9bbcaa9b84eb7ff3a3870f237a, type: 3}
+      durationsMs: 640000006400000064000000640000006400000064000000
+      loop: 1
+    - name: Shoot
+      clip: {fileID: 7400000, guid: 0a840252971c1a34f9dbe3b0e786935f, type: 2}
+      frames:
+      - {fileID: -460273264, guid: a774fff6e4d3e6f4e94eb4bfdf3facb9, type: 3}
+      - {fileID: -1082421450, guid: a774fff6e4d3e6f4e94eb4bfdf3facb9, type: 3}
+      - {fileID: -485138053, guid: a774fff6e4d3e6f4e94eb4bfdf3facb9, type: 3}
+      - {fileID: -577363722, guid: a774fff6e4d3e6f4e94eb4bfdf3facb9, type: 3}
+      - {fileID: 600373690, guid: a774fff6e4d3e6f4e94eb4bfdf3facb9, type: 3}
+      - {fileID: -1591259006, guid: a774fff6e4d3e6f4e94eb4bfdf3facb9, type: 3}
+      - {fileID: -344689954, guid: a774fff6e4d3e6f4e94eb4bfdf3facb9, type: 3}
+      - {fileID: -443785465, guid: a774fff6e4d3e6f4e94eb4bfdf3facb9, type: 3}
+      - {fileID: 842353868, guid: a774fff6e4d3e6f4e94eb4bfdf3facb9, type: 3}
+      durationsMs: 640000006400000064000000640000006400000064000000640000006400000064000000
+      loop: 0
+  - id: Snake
+    category: MainEnemy
+    variant: Default
+    direction: Source facing only
+    prefab: {fileID: 5009211299129322137, guid: b40aedcc7da2b784891adf7e477341cf, type: 3}
+    states:
+    - name: Idle
+      clip: {fileID: 7400000, guid: 1fa098bbab069c54fbc428783a974807, type: 2}
+      frames:
+      - {fileID: 1437137418, guid: 881ddb1c431b9db4680fb16a1bb855f9, type: 3}
+      - {fileID: 2119582617, guid: 881ddb1c431b9db4680fb16a1bb855f9, type: 3}
+      - {fileID: -2005773087, guid: 881ddb1c431b9db4680fb16a1bb855f9, type: 3}
+      - {fileID: 2079300645, guid: 881ddb1c431b9db4680fb16a1bb855f9, type: 3}
+      - {fileID: 1366920152, guid: 881ddb1c431b9db4680fb16a1bb855f9, type: 3}
+      - {fileID: -1667678435, guid: 881ddb1c431b9db4680fb16a1bb855f9, type: 3}
+      - {fileID: -83660508, guid: 881ddb1c431b9db4680fb16a1bb855f9, type: 3}
+      - {fileID: -1194300788, guid: 881ddb1c431b9db4680fb16a1bb855f9, type: 3}
+      durationsMs: 6400000064000000640000006400000064000000640000006400000064000000
+      loop: 1
+    - name: Attack
+      clip: {fileID: 7400000, guid: a48279f1d717de843bf639e87dfcf73c, type: 2}
+      frames:
+      - {fileID: 1973841835, guid: 4e65a8cc70c3e6948afeb8bb3ca6947f, type: 3}
+      - {fileID: -1442789984, guid: 4e65a8cc70c3e6948afeb8bb3ca6947f, type: 3}
+      - {fileID: 164841672, guid: 4e65a8cc70c3e6948afeb8bb3ca6947f, type: 3}
+      - {fileID: -1073603311, guid: 4e65a8cc70c3e6948afeb8bb3ca6947f, type: 3}
+      - {fileID: -843439671, guid: 4e65a8cc70c3e6948afeb8bb3ca6947f, type: 3}
+      - {fileID: -1650225560, guid: 4e65a8cc70c3e6948afeb8bb3ca6947f, type: 3}
+      durationsMs: 640000006400000064000000640000006400000064000000
+      loop: 0
+    - name: Run
+      clip: {fileID: 7400000, guid: 8652fa98b5843f243ae2140428e1cb45, type: 2}
+      frames:
+      - {fileID: -266481979, guid: 72904fe5819d79440a525377a01b7ffb, type: 3}
+      - {fileID: -412568282, guid: 72904fe5819d79440a525377a01b7ffb, type: 3}
+      - {fileID: -1856396166, guid: 72904fe5819d79440a525377a01b7ffb, type: 3}
+      - {fileID: 1086124460, guid: 72904fe5819d79440a525377a01b7ffb, type: 3}
+      - {fileID: 144816762, guid: 72904fe5819d79440a525377a01b7ffb, type: 3}
+      - {fileID: 1485082236, guid: 72904fe5819d79440a525377a01b7ffb, type: 3}
+      - {fileID: 2107198247, guid: 72904fe5819d79440a525377a01b7ffb, type: 3}
+      - {fileID: -1358232159, guid: 72904fe5819d79440a525377a01b7ffb, type: 3}
+      durationsMs: 6400000064000000640000006400000064000000640000006400000064000000
+      loop: 1
+  - id: Spear_Goblin
+    category: MainEnemy
+    variant: Default
+    direction: Source facing only
+    prefab: {fileID: 2838943303759845020, guid: b09dac6600adf2a4fbb33e578284a0e8, type: 3}
+    states:
+    - name: Idle
+      clip: {fileID: 7400000, guid: d2d12f69784e71b4094751c29b9b7837, type: 2}
+      frames:
+      - {fileID: -218064956, guid: 730c9bc9aed62104daf55a783c4b0075, type: 3}
+      - {fileID: -1064109689, guid: 730c9bc9aed62104daf55a783c4b0075, type: 3}
+      - {fileID: 1272603147, guid: 730c9bc9aed62104daf55a783c4b0075, type: 3}
+      - {fileID: -1285270794, guid: 730c9bc9aed62104daf55a783c4b0075, type: 3}
+      - {fileID: -257287469, guid: 730c9bc9aed62104daf55a783c4b0075, type: 3}
+      - {fileID: -493866588, guid: 730c9bc9aed62104daf55a783c4b0075, type: 3}
+      - {fileID: 636686291, guid: 730c9bc9aed62104daf55a783c4b0075, type: 3}
+      - {fileID: -1855221299, guid: 730c9bc9aed62104daf55a783c4b0075, type: 3}
+      durationsMs: 6400000064000000640000006400000064000000640000006400000064000000
+      loop: 1
+    - name: Attack_Fast
+      clip: {fileID: 7400000, guid: 9c19e6a35b816f742889553de9389382, type: 2}
+      frames:
+      - {fileID: -628825190, guid: 4d491091e1a84854e91e76151f379c05, type: 3}
+      - {fileID: 1491601330, guid: 4d491091e1a84854e91e76151f379c05, type: 3}
+      - {fileID: 239661954, guid: 4d491091e1a84854e91e76151f379c05, type: 3}
+      - {fileID: 1157470968, guid: 4d491091e1a84854e91e76151f379c05, type: 3}
+      - {fileID: 652786051, guid: 4d491091e1a84854e91e76151f379c05, type: 3}
+      - {fileID: -192703708, guid: 4d491091e1a84854e91e76151f379c05, type: 3}
+      - {fileID: 1980821370, guid: 4d491091e1a84854e91e76151f379c05, type: 3}
+      durationsMs: 64000000640000006400000064000000640000006400000064000000
+      loop: 0
+    - name: Attack_Strong
+      clip: {fileID: 7400000, guid: f0d2ed42aa3ec154ab27599af8b3b9eb, type: 2}
+      frames:
+      - {fileID: 1397073702, guid: 6ccc0cfd28c38c94e8a277bcee718cca, type: 3}
+      - {fileID: 1095201533, guid: 6ccc0cfd28c38c94e8a277bcee718cca, type: 3}
+      - {fileID: 1630813702, guid: 6ccc0cfd28c38c94e8a277bcee718cca, type: 3}
+      - {fileID: -598357113, guid: 6ccc0cfd28c38c94e8a277bcee718cca, type: 3}
+      - {fileID: 2019485716, guid: 6ccc0cfd28c38c94e8a277bcee718cca, type: 3}
+      - {fileID: 627189765, guid: 6ccc0cfd28c38c94e8a277bcee718cca, type: 3}
+      - {fileID: 1039947719, guid: 6ccc0cfd28c38c94e8a277bcee718cca, type: 3}
+      - {fileID: 334795010, guid: 6ccc0cfd28c38c94e8a277bcee718cca, type: 3}
+      durationsMs: 6400000064000000640000006400000064000000640000006400000064000000
+      loop: 0
+    - name: Run
+      clip: {fileID: 7400000, guid: f65e3aacf7746674484420f6490a7383, type: 2}
+      frames:
+      - {fileID: -559889481, guid: 5e1650d61f9ebed4c8c780130a33cb60, type: 3}
+      - {fileID: 715190876, guid: 5e1650d61f9ebed4c8c780130a33cb60, type: 3}
+      - {fileID: 1616845358, guid: 5e1650d61f9ebed4c8c780130a33cb60, type: 3}
+      - {fileID: -1930318200, guid: 5e1650d61f9ebed4c8c780130a33cb60, type: 3}
+      - {fileID: 557566205, guid: 5e1650d61f9ebed4c8c780130a33cb60, type: 3}
+      - {fileID: 1431173027, guid: 5e1650d61f9ebed4c8c780130a33cb60, type: 3}
+      durationsMs: 640000006400000064000000640000006400000064000000
+      loop: 1
+  - id: Spider
+    category: MainEnemy
+    variant: Default
+    direction: Source facing only
+    prefab: {fileID: 8842474258013864758, guid: 01da556fee6f0934e81d0c4ea92130db, type: 3}
+    states:
+    - name: Idle
+      clip: {fileID: 7400000, guid: bc6a250065c4b1a448d34bdfa4208de2, type: 2}
+      frames:
+      - {fileID: 307929411, guid: 199b69554dbcaf4489fe0ac8b5d15d28, type: 3}
+      - {fileID: 1945883432, guid: 199b69554dbcaf4489fe0ac8b5d15d28, type: 3}
+      - {fileID: 1211788395, guid: 199b69554dbcaf4489fe0ac8b5d15d28, type: 3}
+      - {fileID: -812495424, guid: 199b69554dbcaf4489fe0ac8b5d15d28, type: 3}
+      - {fileID: -376165548, guid: 199b69554dbcaf4489fe0ac8b5d15d28, type: 3}
+      - {fileID: 1941407024, guid: 199b69554dbcaf4489fe0ac8b5d15d28, type: 3}
+      - {fileID: 667180883, guid: 199b69554dbcaf4489fe0ac8b5d15d28, type: 3}
+      - {fileID: -1474892473, guid: 199b69554dbcaf4489fe0ac8b5d15d28, type: 3}
+      durationsMs: 6400000064000000640000006400000064000000640000006400000064000000
+      loop: 1
+    - name: Attack
+      clip: {fileID: 7400000, guid: 57c7be042e05cb440a14dd681da058ad, type: 2}
+      frames:
+      - {fileID: 477492055, guid: 8e97a06a97de33240829e3f647e206f2, type: 3}
+      - {fileID: 932690652, guid: 8e97a06a97de33240829e3f647e206f2, type: 3}
+      - {fileID: 1495905505, guid: 8e97a06a97de33240829e3f647e206f2, type: 3}
+      - {fileID: -1540029225, guid: 8e97a06a97de33240829e3f647e206f2, type: 3}
+      - {fileID: 779779423, guid: 8e97a06a97de33240829e3f647e206f2, type: 3}
+      - {fileID: 1101118110, guid: 8e97a06a97de33240829e3f647e206f2, type: 3}
+      - {fileID: 860764962, guid: 8e97a06a97de33240829e3f647e206f2, type: 3}
+      - {fileID: -248660607, guid: 8e97a06a97de33240829e3f647e206f2, type: 3}
+      durationsMs: 6400000064000000640000006400000064000000640000006400000064000000
+      loop: 0
+    - name: Run
+      clip: {fileID: 7400000, guid: 1ff2449eecf9c04428026a9b3786ddf7, type: 2}
+      frames:
+      - {fileID: -1963545952, guid: 3592c83216f1f074984449b32ceb42e8, type: 3}
+      - {fileID: -1308202852, guid: 3592c83216f1f074984449b32ceb42e8, type: 3}
+      - {fileID: -165583266, guid: 3592c83216f1f074984449b32ceb42e8, type: 3}
+      - {fileID: 1561552526, guid: 3592c83216f1f074984449b32ceb42e8, type: 3}
+      - {fileID: -951511541, guid: 3592c83216f1f074984449b32ceb42e8, type: 3}
+      durationsMs: 6400000064000000640000006400000064000000
+      loop: 1
+  - id: Thief
+    category: MainEnemy
+    variant: Default
+    direction: Source facing only
+    prefab: {fileID: 6135890659740547301, guid: d820057176e31a6428f958108c582417, type: 3}
+    states:
+    - name: Idle
+      clip: {fileID: 7400000, guid: 4a7efd141eca2e740b6d9e64fbde3c3a, type: 2}
+      frames:
+      - {fileID: -1957637022, guid: 541da6db4cff53a4ea9158ffbe5deece, type: 3}
+      - {fileID: 826860768, guid: 541da6db4cff53a4ea9158ffbe5deece, type: 3}
+      - {fileID: 1830160459, guid: 541da6db4cff53a4ea9158ffbe5deece, type: 3}
+      - {fileID: -1218252343, guid: 541da6db4cff53a4ea9158ffbe5deece, type: 3}
+      - {fileID: -562984482, guid: 541da6db4cff53a4ea9158ffbe5deece, type: 3}
+      - {fileID: 776538219, guid: 541da6db4cff53a4ea9158ffbe5deece, type: 3}
+      durationsMs: 640000006400000064000000640000006400000064000000
+      loop: 1
+    - name: Attack
+      clip: {fileID: 7400000, guid: 92d761ccab0dd764ca9eff1fb1e70ab4, type: 2}
+      frames:
+      - {fileID: -928327915, guid: 54b1f61e30cc62c43ad0cb3298886748, type: 3}
+      - {fileID: 1278029390, guid: 54b1f61e30cc62c43ad0cb3298886748, type: 3}
+      - {fileID: -1307946506, guid: 54b1f61e30cc62c43ad0cb3298886748, type: 3}
+      - {fileID: -871046130, guid: 54b1f61e30cc62c43ad0cb3298886748, type: 3}
+      - {fileID: -456239449, guid: 54b1f61e30cc62c43ad0cb3298886748, type: 3}
+      - {fileID: 231230964, guid: 54b1f61e30cc62c43ad0cb3298886748, type: 3}
+      durationsMs: 640000006400000064000000640000006400000064000000
+      loop: 0
+    - name: Run
+      clip: {fileID: 7400000, guid: a6ae761c6bd4a4f4199904954dfc4d94, type: 2}
+      frames:
+      - {fileID: 1008162517, guid: b9894a6ad37345d468bbd37c249ce3b6, type: 3}
+      - {fileID: 1996881321, guid: b9894a6ad37345d468bbd37c249ce3b6, type: 3}
+      - {fileID: -1863888224, guid: b9894a6ad37345d468bbd37c249ce3b6, type: 3}
+      - {fileID: -1004912219, guid: b9894a6ad37345d468bbd37c249ce3b6, type: 3}
+      - {fileID: 858410725, guid: b9894a6ad37345d468bbd37c249ce3b6, type: 3}
+      - {fileID: 2011738853, guid: b9894a6ad37345d468bbd37c249ce3b6, type: 3}
+      durationsMs: 640000006400000064000000640000006400000064000000
+      loop: 1
+  - id: Torch_Goblin
+    category: MainEnemy
+    variant: Default
+    direction: Source facing only
+    prefab: {fileID: 1040336152696570843, guid: b130cc3bbe5695c45827f0140faf55eb, type: 3}
+    states:
+    - name: Idle
+      clip: {fileID: 7400000, guid: 7c600c03c28a2bb4fae10c900c3d9da4, type: 2}
+      frames:
+      - {fileID: -258123958, guid: e13a33333479818419dcc7fde8ebf701, type: 3}
+      - {fileID: -596435842, guid: e13a33333479818419dcc7fde8ebf701, type: 3}
+      - {fileID: 1434614855, guid: e13a33333479818419dcc7fde8ebf701, type: 3}
+      - {fileID: 751587501, guid: e13a33333479818419dcc7fde8ebf701, type: 3}
+      - {fileID: -1894818786, guid: e13a33333479818419dcc7fde8ebf701, type: 3}
+      - {fileID: -499208579, guid: e13a33333479818419dcc7fde8ebf701, type: 3}
+      - {fileID: 1703854592, guid: e13a33333479818419dcc7fde8ebf701, type: 3}
+      - {fileID: -1709367262, guid: e13a33333479818419dcc7fde8ebf701, type: 3}
+      durationsMs: 6400000064000000640000006400000064000000640000006400000064000000
+      loop: 1
+    - name: Attack
+      clip: {fileID: 7400000, guid: 58f05e53506d0d14886dcabb84ea4697, type: 2}
+      frames:
+      - {fileID: -1980136656, guid: c5d4cf3520fe59045b939e2b550698e6, type: 3}
+      - {fileID: -1864882952, guid: c5d4cf3520fe59045b939e2b550698e6, type: 3}
+      - {fileID: 1297003059, guid: c5d4cf3520fe59045b939e2b550698e6, type: 3}
+      - {fileID: -1681772211, guid: c5d4cf3520fe59045b939e2b550698e6, type: 3}
+      - {fileID: 45781877, guid: c5d4cf3520fe59045b939e2b550698e6, type: 3}
+      - {fileID: 937081369, guid: c5d4cf3520fe59045b939e2b550698e6, type: 3}
+      - {fileID: -1139430468, guid: c5d4cf3520fe59045b939e2b550698e6, type: 3}
+      - {fileID: 1153830414, guid: c5d4cf3520fe59045b939e2b550698e6, type: 3}
+      durationsMs: 6400000064000000640000006400000064000000640000006400000064000000
+      loop: 0
+    - name: Run
+      clip: {fileID: 7400000, guid: 208f2c30dca70074582eb960290c1cb1, type: 2}
+      frames:
+      - {fileID: -931149376, guid: a5ed09dff2f0e28438a6167b4f2ee0f4, type: 3}
+      - {fileID: 1686447128, guid: a5ed09dff2f0e28438a6167b4f2ee0f4, type: 3}
+      - {fileID: 1021152235, guid: a5ed09dff2f0e28438a6167b4f2ee0f4, type: 3}
+      - {fileID: -724604114, guid: a5ed09dff2f0e28438a6167b4f2ee0f4, type: 3}
+      - {fileID: 200141897, guid: a5ed09dff2f0e28438a6167b4f2ee0f4, type: 3}
+      - {fileID: 1082115160, guid: a5ed09dff2f0e28438a6167b4f2ee0f4, type: 3}
+      durationsMs: 640000006400000064000000640000006400000064000000
+      loop: 1
+  - id: Troll
+    category: MainEnemy
+    variant: Default
+    direction: Source facing only
+    prefab: {fileID: 199840144804603771, guid: 54c5b164d71961e4eae68d4cbb5db0e9, type: 3}
+    states:
+    - name: Idle
+      clip: {fileID: 7400000, guid: 0ae8bd8999672214ebabf15d1eab244b, type: 2}
+      frames:
+      - {fileID: -799827422, guid: 064cdfe10b3ae024084980b5cd651ed5, type: 3}
+      - {fileID: -111938188, guid: 064cdfe10b3ae024084980b5cd651ed5, type: 3}
+      - {fileID: -918611434, guid: 064cdfe10b3ae024084980b5cd651ed5, type: 3}
+      - {fileID: 823152525, guid: 064cdfe10b3ae024084980b5cd651ed5, type: 3}
+      - {fileID: 752930821, guid: 064cdfe10b3ae024084980b5cd651ed5, type: 3}
+      - {fileID: -1936902063, guid: 064cdfe10b3ae024084980b5cd651ed5, type: 3}
+      - {fileID: 1130185033, guid: 064cdfe10b3ae024084980b5cd651ed5, type: 3}
+      - {fileID: 1678940567, guid: 064cdfe10b3ae024084980b5cd651ed5, type: 3}
+      - {fileID: 1594290240, guid: 064cdfe10b3ae024084980b5cd651ed5, type: 3}
+      - {fileID: -1210144199, guid: 064cdfe10b3ae024084980b5cd651ed5, type: 3}
+      - {fileID: 1012771212, guid: 064cdfe10b3ae024084980b5cd651ed5, type: 3}
+      - {fileID: -1836081612, guid: 064cdfe10b3ae024084980b5cd651ed5, type: 3}
+      durationsMs: 640000006400000064000000640000006400000064000000640000006400000064000000640000006400000064000000
+      loop: 1
+    - name: Attack
+      clip: {fileID: 7400000, guid: 680b9128a42db944da8ddc5e7cc0681b, type: 2}
+      frames:
+      - {fileID: -946594999, guid: 8508d8cb339146547a03ca8cf4c6f87e, type: 3}
+      - {fileID: -1450558416, guid: 8508d8cb339146547a03ca8cf4c6f87e, type: 3}
+      - {fileID: 843077768, guid: 8508d8cb339146547a03ca8cf4c6f87e, type: 3}
+      - {fileID: 1625592670, guid: 8508d8cb339146547a03ca8cf4c6f87e, type: 3}
+      - {fileID: -1206617224, guid: 8508d8cb339146547a03ca8cf4c6f87e, type: 3}
+      - {fileID: -106494526, guid: 8508d8cb339146547a03ca8cf4c6f87e, type: 3}
+      durationsMs: 640000006400000064000000640000006400000064000000
+      loop: 0
+    - name: Dead
+      clip: {fileID: 7400000, guid: ff71f9a89b48a454d9d5543bbbe2f9af, type: 2}
+      frames:
+      - {fileID: -1216314804, guid: d78fbd4b8d6a68844a0297d8077fcde8, type: 3}
+      - {fileID: 1451669718, guid: d78fbd4b8d6a68844a0297d8077fcde8, type: 3}
+      - {fileID: 1895767142, guid: d78fbd4b8d6a68844a0297d8077fcde8, type: 3}
+      - {fileID: 260650697, guid: d78fbd4b8d6a68844a0297d8077fcde8, type: 3}
+      - {fileID: 1381349833, guid: d78fbd4b8d6a68844a0297d8077fcde8, type: 3}
+      - {fileID: 1351190342, guid: d78fbd4b8d6a68844a0297d8077fcde8, type: 3}
+      - {fileID: -720837944, guid: d78fbd4b8d6a68844a0297d8077fcde8, type: 3}
+      - {fileID: -251333301, guid: d78fbd4b8d6a68844a0297d8077fcde8, type: 3}
+      - {fileID: 1390381970, guid: d78fbd4b8d6a68844a0297d8077fcde8, type: 3}
+      - {fileID: -17497270, guid: d78fbd4b8d6a68844a0297d8077fcde8, type: 3}
+      durationsMs: 64000000640000006400000064000000640000006400000064000000640000006400000088130000
+      loop: 0
+    - name: Recovery
+      clip: {fileID: 7400000, guid: b9bcfce25078c4d4ca6d4da9da0567cd, type: 2}
+      frames:
+      - {fileID: -485582239, guid: 0ff84dee0682fe0478e0835e624acfda, type: 3}
+      - {fileID: 1607942120, guid: 0ff84dee0682fe0478e0835e624acfda, type: 3}
+      - {fileID: -2122753369, guid: 0ff84dee0682fe0478e0835e624acfda, type: 3}
+      - {fileID: -2134033912, guid: 0ff84dee0682fe0478e0835e624acfda, type: 3}
+      - {fileID: -711659878, guid: 0ff84dee0682fe0478e0835e624acfda, type: 3}
+      - {fileID: 2019733778, guid: 0ff84dee0682fe0478e0835e624acfda, type: 3}
+      - {fileID: -669783218, guid: 0ff84dee0682fe0478e0835e624acfda, type: 3}
+      - {fileID: 1065864275, guid: 0ff84dee0682fe0478e0835e624acfda, type: 3}
+      - {fileID: 868921594, guid: 0ff84dee0682fe0478e0835e624acfda, type: 3}
+      - {fileID: -1241519655, guid: 0ff84dee0682fe0478e0835e624acfda, type: 3}
+      durationsMs: 64000000640000006400000064000000640000006400000064000000640000006400000064000000
+      loop: 0
+    - name: Walk
+      clip: {fileID: 7400000, guid: 4e37a78e2f03b9544ad096572ede58ec, type: 2}
+      frames:
+      - {fileID: -2061086136, guid: 2b4bb338b798ed8448f3694f89c6ccc2, type: 3}
+      - {fileID: -1955757815, guid: 2b4bb338b798ed8448f3694f89c6ccc2, type: 3}
+      - {fileID: -1881231940, guid: 2b4bb338b798ed8448f3694f89c6ccc2, type: 3}
+      - {fileID: 1876397632, guid: 2b4bb338b798ed8448f3694f89c6ccc2, type: 3}
+      - {fileID: 929931081, guid: 2b4bb338b798ed8448f3694f89c6ccc2, type: 3}
+      - {fileID: -1505001861, guid: 2b4bb338b798ed8448f3694f89c6ccc2, type: 3}
+      - {fileID: 416568556, guid: 2b4bb338b798ed8448f3694f89c6ccc2, type: 3}
+      - {fileID: 962861512, guid: 2b4bb338b798ed8448f3694f89c6ccc2, type: 3}
+      - {fileID: 1745487732, guid: 2b4bb338b798ed8448f3694f89c6ccc2, type: 3}
+      - {fileID: 60589782, guid: 2b4bb338b798ed8448f3694f89c6ccc2, type: 3}
+      durationsMs: 64000000640000006400000064000000640000006400000064000000640000006400000064000000
+      loop: 1
+    - name: Windup
+      clip: {fileID: 7400000, guid: deeb38f4da440e043872f1f1227ad638, type: 2}
+      frames:
+      - {fileID: 1280100775, guid: bfbb4a503a0bafe4b94b26a8ed3d753e, type: 3}
+      - {fileID: -408432501, guid: bfbb4a503a0bafe4b94b26a8ed3d753e, type: 3}
+      - {fileID: 395593949, guid: bfbb4a503a0bafe4b94b26a8ed3d753e, type: 3}
+      - {fileID: -1162467164, guid: bfbb4a503a0bafe4b94b26a8ed3d753e, type: 3}
+      - {fileID: -325224589, guid: bfbb4a503a0bafe4b94b26a8ed3d753e, type: 3}
+      durationsMs: 6400000064000000640000006400000088130000
+      loop: 0
+  - id: Turtle
+    category: MainEnemy
+    variant: Default
+    direction: Source facing only
+    prefab: {fileID: 1326514097399577217, guid: 060f9e0eb9a239c4299878dd871ad1f3, type: 3}
+    states:
+    - name: Idle
+      clip: {fileID: 7400000, guid: caa85146312537d48b539a5e5fd35646, type: 2}
+      frames:
+      - {fileID: 511862515, guid: c8b17a03721bfcd4ea8c456ce0f2ce99, type: 3}
+      - {fileID: 274812647, guid: c8b17a03721bfcd4ea8c456ce0f2ce99, type: 3}
+      - {fileID: -143099816, guid: c8b17a03721bfcd4ea8c456ce0f2ce99, type: 3}
+      - {fileID: 1186191452, guid: c8b17a03721bfcd4ea8c456ce0f2ce99, type: 3}
+      - {fileID: 805608335, guid: c8b17a03721bfcd4ea8c456ce0f2ce99, type: 3}
+      - {fileID: 207453334, guid: c8b17a03721bfcd4ea8c456ce0f2ce99, type: 3}
+      - {fileID: 448784535, guid: c8b17a03721bfcd4ea8c456ce0f2ce99, type: 3}
+      - {fileID: 1586163617, guid: c8b17a03721bfcd4ea8c456ce0f2ce99, type: 3}
+      - {fileID: 1651357827, guid: c8b17a03721bfcd4ea8c456ce0f2ce99, type: 3}
+      - {fileID: 555151054, guid: c8b17a03721bfcd4ea8c456ce0f2ce99, type: 3}
+      durationsMs: 64000000640000006400000064000000640000006400000064000000640000006400000064000000
+      loop: 1
+    - name: Attack
+      clip: {fileID: 7400000, guid: 6b6e0a4cf6ce9754089145b3dc9a0db3, type: 2}
+      frames:
+      - {fileID: -717072989, guid: 8b0bf3436eec46641a8d4b315e8f6ceb, type: 3}
+      - {fileID: -1487375460, guid: 8b0bf3436eec46641a8d4b315e8f6ceb, type: 3}
+      - {fileID: -2041588051, guid: 8b0bf3436eec46641a8d4b315e8f6ceb, type: 3}
+      - {fileID: 2142018625, guid: 8b0bf3436eec46641a8d4b315e8f6ceb, type: 3}
+      - {fileID: 309939488, guid: 8b0bf3436eec46641a8d4b315e8f6ceb, type: 3}
+      - {fileID: 127080922, guid: 8b0bf3436eec46641a8d4b315e8f6ceb, type: 3}
+      - {fileID: -1709441717, guid: 8b0bf3436eec46641a8d4b315e8f6ceb, type: 3}
+      - {fileID: -866276477, guid: 8b0bf3436eec46641a8d4b315e8f6ceb, type: 3}
+      - {fileID: -89562026, guid: 8b0bf3436eec46641a8d4b315e8f6ceb, type: 3}
+      - {fileID: 1002800179, guid: 8b0bf3436eec46641a8d4b315e8f6ceb, type: 3}
+      durationsMs: 64000000640000006400000064000000640000006400000064000000640000006400000064000000
+      loop: 0
+    - name: Guard_In
+      clip: {fileID: 7400000, guid: 44d9ad9e375aa4048b61b61853b673b4, type: 2}
+      frames:
+      - {fileID: 233263091, guid: 407ec25824b948b418212481da4f8a11, type: 3}
+      - {fileID: 308272628, guid: 407ec25824b948b418212481da4f8a11, type: 3}
+      - {fileID: 750678908, guid: 407ec25824b948b418212481da4f8a11, type: 3}
+      - {fileID: -2025546392, guid: 407ec25824b948b418212481da4f8a11, type: 3}
+      - {fileID: -1639968079, guid: 407ec25824b948b418212481da4f8a11, type: 3}
+      - {fileID: 2078537144, guid: 407ec25824b948b418212481da4f8a11, type: 3}
+      durationsMs: 640000006400000064000000640000006400000050c30000
+      loop: 0
+    - name: Guard_Out
+      clip: {fileID: 7400000, guid: 845fc0ae737454a40ad62e0a8502971a, type: 2}
+      frames:
+      - {fileID: -1096572612, guid: 8d66513065f76174aa6ca71927a0dc8b, type: 3}
+      - {fileID: 470285368, guid: 8d66513065f76174aa6ca71927a0dc8b, type: 3}
+      - {fileID: 323662614, guid: 8d66513065f76174aa6ca71927a0dc8b, type: 3}
+      durationsMs: 640000006400000064000000
+      loop: 0
+    - name: Walk
+      clip: {fileID: 7400000, guid: 23ffed9ebc1074b40b74c9a4cd5cbb45, type: 2}
+      frames:
+      - {fileID: 581428886, guid: c187ce8598ffcec4ba9014bc65b54441, type: 3}
+      - {fileID: -744098763, guid: c187ce8598ffcec4ba9014bc65b54441, type: 3}
+      - {fileID: 2018465361, guid: c187ce8598ffcec4ba9014bc65b54441, type: 3}
+      - {fileID: -1775592608, guid: c187ce8598ffcec4ba9014bc65b54441, type: 3}
+      - {fileID: -1610666751, guid: c187ce8598ffcec4ba9014bc65b54441, type: 3}
+      - {fileID: -1512759183, guid: c187ce8598ffcec4ba9014bc65b54441, type: 3}
+      - {fileID: 127204888, guid: c187ce8598ffcec4ba9014bc65b54441, type: 3}
+      durationsMs: 64000000640000006400000064000000640000006400000064000000
+      loop: 1
+--- !u!4 &1884913497
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1884913495}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1893592831
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1893592833}
+  - component: {fileID: 1893592832}
+  m_Layer: 0
+  m_Name: PreviewCamera
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!20 &1893592832
+Camera:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1893592831}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0.075, g: 0.09, b: 0.12, a: 1}
+  m_projectionMatrixMode: 1
+  m_GateFitMode: 2
+  m_FOVAxisMode: 0
+  m_Iso: 200
+  m_ShutterSpeed: 0.005
+  m_Aperture: 16
+  m_FocusDistance: 10
+  m_FocalLength: 50
+  m_BladeCount: 5
+  m_Curvature: {x: 2, y: 11}
+  m_BarrelClipping: 0.25
+  m_Anamorphism: 0
+  m_SensorSize: {x: 36, y: 24}
+  m_LensShift: {x: 0, y: 0}
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  near clip plane: 0.3
+  far clip plane: 1000
+  field of view: 60
+  orthographic: 1
+  orthographic size: 5
+  m_Depth: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
+  m_TargetEye: 3
+  m_HDR: 1
+  m_AllowMSAA: 1
+  m_AllowDynamicResolution: 0
+  m_ForceIntoRT: 0
+  m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
+--- !u!4 &1893592833
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1893592831}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1660057539 &9223372036854775807
+SceneRoots:
+  m_ObjectHideFlags: 0
+  m_Roots:
+  - {fileID: 1893592833}
+  - {fileID: 1884913497}

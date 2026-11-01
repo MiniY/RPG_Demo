@@ -1,0 +1,170 @@
+{
+  "revision": "r3d-readable-v2-basic-visual",
+  "build": "map-vnext-p1-stairs-20261028-r3d",
+  "player_run": "0ed8a7ed753f414b89dec3c81f0221ba",
+  "route": "A",
+  "colours": [
+    "偏蓝草地",
+    "正绿草地",
+    "淡黄草地",
+    "中黄草地",
+    "偏褐草地"
+  ],
+  "families": [
+    5,
+    3,
+    2,
+    1,
+    4
+  ],
+  "contexts": {
+    "OpenLanding": "入口附近比较开阔",
+    "LongCliff": "旁边是一段较长岩壁",
+    "CornerClearance": "入口靠近平台拐角，检查脚下有没有通行空间",
+    "NestedFourLevels": "多层平台组合，依次上下四段楼梯"
+  },
+  "intro": "你已确认本版最基本的楼梯与高地连接、按高度区分草地颜色的画面正确，中文说明也能看懂。这一版仍是基础连接与受控样例测试，不是随机高地地图完成版。随机平台轮廓、数量、位置、多层组合和楼梯分布尚未获得本次验收。",
+  "feedback": {
+    "previous": {
+      "path": "D:\\.codex\\worktrees\\map-vnext-p0-p1-stairs\\RPG_Demo\\Artifacts\\MapAcceptance\\MapVNextStairs-r3d-readable-v1-20261029\\human-feedback.json",
+      "sha256": "1d218aebd301ed9ccdc9fd67588ef60efe27110f86e116be4c337b04013270ec",
+      "source_path": "D:\\.codex\\worktrees\\map-vnext-p0-p1-stairs\\RPG_Demo\\Artifacts\\MapAcceptance\\MapVNextStairs-r3d-readable-v1-20261029\\Evidence\\Input\\rpg-demo-map-vnext-mvp-readable-delivery-codex.md"
+    },
+    "append": {
+      "id": "r3d-basic-visual-feedback-20261029",
+      "build": "map-vnext-p1-stairs-20261028-r3d",
+      "report_revision": "r3d-readable-v1",
+      "source_type": "user_confirmation_quoted_in_requested_attachment",
+      "source_file": "rpg-demo-map-vnext-basic-visual-acceptance-addendum.md",
+      "source_section": "1. 用户原话与适用版本；2. 验收应怎样记录",
+      "quote": "这次的验收MVP我看懂了，视觉验收通过。但是要补充视觉验收的只是最基本的楼梯高地连接和高地高度划分不同草地类型。没有做到随机变化。",
+      "synced_at_utc": "2026-10-29T05:19:37.817048+00:00",
+      "user_reviewed_at": null,
+      "accepted": [
+        "chinese_material_understanding",
+        "basic_connection_visual",
+        "height_grass_visual"
+      ],
+      "scope": "仅当前 r3d 专项基础东西侧楼梯—高地连接、按高程草色与所见画面；中文材料已看懂；不是全部页面/控件或任意随机地形的逐项验收",
+      "not_covered": [
+        "individual_case_reviews",
+        "human_operation",
+        "random_layout",
+        "formal_integration",
+        "gameplay_ready",
+        "combat_height",
+        "save_compatibility",
+        "p1_closure",
+        "p2_implementation"
+      ],
+      "individual_case_reviews": [],
+      "p1_closed": false,
+      "p2_started": false
+    }
+  },
+  "guide": [
+    {
+      "title": "打开完整试玩目录",
+      "text": "解压整个包，进入 MVP_Windows_x64，双击 MapVNextStairs.exe。EXE、Data 目录和 DLL 必须一起保留。网页启动链接若被浏览器阻止，从文件夹双击即可，无需调整浏览器安全设置。"
+    },
+    {
+      "title": "找到要检查的案例",
+      "text": "先点击游戏窗口让它获得焦点。当前英文案例 ID 在左上第一行；初次启动是示例 01（V00）。用窗口底部 Next / N 到下一个、Prev / P 到上一个，72 个案例循环。网页每个案例提供从刚启动开始的按键次数；没有输入编号直接跳转功能。"
+    },
+    {
+      "title": "对照现有按钮",
+      "text": "Pair +：前 60 个普通案例中，在当前侧面和入口形状下循环四组相邻高度。West / East：前 60 个案例切换平台左侧与右侧；多层地图中这个按钮不切侧面。多层地图请用 N/P 查找，不用 Pair + 找楼层。"
+    },
+    {
+      "title": "检查高平台周围的草边",
+      "text": "基础连接与按高程配色的整体视觉已获确认，无需重复确认。原图和局部图继续供回归对照：低地紧贴高平台处应连续铺接，真正外轮廓、临水边和下落边应保留。本次没有补写每个草边细项或 72 个案例的独立人工回答。"
+    },
+    {
+      "title": "沿左侧楼梯上下",
+      "text": "选示例 01（V00，平台左侧／西侧），按 R 回到本例低地入口。同时按 W+D 向右上沿坡走，到上层后松键，再按 S+A 沿原坡返回。正常是角色的实际位置同时向横向和纵向变化；有问题是只横走就跨层、堵在上口，或脚被边界卡住。"
+    },
+    {
+      "title": "沿右侧楼梯上下",
+      "text": "选示例 05（V04，平台右侧／东侧），按 R 回到入口。同时按 W+A 向左上走，到上层后按 S+D 下来。观察方法与左侧相同。左右指楼梯贴在高平台哪一侧，不是角色当前朝向。"
+    },
+    {
+      "title": "检查只横移能不能偷上楼",
+      "text": "优先在示例 01 和 05 做这个检查。按 R 后角色就在普通案例的低地入口下方；左侧只按 D，右侧只按 A，尝试直接横穿高差，应被入口边界挡住，不能完整跨到上层。可再靠近坡入口，只按同一个横向键复查。同一平台内正常横移允许；不要把任何位置 A/D 都不能走当成标准。多层地图 R 回到的是地图起点，需先走到相应低地入口再测。"
+    },
+    {
+      "title": "重置、看干净画面、退出",
+      "text": "Reset / R：回到本例起点，不是读档恢复。Clean / F1：隐藏或显示本包的调试面板和轨迹，不是项目迷雾 F1 任务。Exit / Esc：退出。若按键没反应，先点回游戏窗口。当前 Player 英文面板保持原样，本页提供中文对照；本轮没有重建或重新启动 Player。"
+    },
+    {
+      "title": "反馈具体问题",
+      "text": "如果后续试玩发现操作问题，可复制下方表格填写示例名或原 ID、按键、起点与表现。基础视觉和中文可理解性已确认；操作人验没有新增 PASS。随机布局变化尚未完成本次验收，P1 未关闭，P2 仅登记方向、待独立任务。"
+    }
+  ],
+  "feedback_form": "适用 Build：map-vnext-p1-stairs-20261028-r3d\n已看报告：r3d-readable-v1；本页反馈同步修订：r3d-readable-v2-basic-visual\n基础连接与按高程配色视觉：已获用户确认（当前专项所见画面）\n中文材料可理解性：用户已表示看懂\n随机高地与楼梯布局：本专项尚未完成交付/验收\n操作人验：本次未新增 PASS；以下仅用于后续操作问题\n中文示例名／原 ID：\n平台侧面：左侧（西）／右侧（东）／多层地图\n我按了哪些键、从哪里出发：\n实际表现／预期表现：\n截图：\n",
+  "scope_note": "历史 r3d-readable-v1 主项目整体范围检查 FAIL 继续保留：字体字符表 Assets/_Resources/_Font/character.txt 当时出现未知来源变化，归属 UNKNOWN，未回退、未归责、未解决。本次视觉确认不撤销该 FAIL。此处链接的是上轮原始报告；本轮独立范围核对另见 Checks，不以新基线抹平旧失败。工具仍仅在候选接入。",
+  "scope_report": "D:\\UnityProjects\\RPG_Demo\\Tools\\EngineeringAssurance\\.local\\tasks\\map-vnext-readable-v1-20261029-main.verification-4ed2f29ae824417a97dd5706add4fa35.json",
+  "scope_receipt": "D:\\.codex\\worktrees\\map-vnext-p0-p1-stairs\\RPG_Demo\\Artifacts\\MapAcceptance\\MapVNextStairs-r3d-readable-v1-20261029\\Checks\\main-scope-drift.json",
+  "generation_scope": [
+    {
+      "layer": "素材展示",
+      "meaning": "理解原素材颜色与模板外形；不证明完整连接或通行。",
+      "status": "中文材料看懂；未逐张人验。旧十张素材展示缺陷仍保留。"
+    },
+    {
+      "layer": "基础连接",
+      "meaning": "验证一个楼梯与高地接口怎样画、接、走。",
+      "status": "当前专项所见基本连接与按高程草色：用户视觉通过；操作没有新增人工 PASS。"
+    },
+    {
+      "layer": "受控矩阵",
+      "meaning": "在预先限定的尺寸、侧面与邻接条件内做回归。",
+      "status": "保留 60 变种与 12 Seed 原始自动证据；不是用户逐例确认，也不是随机地图完成证明。"
+    },
+    {
+      "layer": "随机生成",
+      "meaning": "由 Seed 和配置在约束下决定平台轮廓、数量、空间位置、多级组合与合法楼梯布置。",
+      "status": "本专项未完成交付/验收；P2 仅登记，等待独立任务。"
+    },
+    {
+      "layer": "正式集成",
+      "meaning": "进入正式地图入口及 GameplayReady，并验证战斗高程和存档边界。",
+      "status": "未因本次反馈改变，仍未获本专项验证。"
+    }
+  ],
+  "random_analysis": "基础模板检查一个连接；受控矩阵检查限定组合；随机布局需要证明结构由 Seed/配置决定并形成完整连贯地形。固定 Seed 可用于复现真实随机生成；反过来，仅有 Seed 标签或许多图也不能证明随机地图已经完成。实际调用为 MapVNextDemo.Load → MapVNextFixture.Build(Current)：普通 60 例由索引选择尺寸/侧面/入口条件，Seed 只记录在地图；12 个 SeedChain 使用 Random(seed ^ 0x354C29B7)，只在固定四层嵌套矩形中小幅改变位置/尺寸（0 或 1 格）、侧面和入口 Y。这里没有证明随机平台数量、非矩形轮廓或正式地图随机楼梯规划完成。此判断来自本轮静态源码核对，没有新运行地图，也不表示整个 RPG_Demo 从未实现随机地图。",
+  "generation_sources": [
+    {
+      "path": "Assets/Scripts/MapGeneration/VNext/MapVNextDemo.cs",
+      "sha256": "e15e78bb2860a435b9acae72eda71dfa3cb15311c76fa8398addb5eb790943b6"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/VNext/MapVNextFixture.cs",
+      "sha256": "86a26d90ab1a442f73e9857c1c89c1caf4ee2e329fab2a5f6e5e81cb0ff6d270"
+    }
+  ],
+  "p2": {
+    "root": "D:\\.codex\\worktrees\\map-vnext-p0-p1-stairs\\RPG_Demo\\Artifacts\\MapAcceptance\\MapVNextP2Random-20261029",
+    "prior_feedback": "D:\\.codex\\worktrees\\map-vnext-p0-p1-stairs\\RPG_Demo\\Artifacts\\MapAcceptance\\MapVNextStairs-r3d-readable-v2-basic-visual-20261029\\human-feedback.json",
+    "operation_event": {
+      "id": "p1-operation-user-confirmed-proceed-p2-20261029",
+      "build": "map-vnext-p1-stairs-20261028-r3d",
+      "source_type": "user_confirmation_quoted_in_requested_attachment",
+      "source_file": "rpg-demo-map-vnext-p1-accepted-proceed-p2.md",
+      "source_sha256": "bcc916f00d576cf658b0fdc7bfcbbd8037ea0fbb2530da8c06c28505a4a384d4",
+      "quotes": [
+        "我已经试玩过了，Player上楼梯的视觉过程满足我的要求",
+        "全部验收通过"
+      ],
+      "scope": "东西侧斜向上下往返、低地入口纯 A/D 不能完整跨高差、上层同平台 A/D 正常移动；未声明逐例检查全部矩阵",
+      "synced_at_utc": "2026-10-29T07:18:27.860831+00:00",
+      "user_reviewed_at": null,
+      "p1_manual_operation": "PASS",
+      "p2_manual_prerequisite": "SATISFIED",
+      "individual_case_reviews": [],
+      "p1_engineering_overall": "LIMITATIONS_RETAINED_NOT_GLOBALLY_CLOSED",
+      "p2_authorization": "用户本轮要求执行本附件，接续此前已明确执行的 P2 任务书"
+    },
+    "status": "AUTO_VALIDATION_COMPLETE_USER_VISUAL_AND_OPERATION_PENDING",
+    "delivery": "Artifacts/MapAcceptance/MapVNextP2Random-20261029/Delivery-r1"
+  }
+}

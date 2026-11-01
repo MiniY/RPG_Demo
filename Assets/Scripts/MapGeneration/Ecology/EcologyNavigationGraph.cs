@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>Frozen legal nodes/edges supplied by a candidate-projection clearance provider.</summary>
-public sealed class EcologyNavigationGraph
+public sealed partial class EcologyNavigationGraph
 {
     private readonly bool[] legal;
     private readonly byte[] forward;
     public EcologyNavigationGraph(Guid generationId, Vector2Int origin, int width, int height,
-        string projectionIdentity, string footprintIdentity, bool[] legalNodes, byte[] forwardMasks)
+        string projectionIdentity, string footprintIdentity, bool[] legalNodes, byte[] forwardMasks, IReadOnlyList<MapNavigationLink> continuousLinks = null)
     {
         if (generationId == Guid.Empty || width < 1 || height < 1 ||
             string.IsNullOrWhiteSpace(projectionIdentity) || string.IsNullOrWhiteSpace(footprintIdentity))
@@ -20,6 +20,7 @@ public sealed class EcologyNavigationGraph
         GenerationId = generationId; Origin = origin; Width = width; Height = height;
         ProjectionIdentity = projectionIdentity; FootprintIdentity = footprintIdentity;
         legal = (bool[])legalNodes.Clone(); forward = (byte[])forwardMasks.Clone();
+        InitializeLinks(continuousLinks);
         for (int node = 0; node < count; node++)
         {
             if ((forward[node] & 0xf0) != 0 || (!legal[node] && forward[node] != 0))
@@ -46,6 +47,7 @@ public sealed class EcologyNavigationGraph
     {
         if (node < 0 || node >= NodeCount) return -1;
         int x = node % Width, y = node / Width;
+        if (direction >= 4) return ExtraNeighbor(node, direction - 4);
         switch (direction)
         {
             case 0: return x + 1 < Width ? node + 1 : -1;
@@ -58,6 +60,7 @@ public sealed class EcologyNavigationGraph
     public bool CanMove(int from, int to)
     {
         if (!IsLegal(from) || !IsLegal(to)) return false;
+        if (FindLink(from, to) != null) return true;
         for (int direction = 0; direction < 4; direction++)
             if (Neighbor(from, direction) == to) return (forward[from] & (1 << direction)) != 0;
         return false;
@@ -66,6 +69,7 @@ public sealed class EcologyNavigationGraph
     public EcologyReturnField BuildReturnField(int[] homeNodes)
     {
         if (homeNodes == null || homeNodes.Length == 0) throw new ArgumentException("Home must contain legal stopping nodes.");
+        if (HasContinuousLinks) return BuildWeightedReturnField(homeNodes);
         int[] roots = (int[])homeNodes.Clone(); Array.Sort(roots);
         var distances = new int[NodeCount]; var next = new int[NodeCount]; var queue = new int[NodeCount];
         for (int node = 0; node < NodeCount; node++) { distances[node] = -1; next[node] = -1; }
@@ -155,6 +159,8 @@ public static class EcologyRegionPartitioner
             return score != 0 ? score : regionIds[a].CompareTo(regionIds[b]);
         });
         var owners = new int[count]; var distances = new int[count]; var parents = new int[count];
+        if (Array.Exists(seedGraphs, g => g.HasContinuousLinks))
+            return EcologyWeightedPartition.Build(seedGraphs, seedNodes, regionIds, order);
         var ownerIndices = new int[count]; var queue = new int[count];
         for (int node = 0; node < count; node++) { distances[node] = -1; parents[node] = -1; ownerIndices[node] = -1; }
         int head = 0, tail = 0;

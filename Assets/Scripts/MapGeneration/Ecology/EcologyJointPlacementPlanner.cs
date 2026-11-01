@@ -12,14 +12,15 @@ public static class EcologyJointPlacementPlanner
         MapSimpleDecorationRenderer decoration, Collider2D playerFoot, MerchantPlacementService merchant,
         PlantPlacementService plants, MapEcologyPopulationService population, AnimalPlacementService animals,
         EcologyTerritoryRecipe recipe, EcologyEcotypeDefinition[] types, float exitInteractionRadius, int? recordedAttempt = null,
-        MapEcologyProfile retainedPopulation = null)
+        MapEcologyProfile retainedPopulation = null, MapSpatialContext spatialContext = null)
     {
         if (terrainAttempt == null || merchant == null || plants == null || population == null || animals == null ||
             recipe == null || types == null || float.IsNaN(exitInteractionRadius) || float.IsInfinity(exitInteractionRadius) || exitInteractionRadius <= 0f)
             throw Failure("InvalidRecipe", "Original role owners, retained content and exact exit interaction radius are required.");
         MapCandidateCollisionGeometry basis = MapCandidateCollisionGeometry.Capture(terrainAttempt.GenerationId,
-            map, decorations, settings, terrain, decoration);
-        MapRemediationSurfacePlan surface = settings.remediationProjectedSurfaces ?
+            map, decorations, settings, terrain, decoration, spatialContext);
+        if (spatialContext != null) MapSpatialPlacement.ValidateExitGround(basis, map, terrain.Coordinates);
+        MapRemediationSurfacePlan surface = spatialContext == null && settings.remediationProjectedSurfaces ?
             MapSurfaceV4Policy.Build(map, terrain.TerrainV2Palette, settings) : null;
         MapCandidateCollisionGeometry acceptedStatic = null, acceptedInitial = null;
         int acceptedExitApproach = -1;
@@ -40,9 +41,11 @@ public static class EcologyJointPlacementPlanner
             { { MerchantPlacementService.MainMerchantLogicalObjectId, ((IMerchantPlacementTarget)merchant.MerchantTarget).PlacementTransform } };
             foreach (PlantPlacementBinding binding in plants.Bindings) sources.Add(binding.LogicalObjectId, binding.PlantTransform);
             foreach (MapEcologyPlacementResult placed in population.LastPlan.Placements) sources.Add(placed.LogicalId, placed.Prefab.transform);
+            if (spatialContext != null) MapSpatialPlacement.ValidatePlannedRoles(basis, plan, sources, terrain.Coordinates);
             MapPlannedSolidGeometry[] staticSolids = CaptureRoleSolids(plan, sources, terrain.Coordinates);
             MapCandidateCollisionGeometry statics = ValidateSolids(basis, staticSolids);
-            if (settings is MapSurfaceV4Settings) ValidateDeclaredStairAccess(map, basis, statics, playerFoot);
+            if (spatialContext != null) basis.ValidateVersionedStairAccess(statics, playerFoot, map.SpawnCell);
+            else if (settings is MapSurfaceV4Settings) ValidateDeclaredStairAccess(map, basis, statics, playerFoot);
             int approach = Node(map, selected.InteractionApproachCell);
             ulong[] ranks = Ranks(map, placementSeed, domain);
             if (!statics.TryBuildSafetyRegions(playerFoot, Node(map, map.SpawnCell), new[] { Node(map, merchantCell) },
@@ -67,6 +70,7 @@ public static class EcologyJointPlacementPlanner
             }
             animals.Plan(terrainAttempt, map, plan, placementSeed, settings is MapSurfaceV4Settings ?
                 (Func<AnimalPlacementBinding, Vector2Int, bool>)QualifyAnimal : null);
+            if (spatialContext != null) MapSpatialPlacement.ValidatePlannedRoles(basis, plan, animalSources, terrain.Coordinates);
             MapPlannedSolidGeometry[] animalSolids = CaptureRoleSolids(plan, animalSources, terrain.Coordinates);
             MapCandidateCollisionGeometry initial = ValidateSolids(statics, animalSolids);
             EcologyTerritoryDraft draft = EcologyTerritoryPlanner.Build(terrainAttempt.AttemptSeed, e, map, statics,

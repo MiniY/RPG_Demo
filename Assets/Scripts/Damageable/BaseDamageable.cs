@@ -143,6 +143,32 @@ public abstract class BaseDamageable : MonoBehaviour
 
             int amount = UnityEngine.Random.Range(rule.minAmount, rule.maxAmount + 1);
             Vector3 spawnPosition = GetDropPosition();
+            MapGenerationController currentMap = FindCurrentRandomMapController();
+            if (currentMap != null && currentMap.Orchestrator.Context.ActiveSpatialContext != null)
+            {
+                var context = currentMap.Orchestrator.Context; Guid generation = context.ActiveGenerationId.Value;
+                var rewardDefinition = rule.reward; Vector3 deathPosition = transform.position;
+                bool PublishVersionedReward()
+                {
+                    if (context.ActiveGenerationId != generation) return false;
+                    if (!MapSpatialRewardPlacement.TryFind(context, generation, rewardDefinition.rewardPrefab.transform, spawnPosition, deathPosition, out Vector2 legal)) return false;
+                    ObjectPoolManager.SpawnPrepared(rewardDefinition.rewardPrefab, legal, Quaternion.identity, actor =>
+                    {
+                        MapSpatialRewardPlacement.PrepareOriginalPickupCollider(actor);
+                        if (!MapSpatialPlacement.Prepare(context, generation, actor, legal, out string failure)) throw new InvalidOperationException(failure);
+                        RewardPickup preparedPickup = actor.GetComponent<RewardPickup>() ?? actor.AddComponent<RewardPickup>();
+                        preparedPickup.Initialize(rewardDefinition, amount);
+                        BindRewardToCurrentMap(actor);
+                    });
+                    return true;
+                }
+                if (!PublishVersionedReward())
+                {
+                    var pending = currentMap.GetComponent<MapSpatialPendingRewards>() ?? currentMap.gameObject.AddComponent<MapSpatialPendingRewards>();
+                    pending.Enqueue(context, generation, PublishVersionedReward);
+                }
+                continue;
+            }
             GameObject rewardObject = ObjectPoolManager.Spawn(rule.reward.rewardPrefab, spawnPosition, Quaternion.identity);
 
             if (rewardObject == null)

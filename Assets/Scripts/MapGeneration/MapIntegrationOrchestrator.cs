@@ -3,16 +3,18 @@ using UnityEngine;
 
 public sealed class MapPendingGeneration
 {
-    public MapPendingGeneration(Guid generationId, MapData map, MapSimpleDecorationData decorations)
+    public MapPendingGeneration(Guid generationId, MapData map, MapSimpleDecorationData decorations, MapSpatialContext spatialContext = null)
     {
         if (generationId == Guid.Empty) throw new ArgumentException("Generation ID cannot be empty.", nameof(generationId));
         GenerationId = generationId;
         Map = map ?? throw new ArgumentNullException(nameof(map));
         Decorations = decorations;
+        spatialContext?.Require(generationId, map); SpatialContext = spatialContext;
     }
     public Guid GenerationId { get; }
     public MapData Map { get; }
     public MapSimpleDecorationData Decorations { get; }
+    public MapSpatialContext SpatialContext { get; }
 }
 
 public sealed class MapGenerationExecutionResult
@@ -64,7 +66,7 @@ public sealed class MapIntegrationOrchestrator
                     return Fail(request, attempt, MapLifecyclePhase.Generating,
                         MapFailureCategory.StaleResult, "StaleGenerationResult",
                         "Generated result does not belong to the current pending attempt.", false);
-                context.SetPendingMap(attempt.GenerationId, pending.Map);
+                context.SetPendingMap(attempt.GenerationId, pending.Map, pending.SpatialContext);
                 MapLifecycleTransitions.Advance(context, MapLifecyclePhase.Planning);
                 MapPlacementPlan placementPlan = plan(attempt, pending);
                 if (placementPlan == null || placementPlan.GenerationId != attempt.GenerationId)

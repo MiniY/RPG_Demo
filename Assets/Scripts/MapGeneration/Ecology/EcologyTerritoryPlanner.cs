@@ -405,7 +405,7 @@ public static class EcologyTerritoryPlanner
             while (head < tail)
             {
                 int node = queue[head++];
-                for (int d = 0; d < 4; d++)
+                for (int d = 0; d < graph.DirectionCount(node); d++)
                 {
                     int next = graph.Neighbor(node, d);
                     if (next < 0 || visited[next] || !graph.CanMove(node, next) || !graph.CanMove(next, node)) continue;
@@ -418,13 +418,19 @@ public static class EcologyTerritoryPlanner
     }
     private static int[] Distances(EcologyNavigationGraph graph, int root, int limit = int.MaxValue)
     {
+        if (graph.HasContinuousLinks)
+        {
+            var weighted = graph.BuildReturnField(new[] { root }).Distances.ToArray();
+            for (int i = 0; i < weighted.Length; i++) if (weighted[i] > limit) weighted[i] = -1;
+            return weighted;
+        }
         var result = Enumerable.Repeat(-1, graph.NodeCount).ToArray(); var queue = new int[graph.NodeCount];
         if (!graph.IsLegal(root)) return result;
         int head = 0, tail = 0; queue[tail++] = root; result[root] = 0;
         while (head < tail)
         {
             int node = queue[head++]; if (result[node] >= limit) continue;
-            for (int d = 0; d < 4; d++)
+            for (int d = 0; d < graph.DirectionCount(node); d++)
             {
                 int next = graph.Neighbor(node, d);
                 if (next < 0 || result[next] >= 0 || !graph.CanMove(node, next) || !graph.CanMove(next, node)) continue;
@@ -443,7 +449,7 @@ public static class EcologyTerritoryPlanner
             { int next = source.Neighbor(node, d); if (next >= 0 && legal[next] && source.CanMove(node, next)) edges[node] |= (byte)(1 << d); }
         }
         return new EcologyNavigationGraph(source.GenerationId, source.Origin, source.Width, source.Height,
-            source.ProjectionIdentity, source.FootprintIdentity, legal, edges);
+            source.ProjectionIdentity, source.FootprintIdentity, legal, edges, source.FilterLinks(legal));
     }
     private static MapPlacementPlan CopyPlan(MapPlacementPlan source)
     {

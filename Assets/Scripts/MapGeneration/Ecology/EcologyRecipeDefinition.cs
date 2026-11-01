@@ -5,6 +5,8 @@ using UnityEngine;
 /// <summary>Explicit retained candidate inputs. No runtime GUID lookup or mutable default fallback.</summary>
 public sealed class EcologyRecipeDefinition : ScriptableObject
 {
+    public const string VNextI1ProfileId = "ecology-vnext-i1-20261030";
+    public const string VNextI1ImplementationId = "terrain-vnext-i1-native-r7-v3";
     public const string ProfileId = "ecology-zoning-v1";
     public const string UnitsCandidateProfileId = "ecology-zoning-units-candidate-v1";
     public const string UnitsStableCandidateProfileId = "ecology-zoning-units-float32-candidate-v2";
@@ -18,7 +20,7 @@ public sealed class EcologyRecipeDefinition : ScriptableObject
         profileId == RemediationProfileId || profileId == SurfaceV4ProfileId;
     public static string ArchiveOnlyMessage(string profileId) =>
         profileId == SurfaceV4ProfileId ? LegacyR4ArchiveOnlyMessage : LegacyR3ArchiveOnlyMessage;
-    public static bool IsSurfaceProfile(string id) => id == SurfaceV4ProfileId || id == MainV1ProfileId;
+    public static bool IsSurfaceProfile(string id) => id == SurfaceV4ProfileId || id == MainV1ProfileId || id == VNextI1ProfileId;
     public static bool IsRemediationProfile(string id) => id == RemediationProfileId || IsSurfaceProfile(id);
     public const string RemediationProfileId = "ecology-zoning-units-remediation-v3";
     public const string RemediationFloorPolicyVersion = "units-remediation-v3-floor-budget-v1";
@@ -45,7 +47,7 @@ public sealed class EcologyRecipeDefinition : ScriptableObject
     public bool BossContentPending => bossContentPending;
     public EcologyRetainedTerrainGenerator TerrainGenerator => retainedTerrain;
     public string ContentVersion => resolvedContent != null ? resolvedContent.Identity : throw new InvalidOperationException("Resolve the retained recipe before capturing its content identity.");
-    public string RecipeVersion => DeclaredProfileId == MainV1ProfileId ? MainV1FloorPolicyVersion : DeclaredProfileId == SurfaceV4ProfileId ? SurfaceV4FloorPolicyVersion : DeclaredProfileId == RemediationProfileId ? RemediationFloorPolicyVersion :
+    public string RecipeVersion => DeclaredProfileId == VNextI1ProfileId ? "vnext-i1-floor-budget-v1" : DeclaredProfileId == MainV1ProfileId ? MainV1FloorPolicyVersion : DeclaredProfileId == SurfaceV4ProfileId ? SurfaceV4FloorPolicyVersion : DeclaredProfileId == RemediationProfileId ? RemediationFloorPolicyVersion :
         new EcologyTerritoryRecipe(bossContentPending: bossContentPending).Identity;
     public EcologyTerritoryRecipe ResolveTerritoryRecipe(int floorNumber)
     {
@@ -70,6 +72,7 @@ public sealed class EcologyRecipeDefinition : ScriptableObject
     public string DeclaredProfileId => string.IsNullOrEmpty(candidateProfileId) ? ProfileId : candidateProfileId;
     public static string ResourcePathFor(string profileId)
     {
+        if (string.Equals(profileId, VNextI1ProfileId, StringComparison.Ordinal)) return "MapVNext/I1/Recipe";
         if (string.Equals(profileId, ProfileId, StringComparison.Ordinal)) return "Ecology/ZoningV1/Recipe";
         if (string.Equals(profileId, UnitsCandidateProfileId, StringComparison.Ordinal)) return "Ecology/UnitsCandidateV1/Recipe";
         if (string.Equals(profileId, UnitsStableCandidateProfileId, StringComparison.Ordinal)) return "Ecology/UnitsStableCandidateV2/Recipe";
@@ -100,8 +103,10 @@ public sealed class EcologyRecipeDefinition : ScriptableObject
             .OrderBy(t => t.TypeId, StringComparer.Ordinal).ToArray();
         bool stableCandidate = string.Equals(DeclaredProfileId, UnitsStableCandidateProfileId, StringComparison.Ordinal) ||
             IsRemediationProfile(DeclaredProfileId);
-        if (stableCandidate ? retainedTerrain == null || retainedTerrain.ImplementationId != "terrain-float32-retained-v1" : retainedTerrain != null)
+        if (stableCandidate ? retainedTerrain == null || retainedTerrain.ImplementationId != (DeclaredProfileId == VNextI1ProfileId ? VNextI1ImplementationId : "terrain-float32-retained-v1") : retainedTerrain != null)
             throw new InvalidOperationException("RetainedTerrainImplementationMismatch");
+        if (retainedTerrain != null && retainedTerrain.HasVersionedSpace != (DeclaredProfileId == VNextI1ProfileId))
+            throw new InvalidOperationException("MixedRetainedSpatialImplementation");
         bool pendingCandidate = stableCandidate || string.Equals(DeclaredProfileId, UnitsCandidateProfileId, StringComparison.Ordinal);
         if (ResourcePathFor(DeclaredProfileId) == null || pendingCandidate != bossContentPending ||
             types.Select(t => t.TypeId).Distinct(StringComparer.Ordinal).Count() != types.Length ||

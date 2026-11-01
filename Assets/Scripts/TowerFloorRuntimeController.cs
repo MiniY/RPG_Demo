@@ -124,6 +124,8 @@ public sealed class TowerFloorRuntimeController : MonoBehaviour, IMapRuntimeRead
             context.ActiveMap,
             context.ActiveMap.ExitCell);
         exitPosition.z = exitPortalInstance.transform.position.z;
+        if (!MapSpatialPlacement.Prepare(context, generationId, exitPortalInstance, exitPosition, out reason, "map.exit"))
+        { RetireCurrentGeneration(); return false; }
         exitPortalInstance.transform.position = exitPosition;
         exitPortalInstance.SetActive(false);
 
@@ -164,6 +166,9 @@ public sealed class TowerFloorRuntimeController : MonoBehaviour, IMapRuntimeRead
         if (!minimapController.TrySetExitAvailable(currentGenerationId, true))
             return;
 
+        var spatialContext = mapController.Orchestrator.Context;
+        if (!MapSpatialPlacement.CanPlace(spatialContext, currentGenerationId, exitPortalInstance.transform, exitPortalInstance.transform.position, out string spatialFailure))
+        { Debug.LogError("Portal activation rejected: " + spatialFailure, this); return; }
         State = TowerFloorExitState.Available;
         exitPortalInstance.SetActive(true);
     }

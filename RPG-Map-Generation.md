@@ -156,7 +156,7 @@
 3. `CONFIRMED_DECISION` 仅来自用户确认的产品、艺术或架构条款；Codex 只能记录用户后续批准及其历史，不能把 `PROPOSED` 或外部材料自行升级。`IMPLEMENTED_VERIFIED` 必须同时有对应源码和明确范围的测试证据；`FAILED` 保留复现证据；`UNKNOWN` 表示仍缺证据；`REFERENCE_ONLY` 不能作为本项目参数。源码可用于更新实现状态，不会自动修改用户确认的目标。
 4. 发生重大规则冲突时，列出双方出处、适用版本、影响和建议，等待用户裁决；不得静默覆盖 `CONFIRMED_DECISION`。已确认规则每次变动均在第 8 节留旧值、新值、批准依据及影响范围。重大架构或配方版本变动同时把 Word 手册标为“需要同步更新”；日常调参不重制整本手册。
 
-## 2. 当前有效的已确认规则（16 条）
+## 2. 当前有效的已确认规则（R01–R18；版本适用范围分别记录）
 
 下表记录**目标和门禁**，不表示都已进入正式生产路径。`V2.1` 条款来自用户有条件批准的[审核版第 1、4、6、8–10 节](Docs/MapGeneration/随机地图V2.1视觉与地形生成规范草案.md)；Stage 1 已授权，Stage 2–5 尚未授权。
 
@@ -178,6 +178,8 @@
 | R14 | 生命周期 | 预提交检查拓扑、整梯、Sprite、Collider 与关键往返；投影/物理失败记录 `PostCommitFailure` 和 `GenerationId`，不得发布 `GameplayReady`。 | 当前没有已验证的提交后完整回滚；需单独方案。 |
 | R15 | 阶段授权 | 当前批准只覆盖 V2.1 Stage 1 固定样例及必要验证；Stage 2–5 各需单独授权，Stage 1 失败不得升级为整版 PASS。 | Stage 1.1 视觉仍 `FAIL`。 |
 | R16 | 交付 | 地图行为/画面变更须按验收规范分别报告实现、Windows Player 实际运行、原始截图/动态证据、离线 HTML 包与人工审核；自动断言不代替人工 PASS。 | 文档-only 更新适用规范的简化分支。 |
+| R17 | 高程—草地瓦片集 | 五种草色按草地逻辑高程由低到高固定对应：偏蓝青草 → 纯正绿色 → 淡黄 → 中黄 → 偏褐枯草；同高同色，水平距水、湿度、噪声、地图风格不得换序。不强制每关用齐；序位不是把现有高程重编号为 1–5；水/沙/装饰语义保留。超过五级的策略未定，不循环、夹取或私增颜色。 | VNext I1 a41-r3 已按用户2026-11-01反馈在所审范围实现与人验；旧MainV1/R3/R4不变，五色GUID绑定与源码见M0清单。M1受控本地代码并存集成；正式默认保持MainV1，a41人验按原范围保留。 |
+| R18 | 岩壁立面禁入与占位 | 南侧用于表达高差的岩壁立面不是地面：任何游戏世界实体的实际接地占地不得进入、停留、生成或放置；移动整段轨迹、导航、生成/掉落/池激活/复活/重置/恢复落点共用从同一 MapData 高差、投影和合法楼梯几何派生的禁区。合法草顶/真实梯道保留；按各实体真实占地判断，非整张 Sprite 或统一玩家半径；地形本体、管理器、相机/UI 不属于被禁实体。 | VNext I1 a41-r3 所审范围人工PASS；旧MainV1保持旧几何，不宣称执行新版R18。5份接地观测缺口保留；M0-02已由b01定向实证解除；M1仅代码并存集成，不将新版R18追用于旧档。 |
 
 ## 3. 当前代码事实与版本边界
 
@@ -238,6 +240,7 @@
 | 2026-10-18 | V21-SOUTH-STAIR-20261018-04（新增南梯素材职责/北侧禁用） | 指定源图24–27职责与北侧约束未单列 → 左三宽梯/右一单格、竖直两个Sprite、北侧无梯且不旋转镜像 | 用户本轮新增强约束及3张素材/目标附件 | 仅隔离3/3自然exit0、35图；S02混搭未通过、原15拒绝保持。S02肩片例外/正式映射未批准，详见§23 |
 | 2026-10-18 | V21-SOUTH-STAIR-20261018-05（南梯邻接与视觉+1纠正） | 04仅按宽度解释 → 按每行左右地形选a/b/c/d，南梯视觉+Y一格；逻辑/碰撞不动 | 用户新附件RPG_Demo_Stage1_South_Stair_Sprite_Correction.md §1–7 | 仅隔离候选；原15拒绝与旧失败保留，正式肩片/映射另批，无B2/Stage2。详见§24 |
 | 2026-10-19 | V21-S02-PROJECTION-20261019-06（S02显式肩片例外） | 旧§7 S02用32/33上肩 → 仅新显式Stage1请求所选S02跳过两肩、露已有34/35、四片原生踏面+Y1 | 用户本轮明确批准最小方案实施 | 21/21自然exit0；原图/Side02/V2/碰撞保护、P1P2未正式化，原15拒绝与B1未通过保持。见§26 |
+| 2026-11-01 | I1-M0-R17-R18-SYNC-PREPARED | committed main旧16条 → 同步此前用户批准R17/R18及其版本边界；原R01–R16不改 | 2026-10-28/29原用户规则与2026-11-01 I1人验/M0授权 | 仅受控文档草案，M0=MERGE_BLOCKED；旧manifest/默认/存档不改；历史规则与失败保留 |
 
 下一次更新追加一行；若只变更实现状态或证据而未改已确认规则，在任务记录中注明“R01–R16 无变更”，不得伪造新的批准。
 
@@ -684,3 +687,34 @@ Assets04实际66资源/GUID/FileID及274动画引用PASS；Tests07专项7/7、Bu
 用户实际体验ReviewR401 / BuildR405：岩壁碰撞、植被位置、水中泡沫、阴影瓦片全部USER_CONFIRMED PASS，R4_MANUAL_ACCEPTANCE=PASS_4_OF_4。旧R3两FAIL原始证据及旧六PASS原范围保留，不凭R4自动回归称旧六项已在R4人工复验。VIS-F1=A/VIS-S1=A、T13-B1有限观察HIGH_RISK、Boss CONTENT_PENDING保持。此前“待统一复验”是交付时历史，本次用户确认后当前四项已通过。
 
 Main生产输入仍原R3，R4_INTEGRATION=PENDING / RELEASE=NOT_AUTHORIZED。[具体集成预审](Docs/MapGeneration/Ecology/R4_CONTROLLED_INTEGRATION_PLAN.md)已只读核对54文件差异与旧R3档15共享脚本源锁风险；[验收报告](Docs/MapGeneration/Ecology/C06_C07_ACCEPTANCE_REPORT.md)及[HANDOFF](Docs/MapGeneration/Ecology/HANDOFF.md)为实际入口。本轮只写文档/证据/Obsidian，未运行Unity或改游戏/Git。等待用户批准具体方案，不能自动覆盖主工程、扩大OLD-SAVE=A到R3或升级旧R01–R16/地形全阶段/发布结论。
+
+
+## 2026-11-01 I1人工通过与M0合入准备
+
+I1_HUMAN_ACCEPTANCE=PASS_WITH_REVIEWED_SCOPE，适用map-vnext-i1-integration-20261031-a41/a41-r3。最新反馈覆盖配色、东西梯/AD阻挡、南侧岩壁、实体出口、8675309/21193及保存退出重开；无补充。不伪造逐Seed矩阵，历史根因UNKNOWN保留。M0=MERGE_BLOCKED，仅阻断为I1全局启动隔离回调会影响正式默认宿主；已验收Player仍有效。[精确清单、分类与最小解除条件](Docs/MapGeneration/MapVNext-I1-M0-20261101.md)。当前文档是拟合入内容，需先解决启动边界并获得新的执行授权；本轮未合main、提交、推送或切默认。
+
+
+<!-- M0-02-STARTUP-FIX-20261101 -->
+## 2026-11-01 M0-02 默认启动边界最小返修（待授权同步）
+
+本记录只准备于 I1 隔离树，未写 main、未提交/合并/推送、未切正式默认。a41/r3 用户六项 PASS_WITH_REVIEWED_SCOPE 原范围有效；原始包、Run、失败和 UNKNOWN 不改。
+
+新受审宿主 `map-vnext-m0-startup-20261101-b01` 将 Reviewed/Compatible Host 与编译时 Explicit I1 Startup 能力分开。普通 SampleScene/Editor 默认无 I1 能力；Windows 普通入口真实门控前后 slots/legacy/PlayerPrefs 引用不变。只有 I1 专用 Player 附加 RPG_I1_ISOLATED_STARTUP，在 GameSession 前安装私有路径/内存偏好；错配先私有 quarantine 再拒绝，不回落正式存档。默认 Windows 小样使用 baked company/product 独立影子命名空间和原 PlayerPrefs，不在启动后调用 TestIsolation 掩盖原选择。
+
+定向 Editor 主套件11/11且自然退出0；两 Windows Build、MainV1与VNext各恢复/实际保存/新进程重开均自然0。MainV1四份完整 World 与 a41 原基准逐字节一致；VNext从a41真实磁盘副本出发，四新完整World相等，实际checkpoint变化仅真实savedAtUtc，不外推不存在的a41对应完整World。两能力错配 Windows 反例在无GameSession/Ready时私有拒绝，自然2，rawFAILED保留。附加旧seam4/4但退出TIMEOUT/forced保留，已清理残留0/双锁释放，不称生命周期缺陷根因修复。
+
+旧 Main manifest SHA c55fb3b4b0362e8bb59e84f4624fbb22c2f9ef96f3dcd5f61481a92dab9c9802 不变，main1220原字节、I11197原字节+23受审源码差异；宿主671整组校验单列。MainV1原算法/几何/恢复与VNext独立内容身份均不迁移，R17五色色序、R18新版岩壁、楼梯和0.30脚圆无变化。实际合入仍须新的明确Git授权，正式默认切换另行授权。
+
+经验：RuntimeInitializeOnLoadMethod 等最早生命周期的全局副作用不能由专项 Demo 恒真标记控制。接口准备阶段必须同时验证新能力启用时的正式链，以及新能力未启用时旧默认入口零副作用。宿主兼容身份与专项启动能力须分离；影子存储不得掩盖门控前后的真实选择。
+
+
+<!-- MAPVNEXT-M1-LOCAL-INTEGRATION-20261101 -->
+## 2026-11-01 M1 本地受控集成记录
+
+用户在M0-02交付后明确要求“你进入下一步”，本轮据已交安全计划继续本地受控Git集成，推送/强推/正式默认切换/存档迁移不在范围。前文“等待最小返修/尚无Git执行权”均是按日期保留的历史状态，不能替代本轮状态。精确提交、main引用和结束结果以[本轮原始证据目录](D:/.codex/worktrees/map-vnext-integration-i1/RPG_Demo/Artifacts/MapAcceptance/MapVNext-Integration-I1-20261029/M1Integration-20261101)为准；本段不伪造尚未产生的提交SHA或Player验收。
+
+产品沿用b01受审实现（671host/3570产品输入），不改地图规则、内容身份或原26共享实现。195产品+45支持+5文档之外，仅追加一项必要Git元数据：.gitattributes逐路径保存149项既有受审字节的行尾（其中126产品），另固定属性文件自身LF。无目录/扩展通配豁免、无SHA跳过、无源码或旧manifest改写。完整实际索引检出3570项与b01逐SHA一致，故不为Git包装/文档再次构建。
+
+MainV1旧几何/恢复与VNext明确版本路由继续并存；DEFAULT无I1专用编译能力，I1_PRIVATE仅其构建携带该能力。旧Main manifest不变，当前整组严格1197原字节+23批准差异继续与兼容资格分列。a41/r3用户六项范围验收、b01定向11/11/双Build/实际两档新进程恢复和两Windows拒绝证据复用；补充接缝TIMEOUT/forced、历史导航首因UNKNOWN、16严格拒绝及5诊断缺口保持，不新增视觉人工PASS。
+
+三共享文档仅提交从committed main准备的窄变更；主工作区既有文本另做三方保留，不把其他任务内容打入本次提交。主目录其他dirty、付费资源、旧Build/Artifacts、正式存档和无关任务继续保留。代码合入只引入显式能力，正式默认仍原MainV1。

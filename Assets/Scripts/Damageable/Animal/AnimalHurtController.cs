@@ -103,7 +103,7 @@ public class AnimalHurtController : MonoBehaviour
     {
         if (duration <= 0f)
         {
-            transform.position = to;
+            TryApplySpatialPosition(to);
             yield break;
         }
 
@@ -114,11 +114,18 @@ public class AnimalHurtController : MonoBehaviour
             elapsed += Time.deltaTime;
             float progress = Mathf.Clamp01(elapsed / duration);
             progress = progress * progress * (3f - 2f * progress); // SmoothStep，让位移更顺。
-            transform.position = Vector3.LerpUnclamped(from, to, progress);
+            if (!TryApplySpatialPosition(Vector3.LerpUnclamped(from, to, progress))) yield break;
             yield return null;
         }
 
-        transform.position = to;
+        TryApplySpatialPosition(to);
+    }
+
+    private bool TryApplySpatialPosition(Vector3 destination)
+    {
+        var lease = GetComponent<MapSpatialActor>();
+        if (lease != null && !lease.CanMove(transform.position, destination)) return false;
+        transform.position = destination; return true;
     }
 
     // 停止当前正在播放的受击位移。

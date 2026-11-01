@@ -56,7 +56,7 @@ public sealed class EcologyConstructiveCapacity
             while (head < tail)
             {
                 int node = queue[head++]; candidate.Add(node);
-                for (int d = 0; d < 4; d++)
+                for (int d = 0; d < graph.DirectionCount(node); d++)
                 {
                     expansions++;
                     int next = graph.Neighbor(node, d);
@@ -81,6 +81,12 @@ public sealed class EcologyConstructiveCapacity
                 if (!feetSeparated(node, other)) { separated = false; break; }
             if (!separated) { rejectedByFootprint++; continue; }
             placements.Add(node);
+            if (graph.HasContinuousLinks)
+            {
+                var field = graph.BuildReturnField(new[] { node });
+                for (int i = 0; i < count; i++) if (field.Distances[i] >= 0 && field.Distances[i] < minimumSpacingSteps) spacingBlocked[i] = true;
+                continue;
+            }
             int stamp = placements.Count, head = 0, tail = 0;
             queue[tail++] = node; seen[node] = stamp; distances[node] = 0;
             while (head < tail)

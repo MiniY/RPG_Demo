@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>楼梯专项验收：先看这里</title><style>@@STYLE@@</style></head>
+<body><main>
+<header id="top">
+<p class="identity">楼梯专项候选 · @@REVISION@@</p>
+<h1>基础连接视觉已通过；随机布局尚未验收。</h1>
+<p class="intro">@@INTRO@@</p>
+<p class="build">适用试玩：<code>@@BUILD@@</code><br>本轮更新说明，原 Player 与原始媒体复用；未重新构建或运行。</p>
+<nav aria-label="三个主要入口"><a class="primary" href="#fixes">先看修复前后</a><a href="#samples">查看全部样例</a><a href="#play">按说明试玩</a></nav>
+<div class="acceptance">@@LATEST_STATUS@@<p>@@FEEDBACK_SCOPE@@</p></div>
+</header>
+
+<section id="fixes"><h2>先看修复前后</h2>
+<p>先打开与你想看的草色、侧面对应的一组。左图是原 r2，右图是原 r3d；本轮没有重新采集。地形和尺寸的对应关系见技术记录，画面内的英文版本标记保留。</p>
+<div class="question"><h3>楼梯接到高地的地方有没有缺边</h3><p>斜坡下端接入平台的那一格，应接上相邻边界。这项在 r3d 扩展矩阵中已获你确认，下面保留对照帮助定位。</p></div>
+<div class="question"><h3>高平台周围有没有多出一圈草边</h3><p>看更高平台脚下的低地：应连续铺接，而不是围着高地又长一圈低地自己的边。真正的地图外轮廓、临水边和下落边应继续保留。<strong>本次总括为基础视觉通过；不补造每个草边细项的单独人工回答。</strong></p></div>
+<div class="question"><h3>人物是不是沿斜坡走上去</h3><p>左侧楼梯上行 W+D，下行 S+A；右侧上行 W+A，下行 S+D。低地入口只横移应被挡住。可先看采样回放，再按下方说明亲自试。<strong>操作验收仍待你确认。</strong></p></div>
+@@COMPARISONS@@
+</section>
+
+<section id="generation-scope"><h2>基础样例与随机生成的区别</h2>@@GENERATION_SCOPE@@<p><a href="../generation-scope.md">静态调用核对与源码来源</a></p></section>
+<section id="samples"><h2>保留的受控变种与多层组合</h2>
+<p>共 @@VARIANTS@@ 个变种和 @@MAPS@@ 个固定地图（随机种子），合计 72 个可玩场景。前 8 个基础连接已包含在 60 个变种内；@@CONTEXTS@@ 类是 4 组相邻高度 × 2 侧 × 3 种入口环境的分类，不额外加到数量中。尺寸变体分别有 24、24、12 个。</p>
+<p><strong>固定地图编号（Seed，随机种子）</strong>用于重复生成同一候选地图，不是游戏楼层号。<strong>H0–H4 是地形高度编号</strong>，不是闯关层数，也不是 Tilemap 的绘制顺序。五色映射只核实于本候选。</p>
+<div class="filters"><label>找示例、颜色或编号<input id="filter" type="search" placeholder="例如：偏蓝、拐角、21193、V04"></label><label>平台侧面<select id="side-filter"><option value="">全部侧面</option><option value="West">左侧（西侧）</option><option value="East">右侧（东侧）</option><option value="Alternating">多层地图</option></select></label><label>入口形状<select id="context-filter"><option value="">全部形状</option><option value="OpenLanding">入口附近比较开阔</option><option value="LongCliff">旁边是一段较长岩壁</option><option value="CornerClearance">入口靠近拐角</option><option value="NestedFourLevels">多层平台组合</option></select></label><button id="clear-filter">清除筛选</button></div>
+<p id="filter-count" role="status"></p><div id="cases" class="samples">@@CASES@@</div>
+</section>
+
+<section id="play"><h2>按说明试玩</h2><p>这些操作对应原 r3d 的现有按钮和按键。本轮未改 Player：中文说明与英文按钮一一对照，不增加程序没有的跳转功能。</p><p><a class="primary" href="../MVP_Windows_x64/MapVNextStairs.exe">打开原 r3d 试玩</a>　若链接被浏览器拦截，请进入包内 MVP_Windows_x64 文件夹双击 EXE，保留完整依赖目录。</p>@@GUIDE@@<h3>可复制的反馈表</h3>@@FEEDBACK@@<p><a href="../how-to-review.md">Markdown 试玩说明</a> · <a href="../START-HERE.md">一页阅读入口</a></p></section>
+
+<aside id="support"><h2>辅助参考</h2><p>下面的素材帮助理解颜色和外形，不是新增的十项操作验收。</p>
+<details id="materials"><summary>五套草地素材长什么样：素材与手绘模板对照</summary>
+<h3>素材与手绘模板对照：只检查颜色和拼接外形，不代表可以上楼</h3>
+<p>五种草色对应候选五个高度，同一套素材含左右两侧外形。这里没有承诺完整的上下层连接、角色碰撞和实际通行；偏蓝 H0 的素材也不意味着存在一个未定义的更低草地等级。</p>
+<p class="warning"><strong>旧十张展示图有问题，已登记。</strong>实际打开后发现：标签虽然更换，大块平台持续为绿色，只有中间小块随色组变化，无法清楚展示完整五色模板和独立东西形状。因此下面用未改像素的原素材，按已保存的 19 格模板数据在网页排布，并与用户原手绘参考并排；明确属于说明拼贴。原十图在各卡片的折叠区保留，不能当作正确示范。</p>
+@@MATERIAL@@</details>
+</aside>
+
+<section id="technical"><h2>技术记录与尚未完成的工作</h2>
+@@SCOPE_NOTE@@
+<p>这是专项候选，还没有接入正式随机地图、正式 GameplayReady（玩法就绪流程）、战斗高程或存档兼容验证。旧 EditMode 78/78 断言成功但退出超时，属于较早 r3 源码；原架构基线受阻仍保留。说明改版不处理这些历史限制。</p>
+<details><summary>证据来源、原始数据与工程限制</summary>
+<p>原 Player Run：<code>0ed8a7ed753f414b89dec3c81f0221ba</code>。自动检查主体是原 r3d 程序，人工主体是附件引用的用户分组反馈；两者分别记录。采样回放保留原图与对应真实输入，不是完整实时录像。</p>
+<ul><li><a href="../technical-report.md">技术报告与未验证范围</a></li><li><a href="../human-feedback.json">分组人工反馈、原话和适用 Build</a></li><li><a href="../display-metadata.json">全部中文展示元数据与原件哈希</a></li><li><a href="../case-index.md">全部案例 Markdown 索引</a></li><li><a href="../Evidence/r3d/run-summary.json">原逐 Run 生命周期</a></li><li><a href="../Evidence/r3d/verdicts.json">未改写的原 r3d 自动结果</a></li><li><a href="../Evidence/r3d/BuildReport.json">原构建报告</a></li><li><a href="../Evidence/r3d/build-tree.json">完整 Player 哈希</a></li><li><a href="../Evidence/r3d/movement.csv">真实移动轨迹 CSV</a></li><li><a href="../Evidence/r3d/frames.csv">真实截图和按键逐帧记录</a></li><li><a href="../Evidence/r3d/report-original.md.txt">原 r3d 报告文本（历史链接不作为本包入口）</a></li><li><a href="../Checks/delivery-check.json">本轮可执行交付检查</a></li><li><a href="../archive-locations.txt">精简包省略项与完整历史保留位置</a></li></ul>
+<p>完整历史包继续保留旧失败 Build、XML、截图、轨迹与源代码。本包只带核心验收媒体、原始数据及完整 r3d Player；没有把省略的旧 EXE 伪装成包内可用链接。</p>
+</details>
+</section>
+<footer><p>基础视觉已通过；随机布局尚未完成本次验收。操作没有新增人工 PASS；P1 未关闭，P2/F1/多风格未启动，没有提交、合并或推送。</p><a href="#top">回到开头</a></footer>
+</main><script>const frameEvidence=@@TIMELINE@@;const negativeEvidence=@@NEGATIVES@@;
+@@SCRIPT@@</script></body></html>

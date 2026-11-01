@@ -52,7 +52,7 @@ public sealed class EcologyHomeNavigation
             }
         }
         cached = new EcologyNavigationGraph(MovementGraph.GenerationId, MovementGraph.Origin, MovementGraph.Width, MovementGraph.Height,
-            MovementGraph.ProjectionIdentity, MovementGraph.FootprintIdentity, legal, edges);
+            MovementGraph.ProjectionIdentity, MovementGraph.FootprintIdentity, legal, edges, MovementGraph.FilterLinks(legal));
         pursuitGraphs.Add(maximumSteps, cached); return cached;
     }
     public bool TryPursuitWaypoint(Collider2D foot, Vector2 position, Vector2 target, int maximumSteps, out Vector2 waypoint)
@@ -85,6 +85,7 @@ public sealed class EcologyHomeNavigation
             if (pursuitFields.Count >= 16) pursuitFields.Remove(pursuitFieldOrder.Dequeue());
             pursuitFields.Add(key, field); pursuitFieldOrder.Enqueue(key);
         }
+        if (geometry.SpatialContext != null) return geometry.TryVersionedWaypoint(foot, position, graph, field, movementDomain, out waypoint, out _);
         if (position.Equals(geometry.NodeWorldPosition(containing)) && graph.IsLegal(containing))
         {
             int next = field.Next[containing];
@@ -117,6 +118,7 @@ public sealed class EcologyHomeNavigation
         }
         Vector2 targetPosition = geometry.NodeWorldPosition(target);
         if ((position - targetPosition).sqrMagnitude <= .0025f) { waypoint = targetPosition; return true; }
+        if (geometry.SpatialContext != null) return geometry.TryVersionedWaypoint(foot, position, HomeGraph, field, homeDomain, out waypoint, out _);
         if (position.Equals(geometry.NodeWorldPosition(containing)) && HomeGraph.IsLegal(containing))
         {
             int next = field.Next[containing];
@@ -183,6 +185,7 @@ public sealed class EcologyHomeNavigation
     }
     private bool CertifyRangeSegment(Collider2D foot, Vector2 from, Vector2 to, int maximumSteps)
     {
+        if (geometry.SpatialContext != null) return geometry.CertifyVersionedRange(foot, from, to, MovementGraph, ReturnField, movementDomain, maximumSteps);
         if (TryClipHomeTranslation(foot, from, to, out Vector2 homeEnd) && homeEnd.Equals(to)) return true;
         if (!geometry.TryWorldNode(from, out int first) || !geometry.TryWorldNode(to, out int last)) return false;
         for (int endpoint = 0; endpoint < 2; endpoint++)
@@ -231,6 +234,13 @@ public sealed class EcologyHomeNavigation
         if (!geometry.TryWorldNode(position, out int containing) ||
             !geometry.ContainsFootInSurface(foot, position, walkableSurface, protection)) return false;
         Vector2 containingCentre = geometry.NodeWorldPosition(containing);
+        if (geometry.SpatialContext != null)
+        {
+            if (!geometry.TryVersionedWaypoint(foot, position, MovementGraph, ReturnField, movementDomain, out returnWaypoint, out steps)) return false;
+            // A near-centre waypoint tolerance cannot certify that the complete foot is home.
+            steps = Math.Max(1, steps);
+            return true;
+        }
         int direct = ReturnField.Distances[containing];
         if (position.Equals(containingCentre) && MovementGraph.IsLegal(containing) && direct > 0)
         {
@@ -308,7 +318,7 @@ public sealed class EcologyHomeNavigationCache
         while (queue.Count > 0)
         {
             int node = queue.Dequeue();
-            for (int d = 0; d < 4; d++)
+            for (int d = 0; d < home.DirectionCount(node); d++)
             {
                 int next = home.Neighbor(node, d);
                 if (next < 0 || member[next] || !home.CanMove(node, next) || !home.CanMove(next, node)) continue;
@@ -325,7 +335,7 @@ public sealed class EcologyHomeNavigationCache
                 if (next >= 0 && member[next] && home.CanMove(n, next)) edges[n] |= (byte)(1 << d);
             }
         var qualified = new EcologyNavigationGraph(home.GenerationId, home.Origin, home.Width, home.Height,
-            home.ProjectionIdentity, home.FootprintIdentity, member, edges);
+            home.ProjectionIdentity, home.FootprintIdentity, member, edges, home.FilterLinks(member));
         cached = new EcologyHomeNavigation(Geometry, qualified, global,
             Enumerable.Range(0, member.Length).Where(n => member[n]).ToArray(), region.Nodes, protectedNodes);
         homes.Add(key, cached); return cached;

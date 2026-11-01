@@ -28,8 +28,9 @@ public sealed partial class MapCandidateCollisionGeometry
     private readonly float polygonContactRadius;
     private readonly Dictionary<string, EcologyNavigationGraph> graphs = new Dictionary<string, EcologyNavigationGraph>(StringComparer.Ordinal);
     private MapCandidateCollisionGeometry(Guid generation, MapData map, MapTilemapRenderer terrain,
-        List<Vector2[]> shapes, float[] sourceContactRadii)
+        List<Vector2[]> shapes, float[] sourceContactRadii, MapSpatialContext spatialContext = null)
     {
+        spatialContext?.Require(generation, map); SpatialContext = spatialContext;
         GenerationId = generation; Width = map.Width; Height = map.Height; Origin = map.Origin;
         MapContentIdentity = ComputeMapContentIdentity(map);
         polygonContactRadius = Physics2D.defaultContactOffset;
@@ -74,6 +75,7 @@ public sealed partial class MapCandidateCollisionGeometry
         ProjectionIdentity = Hash(writer =>
         {
             writer.Write("candidate-collision-v3-native-contact-map-input"); writer.Write(MapContentIdentity); writer.Write(polygonContactRadius);
+            if (SpatialContext != null) writer.Write(SpatialContext.ImplementationId);
             writer.Write(Width); writer.Write(Height); writer.Write(Origin.x); writer.Write(Origin.y);
             writer.Write(floorBounds.xMin); writer.Write(floorBounds.yMin); writer.Write(floorBounds.xMax); writer.Write(floorBounds.yMax);
             for (int n = 0; n < count; n++)
@@ -83,6 +85,7 @@ public sealed partial class MapCandidateCollisionGeometry
             { writer.Write(polygon.ContactRadius); writer.Write(polygon.Points.Length); foreach (Vector2 point in polygon.Points) { writer.Write(point.x); writer.Write(point.y); } }
         });
     }
+    public MapSpatialContext SpatialContext { get; }
     public Guid GenerationId { get; }
     public Vector2Int Origin { get; }
     public int Width { get; }
@@ -178,12 +181,13 @@ public sealed partial class MapCandidateCollisionGeometry
 
     public static MapCandidateCollisionGeometry Capture(Guid generationId, MapData map,
         MapSimpleDecorationData decorations, MapGenerationSettings settings,
-        MapTilemapRenderer terrain, MapSimpleDecorationRenderer decoration)
+        MapTilemapRenderer terrain, MapSimpleDecorationRenderer decoration, MapSpatialContext spatialContext = null)
     {
         if (generationId == Guid.Empty || map == null || decorations == null || settings == null || terrain == null || decoration == null)
             throw Invalid("MissingCandidateGeometryInput");
         ValidateGrid(terrain.WaterBaseTilemap); ValidateGrid(terrain.TerrainCollisionTilemap);
         ValidateGrid(decoration.DecorationCollisionTilemap);
+        spatialContext?.Require(generationId, map);
         var shapes = new List<Vector2[]>();
         var cliffs = new List<Vector2[]>();
         Transform cliffSpace = terrain.TerrainCollisionTilemap.transform.parent;
@@ -192,7 +196,7 @@ public sealed partial class MapCandidateCollisionGeometry
         {
             Vector2Int cell = new Vector2Int(x, y);
             if (!map.IsWalkable(cell)) AppendTile(settings.collisionMarkerTile, terrain.TerrainCollisionTilemap, cell, shapes);
-            else
+            else if (spatialContext == null)
             {
                 AppendCliffEdge(map, terrain.WaterBaseTilemap, cliffSpace, cell, cell + Vector2Int.right, true, cliffs);
                 AppendCliffEdge(map, terrain.WaterBaseTilemap, cliffSpace, cell, cell + Vector2Int.up, false, cliffs);
@@ -205,7 +209,8 @@ public sealed partial class MapCandidateCollisionGeometry
             for (int i = 0; i < path.Length; i++) world[i] = cliffSpace.TransformPoint(path[i]);
             shapes.Add(world);
         }
-        if (settings.remediationProjectedSurfaces)
+        if (spatialContext != null) foreach (var path in spatialContext.Boundaries) shapes.Add((Vector2[])path.Clone());
+        if (spatialContext == null && settings.remediationProjectedSurfaces)
             shapes.AddRange(MapSurfaceV4Policy.Build(map, terrain.TerrainV2Palette, settings).WorldPolygons(terrain.WaterBaseTilemap));
         int cliffShapeEnd = shapes.Count;
         var decorationCells = new HashSet<Vector2Int>();
@@ -225,7 +230,7 @@ public sealed partial class MapCandidateCollisionGeometry
         float decorationRadius = ProjectionContactRadius(decoration.DecorationCollisionTilemap);
         for (int i = 0; i < radii.Length; i++)
             radii[i] = i < terrainShapeCount ? terrainRadius : i < cliffShapeEnd ? Physics2D.defaultContactOffset : decorationRadius;
-        return new MapCandidateCollisionGeometry(generationId, map, terrain, shapes, radii);
+        return new MapCandidateCollisionGeometry(generationId, map, terrain, shapes, radii, spatialContext);
     }
 
     // The renderer calls this same formula, retaining its original loop/path order and local coordinates.
@@ -263,7 +268,7 @@ public sealed partial class MapCandidateCollisionGeometry
                 if (next >= 0 && next < legal.Length && legal[next] && Clear(footprint, centers[node], centers[next])) edges[node] |= (byte)(1 << d);
             }
         }
-        cached = new EcologyNavigationGraph(GenerationId, Origin, Width, Height, ProjectionIdentity, identity, legal, edges);
+        cached = new EcologyNavigationGraph(GenerationId, Origin, Width, Height, ProjectionIdentity, identity, legal, edges, QualifySpatialLinks(solidFoot, legal));
         graphs.Add(identity, cached); return cached;
     }
     public bool IsTranslationClear(Collider2D solidFoot, Vector2 bodyStart, Vector2 bodyEnd, float skin) =>

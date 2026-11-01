@@ -66,6 +66,8 @@ public sealed class PlayerSpawnService : MonoBehaviour
         }
 
         destination.z = player.Player.position.z;
+        if (!MapSpatialPlacement.Prepare(context, generationId, player.Player.gameObject, destination, out reason))
+            return Fail(context, generationId, MapFailureCategory.Planning, "PlayerSpatialOccupancyRejected", reason, out reason);
         Vector3 previousPosition = player.Player.position;
         ResetSpatialTransitionState(player);
         player.Body.position = new Vector2(destination.x, destination.y);

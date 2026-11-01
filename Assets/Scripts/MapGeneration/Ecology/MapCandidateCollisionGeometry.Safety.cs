@@ -98,12 +98,14 @@ public sealed partial class MapCandidateCollisionGeometry
 
     private bool SafetyTerrainNeighbors(EcologyNavigationGraph graph, int from, int to)
     {
+        if (SpatialContext != null && graph.FindLink(from, to) != null) return true;
         for (int d = 0; d < 4; d++)
             if (graph.Neighbor(from, d) == to && (terrainEdges[from] & (1 << d)) != 0) return true;
         return false;
     }
     private static int[] SafetyDistances(EcologyNavigationGraph graph, int[] roots)
     {
+        if (graph.HasContinuousLinks) return new List<int>(graph.BuildReturnField(roots).Distances).ToArray();
         var distances = new int[graph.NodeCount]; var queue = new int[graph.NodeCount];
         for (int n = 0; n < distances.Length; n++) distances[n] = -1;
         int head = 0, tail = 0;

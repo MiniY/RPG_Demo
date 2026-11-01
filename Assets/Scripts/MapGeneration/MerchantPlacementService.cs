@@ -197,6 +197,8 @@ public sealed class MerchantPlacementService : MonoBehaviour
         }
 
         destination.z = target.PlacementTransform.position.z;
+        if (!MapSpatialPlacement.Prepare(context, generationId, target.PlacementTransform.gameObject, destination, out reason, MainMerchantLogicalObjectId))
+            return Fail(context, generationId, MapFailureCategory.Planning, "MerchantSpatialOccupancyRejected", reason, out reason);
         target.PlacementTransform.position = destination;
         Physics2D.SyncTransforms();
         if (!context.ActiveRegistry.TryBindInstance(

@@ -43,6 +43,7 @@ public sealed class EcologyRetainedContentManifest
     public void VerifySourceFiles(bool force)
     {
 #if UNITY_EDITOR
+        var differences = new List<MapHostCompatibility.Difference>();
         string root = Path.GetFullPath(Path.Combine(Application.dataPath, ".."));
         string prefix = root.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
         foreach (Entry entry in document.files)
@@ -61,8 +62,11 @@ public sealed class EcologyRetainedContentManifest
                 cached = (info.Length, info.LastWriteTimeUtc.Ticks, digest); sourceCache[path] = cached;
             }
             if (!string.Equals(cached.digest, entry.sha256, StringComparison.Ordinal))
-                throw new InvalidOperationException("RetainedContentMismatch: " + entry.path);
+                differences.Add(new MapHostCompatibility.Difference { path = entry.path, originalSha256 = entry.sha256, currentSha256 = cached.digest });
         }
+        MapHostCompatibility.Verify(document.profile, Identity, differences);
+#else
+        MapHostCompatibility.Verify(document.profile, Identity, Array.Empty<MapHostCompatibility.Difference>());
 #endif
     }
 }

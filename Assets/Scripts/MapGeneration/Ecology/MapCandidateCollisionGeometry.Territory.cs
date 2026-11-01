@@ -26,7 +26,7 @@ public sealed partial class MapCandidateCollisionGeometry
         // fixed box/circle, every touched cell of that sweep belongs to the
         // union touched at its two endpoints. Both ends have full containment.
         return new EcologyNavigationGraph(GenerationId, Origin, Width, Height,
-            ProjectionIdentity, physical.FootprintIdentity, legal, edges);
+            ProjectionIdentity, physical.FootprintIdentity, legal, edges, physical.FilterLinks(legal, link => IsSpatialLinkInSurface(solidFoot, link, home, protection)));
     }
 
     public int[] GetFootSurfaceNodes(Collider2D solidFoot, int bodyNode)

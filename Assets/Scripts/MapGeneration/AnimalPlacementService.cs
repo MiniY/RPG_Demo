@@ -214,6 +214,8 @@ public sealed class AnimalPlacementService : MonoBehaviour
 
             Transform placementTransform = target.PlacementTransform;
             destination.z = placementTransform.position.z;
+            if (!MapSpatialPlacement.Prepare(context, generationId, placementTransform.gameObject, destination, out reason, binding.LogicalObjectId))
+                return Fail(context, generationId, MapFailureCategory.Planning, "AnimalSpatialOccupancyRejected", reason, out reason);
             Rigidbody2D body = placementTransform.GetComponent<Rigidbody2D>();
             if (body != null)
             {

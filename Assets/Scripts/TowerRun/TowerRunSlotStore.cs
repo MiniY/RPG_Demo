@@ -184,6 +184,9 @@ public sealed class TowerRunCompatibilityPolicy
             return TowerRunSlotState.Incompatible;
         }
 
+        if (record.generation != null && record.generation.profileId != "default" && record.generation.profileId != "terrain-v2" &&
+            record.generation.profileId != MapEcologyProfile.ProfileId && EcologyRecipeDefinition.ResourcePathFor(record.generation.profileId) == null)
+        { message = "未知地图内容版本，不能回退当前默认。"; return TowerRunSlotState.Incompatible; }
         bool zonedProfile = record.generation != null && EcologyRecipeDefinition.ResourcePathFor(record.generation.profileId) != null;
         bool supportedEcology = SchemaVersion == TowerRunCheckpointRecord.CurrentSchemaVersion && zonedProfile &&
             record.schemaVersion == TowerRunCheckpointRecord.EcologySchemaVersion;

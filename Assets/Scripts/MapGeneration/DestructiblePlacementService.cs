@@ -253,6 +253,8 @@ public sealed class DestructiblePlacementService : MonoBehaviour
 
             IDestructiblePlacementTarget poolSource =
                 destructiblePrefab.GetComponent<IDestructiblePlacementTarget>();
+            if (context.ActiveSpatialContext != null)
+                return Fail(context, generationId, MapFailureCategory.Configuration, "VNextRequiresZonedDestructibleOwner", "Versioned retained content must use the zoned prepared materializer.", out reason);
             GameObject instanceObject = poolSource.Spawn(
                 destination,
                 Quaternion.identity);

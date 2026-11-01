@@ -75,3 +75,34 @@ Main .codex/HANDOFF.md属于其他历史地图/怪物任务，本轮只读不覆
 
 
 独立只读审阅已补一处：Main写入54白名单与隔离重建55增量不同。重建基准是3457文件R3基包，必须用35新增/20修改的55项并补相同C06测试meta，完整3492逐SHA验收；不可用54直接重建。见reconstruction-delta-from-r3.json和builder-review.md。ResolveTypes在Editor即校验源，旧R3解析也可能拒绝，不只强制恢复。本轮仍未实际重建或集成。
+
+
+## 2026-11-01 MapVNext I1 a41-r3 M0
+
+I1_HUMAN_ACCEPTANCE=PASS_WITH_REVIEWED_SCOPE；本轮M0=MERGE_BLOCKED（默认启动隔离边界）。代码合入和默认切换分开；保持MainV1旧manifest/算法/旧档及其他dirty成果。历史NavFault首因UNKNOWN，不凭人工通过改为已修复。完整最新准备见[MapVNext I1 M0](../MapVNext-I1-M0-20261101.md)。本轮无Git写或Unity。
+
+
+<!-- M0-02-STARTUP-FIX-20261101 -->
+## 2026-11-01 M0-02 默认启动边界最小返修（待授权同步）
+
+本记录只准备于 I1 隔离树，未写 main、未提交/合并/推送、未切正式默认。a41/r3 用户六项 PASS_WITH_REVIEWED_SCOPE 原范围有效；原始包、Run、失败和 UNKNOWN 不改。
+
+新受审宿主 `map-vnext-m0-startup-20261101-b01` 将 Reviewed/Compatible Host 与编译时 Explicit I1 Startup 能力分开。普通 SampleScene/Editor 默认无 I1 能力；Windows 普通入口真实门控前后 slots/legacy/PlayerPrefs 引用不变。只有 I1 专用 Player 附加 RPG_I1_ISOLATED_STARTUP，在 GameSession 前安装私有路径/内存偏好；错配先私有 quarantine 再拒绝，不回落正式存档。默认 Windows 小样使用 baked company/product 独立影子命名空间和原 PlayerPrefs，不在启动后调用 TestIsolation 掩盖原选择。
+
+定向 Editor 主套件11/11且自然退出0；两 Windows Build、MainV1与VNext各恢复/实际保存/新进程重开均自然0。MainV1四份完整 World 与 a41 原基准逐字节一致；VNext从a41真实磁盘副本出发，四新完整World相等，实际checkpoint变化仅真实savedAtUtc，不外推不存在的a41对应完整World。两能力错配 Windows 反例在无GameSession/Ready时私有拒绝，自然2，rawFAILED保留。附加旧seam4/4但退出TIMEOUT/forced保留，已清理残留0/双锁释放，不称生命周期缺陷根因修复。
+
+旧 Main manifest SHA c55fb3b4b0362e8bb59e84f4624fbb22c2f9ef96f3dcd5f61481a92dab9c9802 不变，main1220原字节、I11197原字节+23受审源码差异；宿主671整组校验单列。MainV1原算法/几何/恢复与VNext独立内容身份均不迁移，R17五色色序、R18新版岩壁、楼梯和0.30脚圆无变化。实际合入仍须新的明确Git授权，正式默认切换另行授权。
+
+经验：RuntimeInitializeOnLoadMethod 等最早生命周期的全局副作用不能由专项 Demo 恒真标记控制。接口准备阶段必须同时验证新能力启用时的正式链，以及新能力未启用时旧默认入口零副作用。宿主兼容身份与专项启动能力须分离；影子存储不得掩盖门控前后的真实选择。
+
+
+<!-- MAPVNEXT-M1-LOCAL-INTEGRATION-20261101 -->
+## 2026-11-01 M1 本地受控集成记录
+
+用户在M0-02交付后明确要求“你进入下一步”，本轮据已交安全计划继续本地受控Git集成，推送/强推/正式默认切换/存档迁移不在范围。前文“等待最小返修/尚无Git执行权”均是按日期保留的历史状态，不能替代本轮状态。精确提交、main引用和结束结果以[本轮原始证据目录](D:/.codex/worktrees/map-vnext-integration-i1/RPG_Demo/Artifacts/MapAcceptance/MapVNext-Integration-I1-20261029/M1Integration-20261101)为准；本段不伪造尚未产生的提交SHA或Player验收。
+
+产品沿用b01受审实现（671host/3570产品输入），不改地图规则、内容身份或原26共享实现。195产品+45支持+5文档之外，仅追加一项必要Git元数据：.gitattributes逐路径保存149项既有受审字节的行尾（其中126产品），另固定属性文件自身LF。无目录/扩展通配豁免、无SHA跳过、无源码或旧manifest改写。完整实际索引检出3570项与b01逐SHA一致，故不为Git包装/文档再次构建。
+
+MainV1旧几何/恢复与VNext明确版本路由继续并存；DEFAULT无I1专用编译能力，I1_PRIVATE仅其构建携带该能力。旧Main manifest不变，当前整组严格1197原字节+23批准差异继续与兼容资格分列。a41/r3用户六项范围验收、b01定向11/11/双Build/实际两档新进程恢复和两Windows拒绝证据复用；补充接缝TIMEOUT/forced、历史导航首因UNKNOWN、16严格拒绝及5诊断缺口保持，不新增视觉人工PASS。
+
+三共享文档仅提交从committed main准备的窄变更；主工作区既有文本另做三方保留，不把其他任务内容打入本次提交。主目录其他dirty、付费资源、旧Build/Artifacts、正式存档和无关任务继续保留。代码合入只引入显式能力，正式默认仍原MainV1。

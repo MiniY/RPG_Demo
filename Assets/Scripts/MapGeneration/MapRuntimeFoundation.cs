@@ -103,6 +103,15 @@ public sealed class MapRuntimeContext
     private MapGenerationRequest activeRequest;
     private MapData activeMap;
     private MapData pendingMap;
+    private MapSpatialContext pendingSpatialContext;
+    public MapSpatialContext ActiveSpatialContext { get; private set; }
+    public MapCandidateCollisionGeometry ActiveSpatialGeometry { get; private set; }
+    public void BindSpatialGeometry(Guid generation, MapCandidateCollisionGeometry geometry)
+    {
+        if (activeGenerationId != generation || ActiveSpatialContext == null || geometry == null || geometry.GenerationId != generation || !ReferenceEquals(geometry.SpatialContext, ActiveSpatialContext))
+            throw new InvalidOperationException("StaleSpatialGeometryPublication");
+        ActiveSpatialGeometry = geometry;
+    }
     private MapPlacementPlan activePlacementPlan;
     private MapPlacementPlan pendingPlacementPlan;
     private MapObjectRegistry activeRegistry;
@@ -135,9 +144,10 @@ public sealed class MapRuntimeContext
         if (attempt == null) throw new ArgumentNullException(nameof(attempt));
         pendingGenerationId = attempt.GenerationId; pendingMap = null; pendingPlacementPlan = null;
     }
-    internal void SetPendingMap(Guid generationId, MapData map)
+    internal void SetPendingMap(Guid generationId, MapData map, MapSpatialContext spatialContext = null)
     {
         EnsurePending(generationId); pendingMap = map ?? throw new ArgumentNullException(nameof(map));
+        spatialContext?.Require(generationId, map); pendingSpatialContext = spatialContext;
     }
     internal void SetPendingPlan(Guid generationId, MapPlacementPlan plan)
     {
@@ -153,6 +163,7 @@ public sealed class MapRuntimeContext
             throw new InvalidOperationException("Pending map and placement plan must be complete before commit.");
         MapObjectRegistry previous = activeRegistry;
         activeGenerationId = generationId; activeMap = pendingMap; activePlacementPlan = pendingPlacementPlan;
+        ActiveSpatialContext = pendingSpatialContext; ActiveSpatialGeometry = null;
         activeRegistry = new MapObjectRegistry(generationId);
         foreach (MapPlacementReservation reservation in pendingPlacementPlan.Reservations)
         {
@@ -192,7 +203,7 @@ public sealed class MapRuntimeContext
     {
         if (pendingGenerationId != id) throw new InvalidOperationException($"Generation {id:D} is not pending.");
     }
-    private void ClearPending() { pendingGenerationId = null; pendingMap = null; pendingPlacementPlan = null; }
+    private void ClearPending() { pendingGenerationId = null; pendingMap = null; pendingPlacementPlan = null; pendingSpatialContext = null; }
 }
 
 public static class MapRuntimeModeValidator

@@ -41,6 +41,31 @@ public sealed class TowerRunCoordinator : MonoBehaviour, IEcologyMapSession, IEc
     public const string DefaultProfileId = EcologyRecipeDefinition.MainV1ProfileId;
 #endif
 
+    private string configuredNewRunProfile;
+    public void ConfigureNewRunProfile(string profile)
+    {
+        if (State == TowerRunFlowState.Playing || HasStagedOperation || currentRecord != null || EcologyRecipeDefinition.ResourcePathFor(profile) == null)
+            throw new InvalidOperationException("NewRunProfileConfigurationRejected");
+        configuredNewRunProfile = profile;
+    }
+    private Queue<int> nextFloorInputs;
+    public void ConfigureNextFloorInputs(Guid sourceGeneration, IReadOnlyList<int> inputs)
+    {
+        if (State != TowerRunFlowState.Playing || currentRecord == null ||
+            currentRecord.generation.profileId != EcologyRecipeDefinition.VNextI1ProfileId ||
+            mapController == null || !mapController.Orchestrator.Context.IsReady ||
+            mapController.Orchestrator.Context.ActiveGenerationId != sourceGeneration ||
+            sourceGeneration == Guid.Empty || nextFloorInputs != null || inputs == null || inputs.Count < 1 || inputs.Count > 4)
+            throw new InvalidOperationException("NextFloorInputConfigurationRejected");
+        nextFloorInputs = new Queue<int>(inputs);
+    }
+    private int TakeNextFloorInput()
+    {
+        if (currentRecord == null || currentRecord.generation.profileId != EcologyRecipeDefinition.VNextI1ProfileId)
+            throw new InvalidOperationException("MixedNextFloorInputProfile");
+        if (nextFloorInputs.Count == 0) throw new InvalidOperationException("NextFloorInputSequenceExhausted");
+        return nextFloorInputs.Dequeue();
+    }
     private MapGenerationController mapController;
     private TowerFloorRuntimeController floorRuntime;
     private PlayerStatsRuntime stats;
@@ -164,7 +189,12 @@ public sealed class TowerRunCoordinator : MonoBehaviour, IEcologyMapSession, IEc
 
     public TowerRunSlotReadResult ReadSlot(int slotNumber) => slotStore.ReadSlot(slotNumber);
 
-    public void BeginNewRun()
+    public void BeginNewRun() => BeginNewRun(null);
+
+    // An explicit reproducibility input. Existing callers retain fresh-seed semantics.
+    public void BeginNewRunWithSeed(int seed) => BeginNewRun(seed);
+
+    private void BeginNewRun(int? requestedSeed)
     {
         if (State != TowerRunFlowState.StartupChoice && State != TowerRunFlowState.DeathChoice)
             return;
@@ -180,6 +210,7 @@ public sealed class TowerRunCoordinator : MonoBehaviour, IEcologyMapSession, IEc
         record.savedAtUtc = string.Empty;
         record.floor = new TowerRunFloorRecord { floorNumber = 0, displayName = "新手关卡" };
         record.generation = CreateFreshGenerationRecord();
+        if (requestedSeed.HasValue) record.generation.requestedSeed = requestedSeed.Value;
         BeginOperation(TowerRunOperationKind.NewRun, record);
     }
 
@@ -256,7 +287,7 @@ public sealed class TowerRunCoordinator : MonoBehaviour, IEcologyMapSession, IEc
         if (operationKind == TowerRunOperationKind.NewRun || operationKind == TowerRunOperationKind.FloorTransition)
         {
             string requestedProfile = retry.generation.profileId;
-            retry.generation = CreateFreshGenerationRecord();
+            retry.generation = CreateFreshGenerationRecord(operationKind == TowerRunOperationKind.FloorTransition);
             if (EcologyRecipeDefinition.ResourcePathFor(requestedProfile) != null)
                 retry.generation.profileId = requestedProfile;
             retry.schemaVersion = TowerRunCheckpointRecord.CurrentSchemaVersion;
@@ -267,6 +298,7 @@ public sealed class TowerRunCoordinator : MonoBehaviour, IEcologyMapSession, IEc
 
     public void ReturnToStartupChoice()
     {
+        nextFloorInputs = null;
         InvalidateOperation();
         currentRecord = null;
         entranceCandidate = null;
@@ -372,6 +404,7 @@ public sealed class TowerRunCoordinator : MonoBehaviour, IEcologyMapSession, IEc
             return;
         }
 
+        if (kind != TowerRunOperationKind.FloorTransition) nextFloorInputs = null;
         operationId = Guid.NewGuid();
         finalizedGenerationId = Guid.Empty;
         operationKind = kind;
@@ -422,6 +455,7 @@ public sealed class TowerRunCoordinator : MonoBehaviour, IEcologyMapSession, IEc
         finalizedGenerationId = Guid.Empty;
         operationKind = TowerRunOperationKind.None;
         failureMessage = string.Empty;
+        nextFloorInputs = null;
         State = TowerRunFlowState.Playing;
         ReleaseOperationGates();
         ReleaseStartupGates();
@@ -533,14 +567,14 @@ public sealed class TowerRunCoordinator : MonoBehaviour, IEcologyMapSession, IEc
         PublishStateChanged();
     }
 
-    private static TowerRunGenerationRecord CreateFreshGenerationRecord()
+    private TowerRunGenerationRecord CreateFreshGenerationRecord(bool forNextFloor = false)
     {
         return new TowerRunGenerationRecord
         {
             generatorVersion = GeneratorVersion,
             configurationIdentity = ConfigurationIdentity,
-            profileId = DefaultProfileId,
-            requestedSeed = Guid.NewGuid().GetHashCode(),
+            profileId = configuredNewRunProfile ?? DefaultProfileId,
+            requestedSeed = forNextFloor && nextFloorInputs != null ? TakeNextFloorInput() : Guid.NewGuid().GetHashCode(),
             attemptIndex = 0,
             staticBaselineSignature = string.Empty
         };
@@ -548,7 +582,7 @@ public sealed class TowerRunCoordinator : MonoBehaviour, IEcologyMapSession, IEc
 
     private TowerRunGenerationRecord CreateNextFloorGenerationRecord()
     {
-        TowerRunGenerationRecord generation = CreateFreshGenerationRecord();
+        TowerRunGenerationRecord generation = CreateFreshGenerationRecord(true);
         // A versioned, explicitly selected session keeps its content profile on a new floor.
         // The new entry resolves the current retained version; it never carries the old layout tuple.
         if (currentRecord != null && currentRecord.schemaVersion == TowerRunCheckpointRecord.EcologySchemaVersion &&

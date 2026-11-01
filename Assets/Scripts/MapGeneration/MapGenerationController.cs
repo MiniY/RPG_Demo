@@ -23,6 +23,7 @@ public class MapGenerationController : MonoBehaviour
     private EcologyEcotypeDefinition[] zoningTypes;
     private EcologyPlanningAttemptResult zoningAccepted;
     private EcologyMapRuntime zoningRuntime;
+    private MapSpatialContext projectedSpatialContext;
     public EcologyMapRuntime EcologyRuntime => zoningRuntime;
     public void BindEcologySession(IEcologyMapSession session) => ecologySession = session;
 
@@ -69,6 +70,8 @@ public class MapGenerationController : MonoBehaviour
         zoningRuntime?.Dispose(); zoningRuntime = null; zoningAccepted = null;
         string zoningResource = EcologyRecipeDefinition.ResourcePathFor(request.ProfileId);
         bool zoning = zoningResource != null;
+        if (!zoning && request.ProfileId != "default" && request.ProfileId != "terrain-v2" && request.ProfileId != MapEcologyProfile.ProfileId)
+        { FailPreGenerationConfiguration("UnknownMapContentProfile", request.ProfileId); return; }
         zoningRecipe = null;
         zoningTypes = null;
         if (zoning)
@@ -538,7 +541,8 @@ public class MapGenerationController : MonoBehaviour
         {
             EcologyRetainedTerrainGenerator retained = zoningRecipe != null ? zoningRecipe.TerrainGenerator : null;
             MapData map;
-            if (attemptSettings is MapSurfaceV4Settings && terrainV2)
+            if (retained != null && retained.HasVersionedSpace) map = retained.Generate(attemptSettings, terrainV2);
+            else if (attemptSettings is MapSurfaceV4Settings && terrainV2)
             {
                 // Same fixed seed and original finite candidate order. Qualify
                 // imported native faces against the actual complete player foot.
@@ -549,9 +553,11 @@ public class MapGenerationController : MonoBehaviour
             }
             else map = retained != null ? retained.Generate(attemptSettings, terrainV2) : RandomMapGenerator.Generate(attemptSettings, terrainV2);
             MapSimpleDecorationData decorations = retained != null ? retained.GenerateDecorations(map, attemptSettings) : MapSimpleDecorationGenerator.Generate(map, attemptSettings);
-            if (attemptSettings.remediationProjectedSurfaces)
+            if (attemptSettings.remediationProjectedSurfaces && !(retained != null && retained.HasVersionedSpace))
                 decorations = MapSurfaceV4Policy.FilterDecorations(map, decorations, attemptSettings, tilemapRenderer.TerrainV2Palette);
-            return new MapPendingGeneration(attempt.GenerationId, map, decorations);
+            MapSpatialContext spatial = retained?.CreateSpatialContext(attempt.GenerationId, map, tilemapRenderer, attemptSettings);
+            if (spatial != null) decorations = MapSpatialDecorationFilter.Filter(spatial, decorations, attemptSettings, tilemapRenderer, simpleDecorationRenderer);
+            return new MapPendingGeneration(attempt.GenerationId, map, decorations, spatial);
         }
         finally
         {
@@ -577,7 +583,7 @@ public class MapGenerationController : MonoBehaviour
                 tilemapRenderer, simpleDecorationRenderer, ecologySession.PlayerMovementFoot, merchantPlacementService,
                 plantPlacementService, ecologyPopulationService, animalPlacementService,
                 zoningRecipe.ResolveTerritoryRecipe((ecologySession as IEcologyFloorContext)?.EcologyFloorNumber ?? 0),
-                zoningTypes, ecologySession.ExitInteractionRadius, requestedGeneration?.EcologyEntry?.EcologyAttempt, zoningRecipe.Population);
+                zoningTypes, ecologySession.ExitInteractionRadius, requestedGeneration?.EcologyEntry?.EcologyAttempt, zoningRecipe.Population, pending.SpatialContext);
             if (!zoningAccepted.Succeeded)
                 throw new MapPlanningException("EcologyBudgetExhaustedOnFixedTerrain", string.Join(";", zoningAccepted.Failures), false);
             EcologyEntryIdentity expected = requestedGeneration?.EcologyEntry;
@@ -693,9 +699,17 @@ public class MapGenerationController : MonoBehaviour
 
     private void ProjectCommitted(MapPendingGeneration pending)
     {
+        projectedSpatialContext?.RetireProjection(tilemapRenderer); projectedSpatialContext = null;
         lastGeneratedMap = pending.Map;
         lastGeneratedSimpleDecorations = pending.Decorations;
-        tilemapRenderer.Render(lastGeneratedMap, Settings);
+        if (pending.SpatialContext != null)
+        {
+            pending.SpatialContext.Require(pending.GenerationId, pending.Map);
+            pending.SpatialContext.Project(tilemapRenderer, Settings);
+            projectedSpatialContext = pending.SpatialContext;
+            orchestrator.Context.BindSpatialGeometry(pending.GenerationId, zoningAccepted.TerrainGeometry);
+        }
+        else tilemapRenderer.Render(lastGeneratedMap, Settings);
         if (simpleDecorationRenderer != null)
             simpleDecorationRenderer.Render(lastGeneratedSimpleDecorations, lastGeneratedMap, Settings);
 
@@ -708,7 +722,7 @@ public class MapGenerationController : MonoBehaviour
 
         if (logGenerationSummary)
             Debug.Log($"Map generation committed: GenerationId={orchestrator.Context.ActiveGenerationId}; " +
-                $"RequestedSeed={settings.seed}; Size={settings.mapWidth}x{settings.mapHeight}; " +
+                $"RequestedSeed={orchestrator.Context.CreateDiagnosticSnapshot().ActiveRequest.RequestedSeed}; ActualSeed={lastGeneratedMap.GenerationSeed}; Size={lastGeneratedMap.Width}x{lastGeneratedMap.Height}; " +
                 $"Spawn={lastGeneratedMap.SpawnCell}; Exit={lastGeneratedMap.ExitCell}; " +
                 $"Decorations={lastGeneratedSimpleDecorations?.Count ?? 0}.", this);
     }

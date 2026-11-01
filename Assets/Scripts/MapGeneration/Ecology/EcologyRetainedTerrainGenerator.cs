@@ -5,6 +5,8 @@ using UnityEngine;
 public abstract class EcologyRetainedTerrainGenerator : ScriptableObject
 {
     public abstract string ImplementationId { get; }
+    public virtual bool HasVersionedSpace => false;
+    public virtual MapSpatialContext CreateSpatialContext(Guid generation, MapData map, MapTilemapRenderer terrain, MapGenerationSettings settings) => null;
     public abstract MapData Generate(MapGenerationSettings settings, bool terrainV2);
     public virtual MapData GenerateWithElevationQualification(MapGenerationSettings settings, bool terrainV2, Func<MapData,bool> qualification)
     {

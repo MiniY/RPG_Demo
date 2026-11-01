@@ -247,6 +247,8 @@ public sealed class MapEcologyPopulationService : MonoBehaviour
                 return Fail(context, generationId, "EcologyCoordinateFailure",
                     exception.Message, out reason);
             }
+            if (context.ActiveSpatialContext != null)
+                throw new InvalidOperationException("VNextRequiresZonedPreparedMaterialization");
             GameObject instance = source.Spawn(world, Quaternion.identity);
             IGenerationScopedPopulationTarget target = instance == null
                 ? null : instance.GetComponent<IGenerationScopedPopulationTarget>();
@@ -314,6 +316,8 @@ public sealed class MapEcologyPopulationService : MonoBehaviour
                 if (source == null) throw new InvalidOperationException("Original source lacks prepared pooling: " + placement.LogicalId);
                 spawned = source.SpawnPrepared(coordinates.CellToWorld(context.ActiveMap, placement.Cell), Quaternion.identity, actor =>
                 {
+                    if (!MapSpatialPlacement.Prepare(context, generationId, actor, coordinates.CellToWorld(context.ActiveMap, placement.Cell), out string spatialFailure, placement.LogicalId))
+                        throw new InvalidOperationException(spatialFailure);
                     var target = actor.GetComponent<IGenerationScopedPopulationTarget>();
                     if (target == null || target.PlacementInstance == null) throw new InvalidOperationException("Prepared actor bridge missing.");
                     if (placement.Role == MonsterPlacementService.MonsterRole) activation.Prepare(placement.LogicalId, actor);

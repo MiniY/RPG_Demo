@@ -77,6 +77,7 @@ public sealed partial class MapCandidateCollisionGeometry
     }
     private MapCandidateCollisionGeometry(MapCandidateCollisionGeometry original, List<MapPlannedSolidGeometry> additions)
     {
+        SpatialContext = original.SpatialContext;
         GenerationId = original.GenerationId; Width = original.Width; Height = original.Height; Origin = original.Origin;
         MapContentIdentity = original.MapContentIdentity; floorBounds = original.floorBounds;
         polygonContactRadius = original.polygonContactRadius; bucketSize = original.bucketSize;

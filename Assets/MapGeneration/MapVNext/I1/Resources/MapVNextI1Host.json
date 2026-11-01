@@ -1,0 +1,2817 @@
+{
+  "schema": 2,
+  "startupTargets": [
+    "DEFAULT",
+    "I1_PRIVATE"
+  ],
+  "buildId": "map-vnext-m0-startup-20261101-b01",
+  "implementationDigest": "6b478efe1d85d8c12dba5840279641ae2dc7425807ffae0d0b112168f448333c",
+  "oldContentVersion": "content-r1:c55fb3b4b0362e8bb59e84f4624fbb22c2f9ef96f3dcd5f61481a92dab9c9802",
+  "newContentVersion": "content-r1:c1b30f168534f17598f385ad32ab67078f9fb28b5f8cb6f346dcb6b800249ec9",
+  "closureSha256": "6c7a4d7f970ac20ae942097c59203a6667a9e991a4a428dda72a8477e7f22be0",
+  "reviewEvidenceSha256": "2a1317e43c4ad0f2750f9e794c848e47f553ffb410a3efef645b13e43ba546ae",
+  "stampSha256": "4e31ac4de6e808888d9c3e583ff7538e2a8141743cc36c1a1034910eb1bf63ab",
+  "files": [
+    {
+      "path": "Assets/Editor/MapAcceptance/MainConsolidationPlayerSourceGraph.cs",
+      "sha256": "57c7d2bfcc5b1172ebb99a9f6d0585d2d42be2883c69cb966f456bf74d463bf1"
+    },
+    {
+      "path": "Assets/Editor/MapAcceptance/MainConsolidationPlayerSourceGraph.cs.meta",
+      "sha256": "b0264036d67e7bba400798d20709896735746e38f65390549385fc0386c8cca1"
+    },
+    {
+      "path": "Assets/Editor/MapAcceptance/MapAcceptanceBuild.cs",
+      "sha256": "756d7f8c575ce416581040b7885454386f08f18ae25cc810ccfba50878c88576"
+    },
+    {
+      "path": "Assets/Editor/MapAcceptance/MapAcceptanceBuild.cs.meta",
+      "sha256": "4d2fb1698fdd208e287ef664f88a639ee9f7e63b6fe06e6ae92446f734e0ac91"
+    },
+    {
+      "path": "Assets/Editor/MapGeneration/MapGenerationControllerEditor.cs",
+      "sha256": "5760439d90e98c7feceeeb86499efcd74bffb6e818ff666794d1a95d792efe86"
+    },
+    {
+      "path": "Assets/Editor/MapGeneration/MapGenerationControllerEditor.cs.meta",
+      "sha256": "7d96cd6c984607d2ba884c7a80f1ff7c16b36cc439cdd3175fdfbd222c3e9446"
+    },
+    {
+      "path": "Assets/Editor/MapGeneration/MapGenerationRpgIntegration.cs",
+      "sha256": "8bdbb21d913f2f86a9326050a74fb21e1f78a8fd5aaec19b2c2e6939012e47c6"
+    },
+    {
+      "path": "Assets/Editor/MapGeneration/MapGenerationRpgIntegration.cs.meta",
+      "sha256": "bc3120953732fbd2548c81e7178bfa3468b9e6dada2491d2cd005179e89035fe"
+    },
+    {
+      "path": "Assets/Editor/MapVNext/MapVNextBuild.cs",
+      "sha256": "b03016b696fb4a459aa6ee141eb2388a779e0459d441d8ca44da5f828c4b2f9e"
+    },
+    {
+      "path": "Assets/Editor/MapVNext/MapVNextBuild.cs.meta",
+      "sha256": "efa8feada3b66d77d3c43d320ca5c5b0a8eebcd69aa5a273edb48f126f8c080d"
+    },
+    {
+      "path": "Assets/Editor/MapVNext/MapVNextI1Authoring.cs",
+      "sha256": "120ea21329584a02a0eb7fa6f5a5343138e6a8c2eee883970567b3337702e472"
+    },
+    {
+      "path": "Assets/Editor/MapVNext/MapVNextI1Authoring.cs.meta",
+      "sha256": "c4f7858eb9a453a3788aac4f730f915483ea087fbb2cd1aa82170c9060cdd051"
+    },
+    {
+      "path": "Assets/Editor/MapVNext/MapVNextI1Build.cs",
+      "sha256": "57f98bfe76b8ef0bfb39edac034ac217ad5df05f4a2409ac6c8d73424ef2c3ca"
+    },
+    {
+      "path": "Assets/Editor/MapVNext/MapVNextI1Build.cs.meta",
+      "sha256": "fc3f0b9ab46c6bb652fdc58b27c12370bb39ea422cb66e1e386f46a3b3f84d68"
+    },
+    {
+      "path": "Assets/Editor/MapVNext/MapVNextP2Build.cs",
+      "sha256": "50d2b95865956b7ce90edf3b876903d2324ac8b22c8066b18320d8d34ca1f2c4"
+    },
+    {
+      "path": "Assets/Editor/MapVNext/MapVNextP2Build.cs.meta",
+      "sha256": "94493998282ae19c32fa253ddf6eb6716a923474d34b3104bba960214ea453d5"
+    },
+    {
+      "path": "Assets/Editor/SpriteSheetSlicerWindow.cs",
+      "sha256": "f1cf2b5b9c8a45d13d5588fa5dc24ff635ce536a7104f1cef6913c7201436109"
+    },
+    {
+      "path": "Assets/Editor/SpriteSheetSlicerWindow.cs.meta",
+      "sha256": "3ad82741f63248461f4f9e76c98208fa544671bf9946f41fd1c9423cc5b5ad3f"
+    },
+    {
+      "path": "Assets/Effects/BlackHolePortal/Editor/BlackHolePortalAssetBuilder.cs",
+      "sha256": "6d150d97574805076a7b08a7824507453da531845b86c5ad4b7f96d3861edc87"
+    },
+    {
+      "path": "Assets/Effects/BlackHolePortal/Editor/BlackHolePortalAssetBuilder.cs.meta",
+      "sha256": "aeb923d30e4dcb689c2f1d873874b3dfa45c175bc18f3ef5ebd19adb34912c9a"
+    },
+    {
+      "path": "Assets/Effects/BlackHolePortal/Scripts/BlackHolePortalEffect.cs",
+      "sha256": "82333ae2f0fbb873fdbfa4c92dc19ee8bf9a92901b3afb37ce443fa39ad72241"
+    },
+    {
+      "path": "Assets/Effects/BlackHolePortal/Scripts/BlackHolePortalEffect.cs.meta",
+      "sha256": "97f4cc7b9c0da16d19a798621edb1d46da0185f8bf694b4be2dc52dc4a4f15bb"
+    },
+    {
+      "path": "Assets/Effects/BlackHolePortal/Scripts/RPGDemo.BlackHolePortal.asmdef",
+      "sha256": "98ddb8c087f55626df5862862649d95af329e7f5c8115ced05914c60fcd0c016"
+    },
+    {
+      "path": "Assets/Effects/BlackHolePortal/Scripts/RPGDemo.BlackHolePortal.asmdef.meta",
+      "sha256": "47ae7726444683760037d11f08d528c970bc575b7186c468d70a62ed21d18722"
+    },
+    {
+      "path": "Assets/Effects/BlackHolePortal/Tests/PlayMode/BlackHolePortalPlayModeTests.cs",
+      "sha256": "88c01ea1bf36e794c7be11f85b34e8613026b04de77fd228a7dac89c3834859e"
+    },
+    {
+      "path": "Assets/Effects/BlackHolePortal/Tests/PlayMode/BlackHolePortalPlayModeTests.cs.meta",
+      "sha256": "00d40c163e3d94407c28823cd65ddb56bac80138ef340217a2ac44762bebf438"
+    },
+    {
+      "path": "Assets/Effects/BlackHolePortal/Tests/PlayMode/RPGDemo.BlackHolePortal.PlayModeTests.asmdef",
+      "sha256": "4975df07dac8ea68cde14d1297002a7df9471dea1fefab6b3ff29cd8bf9efb57"
+    },
+    {
+      "path": "Assets/Effects/BlackHolePortal/Tests/PlayMode/RPGDemo.BlackHolePortal.PlayModeTests.asmdef.meta",
+      "sha256": "7eaa640edfe432a7e91d064dd0db0bc59e1aedc215d955d98d16d471455f9a00"
+    },
+    {
+      "path": "Assets/GameControls.cs",
+      "sha256": "9101f4bbe3339453fb44fb85d38fa7227b65de9f57dd6909ac992fd149940fd1"
+    },
+    {
+      "path": "Assets/GameControls.cs.meta",
+      "sha256": "5e50f4dfa470264355ad2368d5702b3de903a582d1d0d89d2d66256023890de6"
+    },
+    {
+      "path": "Assets/MapGeneration/MapVNext/I1.meta",
+      "sha256": "190565086280049c9192e7296e7e703d9478fd5b91e4fc7b48d6c2ecbbe9faeb"
+    },
+    {
+      "path": "Assets/MapGeneration/MapVNext/I1/ExitPortal_Inactive.prefab",
+      "sha256": "f64bc9db1d1b752df05ad9c4d4e0e3d1a6dac90fc9785a7622c3e1d44cda4a9c"
+    },
+    {
+      "path": "Assets/MapGeneration/MapVNext/I1/ExitPortal_Inactive.prefab.meta",
+      "sha256": "6e23b7a0b25c2d8bf881a6f57983f125281f0a5b9d98c892fa9b691e58641e28"
+    },
+    {
+      "path": "Assets/MapGeneration/MapVNext/I1/Recipe.asset",
+      "sha256": "af8ec390d8a1288fd5774cee6ac52d6f5548460ee582c5a92a64b0a1eb53e3a5"
+    },
+    {
+      "path": "Assets/MapGeneration/MapVNext/I1/Recipe.asset.meta",
+      "sha256": "e20bcb79a3a12b93c1f1b14888e680af886d0f78926624623fad180d045a092b"
+    },
+    {
+      "path": "Assets/MapGeneration/MapVNext/I1/Resources.meta",
+      "sha256": "bb665532d3a1a22dae17ab0eba8aad391c4303c47e481e764f1a337db4b2c1cd"
+    },
+    {
+      "path": "Assets/MapGeneration/MapVNext/I1/Resources/CandidateContent_I1.json",
+      "sha256": "c1b30f168534f17598f385ad32ab67078f9fb28b5f8cb6f346dcb6b800249ec9"
+    },
+    {
+      "path": "Assets/MapGeneration/MapVNext/I1/Resources/CandidateContent_I1.json.meta",
+      "sha256": "f4283f77724b28cbfbbc5c3a67fc7238852eb5087a4a1f959b65b3ceb7e87663"
+    },
+    {
+      "path": "Assets/MapGeneration/MapVNext/I1/Settings.asset",
+      "sha256": "446be7432127cd4199e49238e7a2908fe16a2924445ce3df4c7a4f851b9cbe3e"
+    },
+    {
+      "path": "Assets/MapGeneration/MapVNext/I1/Settings.asset.meta",
+      "sha256": "54c759be8652e240b8dd5a2f4b94c16ee25c57edfa99072cbdea9964df336660"
+    },
+    {
+      "path": "Assets/MapGeneration/MapVNext/I1/Terrain.asset",
+      "sha256": "7c87edc3b719a439c1c9ef5666b8acd16ee947bb1a3bdccc42636a5b0dff7d5b"
+    },
+    {
+      "path": "Assets/MapGeneration/MapVNext/I1/Terrain.asset.meta",
+      "sha256": "10210bde3014ab6cb2ec00fa817b6cf1247a5382cefd408d27761c68dc50b9c5"
+    },
+    {
+      "path": "Assets/MapGeneration/MapVNext/MapVNextAssets.asset",
+      "sha256": "882974a1ce6527b9d65c392ef0cbbb8f959ce5846a543fe3dd7d016dc7fc654c"
+    },
+    {
+      "path": "Assets/MapGeneration/MapVNext/MapVNextAssets.asset.meta",
+      "sha256": "04d9bfcf4970386a2606155c424fad2782246c51ed9ed1a589961932b2acff03"
+    },
+    {
+      "path": "Assets/Scenes/MapVNext/I1.meta",
+      "sha256": "20a72e6107080b7d7e630b4d85c47f1185edde196746c64063e3420f6caa3852"
+    },
+    {
+      "path": "Assets/Scenes/MapVNext/I1/I1Game.unity",
+      "sha256": "a9ae2a19dd85b7d70d9deaa1990b2d1054f9277566ce66e49bab1759160c5c78"
+    },
+    {
+      "path": "Assets/Scenes/MapVNext/I1/I1Game.unity.meta",
+      "sha256": "673ce7997b9efad5519f7b1330e7356907c9a00b5c0bc8a2c75bd99e4e306f09"
+    },
+    {
+      "path": "Assets/Scenes/MapVNext/I1/Runtime.meta",
+      "sha256": "85ec8d795868ee853b5a5f4d5213cd27daeb406090b50c9aa85743d7b80dce67"
+    },
+    {
+      "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Capture.cs",
+      "sha256": "109b8811bc36fe15f3d2945f2561858bcc64e14b4e3382670407563843872fd0"
+    },
+    {
+      "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Capture.cs.meta",
+      "sha256": "44e6d5348ab2681a0edd654ad1a8e40509105e95e1bae479c67b699d73a7f1f6"
+    },
+    {
+      "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.ConsumerLifecycle.cs",
+      "sha256": "7fbe131ebd5a3924519710507dba50bb79e78b24cd5b618718fde1c812adec3d"
+    },
+    {
+      "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.ConsumerLifecycle.cs.meta",
+      "sha256": "6775848030214ce755520268cf6e3d5887a110eaec728f7eb8c2d94e0c107576"
+    },
+    {
+      "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Consumers.cs",
+      "sha256": "1c897c5ab92b16e0041cb389524fc705ae82a642d8ec2eea1ad112a88e2c52cf"
+    },
+    {
+      "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Consumers.cs.meta",
+      "sha256": "83f642ce8b5e2eae9d8b77cc9c82dfc6e5327c9d6a157331dadfaf7c9031521e"
+    },
+    {
+      "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Defense.cs",
+      "sha256": "1a97024d91fdb76f9a8727aa99c1b53d1c195c37b23f22ee089a0cf2bb6185b9"
+    },
+    {
+      "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Defense.cs.meta",
+      "sha256": "f11c0c148157b36a23de91329f409871807b9d878f746fa83b0b4b370842f556"
+    },
+    {
+      "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Diagnostics.cs",
+      "sha256": "76dfc9300a9706fe580fbd6e055e5fad0b2311ebf9bc202d3563605f0218ff93"
+    },
+    {
+      "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Diagnostics.cs.meta",
+      "sha256": "3160ec2d63c9ad8d6dda7c17b6541c29e85fcc8cca07433840c35619ece79b56"
+    },
+    {
+      "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Input.cs",
+      "sha256": "8e34178cc186a35118af83e4a34350fcad41bb58e3f07e3c90e26b46987808b5"
+    },
+    {
+      "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Input.cs.meta",
+      "sha256": "13551111850c5573e90d55d5336eb2c182267553ffc2ce366bfe933eebc03e62"
+    },
+    {
+      "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.ResidentGroup.cs",
+      "sha256": "45a3580bd756d357f57e67f0cd390e8ce0c14e352134cc7e645faed5bd2a9007"
+    },
+    {
+      "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.ResidentGroup.cs.meta",
+      "sha256": "44783dc34f4f447de0d83ee82c2491d0678264a94cfbbdc7dc45b41801d3ec02"
+    },
+    {
+      "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Startup.cs",
+      "sha256": "e5b5835bc266afb7f173d16b82001868f82cb37ad1019f3be6405d7b56c38323"
+    },
+    {
+      "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Startup.cs.meta",
+      "sha256": "92482025df7a060d07f0f59353d22b67ae31040ccda201da5071afbdba1bc15f"
+    },
+    {
+      "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.cs",
+      "sha256": "96ee14ccd2f1f6a474e16f1779b539f6eccd7ba7403f2fb0d451ab0e7a5590ae"
+    },
+    {
+      "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.cs.meta",
+      "sha256": "3f59501be503b00dcf4bcbe4793a938993c63421a496234a111a1665e07dd5c3"
+    },
+    {
+      "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1ActivationWitness.cs",
+      "sha256": "4cda51fbb200c4e74a6cb83afc14f2d7a9c2671cb6209e28510d5131cab78b17"
+    },
+    {
+      "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1ActivationWitness.cs.meta",
+      "sha256": "2aa546f2a46d187ac227e64fb18e867989e656d5c8171c270659f0ee9a1cc71d"
+    },
+    {
+      "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Bootstrap.cs",
+      "sha256": "76361c84335e86e08dd3a3fcff8225fd5af8287e420aadeb6c0736e1ebc63375"
+    },
+    {
+      "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Bootstrap.cs.meta",
+      "sha256": "bd9d6a74a8ef0c95e569981ec84b3c0c9795fd284948df177e7d74e1b5f20fa4"
+    },
+    {
+      "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Panel.cs",
+      "sha256": "bcc0b5347103ebc035a38976c4f1b35a5ed7e8e5f8ecd6ad1c4d4fee9b2224c6"
+    },
+    {
+      "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Panel.cs.meta",
+      "sha256": "edd280fbc32a6e62c9f54ad1179286fe2e527a1321ab7ec4429d4eaa63901c3f"
+    },
+    {
+      "path": "Assets/Scenes/MapVNext/MapVNextRandom.unity",
+      "sha256": "5373657e2cb9613aac4be59740b276bb9ba6667b345049c139fb96ff2fb09333"
+    },
+    {
+      "path": "Assets/Scenes/MapVNext/MapVNextRandom.unity.meta",
+      "sha256": "6392d776ac5935234ae4666e6c548b9dc70df29b310a3258bf789be7c8dc7ccb"
+    },
+    {
+      "path": "Assets/Scenes/MapVNext/MapVNextStairs.unity",
+      "sha256": "87182fd0cc95d3b95760dee3df71bce65bb9274c16ed1bc4a34224f9f45183ad"
+    },
+    {
+      "path": "Assets/Scenes/MapVNext/MapVNextStairs.unity.meta",
+      "sha256": "4231a11e4e7a64ee8e19cb0d96fcd4fedee7ab9b6339b84a2a2b7002166f11f6"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Animal/Animal.cs",
+      "sha256": "2aedc9100609ed8551df4ad2a518c1ab59348a2c119bb6bbcfad5cf2f268ef02"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Animal/Animal.cs.meta",
+      "sha256": "e72aea7c1a7028483a18ff000a4a1ea3c77bbef00f921ddf1c74ca6f0f5faaa0"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Animal/AnimalAnimationController.cs",
+      "sha256": "a11284daa837b769009d924c03d7d170e1790fd867f012f70397972bce3469e4"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Animal/AnimalAnimationController.cs.meta",
+      "sha256": "a96e6cb1dbc98b774ed83668bd61a4c4951dc46ef9c14a26a62d6e6873e205d6"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Animal/AnimalHurtController.cs",
+      "sha256": "d43ea7ae994de33f51576661de31d79e78f8bae58bca7fb2eb8102b1d45d4f43"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Animal/AnimalHurtController.cs.meta",
+      "sha256": "8194eaa9bab95a847c7f2eb42db31b0edbc464fd8ba49e05048e24d87e58aeba"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/BaseDamageable.cs",
+      "sha256": "8ec78ecea434875a2cbd062125c0494e882c0e6b72c911728d2f9af1611cf3ea"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/BaseDamageable.cs.meta",
+      "sha256": "8f2307d57ab19a8bb4e5b42e432a55711a9ca48fdbdb8ec590d03c60266bf118"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/DamageInfo.cs",
+      "sha256": "10bceea7d59e2cb972d8f26033f6c11daddc69ebf72ca27674630b75c458109a"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/DamageInfo.cs.meta",
+      "sha256": "8ee4253fd5e86f37c294208fbf39d96aa071ea7325e457ba47d8eec21b64440c"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/DestructiblePlacementTargetBridge.cs",
+      "sha256": "c655e2f6f61f769c50af4eb8a7574cc2e2760a758c995bd358fc40456cfbca11"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/DestructiblePlacementTargetBridge.cs.meta",
+      "sha256": "3286cd8a05d193d8818e7d5cc68120081817cf2f7ec83cff44cf52940f0e614d"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Monster/BarrelExplosionAttack.cs",
+      "sha256": "f414f6cb2c84730c6a001bd7150a4da054bddbba8613f9b18c7cf62a319456d4"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Monster/BarrelExplosionAttack.cs.meta",
+      "sha256": "24468b4bce462af6c8cc147d22af60f9be8e6da81c06063acb4034dcdc527a0e"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Monster/BaseMonster.cs",
+      "sha256": "32e1b336ba55545e3cf4ed96939ecf3fab262ce25788dfa6a32e440f3139b2cf"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Monster/BaseMonster.cs.meta",
+      "sha256": "c215c0630b65c28112e974ef82e677b2fcd4d8023b5ea02130485d1078612e01"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Monster/BaseMonsterState.cs",
+      "sha256": "cd67f5f1ebb83dd2cd1a2a9961c2e4995c65f1ba9340110e7a78f868d7fde794"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Monster/BaseMonsterState.cs.meta",
+      "sha256": "116dd0817a22c8eb4bb133406856d0d17d7bbf74ddd538cd7d34e77629c66740"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Monster/MonsterAIController.cs",
+      "sha256": "9ea2b36523d9fe7f01eb915829878fd936ec28d0233e3895578236bc1fed38c7"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Monster/MonsterAIController.cs.meta",
+      "sha256": "22ad8bc524d0fc2f1e33a958f87d193ee39c6c6a15add33d5a4df7f1ca84a8ca"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Monster/MonsterAnimationController.cs",
+      "sha256": "047a29a55cf285fa46a73d8059680e3a3ab664d0c1df32bc48d149fb8d31b4c7"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Monster/MonsterAnimationController.cs.meta",
+      "sha256": "d86612ef54f025f93a0f80d645c55e5c0242bd66a5ca0461268f9cb1d3a714c8"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Monster/MonsterAttackController.cs",
+      "sha256": "24e8a035bc72afa2137cec43ea362c0b35c38410480321b218c7070f94bb0c7b"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Monster/MonsterAttackController.cs.meta",
+      "sha256": "64ab7b1eee91f9945472db67c908d2501846caaa98ee80a7939ae03d47a9fc84"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Monster/MonsterAttackState.cs",
+      "sha256": "f9a93d0180be33cc461d66fc0526e58c1be62dfa6a04c4f33fbf2ea542308586"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Monster/MonsterAttackState.cs.meta",
+      "sha256": "80e3c7d06c386c213144ada7a599cb60631221f028420b119d06fbb05033056e"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Monster/MonsterChaseState.cs",
+      "sha256": "fb72f14dd06b24f43f566726ea7770ce95d77a6213fcea7c39367dfe0a29699f"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Monster/MonsterChaseState.cs.meta",
+      "sha256": "e9d096fb53595ae299b59dbe002e399ce256f35680b41e4f4de3f5b189f5d143"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Monster/MonsterHurtController.cs",
+      "sha256": "7449377aea2d67616e8a2955ebe3522f5e796ac7a607b047b775c2ac79fd6270"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Monster/MonsterHurtController.cs.meta",
+      "sha256": "3e0d5b1ba16a7e185d844fc373d1438c8c8b88a4bdc294f7d5af64025c72cfd4"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Monster/MonsterMovementController.cs",
+      "sha256": "77c903290c59947fe8062330ffa701c5f35d408726465ac22fcd1cb979ed6675"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Monster/MonsterMovementController.cs.meta",
+      "sha256": "1aede174792ce4da7b9776515961657b5e009c4b36fc7161d7e7bf3074c4d3ed"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Monster/MonsterPatrolState.cs",
+      "sha256": "956127b1488c2190fcd192654e5b79186d51381664ecf3ee48510196ca16d535"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Monster/MonsterPatrolState.cs.meta",
+      "sha256": "44c51783db4a8b70de26cd7809346e271d9ce6aad69dd4b0c8a62e67a4203022"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Monster/MonsterPerceptionController.cs",
+      "sha256": "11ad07befd71cbe454125bbf0b7efb35748712a5ad73536c8536c6b90486edda"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Monster/MonsterPerceptionController.cs.meta",
+      "sha256": "bf549a5b3cf9c2d048c20feaeae110e28b98c32e2a514c708d78dffff33fc00c"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Monster/MonsterPopulationTargetBridge.cs",
+      "sha256": "bf089ddc8f0e4b10efceb512531f4b7527f89f9c62bbc7c0a740cfe7e5e31486"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Monster/MonsterPopulationTargetBridge.cs.meta",
+      "sha256": "fe1cedc0a5dcdfecc2a3724624aadc297d067805bcc885cc92bb9a7baf0cbfc5"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Monster/MonsterReturnState.cs",
+      "sha256": "01d7de8c8f0d8c1fe3c31583be93859926a5c086043c7c4e8d8d77e42957abce"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Monster/MonsterReturnState.cs.meta",
+      "sha256": "d40b93c3aa9f216f45a49e849ddd310beb7580eb3119204524f0554f6f863159"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Monster/MonsterSearchState.cs",
+      "sha256": "cc028795e025eccf3ef282a45e4192f518de66691bb47c3e23fe90d8dae515d9"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Monster/MonsterSearchState.cs.meta",
+      "sha256": "abc8dd695dee81a43657427d8feec65b97e6eb9eb21f44f01e70f412ffe0dbcf"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Monster/MonsterStateType.cs",
+      "sha256": "71fe70b60b287607172939acab6957082d54f689346451cfd0363ea83818f5ba"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Monster/MonsterStateType.cs.meta",
+      "sha256": "5a7c7d165f8d1a638997a88a0bfe399c1b8c335bd9c8f653d3de426cd7ba86fd"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Plant/Plant.cs",
+      "sha256": "8cd1cbbce8f38e219915cc7e75ec17b33f73380d9246ef5eaed5c2b8bae54abb"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Plant/Plant.cs.meta",
+      "sha256": "d3583c55b26f26c6acfdaa35bbcf4d25669b2f3f2ba355f1367f01b5bde6aa80"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Plant/PlantAnimationController.cs",
+      "sha256": "1c527e3dad8582163687154ebe53c172565460dff798f16b1157c8a510ae7307"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Plant/PlantAnimationController.cs.meta",
+      "sha256": "e8275470c7e715a336d6864d491b276e62565f23e4296c87d264decd2ffddd82"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Plant/PlantBehaviorController.cs",
+      "sha256": "9215fe89ec9cb599595a9de35b6526acc6c66e44d5f299f70d1387e7ebe23808"
+    },
+    {
+      "path": "Assets/Scripts/Damageable/Plant/PlantBehaviorController.cs.meta",
+      "sha256": "3c08112c8cdc0926a833339aaf4cdeb9bd931af21f114996459965d8574315ab"
+    },
+    {
+      "path": "Assets/Scripts/EcologyRegionDebugOverlay.cs",
+      "sha256": "5ac7a23682f875c383caa5fec378b5c27d35720d66ea8e70aa9a336cc8c341b9"
+    },
+    {
+      "path": "Assets/Scripts/EcologyRegionDebugOverlay.cs.meta",
+      "sha256": "e50ee1ca6bd9ecc3a52bda078fb2d9f74c3af635c775cbdf9516bf965d70e704"
+    },
+    {
+      "path": "Assets/Scripts/GameInput.cs",
+      "sha256": "26a6f2051e23ff0fd022b509c6354d8df63085fd1e83750f3caa24648275d80b"
+    },
+    {
+      "path": "Assets/Scripts/GameInput.cs.meta",
+      "sha256": "d62df605fd931117eee61d7fe2e860d984f930d2eb7b32eeb36acf2502d0bc99"
+    },
+    {
+      "path": "Assets/Scripts/GameSaveService.cs",
+      "sha256": "1454ddb799965f9efa671daa6f2080f39bf851f3fe9dd8b4e5a36236f3cc8295"
+    },
+    {
+      "path": "Assets/Scripts/GameSaveService.cs.meta",
+      "sha256": "41438a205aaa838f7e4177558e17a410dedbd59016eb8789d802c4d7305dadd3"
+    },
+    {
+      "path": "Assets/Scripts/GameSession.cs",
+      "sha256": "5d3267bfb143ee04e20128304e79ded50a5c4141e1a82beb02d43f351177d688"
+    },
+    {
+      "path": "Assets/Scripts/GameSession.cs.meta",
+      "sha256": "eb7338d9c6d292035ad4c6ee103e5cddf33475d0e1148febb6c97f86771539b7"
+    },
+    {
+      "path": "Assets/Scripts/MapAcceptancePlayerSmoke.RemediationSurface.cs",
+      "sha256": "8fd60f1f11807d7573fab2fb8f0016b49b8ba3c1aca1066676fd381910a2a83d"
+    },
+    {
+      "path": "Assets/Scripts/MapAcceptancePlayerSmoke.RemediationSurface.cs.meta",
+      "sha256": "056278c4d08eb510f0b5a3b7190609fcb5318b78e6e0240fbb9749242c9463c9"
+    },
+    {
+      "path": "Assets/Scripts/MapAcceptancePlayerSmoke.SurfaceV4.cs",
+      "sha256": "25da9210ff8feeca6a8869be35a781df9ecd2925561516a21d29e1572465b45e"
+    },
+    {
+      "path": "Assets/Scripts/MapAcceptancePlayerSmoke.SurfaceV4.cs.meta",
+      "sha256": "f75d1b64a66135421393001eaaea03f4c9115eb264670edb1fd45d18101072a5"
+    },
+    {
+      "path": "Assets/Scripts/MapAcceptancePlayerSmoke.UnitsCandidate.cs",
+      "sha256": "7525261684f1be0c0a20b72e331e259b0ed2dfd5095f2999f560ebc595490b9e"
+    },
+    {
+      "path": "Assets/Scripts/MapAcceptancePlayerSmoke.UnitsCandidate.cs.meta",
+      "sha256": "9a846770caf1d9316e7be50b7cf15021c04e6f630621e22094832039c221e3b2"
+    },
+    {
+      "path": "Assets/Scripts/MapAcceptancePlayerSmoke.UnitsCandidateFinal.cs",
+      "sha256": "8f57e882083581a7208863ef8c67693104b9ecedf80cc2c772ad21a1bffa6e3f"
+    },
+    {
+      "path": "Assets/Scripts/MapAcceptancePlayerSmoke.UnitsCandidateFinal.cs.meta",
+      "sha256": "e2f9c5fd87862078bf3ba8f2f1cd3f66cac992905c1096576521aaddf3cd948c"
+    },
+    {
+      "path": "Assets/Scripts/MapAcceptancePlayerSmoke.cs",
+      "sha256": "9c441060f379bebcda68b66e9dd3b9c12cfb4f42dee14bdb6f4b9a6cc9356b6c"
+    },
+    {
+      "path": "Assets/Scripts/MapAcceptancePlayerSmoke.cs.meta",
+      "sha256": "e40669abb66826161f021804cbfe8d97e1e1add6aad302866cd701fa4f785784"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/AnimalPlacementPolicy.cs",
+      "sha256": "91e38df1776d5756f428e5bec83fc7613ec8258bbb6d8582b7004d1780eadc98"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/AnimalPlacementPolicy.cs.meta",
+      "sha256": "a4d5e99d1ddf8d2fbdd980eac488a8a20f0b74e0cc859835b9baaa2dbd4592f6"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/AnimalPlacementService.cs",
+      "sha256": "0b21cf5341a81989ad945663c859e1b1e8b6dbc13ccfd8d59bf23d90f73c86f1"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/AnimalPlacementService.cs.meta",
+      "sha256": "eec5fbb410b11375e0cb89170936bb4b67cda0dce5bb44e174ccdae630f6207f"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/CameraBindingService.cs",
+      "sha256": "93eb650d6ae31a8fab272243151b112652ab2736c54cd05d01bdcb97b2556be8"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/CameraBindingService.cs.meta",
+      "sha256": "62c6f7cc9e6d6fa5c5f7b101366eb78ac9888174b5ce1f40bb971cc686a54089"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/CanonicalPlayerProvider.cs",
+      "sha256": "5f47a17ac5d806ca02daf32577bfaad296a9ac426e04f3d27915100c96fe8e1e"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/CanonicalPlayerProvider.cs.meta",
+      "sha256": "f92632165f1c295151ae3527c4bc2dd2b13f580ed3da914c355cd2fb341d73ba"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/DestructiblePlacementPolicy.cs",
+      "sha256": "c4c75cc7b75eb66c613139be509697c511567d34a7a0c72e42714299e4f2d2ba"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/DestructiblePlacementPolicy.cs.meta",
+      "sha256": "6961919aa2d088e94bd75e29b5cb06b93a2691f0b7ccd712373bbb921a46a089"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/DestructiblePlacementService.cs",
+      "sha256": "2a15a8887f6f3ff3dc5099593d0e48eff5fcc668277bfc42e1b2af2c3c956ca3"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/DestructiblePlacementService.cs.meta",
+      "sha256": "9e0c033be5d54171adc16ce27070d5634fbfa7ce0131d686147e418fc0bb0a08"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/DestructiblePlacementTarget.cs",
+      "sha256": "01c693eba6fd3cca6a64c6dd53480d46088f9132496c1ce6ece1e99116a93037"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/DestructiblePlacementTarget.cs.meta",
+      "sha256": "a2c3707df4655d3f6b32ca9b06f49580aaa6371cd3803ff9dfd20aa040afcfa9"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyCombatBinding.cs",
+      "sha256": "278bcfe5a167de79fb55b618c4f1e3141f3b9a27c958dc7c588f64a6f2bdd18d"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyCombatBinding.cs.meta",
+      "sha256": "6e99e83405006e8d7656601dbed465cb06b3254c1c23709c4e4d93f71eb2a95d"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyConstructiveCapacity.cs",
+      "sha256": "c5f7f2db717b490aa33262e3095c14be3c19894333b07a3c39149f5c73325248"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyConstructiveCapacity.cs.meta",
+      "sha256": "7e064d35e769a212c0270b7b1dfc9a5bf46183f6ac04040610d115acd451e271"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyDamageBarrier.cs",
+      "sha256": "5dc6ca8b00600a6cd21575cef65f63a54cf6a459dd4e055baa494277def1056d"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyDamageBarrier.cs.meta",
+      "sha256": "988124adb91a229650eaf5d3121e5f2b01c3c7bdb9719146ed64e4eea3c1b29d"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyEntryIdentity.cs",
+      "sha256": "458d3fe49996c6bfeadc8aa3bc367f906fad3f8f3db859935e39474baff9593e"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyEntryIdentity.cs.meta",
+      "sha256": "18d6425fda125f9f2acce489f99c05619afe2839e50aee7154bcf3e6478a430b"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyExcursionState.cs",
+      "sha256": "1bfc928d05d405dd42000209311d1b61496c95c19ed14a0ca4c11d291cb94d84"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyExcursionState.cs.meta",
+      "sha256": "c3f0ef90bcb58f1706bdcd4b749df78d7c37ec4a708f4a622c9798e55b4f35e4"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyHomeNavigation.cs",
+      "sha256": "a467f9f45d59eca0e787d9a4fd8cc94dda9ce8858c69c88aebb5fc38a3b74fc1"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyHomeNavigation.cs.meta",
+      "sha256": "f4534b5b6a94336ce35dba5d635ba63699d7057834e1627a99a798a1db4d032f"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyJointPlacementPlanner.cs",
+      "sha256": "0a96449c70dcf5b61116d67846dae5abaeb7df2d1c8a393c640156ddac8af5dd"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyJointPlacementPlanner.cs.meta",
+      "sha256": "8abf986ee21f90bff082de97d4c018f04123bfd494568bb28f140c221194232b"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyLiveNavigation.cs",
+      "sha256": "0eb79e3671cd7e58fe33b39d838b5e1aefd8e9e5d55b4996dbe126d659d46e7d"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyLiveNavigation.cs.meta",
+      "sha256": "44a56c34898384b698afc42f5ef03af83727814a9dd0d333ddb4b15a6436af1a"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyMapRuntime.cs",
+      "sha256": "106663d2e0d3953d9813a39a65a998671149ac17e4addab0e448d3511d33c588"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyMapRuntime.cs.meta",
+      "sha256": "3584220834e883278d784f1b51a744cdc9800ad012d71394f9a66814cf08e614"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyMotionBody.cs",
+      "sha256": "2b6aec81ae9a5a277a083c4d377cc6c080148167b7e4653e65c7d1acd4ae8163"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyMotionBody.cs.meta",
+      "sha256": "2261638eaa9b4af1ab3ef25f7e4b1d2d5962444015c86250e66ffec97a02b548"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyMotionCommitter.cs",
+      "sha256": "e56de79b5e73f7bf1a51991e602ea12a18e934f97bb22d335285581cffae293c"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyMotionCommitter.cs.meta",
+      "sha256": "23d11c2050bcac8aa788d20f3dd6ba5ce1dfd1124e4f18180f384655b25a32ab"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyMotionDomain.cs",
+      "sha256": "cd07dcabce72d50e785587852786003f8a308561e69502c295d2b31101baa1d1"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyMotionDomain.cs.meta",
+      "sha256": "c8d71bfe9696c1f152ffd012909c234f58057ec70b56d58870ddbe77faa9e3a4"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyNavigationGraph.cs",
+      "sha256": "146b9b0fd15f76df791d99587327b79f1d68d98a04e8988deb254f7f489260b4"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyNavigationGraph.cs.meta",
+      "sha256": "4ced209a3e1e23759f273568d8137bf0a9eaec8e958116bce2a0130d2aa5d5f8"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyPlanningAttempts.cs",
+      "sha256": "42a29a5cd0b663199bce8af9b80775c8d8254ed7c5861058d2cd3fc250dcc1f7"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyPlanningAttempts.cs.meta",
+      "sha256": "9a20e621b8359e7da36e62afade7da7e35d95a8282c83ed2fb00f977f807d4a2"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyPopulationActivation.cs",
+      "sha256": "a766c06e1653fa528f233305cf585e9fd0bb3021a285e8418f068bf28bab1e8e"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyPopulationActivation.cs.meta",
+      "sha256": "93381b70bed2b145cf8cea4a865bd6802abd50ca2586ef40db9a3ad3ac2c0e7a"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyPopulationBudget.cs",
+      "sha256": "c6bf28681de8790ba3556b3633d44285f820e10bfd9766fbdbeb0e7dd17e52ab"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyPopulationBudget.cs.meta",
+      "sha256": "39eafffd55f963cd1497bd6a65c2aee15ada0f1c2107307b4d77bccb6a0e12c3"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyProtectionGeometry.cs",
+      "sha256": "5216fb059d3bdaa4f9bf56cae2d587f59a7c73c037896103a23be60f7d1e8e8a"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyProtectionGeometry.cs.meta",
+      "sha256": "669a84e185273ca8b86b56870653e2bf8b798f1ca65083440da521a6593fb0f2"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyRecipeDefinition.cs",
+      "sha256": "6d64a8a9778f61af4c4de1b3ee29978a9453ed0c6f8286b286893a2f657ac076"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyRecipeDefinition.cs.meta",
+      "sha256": "9aed6c238f86895712d6567b0bd4a6dfc76d2393688a9d9f5849f491a890e40c"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyResidentBinding.cs",
+      "sha256": "a80ea5442a8b2f54d4443e9d60d49b10a08ef1ebf9cd175182ba23706b4ba7b8"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyResidentBinding.cs.meta",
+      "sha256": "35e6c6c9213ab3378d1154816ffd6186697d0926f096a5465e01c84fcfdf32e0"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyRetainedContentManifest.cs",
+      "sha256": "c6c01b4f799df7feea9555bb312a47f62ed0cd2c9f078a823ff007e4a3171fdd"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyRetainedContentManifest.cs.meta",
+      "sha256": "dd547b2872a55674b336c5cded232ccf63d11a6b5d57d3551691dd4b12cac7ef"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyRetainedTerrainGenerator.cs",
+      "sha256": "682547b389d3e5be80a6b9f301e37106f5f7506c683f893f08c4eb171391e549"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyRetainedTerrainGenerator.cs.meta",
+      "sha256": "d56bf9bcd7c6c2016a77f7cbd4f5feb936af740afe8c29b35bee3fd666831f1f"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyStaticCollisionRevision.cs",
+      "sha256": "471ddef1229720b1453104d968037bb1d599dedd69696e9acadb25b2c32c3178"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyStaticCollisionRevision.cs.meta",
+      "sha256": "365bdaedc85225bc5e0099e474bd2f5f8b72fd4c02bf2634c6a978c6b3aea97d"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyTerritoryPlanner.cs",
+      "sha256": "c0f33cc76f637732bf229150f3709ecbaad25a2b79500b4c12196c7bdc9d099e"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyTerritoryPlanner.cs.meta",
+      "sha256": "8c0d59f7454492ce11f70d89c3ccda83735f5ba911a6e5aca7f549f0ef71e300"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/IEcologyFloorContext.cs",
+      "sha256": "2e4f3614359514727515bc13fd991005dd53e1eb4c4190ecc7c70b004546bffb"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/IEcologyFloorContext.cs.meta",
+      "sha256": "da6806a20de720a764ae5aab6d99aac5e22bd6de564294c92de458d71c7c814b"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/MapCandidateCollisionGeometry.Fan.cs",
+      "sha256": "696c61c0bdcccc53a899eefefd9ca7fc1f68c589aa1d579027c9a72487e17297"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/MapCandidateCollisionGeometry.Fan.cs.meta",
+      "sha256": "875263a509e9c9e2e605907f3b2bb9a23a97ebcfb5cca1ac2dd00213c9bc8218"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/MapCandidateCollisionGeometry.Safety.cs",
+      "sha256": "101a139b9b8d47e471a8ee40927336ea00f9a5e27d3ce15046be6056dbf96f0e"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/MapCandidateCollisionGeometry.Safety.cs.meta",
+      "sha256": "c0415dfbaa59c61aa9b8e65321d318a46a41ba21568828d8a371db551efffa41"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/MapCandidateCollisionGeometry.Solids.cs",
+      "sha256": "14ab016090903c399cbc45b7e19377f0ba11a269fec494c80256e07125b46b99"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/MapCandidateCollisionGeometry.Solids.cs.meta",
+      "sha256": "421fbed3bb297c3ba888caa53c304fd01fe6a3bf51c3a4ad7e821341a1da856e"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/MapCandidateCollisionGeometry.Territory.cs",
+      "sha256": "cf4d491471d6115f11c8496831a0bfe2cb9c155a508fa7a3105b03e5a19cc2e5"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/MapCandidateCollisionGeometry.Territory.cs.meta",
+      "sha256": "c042f37b7b90830bbc649582984a4839fb48a50e63e44f98a5e577bc4b0c28a0"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/MapCandidateCollisionGeometry.cs",
+      "sha256": "0357b2158bfe6b1eceb591d2036db112dac682ef3aa00a035c624aeec5f30a11"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/MapCandidateCollisionGeometry.cs.meta",
+      "sha256": "a1301ab32e98066b3734b8d2804e0b4af99176dfceceafa99ae8dd2652aa74f0"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/MapEcologyLayout.cs",
+      "sha256": "9207b132b2bae80d0c6e7a4adba0acbca115ae17e79219d48693f73caa97a388"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/MapEcologyLayout.cs.meta",
+      "sha256": "cc4bc9ad68015cecc6da48042a2d58a732eef3dd512c14037aece43d523f76fd"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/MapPlannedSolidGeometry.cs",
+      "sha256": "a7d2d564297e3603769ac8999ad3899c60b0afcea2120939303bf1672551243f"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/MapPlannedSolidGeometry.cs.meta",
+      "sha256": "254cc7612c3697ad1198c545f2364d0abbdc6589a5be4d44cf00024d1b70fc89"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/GenerationScopedDestructibleLifetime.cs",
+      "sha256": "75b67958bbaa3abb2ab696bb6be3a8658e10de5d109b4e7106770235fa4c26cd"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/GenerationScopedDestructibleLifetime.cs.meta",
+      "sha256": "fc510054911e5142bf1dde2010bc4c207bdda2a225cad5873183d61daffbc3b0"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/GenerationScopedPopulationLifetime.cs",
+      "sha256": "5e713e1cd8ffc8757019e77c7dcb740820a9cee9e2e3d7cb793fea9a453b70d4"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/GenerationScopedPopulationLifetime.cs.meta",
+      "sha256": "fc530f2daacca439e988852900aac4ae83d3db8e77f58f0160e6edce270e0b18"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/GenerationScopedRewardLifetime.cs",
+      "sha256": "f361a5acfaa0086c70a18a678a34f4d0a9fd93d1eccd0c070bc50aabdce34006"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/GenerationScopedRewardLifetime.cs.meta",
+      "sha256": "7ad15b244732600103cd3ca8ee8f1e1a0f897501496c42ab8638c53277ffce44"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/IGenerationScopedPopulationTarget.cs",
+      "sha256": "70968ce305384c21cff4a6e9c03d77d4b834ca4c86ed44cd697374978bb51e95"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/IGenerationScopedPopulationTarget.cs.meta",
+      "sha256": "4de2ca89c632bb331f12313bbf9a68854092b8b0890c1bde3a1870cf77e14fee"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/IMapRuntimeReadyFinalizer.cs",
+      "sha256": "3708d8cc97cab18eea28be7583972dd2565ca84c8002b0b3d77c8fc9c89cd144"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/IMapRuntimeReadyFinalizer.cs.meta",
+      "sha256": "2023c5c6a5e545115201c5bdbac17a9b9555a7eaf5019d3d5d9f41a55d5f857b"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapCell.cs",
+      "sha256": "d9d8659f104a61b1237811b521fe7cd3f7b3a4601c92264c0bfae2a24a2b21b4"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapCell.cs.meta",
+      "sha256": "59420c30e440ba69196ed100f038d6e786ff452b51eb960211906b6d2137e178"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapCoordinateBoundary.cs",
+      "sha256": "6e9b5c9d2c8af0c0102d09c715cd925ce5ce9cde42cf7637f00db7e12b0f3b82"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapCoordinateBoundary.cs.meta",
+      "sha256": "379df44fa36616b5b30bc7fd4f2557fa4a4aa52adeff4f868a58d44cab7e39dc"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapData.cs",
+      "sha256": "60a4e3a76a919ca223b9ababeecf972baacdbe1d7fd43e98098d4f16bac254af"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapData.cs.meta",
+      "sha256": "aa0ddc755c2d6778aad1e43314d011b4f2574d0fae389408e954391f08f40c28"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapDependentReinitializationService.cs",
+      "sha256": "ad30ad5e94ddde394c4f0955d1386c92f76d966bb655fd35f17cd5a41567ad16"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapDependentReinitializationService.cs.meta",
+      "sha256": "3ef45c1fb6a8b2b991e7724df68a9bf06ceac9a23763418316b0466a809b176d"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapEcologyPlacementPolicy.cs",
+      "sha256": "53fe19de2b21e9592abda15e1f5715dc40daf9b6d1edb2307e53ebf5f4c32a44"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapEcologyPlacementPolicy.cs.meta",
+      "sha256": "d033ce5b9906d5c18083e87b6e33ecd35114e7cb2d6997c4429ec5b2c917eb58"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapEcologyPopulationService.cs",
+      "sha256": "d8a4e68bdc6dbb696a7cc082a075eabb766b983b1580998f1e9cd4f53fbc5ade"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapEcologyPopulationService.cs.meta",
+      "sha256": "17ca13e831b40d81367f6214add6545c656a50f93cfc8ac67a17bc5220df288d"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapEcologyProfile.cs",
+      "sha256": "f30809c344d8f248e787a9811dc1b259c2a5dc6d8e99cd72f15258ccfcedffa0"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapEcologyProfile.cs.meta",
+      "sha256": "41dfb9af1cf7fc094b4600d7b0650bca8f60c55d7e1eb9ac372b9dd586789afb"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapElevationPlanner.cs",
+      "sha256": "840de9f64308e06829233ecae71bfaaa849fa98bff4c03281a2d93578fa8f55a"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapElevationPlanner.cs.meta",
+      "sha256": "523e605afad477c255c52da5af8eb2e88d311426affd204fe0a12247b8d216bd"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapElevationProjector.cs",
+      "sha256": "46bb7c87be4fde5f99682d0b5076f6df2188a0f4283f71cfd6c1ec1b38f1cec4"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapElevationProjector.cs.meta",
+      "sha256": "f9e92d515641c2d346c35c4b997e86440b6369741386a243581b19bf5111c8b2"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapElevationRuntimeQuery.cs",
+      "sha256": "b448bd250e7028f3d11c232f9f0f1846f7338356c9f4c255a0c70137f6d8f882"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapElevationRuntimeQuery.cs.meta",
+      "sha256": "fb0f023f19891919500017b4b76e0cf1fb5554971a9753a884fc1831a5bbe737"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapExplorationState.cs",
+      "sha256": "7293ba756d8d8d04f4184cdd1d217fb4b01b623639b347e90da9b51a91fa83a8"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapExplorationState.cs.meta",
+      "sha256": "a74ed278abf3d2c24b0ca8187860547d55ffd77c87419080c92e9027e4fdec80"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapGeneratedObjectPlacementAdapter.cs",
+      "sha256": "64d4f2594990ec71eff354bc6a40a2cd65c340526c8cbdc98004ca535e1bfd35"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapGeneratedObjectPlacementAdapter.cs.meta",
+      "sha256": "4372c5e25572bb2596adda4b3031e27e8af492aabefeea7d1505199c6335b2b5"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapGenerationCameraFollow.cs",
+      "sha256": "c1637426b38c1baf9ffe9d34f9878e39952f780ee6637590494daa0be5360d89"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapGenerationCameraFollow.cs.meta",
+      "sha256": "fcc448aeb4ef4b60d13c99e8759c310fa5c19d802171747a91e67bfeb9cc1bc2"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "sha256": "7a75a89d57b6d7d01e275e8c3d663129d96d77f2884e205e142b349b94500b79"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapGenerationController.cs.meta",
+      "sha256": "488bf227cb073b5a9d8681532d6254836a8d319227618cd6b994e039ff22589a"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapGenerationLifecycle.cs",
+      "sha256": "a2d84be461c087e52ef3cba9f7c375ebc2e4876a2e551447b388abe08bb1eade"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapGenerationLifecycle.cs.meta",
+      "sha256": "4a6af2775f732d7a9124a9973d685051bc98e3a4b68d40604b63003ad0674796"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapGenerationSettings.cs",
+      "sha256": "e255545a0680e3588a60fb5308a9a57a9fcd1873c683e0b1cf4a65d90246f3ca"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapGenerationSettings.cs.meta",
+      "sha256": "e7f5ec059717e7fc3595054fa961e14033ff70c0df1e3262d5bdde2ad85a5c5d"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapIntegrationOrchestrator.cs",
+      "sha256": "3d446d8f0d2a97a5652b14361696d480ef1d0df83e4e4c9e40950e5b933cdbc1"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapIntegrationOrchestrator.cs.meta",
+      "sha256": "6abb3faadc8b30eed3c63f4a466aea9a5612362e1e1d5fb6724782ec181a9951"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapMinimapController.cs",
+      "sha256": "74a748b34f93bb6025e902ca6694032a964cbf0b147f448db4dfbb93708a2cf6"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapMinimapController.cs.meta",
+      "sha256": "96434dc810b1ed37235a8cce7678ac568e6b288348fcc689cf872506bf7d5d00"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapMinimapRasterizer.cs",
+      "sha256": "24cdb0f21727b82b76c41645646156399f725b24981f0d4618f6a66f25167c49"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapMinimapRasterizer.cs.meta",
+      "sha256": "85a8d442e0ebdbeb41f50b7ae1488ec69a5f6e4b20b6123be33fc92b2bcc1104"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapObjectRegistry.cs",
+      "sha256": "9d860fee86999d3a9afca45b760c820a0be8611515d417f3b56b343a55720f49"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapObjectRegistry.cs.meta",
+      "sha256": "384647a5eba75a774089f85ce43bd143dd50998aad8b732cd53de162647f75aa"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapOutboardStairGeometry.cs",
+      "sha256": "3f75762176484a2348de4b0f8292ad2ce8af1ffef12b1cdce5a857adb8244489"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapOutboardStairGeometry.cs.meta",
+      "sha256": "9ccfd4dd2d03201547e2eab7f188fb0942bad759ec2260a15bc841819f6aeee4"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapPlacementPlanning.cs",
+      "sha256": "f33b6c0131ee486ec10cb93cc21841220e8633e8ba5acc4b5fefca80810ae2de"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapPlacementPlanning.cs.meta",
+      "sha256": "6cce0afa84208598040fb5b2c30d3f4b1b0b5d6925f892fa194cab85fa09e1fb"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapPopulationRegionQuery.cs",
+      "sha256": "cbd221645fd7722e0f323e34749cccddcb9a0e9417b9830b9b35a274be671929"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapPopulationRegionQuery.cs.meta",
+      "sha256": "bef5a54dcb3dd9903b5564609b6eec8951e93bc4bb012f63190c8ba1e4fbb65b"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapRemediationSurfacePolicy.cs",
+      "sha256": "36687a1c71ddef47748e5fea616cbec03be5e4f7082db659c51299a4dcd21b91"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapRemediationSurfacePolicy.cs.meta",
+      "sha256": "5dda0abef499e5d5bf7e483c9c265f03b078f418a9f35768d7f19a780f89db5d"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapRuntimeBootstrap.cs",
+      "sha256": "abe8645f105effc5ab9e08fb3eed4a606dae26e16d697f4b1684cede21e44d8c"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapRuntimeBootstrap.cs.meta",
+      "sha256": "b34bfd302be85b087f4981450875bc9282c929dc64fc64f37c0d9a379a89f6dd"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapRuntimeFoundation.cs",
+      "sha256": "a27ac36eb0b6aa33b88f15ce64d70256f5134c0cec46b513c1fbbe2e1b93d3b3"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapRuntimeFoundation.cs.meta",
+      "sha256": "6b1e552f229a802b77f782399031735a0bd5626cab51258d886434d870e2ff21"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapSemanticPlacementPrimitives.cs",
+      "sha256": "6a0a286216378758f503445634e0123e3be12b4c1b86e55e44edcccf97162b15"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapSemanticPlacementPrimitives.cs.meta",
+      "sha256": "bacd072628d34bd4310a1a0b0e296d4d7738546b2b3b700a8769d6fd306f930a"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapSimpleDecorationData.cs",
+      "sha256": "6ba276e9ed37bfcde7accd0abd4ed168bf505faa401d594015790f0194e03977"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapSimpleDecorationData.cs.meta",
+      "sha256": "68e2eba8696d5da13ad1502e0a4e40b2198ffa72cc8940a4b43c09537869c523"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapSimpleDecorationGenerator.cs",
+      "sha256": "e9e979aafd24b5d90303335dec6d6acb21be0518470f3f73dd0ca1110d30ef17"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapSimpleDecorationGenerator.cs.meta",
+      "sha256": "63d93c2a405c44d6b61015446159eb3a7a6c0d2b95c89bf0e423a59ded54b1aa"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapSimpleDecorationPalette.cs",
+      "sha256": "306d75d35cbdd8af122dc860fa738c70fed25bf78d8e77ff0d1f6424d7b10d5f"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapSimpleDecorationPalette.cs.meta",
+      "sha256": "ec9ad3f8714cba93026c0c31b334e2563ae447e31a3713931dc284f08b0309cb"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapSimpleDecorationRenderer.cs",
+      "sha256": "636641e227efc026da22350f9881428ab6f2088f322dba2207e227557109dfb5"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapSimpleDecorationRenderer.cs.meta",
+      "sha256": "d58347b3330a8aa656f6e6dc84cd48b6599999c1a451ceb22ca8d235cb2a8fc0"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapSimpleDecorationType.cs",
+      "sha256": "0910355bf9631360e85fc0916064776ec7e689a6ba68b44440de80573a0e41f9"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapSimpleDecorationType.cs.meta",
+      "sha256": "04e2a7e1b1234233bf46c1a0db9cc447c7e0af969a6da8949ed09095c3543943"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapStage1ProjectionPlan.cs",
+      "sha256": "2274a10f34a7cd6ea04bede65625c99c9a13568eff25d69cc494953edced80b0"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapStage1ProjectionPlan.cs.meta",
+      "sha256": "3ee08f10b45ec07af16f4067b07b96493485c25c86b5cf5ea3152e9808dc7157"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapStage1SouthStairProjectionRequest.cs",
+      "sha256": "9431d9bba8dcb4a30b9c11742357a8d8816d410832ae8dbdc50119914734ee3d"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapStage1SouthStairProjectionRequest.cs.meta",
+      "sha256": "ee05cfcea4fe21703c22ce6514a65ea8be47e113bb7eb5057f0b7d7df57e4736"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapSurfaceV4Policy.cs",
+      "sha256": "326aec1667a99ca74ede2016388a0a981310eff1d23e22633ded3db71da983bf"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapSurfaceV4Policy.cs.meta",
+      "sha256": "15117e8ac63950b3f5aa525738f0c62f0d2070047e5706aaecf7512d36dbedc2"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapSurfaceV4Settings.cs",
+      "sha256": "20d4c7c016313421a5469428b0f14412008e7be83f77b0f62b4f27e5cc8ab668"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapSurfaceV4Settings.cs.meta",
+      "sha256": "8c23ed319f7e5690532142315fa23bc932a667e38e2c168e37f26caa21aef3c5"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapSurfaceV4Visuals.cs",
+      "sha256": "1ce7ae759c5945966b1fe64fd61c56103d7712fa706670ff7a76ec11f73545dc"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapSurfaceV4Visuals.cs.meta",
+      "sha256": "2511fc30c07693b21b81fcf080f4077a9f0b37d6a8b70d04ae0c6abf25fd65c1"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapTerrainNestingEnforcer.cs",
+      "sha256": "aaf7cc20782108ea57d8d90236602556c73cfde65477c58c37d875a7a5def2a4"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapTerrainNestingEnforcer.cs.meta",
+      "sha256": "45456c8c46f054c90f495c3375c10da114eb132f9b963e4ceb06ed51d16d8bf3"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapTerrainPassageWidthEnforcer.cs",
+      "sha256": "64284f391f2f83cb843140d162fb69921fde0b4780ddf3061f7bddd57e45ab47"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapTerrainPassageWidthEnforcer.cs.meta",
+      "sha256": "2c611205e44087bb753590c14b20c6fb8e150ccd97fda56a9c8ecb519dcc2020"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapTerrainRegionCleaner.cs",
+      "sha256": "0d258896999eab3175f2eb3e46fcb3c70aef29e1f3404414f425747c32e5d7dd"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapTerrainRegionCleaner.cs.meta",
+      "sha256": "fd9207adce3a679ecbdb25d3ce6d0fad57cfe603b7d799800f536645e7803fb9"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapTerrainType.cs",
+      "sha256": "d5deb19d142245c1133100d566b848bb1ca2dbac5955664b86699a83d511f9c8"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapTerrainType.cs.meta",
+      "sha256": "d0d79576bcc3d6732127caff9914fd38d3e1e86ad9aecb57c1896f4e56436e33"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapTerrainV2Palette.cs",
+      "sha256": "97ee4ab57048803bc4e2e4156ea3b4ce41e6e3274f7520a81a8a3c9c29c6b542"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapTerrainV2Palette.cs.meta",
+      "sha256": "243d7b74a3944c15ecd80607c0d4e6893faf947f6cb4e90626a7ecf1a32aa1c7"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapTilemapRenderer.cs",
+      "sha256": "c6aa23455b71294eafd9d15980a50b07953a969c900e01a8a28d51e1efa6b86b"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapTilemapRenderer.cs.meta",
+      "sha256": "123b780807c722bea09e661ad29e10db9c4ffc9e01aa51f3705b681969863945"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MerchantPlacementPolicy.cs",
+      "sha256": "d77e7d7453beb99e6b6374164126cec6b48bfda1cbf435e366f0e164a3fbaffe"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MerchantPlacementPolicy.cs.meta",
+      "sha256": "3ed4dd1857966987503becb9306ff2dad0a7eac6c15d188970163c7ab4b561dc"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MerchantPlacementService.cs",
+      "sha256": "6d2c55b34fe438d32c5e4c1dfcf6e66cd3fab7fc1d3e7f8927289cd8558d7d93"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MerchantPlacementService.cs.meta",
+      "sha256": "b347a9d7717101fb9309165b11e454451ebe7cb6be3681030b11d69a5b204afb"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MonsterPlacementPolicy.cs",
+      "sha256": "f69d41ccb23d1a3efd75e2023966257e37d80a2e1a50a9841ff475a60e356c49"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MonsterPlacementPolicy.cs.meta",
+      "sha256": "40d0d94bec326b1ef833d4be1da3c77a001eef540786c5ab65760e62c54f4249"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MonsterPlacementService.cs",
+      "sha256": "1f3392cfe6792d48fe7cfec1c080f5c07949e1370560216576f74a03bd48d1b5"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MonsterPlacementService.cs.meta",
+      "sha256": "d3ba702feaab0521417c81d8f8230b97093a5b68416d1877216c77303dd5f365"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/PlantPlacementPolicy.cs",
+      "sha256": "99cf212c6d0e3de8f0cc5ae0ac61e0e851922862b39b36c181a165d8b09247bf"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/PlantPlacementPolicy.cs.meta",
+      "sha256": "7911b577dbb774880b2886b59814dc73164d363785734614dd99ab2c95ce9a59"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/PlantPlacementService.cs",
+      "sha256": "0c97af80839a291e50f91db7d02d02e1b824811a9c03ad4c91061ac64922cd40"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/PlantPlacementService.cs.meta",
+      "sha256": "c72f01d61fbe3681def350f84fcf4473e0410ab0f204dc33c281a0772654c9dd"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/PlayerFollowCameraProvider.cs",
+      "sha256": "b8311fe3c90804e53fb2785ebb4f20f4f20ce1fc4718aa781b13e9530a667b76"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/PlayerFollowCameraProvider.cs.meta",
+      "sha256": "068e56de0d90eb4bd9671c2b9df07d82f18b618a8a8de5606428cf25dbd4192e"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/PlayerSpawnService.cs",
+      "sha256": "edb20a7895c928cbf8a141cac5773215104987b0b77e2968e44b23b25f6f09ad"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/PlayerSpawnService.cs.meta",
+      "sha256": "b9ad7b903bb8010e17ff5a5e20391aeb0ca992803108c727e27d77fdd9c8d4eb"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/RPG_Demo.MapGeneration.asmdef",
+      "sha256": "81e456afb4052b2e7dee7c79d09fbba2ca14fae7467ea586d42e60272e45f522"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/RPG_Demo.MapGeneration.asmdef.meta",
+      "sha256": "7fd7f0313d3a873a81e4025cac10077afbcc6702f6f3a333f89914b9b1f8a812"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/RandomMapGenerator.cs",
+      "sha256": "2876f7774da5a0176275f4690f5522321912bf48543d97c490b5a9b72e30a789"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/RandomMapGenerator.cs.meta",
+      "sha256": "597bf797d0782be5448f2ec780706dd112e74b4fcfd1f53b027c4a291ff482bb"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/RemediationRuntimeAudit.cs",
+      "sha256": "809e31174cd7f74ec639c72ae0e09cc4153ce282640f68d073e3892f266a2242"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/RemediationRuntimeAudit.cs.meta",
+      "sha256": "3fa545cb1c1dc8471dcf26d9bb01dadd917f06ecf1a961d52f020787c6fc5ec9"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/RetainedNumerics/Float32V1/Float32TerrainGenerator.cs",
+      "sha256": "ee370bf9e8dc9a63581a42088791481d16ae3340f9124160aabd5d3b24c81f2b"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/RetainedNumerics/Float32V1/Float32TerrainGenerator.cs.meta",
+      "sha256": "12fa1c5531122c47d90e232cd9fecb842d560a7fd7678b1f2ea9b5f3c7858d01"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/RetainedNumerics/Float32V1/MapElevationPlanner.cs",
+      "sha256": "b70691faf80d8ad86f6a5ad81ec0b9195bd83563d3e85eec8000f1f7468b6cee"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/RetainedNumerics/Float32V1/MapElevationPlanner.cs.meta",
+      "sha256": "cab3643901ed2e46a80ceda7394a279265638ce727376f199a047b130569ad69"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/RetainedNumerics/Float32V1/MapSimpleDecorationGenerator.cs",
+      "sha256": "f0e5f104360fed9d02ac141caa7f0330ca554b72c1f48bb1197a66f897c94f7d"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/RetainedNumerics/Float32V1/MapSimpleDecorationGenerator.cs.meta",
+      "sha256": "1564a25866bdf7c2491b787a3b3ef1c754a2d9c90c6e70c12c95a355e8f59ed9"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/RetainedNumerics/Float32V1/RPG_Demo.RetainedTerrain.Float32V1.asmdef",
+      "sha256": "6b69f54449ed1116f6dba2bb39d49f2e63d3a62a7b4468b917956937eda6748d"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/RetainedNumerics/Float32V1/RPG_Demo.RetainedTerrain.Float32V1.asmdef.meta",
+      "sha256": "d42ab405755241a1b2335136d2673062d0b878f54101853c8d4286f540928926"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/RetainedNumerics/Float32V1/RandomMapGenerator.cs",
+      "sha256": "20575eeecad4e2150ea8d96e8579b6e457a476f6bcd91ae412618eb29ab12e22"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/RetainedNumerics/Float32V1/RandomMapGenerator.cs.meta",
+      "sha256": "6d69d3422b09291801b484df06c627e0d81621855a2adceda18d508188918ac1"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/RetainedNumerics/Float32V1/csc.rsp",
+      "sha256": "635e5529208683d0344ae4a21f400fdc16ca0449a997de13d80f530a8b146302"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/RetainedNumerics/Float32V1/csc.rsp.meta",
+      "sha256": "da24f3c8295144e8865b3007fc03a3c47907d551eb97f9af364cdcadaa6ab98f"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/RetainedNumericsAccess.cs",
+      "sha256": "01da9b9fdfc9104c36a20fc4a571f9e2167766b073f38a174f92dfdfc9e91966"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/RetainedNumericsAccess.cs.meta",
+      "sha256": "4d1bbb257770bc13fe8f6daffc05b047c6385a396d67e5027b163bd8000f52a7"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/SpatialVersion/EcologyNavigationGraph.Versioned.cs",
+      "sha256": "09fc4c0d29433087447280f1cc99de1e61559a610b0677c6a9f7ece0961c258e"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/SpatialVersion/EcologyNavigationGraph.Versioned.cs.meta",
+      "sha256": "b42a9712da501c8f47d78a6e15dc60636977f29aea9115bc879ff4318b21eacd"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapCandidateCollisionGeometry.Ground.cs",
+      "sha256": "4030ac3ee742f9ad9431cad65829c996b8bb8ced2eb70a6976371af7468455cb"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapCandidateCollisionGeometry.Ground.cs.meta",
+      "sha256": "0c3a4a580feea674c9cf22602e98de5b0f4e4464282491f2a2aba6d13d765ccf"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapCandidateCollisionGeometry.Rewards.cs",
+      "sha256": "bff43a8a3fabf1ffe61c02c1c6b1e8af3828d099e33d8130f03d81eb4aeb21c8"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapCandidateCollisionGeometry.Rewards.cs.meta",
+      "sha256": "2f5c95b2ce58d75f251f50d8f1f8949b52bd39e566a5c6dbd3f9b12e1246ba87"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapCandidateCollisionGeometry.Versioned.cs",
+      "sha256": "394c00f74d966837a64bc2462228a4ae01f733d793e553fcb3911781cfc0a00f"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapCandidateCollisionGeometry.Versioned.cs.meta",
+      "sha256": "578793fbac7e63837ebbcd61eb42fbab44557c4c7a665b505b1155c8a76f595d"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapGroundFootprint.cs",
+      "sha256": "b10a1bb4b15fd225a5121b825c1a842a8363411399123ac8971684fd3549aeb1"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapGroundFootprint.cs.meta",
+      "sha256": "2bd80b6e74746ede40722dc39cee2c81b6ff8ab92f5e867a2d7c7747010ef5f8"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapHostBuildStamp.cs.meta",
+      "sha256": "f444525c6fccf427e746f9f47a93dda6220ecfa5945b9e27ac7ebde091596904"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapHostCompatibility.cs",
+      "sha256": "7275a49a6c9b3a5788dd1c366f7606a44b81b31a2eb2b8d5919904dedb7cb39f"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapHostCompatibility.cs.meta",
+      "sha256": "a90fce9d5f1f1627a6c51eed59701c0032c00ea8d5abd636b81763e0734a613d"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapHostStateSnapshot.cs",
+      "sha256": "5a837e96fdd3946c851498583afa65b3ced26877fe572d65bf6da2972505ffb5"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapHostStateSnapshot.cs.meta",
+      "sha256": "351294438855b23357de16f7f67974d52f92c104a240d5188f873e4a880d88bf"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapSpatialActor.cs",
+      "sha256": "28b69d56913ae93075e74022b9ad607a1bcdef2ec90519c054ef214b6734b91d"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapSpatialActor.cs.meta",
+      "sha256": "88b52a0294b6a23139be0770bf968e41853660cba6dcdae9085951953da88c81"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapSpatialContext.cs",
+      "sha256": "be3d48f5e68401198c6df7cfcf7a5db9a9d29877f25f3248ba20a1f04a1135cb"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapSpatialContext.cs.meta",
+      "sha256": "6a9a29fcde7de2e8db0fdb26ebd03435761184aef7655cde32b0f26da4b30fc0"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapSpatialDecorationFilter.cs",
+      "sha256": "2651998339339f0a9ac920e8c1856c3027fdbefaab4377706b16c1c5e4dd76ef"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapSpatialDecorationFilter.cs.meta",
+      "sha256": "5b617a700c3d35a882a2ce66ab00398a82073459740d04f988a7547c57e8442c"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapSpatialPendingRewards.cs",
+      "sha256": "a4139e1443f1100677c86fbdc474b5cba8ed3a221ac31d2209ac4841f6038828"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapSpatialPendingRewards.cs.meta",
+      "sha256": "74d4005976e39ff8caa4d80468fa28bbf841df6092a966a8292c2d50e4d770c1"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapSpatialPlacement.Planning.cs",
+      "sha256": "98c058d890372648d762f7fde23641c4118a1d559b961118f59a1a32a4731395"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapSpatialPlacement.Planning.cs.meta",
+      "sha256": "8bea20a015292ef3ebf5750e9b338f592c7697d0188f538184bfe495283ecdf1"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapSpatialRewardPlacement.cs",
+      "sha256": "c809c3511fb3276830a13e59709fa41f51a65a2def2e165a2f9203ecba619b72"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapSpatialRewardPlacement.cs.meta",
+      "sha256": "491736cc58ec6a0226df48114af336126e70982bd7513a510a9c86c5ab1db61b"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/TerrainAutotileSet.cs",
+      "sha256": "f03bfb6c767fc1c9e633da7a26c71ff6afb04e1d74e663f18164b4e781870cb3"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/TerrainAutotileSet.cs.meta",
+      "sha256": "98b75d92ac8748ca790c2ecd767a6c6d4e648ffa8a9c460d49eb4a31bb639ce6"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/TerrainBoundaryMask.cs",
+      "sha256": "93d33d7622d5c165eae47ed802eaf87420fed16814225120a2e50a24686340a6"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/TerrainBoundaryMask.cs.meta",
+      "sha256": "fa36c2ae820935784a5dbc88f89e8cf978ba0aded397da47e88a0e00ca5ec856"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/TerrainTopology.cs",
+      "sha256": "f95f5037f8d957a37d4df3753fd32c7637a37aebbbb0a926366e1abbcaa67dfa"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/TerrainTopology.cs.meta",
+      "sha256": "7626e57fc3850503ef24c88a2f287dfff26cdce4e0ae250477f19a53e03f7416"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/VNext/MapVNextAssets.cs",
+      "sha256": "627fb76c42c479e2d45a94991b46227bd7ecb948fa216a44d401d6f8532b7d80"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/VNext/MapVNextAssets.cs.meta",
+      "sha256": "99defa5ef190b6fd0c06c4c995410170232fe0c374d4f6c0e1d4a5fb43764588"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/VNext/MapVNextCliffExclusion.cs",
+      "sha256": "58eb3dc6d95e36db30c226681cd056eb727aa3e616e6d2daf1c7920d28c84bf2"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/VNext/MapVNextCliffExclusion.cs.meta",
+      "sha256": "009803029d09148aba13645521c4e65175e18a6305ea39b2c249c2fe8e015d8a"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/VNext/MapVNextDemo.Approach.cs",
+      "sha256": "dcdde633848d550fb127484364e74925ac48f2f48b5a767c9980744f1fcf4392"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/VNext/MapVNextDemo.Approach.cs.meta",
+      "sha256": "fa4b7a0167ddb8fdfa58028d9c837ac86894d72717f528a24806a3838a478c8a"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/VNext/MapVNextDemo.Cliff.cs",
+      "sha256": "eb6274e91e88db74cd63f10c85b5de40c7be0c6e1371936886ad930a6639e990"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/VNext/MapVNextDemo.Cliff.cs.meta",
+      "sha256": "ba7c246f8a94e5d9078861c0da3d7f305b566529bb34d4fec84a1600667292aa"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/VNext/MapVNextDemo.Diagnostics.cs",
+      "sha256": "c0c1f18e6c56b742a97add75dad1d9ce3cd1e9dc471f2bb0f3fe43ab74890f43"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/VNext/MapVNextDemo.Diagnostics.cs.meta",
+      "sha256": "8ff426d43b3c748fe43442e6a2c30fbf9f9196906105a9f675eae1a94d8c87b1"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/VNext/MapVNextDemo.P2.cs",
+      "sha256": "4242fb57124bc65bfe7e30b31bd32e1398eefecdedfd92959c678272fed816b4"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/VNext/MapVNextDemo.P2.cs.meta",
+      "sha256": "43faf2a866ea47d8ae68bced9fde28b6e419b3d2e6dec8f9784cbd423f08944f"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/VNext/MapVNextDemo.R3.cs",
+      "sha256": "4e0fcffdc3b6c0b6caf7a66523e28a8931eea0877b6327847d1cc003fd3ab24b"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/VNext/MapVNextDemo.R3.cs.meta",
+      "sha256": "9862b906b729c8ffbc9b9f30ca3bc691f99768c2f69386798682b0458fd465a4"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/VNext/MapVNextDemo.cs",
+      "sha256": "13e02b61cd2e5c7abc11a1241209039786d1a8afd873c0430bbd5fba97158790"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/VNext/MapVNextDemo.cs.meta",
+      "sha256": "202a1765268fe0c6bc148ebe50bef62ef1b3a649396e9903400a3f49dd9da3d2"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/VNext/MapVNextFixture.cs",
+      "sha256": "86a26d90ab1a442f73e9857c1c89c1caf4ee2e329fab2a5f6e5e81cb0ff6d270"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/VNext/MapVNextFixture.cs.meta",
+      "sha256": "2591b86a371bdb646f008aaaaaaee70e89c669f87cdb78adb90f0bec86a7c75a"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/VNext/MapVNextFormalTerrain.cs",
+      "sha256": "a7bbe59ec19874bb06b2da99f64b6e36efa4ec458316b649c3b7e8bc369d0ba2"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/VNext/MapVNextFormalTerrain.cs.meta",
+      "sha256": "c56dbdaf7785e61b5a1d4607e32e652284ce54aab93512df59fda26e425fbe84"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/VNext/MapVNextProjection.cs",
+      "sha256": "b31fc51a4855a00c09d06f31ee55d117236be451ae5ff8281e59c8533774db2c"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/VNext/MapVNextProjection.cs.meta",
+      "sha256": "a159f90415ac10fdfe639900fce45200c0f2764309adceffb77d1b30ecc41072"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/VNext/MapVNextRandomLayout.Formal.cs",
+      "sha256": "377b9c740c1055ebe89be35b4b7f1ad81dc511624c3f3772608eb3bdfab55534"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/VNext/MapVNextRandomLayout.Formal.cs.meta",
+      "sha256": "99abee3afb92c29769a8ad4be14a4dfe9117a27206ef9207d6cd39773a925134"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/VNext/MapVNextRandomLayout.cs",
+      "sha256": "f41c0c2f2d04c669995e0dd5c3b85a0012c82952893f2200c5bc05bca4dcf574"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/VNext/MapVNextRandomLayout.cs.meta",
+      "sha256": "f95de55a72b692b9c0081e1d157534f69b03ebc31029543974172f37dc23e4fb"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/VNext/MapVNextStairGeometry.cs",
+      "sha256": "d3822aa985eb8918ec45c4139b74708d05fd839ef7c99904d5cf4379fea60b26"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/VNext/MapVNextStairGeometry.cs.meta",
+      "sha256": "d6a31e80331bc9d306c1ac8cc58fad4c54768538e2d4872a7a097230854e7f17"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/VNext/MapVNextSurfaceQuery.cs",
+      "sha256": "39f08f54ce8a489564489441a07d02b9ac2434026c5f8bb1b87c99d1c3025775"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/VNext/MapVNextSurfaceQuery.cs.meta",
+      "sha256": "0e47dd60c7b735067b59f9c5de7dbd2135eba704bee93fb495fe0c934b5c1ef2"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/VNext/RPG_Demo.MapVNext.asmdef",
+      "sha256": "c940674befd15b39f16e32244a28f42219809a9db01ae5779be4d5007f8b65dd"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/VNext/RPG_Demo.MapVNext.asmdef.meta",
+      "sha256": "98db7e016c48e460449fbee7d17a4766c5d0999a0e974448c64c0d0547cdf4f6"
+    },
+    {
+      "path": "Assets/Scripts/MountainGateTrigger.cs",
+      "sha256": "14c8905f326267cd340598e3856a0b5868f22e796cb3c149b1bd1c5e4cb83e8d"
+    },
+    {
+      "path": "Assets/Scripts/MountainGateTrigger.cs.meta",
+      "sha256": "28dc341bdab44a95b933958004606e8f1436ba261a60543b07c7881add033945"
+    },
+    {
+      "path": "Assets/Scripts/NPC/MerchantInteractionController.cs",
+      "sha256": "3a4a8dc0a1ccf5f391ee9bc97421baa748ceb276d3bf11856b63bc866cb93612"
+    },
+    {
+      "path": "Assets/Scripts/NPC/MerchantInteractionController.cs.meta",
+      "sha256": "1f1b66b1a667a03aea1221bbce3555ec9b4af553cef921d88016849b09781b6d"
+    },
+    {
+      "path": "Assets/Scripts/ObjectPoolManager.cs",
+      "sha256": "4ce8af506ed3acb1189b20462edeecb7038c94cdcb235190a47ed7d2fcf8da16"
+    },
+    {
+      "path": "Assets/Scripts/ObjectPoolManager.cs.meta",
+      "sha256": "7c7231d41016d769d20e09bdfbab4d51a6da9965cd31588a4d7b1f454a35ab95"
+    },
+    {
+      "path": "Assets/Scripts/Player/PlayerAction.cs",
+      "sha256": "03993f114f9883f9054ce14872e9a235ca48abfe4444f5a09638040d368b9599"
+    },
+    {
+      "path": "Assets/Scripts/Player/PlayerAction.cs.meta",
+      "sha256": "b5bda9027212fb8b1999a7771f355b2e1bc444f9524b54702afe39f7019846a0"
+    },
+    {
+      "path": "Assets/Scripts/Player/PlayerAnimationController.cs",
+      "sha256": "9733ddea01dcef48e280c41df41976c4c7192589e41f9eb5cc5a650a02bbe845"
+    },
+    {
+      "path": "Assets/Scripts/Player/PlayerAnimationController.cs.meta",
+      "sha256": "df9a777fe5faf1079e061b9d22120892615055d36f98abc9c4c32521a9e4c328"
+    },
+    {
+      "path": "Assets/Scripts/Player/PlayerColliderRoles.cs",
+      "sha256": "54e93ca14ea1136cc10c6141a06c2387f73b0eaa10f4fef623c01ddd091ac3d6"
+    },
+    {
+      "path": "Assets/Scripts/Player/PlayerColliderRoles.cs.meta",
+      "sha256": "b234a6785d4e2c5ae419ec687b0aa2129ca70d799c14b9e6ef3924914509e90c"
+    },
+    {
+      "path": "Assets/Scripts/Player/PlayerDamageController.cs",
+      "sha256": "690154eb40b00feb1f9f26aa97f45c3943053c73edb6cfdeb14e8b77a9ea33f2"
+    },
+    {
+      "path": "Assets/Scripts/Player/PlayerDamageController.cs.meta",
+      "sha256": "0e1b6df2348697cca2e9a7af0264fdd207729e07e33db71b8c7f2233ef8377b8"
+    },
+    {
+      "path": "Assets/Scripts/Player/PlayerHurtController.cs",
+      "sha256": "386bfa7839e8521c349c3341ed16d49f4a21c07aff6e03d818b16d2a27c58e28"
+    },
+    {
+      "path": "Assets/Scripts/Player/PlayerHurtController.cs.meta",
+      "sha256": "097739e30642b7856b8471c29fd2d04dd1dbe772fea99adb138743728c490ed1"
+    },
+    {
+      "path": "Assets/Scripts/Player/PlayerSortingController.cs",
+      "sha256": "c6a740fb88e18144ab3f10e0aaa3d8522f01a2d28e9a2e512c4dae0f5b166456"
+    },
+    {
+      "path": "Assets/Scripts/Player/PlayerSortingController.cs.meta",
+      "sha256": "bdeb1541cbd3ddb178ce9219114eabd19ed42d7cb6f3b8f251ae56a64f39c4f3"
+    },
+    {
+      "path": "Assets/Scripts/PlayerInventory.cs",
+      "sha256": "128cfcce07b9d5fda762b7975849b6a1f71e6078649e7925a62a4cc36fe675aa"
+    },
+    {
+      "path": "Assets/Scripts/PlayerInventory.cs.meta",
+      "sha256": "c4a7a4ff18c2d9f682a78d7fc0be660883fe591a2bf326086bbf339d5106a076"
+    },
+    {
+      "path": "Assets/Scripts/PlayerProgressionService.cs",
+      "sha256": "3a2d998279456692a6f433726a13e706887bb794ae8cd5dfc5d3217ee2355460"
+    },
+    {
+      "path": "Assets/Scripts/PlayerProgressionService.cs.meta",
+      "sha256": "ccb93448194b3ac917fcdc44db2860a411d926db693df335ad77e2f1195b6180"
+    },
+    {
+      "path": "Assets/Scripts/PlayerStaminaController.cs",
+      "sha256": "33dbcaffc3e6dfeaf242981924d64d39cc635a885ba19251ebc1ac492d02950b"
+    },
+    {
+      "path": "Assets/Scripts/PlayerStaminaController.cs.meta",
+      "sha256": "2dd9e9741e86a539b780b5b65aaa08c649a670e3f60b21d54135aa98ff5953b3"
+    },
+    {
+      "path": "Assets/Scripts/PlayerStatsRuntime.cs",
+      "sha256": "7cb0472d4ca11bd311dba50825d1b709a85ef15e46e9a2905cb086daf035f85d"
+    },
+    {
+      "path": "Assets/Scripts/PlayerStatsRuntime.cs.meta",
+      "sha256": "00a3dc655005cd95b99da578a68a803344cfe6d36f6a797456b76564d4223012"
+    },
+    {
+      "path": "Assets/Scripts/PooledObject.cs",
+      "sha256": "3ee17c84bea832b2b708c41e28d5ad298c0a21de16c8d63699303467fdc84aa7"
+    },
+    {
+      "path": "Assets/Scripts/PooledObject.cs.meta",
+      "sha256": "1f8efdbbd0f7c686f22e5d69b96c817b6334e55c2a364eb6fa7817363a8a4a36"
+    },
+    {
+      "path": "Assets/Scripts/RewardPickup.cs",
+      "sha256": "9a896315d2778a22cc923a250315bb95bdb633ce73ab115d285f7ef865dd6f3b"
+    },
+    {
+      "path": "Assets/Scripts/RewardPickup.cs.meta",
+      "sha256": "c1f6654af2cfd33ce2db14dff164985c4b7b4bf8ed33550d1e1cb18b97478f80"
+    },
+    {
+      "path": "Assets/Scripts/RewardVisualController.cs",
+      "sha256": "1336c671106d73ab925c65359fba01a42cd3971b6bc55d874d00418cf92b6284"
+    },
+    {
+      "path": "Assets/Scripts/RewardVisualController.cs.meta",
+      "sha256": "dc355c1768f88cd67a1878b1d9cd521a8fe72cdd4b5df6b42bf95e5b72ea025b"
+    },
+    {
+      "path": "Assets/Scripts/ScriptableObject/DamageableDieRewardListSO.cs",
+      "sha256": "c9f841049847fa8a4b67ebcaffc8fca2fb5b62aa89bc08af8e3fe27f6fa69dd2"
+    },
+    {
+      "path": "Assets/Scripts/ScriptableObject/DamageableDieRewardListSO.cs.meta",
+      "sha256": "35a66517146e3bf83262107b07d6f063eb33b5303a9d27637e993453d24c9553"
+    },
+    {
+      "path": "Assets/Scripts/ScriptableObject/DamageableDieRewardSO.cs",
+      "sha256": "cf9a8a1b5468eb8b69872183319b6df2df75b8f662d565a1cd612bfc08df4c43"
+    },
+    {
+      "path": "Assets/Scripts/ScriptableObject/DamageableDieRewardSO.cs.meta",
+      "sha256": "056a1fd1636465eaa9086bf32a4f9e87f2c98b42384ab8b7eca2b00a96143a09"
+    },
+    {
+      "path": "Assets/Scripts/ScriptableObject/RewardRegistrySO.cs",
+      "sha256": "b8cd06d3850c8562eb5249dd02bd167af8b888bcc840d833373a62500c1c9306"
+    },
+    {
+      "path": "Assets/Scripts/ScriptableObject/RewardRegistrySO.cs.meta",
+      "sha256": "0c9bb5f2b43bfd6e8a93ef657f1a5a2925a642c6c7db35151b7ce89058b0bd0d"
+    },
+    {
+      "path": "Assets/Scripts/ScriptableObject/RewardSO.cs",
+      "sha256": "4bb6d0ee0e4b50e487bd060fe25b5ab435ee5fc2edc45747769d200172884679"
+    },
+    {
+      "path": "Assets/Scripts/ScriptableObject/RewardSO.cs.meta",
+      "sha256": "0bab2f652fa18aa8dede4dca2f48b7c5f7184c36730fa02cc1bbabfdabf17973"
+    },
+    {
+      "path": "Assets/Scripts/Shop/ShopCatalogSO.cs",
+      "sha256": "d13b578fe9c226a0492d789a6e4a26e4f03b2af332499042c9e38518f1694bbd"
+    },
+    {
+      "path": "Assets/Scripts/Shop/ShopCatalogSO.cs.meta",
+      "sha256": "ff467a3fd953033feafe66aab29840fb8a1eba587879199ef6599c5788cde4e6"
+    },
+    {
+      "path": "Assets/Scripts/Shop/ShopTradeController.cs",
+      "sha256": "cfbe5788a3aabde01bc7911176d393ca2a2bf58964ad777b3e4aa4813261c8a0"
+    },
+    {
+      "path": "Assets/Scripts/Shop/ShopTradeController.cs.meta",
+      "sha256": "829260eff8bffd2036a8514ef9e4df9e161c1146ee1bdd5107803fd73a07d1e9"
+    },
+    {
+      "path": "Assets/Scripts/TowerFloorRuntimeController.cs",
+      "sha256": "fdac9d8a55b903db9ffcdc782f7260a55eaf1c9f0e703c00589cf93fd1a3bd11"
+    },
+    {
+      "path": "Assets/Scripts/TowerFloorRuntimeController.cs.meta",
+      "sha256": "3c8fa8c17dfff5d0ccaf556ac1d1ef4d7090631f73592a61cf1093c825898012"
+    },
+    {
+      "path": "Assets/Scripts/TowerRun/LegacySaveDetector.cs",
+      "sha256": "d8a235da895ca3a0558ab53c442aa0a0751508f54ebb1594bb4479582ddd5410"
+    },
+    {
+      "path": "Assets/Scripts/TowerRun/LegacySaveDetector.cs.meta",
+      "sha256": "aa02f85ffd59ffca9b24c76416e34e57a35f04947745f3cd2a7283608e4e499b"
+    },
+    {
+      "path": "Assets/Scripts/TowerRun/RPG_Demo.TowerRun.asmdef",
+      "sha256": "19ef909dcfe5f8c55c154537ee6aced47cf75faa71c94f4d5380bb6d6ec6318b"
+    },
+    {
+      "path": "Assets/Scripts/TowerRun/RPG_Demo.TowerRun.asmdef.meta",
+      "sha256": "175f524959a117712cfe7c4f9951c4ad06993b213497375280164f05e875bb11"
+    },
+    {
+      "path": "Assets/Scripts/TowerRun/TowerRunCheckpointRecord.cs",
+      "sha256": "3bc8ef1245988d51e3bd44c4e755e9346821d593c5874c99c536b4023a8d504c"
+    },
+    {
+      "path": "Assets/Scripts/TowerRun/TowerRunCheckpointRecord.cs.meta",
+      "sha256": "cc8df397ee223edc037fed5219edcb193c6fb9c70d0cd465516aff1694e29b2a"
+    },
+    {
+      "path": "Assets/Scripts/TowerRun/TowerRunGate.cs",
+      "sha256": "9a456672e46a31e52db4b21f08fb4545b4f85126e1bbaf5d9fcf7801d010c362"
+    },
+    {
+      "path": "Assets/Scripts/TowerRun/TowerRunGate.cs.meta",
+      "sha256": "ad9e5ce70a69ef15eaec1e7ea50eb1b69e8ab9d41827a94c80dc7f45cf3938b9"
+    },
+    {
+      "path": "Assets/Scripts/TowerRun/TowerRunMapBaseline.cs",
+      "sha256": "9d46b2fb255c11aa549060eb527f64d824f73587c4596fe08a9c940b3283af6a"
+    },
+    {
+      "path": "Assets/Scripts/TowerRun/TowerRunMapBaseline.cs.meta",
+      "sha256": "c6c5597c68c022cbb8e2d9ff7abfb54fef5311ba7342d1dac6ee24cf20a62f53"
+    },
+    {
+      "path": "Assets/Scripts/TowerRun/TowerRunRuntimeEnvironment.cs",
+      "sha256": "1acca7ea634baa6e0b83618dcf5e5628fae813b38a7815e6e37cb3cc81a607ea"
+    },
+    {
+      "path": "Assets/Scripts/TowerRun/TowerRunRuntimeEnvironment.cs.meta",
+      "sha256": "4abef608ee1ecfb148e362b108214d71ff42c86c18cc4156162396f448e9c11b"
+    },
+    {
+      "path": "Assets/Scripts/TowerRun/TowerRunSlotStore.cs",
+      "sha256": "2ffb75541ed7e409f010c63e9215a3e57a11e983ad1d489bffa55f311d1a2ce7"
+    },
+    {
+      "path": "Assets/Scripts/TowerRun/TowerRunSlotStore.cs.meta",
+      "sha256": "7eec8889709140129d3ff246ca6f810d98233884563b33189e2f2366dfc3bbc7"
+    },
+    {
+      "path": "Assets/Scripts/TowerRunCoordinator.cs",
+      "sha256": "df844c804e335f22aaf059afda931914996439a55ec873c1ccfb5715a3bfe8f9"
+    },
+    {
+      "path": "Assets/Scripts/TowerRunCoordinator.cs.meta",
+      "sha256": "d1b2184e2a995ebdf62ee3f3761c08c70ce690aa412e487caec2306c4225e44f"
+    },
+    {
+      "path": "Assets/Scripts/TowerRunGateHub.cs",
+      "sha256": "6162ecdf509c05ecee30c01062d0f775ed44431dbf2dd4fb030f58a18eabef24"
+    },
+    {
+      "path": "Assets/Scripts/TowerRunGateHub.cs.meta",
+      "sha256": "ad3c9fefe39de43f37b49d8bc1df5ba9584aadb813f4442a881a00d896c2af3c"
+    },
+    {
+      "path": "Assets/Scripts/TowerRunRestoreFinalizer.cs",
+      "sha256": "362cc5ae8ad1482f56c5588ed0d1002c4029013623d141d89948ec67414914f9"
+    },
+    {
+      "path": "Assets/Scripts/TowerRunRestoreFinalizer.cs.meta",
+      "sha256": "3db66ca97c2328bf53b8f84a2b8ba4e844ffa2fc4ee831086949814dded61d9f"
+    },
+    {
+      "path": "Assets/Scripts/TowerRunRuntimeStateBridge.cs",
+      "sha256": "1c07b39d7d9c0b8599bdb2870544378a7317ecfb87282c95c80fedc5d7c327ea"
+    },
+    {
+      "path": "Assets/Scripts/TowerRunRuntimeStateBridge.cs.meta",
+      "sha256": "3f67c7e319ac71bc32b1aedce5403d5191f4cf5e13400cbf31c1e3b05df5bef6"
+    },
+    {
+      "path": "Assets/Scripts/UI/BaseRedDot.cs",
+      "sha256": "3bd5beedc13a47891e5088be5c6f4dbf80c0a82d1449b7d05f1e54f6ecf03aa9"
+    },
+    {
+      "path": "Assets/Scripts/UI/BaseRedDot.cs.meta",
+      "sha256": "3641115b762eb787d3a63590db13db78f4c4203d89c6d8ed14b2f717acdfb980"
+    },
+    {
+      "path": "Assets/Scripts/UI/CurrencyHudUI.cs",
+      "sha256": "47aa6361c07e410bdf15fa2db9abbfc986c0f505b502e6d178904267d4eb7457"
+    },
+    {
+      "path": "Assets/Scripts/UI/CurrencyHudUI.cs.meta",
+      "sha256": "baf2c3e50932e172ac72495ba11cb32ec9299009e78b317cf33e711674142f57"
+    },
+    {
+      "path": "Assets/Scripts/UI/PackageGridUI.cs",
+      "sha256": "23ce5826275926b5dbad46ae007f88f2355d958c7e338680224b36ac8113f95d"
+    },
+    {
+      "path": "Assets/Scripts/UI/PackageGridUI.cs.meta",
+      "sha256": "832a7d85d4cf395ab5dd3cb74453a9d1d9d2c6df2422dd53269c69759a5b8dd7"
+    },
+    {
+      "path": "Assets/Scripts/UI/PackageHudButtonUI.cs",
+      "sha256": "957f84ff113377df354ae022b4304f156f3d7ec675b94b49adc0558c7b2cd834"
+    },
+    {
+      "path": "Assets/Scripts/UI/PackageHudButtonUI.cs.meta",
+      "sha256": "dd72c9c01d2aef38eb9a2d76f89eefc4ab72be27ed999fa96851bac16983c804"
+    },
+    {
+      "path": "Assets/Scripts/UI/PackagePanelController.cs",
+      "sha256": "9885dbe5b4b92c0ec025e7a8b352888918488cafb9145630a55849859f77534f"
+    },
+    {
+      "path": "Assets/Scripts/UI/PackagePanelController.cs.meta",
+      "sha256": "f7b3898f12bed75f82db980898c2a37e609dba67f0588771b73fa6f4d13143bb"
+    },
+    {
+      "path": "Assets/Scripts/UI/PackageRewardTooltipUI.cs",
+      "sha256": "9f18eff2c079a335693d67be0a80320080f7cbbeec1d9431a07e2e253c19fc70"
+    },
+    {
+      "path": "Assets/Scripts/UI/PackageRewardTooltipUI.cs.meta",
+      "sha256": "434a889cdf852d333fc9e83a5046fa8f0082246db816082bad2a1d15fa3dd7d4"
+    },
+    {
+      "path": "Assets/Scripts/UI/PackageSlotUI.cs",
+      "sha256": "cce6da4ecaa247194f5ca066f01e86ed41ae6677e32bfd3efc002f099f56bbff"
+    },
+    {
+      "path": "Assets/Scripts/UI/PackageSlotUI.cs.meta",
+      "sha256": "aea988ccc2d3a80d5e296f0c8950f1b4968a7b2bf12b8204437d086d53e15271"
+    },
+    {
+      "path": "Assets/Scripts/UI/PlayerStatsUpgradeUI.cs",
+      "sha256": "1b0701670c571bba4bf84d85ed555034c71d6022c546950852e887ceb52ca8cc"
+    },
+    {
+      "path": "Assets/Scripts/UI/PlayerStatsUpgradeUI.cs.meta",
+      "sha256": "69c455b2a4150f9c2c92c0736b4a80a4b92041cdce61af5cbf1305672e4308f4"
+    },
+    {
+      "path": "Assets/Scripts/UI/PlayerStatusPanelUI.cs",
+      "sha256": "e96eedfe623e7c3f23bf938983f04236b0f1c978507eaefdc1c9c2384f36b1ba"
+    },
+    {
+      "path": "Assets/Scripts/UI/PlayerStatusPanelUI.cs.meta",
+      "sha256": "d7d38f424359c75dc5186ef0c30a48714a5009e3ca492ca7e1997bdbdb2ae27c"
+    },
+    {
+      "path": "Assets/Scripts/UI/Shop/ShopGridUI.cs",
+      "sha256": "b5599dfd1de6c5d266495e2d2d300007c8172cf6de2f6c6ff51daa0bde50b2dd"
+    },
+    {
+      "path": "Assets/Scripts/UI/Shop/ShopGridUI.cs.meta",
+      "sha256": "91355dec7d3965bf71aa8bace277fe3a02194061dc3d769ad85481eaa4d95e25"
+    },
+    {
+      "path": "Assets/Scripts/UI/Shop/ShopModeTabButtonUI.cs",
+      "sha256": "e579c4ed42b1c6a871cc92e42830fc26758476b4a1e5d51eb3269c69d287c39f"
+    },
+    {
+      "path": "Assets/Scripts/UI/Shop/ShopModeTabButtonUI.cs.meta",
+      "sha256": "608ea31a88c82ecddc88bc921854ee2d7eaa9f7f242e8f27be837ef7f394609b"
+    },
+    {
+      "path": "Assets/Scripts/UI/Shop/ShopPanelController.cs",
+      "sha256": "daf69e702857a860835a1ae0bf8ae9924edf015b0e9efb88f63dd0917a709caf"
+    },
+    {
+      "path": "Assets/Scripts/UI/Shop/ShopPanelController.cs.meta",
+      "sha256": "0799587008a2320f6bf8d85e48f6911f689a7e1993f0221da18c93314020f95e"
+    },
+    {
+      "path": "Assets/Scripts/UI/Shop/ShopPurchaseFlyEffect.cs",
+      "sha256": "782d4d4829e26c90357baf0d8517ec935e3c2debe28e9253668253cc70b97357"
+    },
+    {
+      "path": "Assets/Scripts/UI/Shop/ShopPurchaseFlyEffect.cs.meta",
+      "sha256": "ff2b4fc465594a04c98cc376a0784407f80e2e4253951ff5db5263635c75ac0c"
+    },
+    {
+      "path": "Assets/Scripts/UI/Shop/ShopSlotUI.cs",
+      "sha256": "7bda6c60302c211b7531cc8e2c121bc23c16cb92b3270e0fdf11dfa9d34984d0"
+    },
+    {
+      "path": "Assets/Scripts/UI/Shop/ShopSlotUI.cs.meta",
+      "sha256": "61fec1cccb1225c3325d76c309a5478f55bdae653c0e450c7137b3463f8617aa"
+    },
+    {
+      "path": "Assets/Scripts/UI/TowerRunUiController.cs",
+      "sha256": "29ef8ff7aeda4f02f459cc898b8ee4148ce708b17870a49a1d13df2a408ae19e"
+    },
+    {
+      "path": "Assets/Scripts/UI/TowerRunUiController.cs.meta",
+      "sha256": "960ce9e4873575efb2013d635bcc60993102c7b7c8e2de38237099db09f74cf5"
+    },
+    {
+      "path": "Assets/Scripts/UI/TowerRunUiSkin.cs",
+      "sha256": "1a824d859ffab1403987029cb5215dc0af28dc7ffe1064b87bcbfbcfb2c84e08"
+    },
+    {
+      "path": "Assets/Scripts/UI/TowerRunUiSkin.cs.meta",
+      "sha256": "5e8d98fe03a65774931cdb7d567edf52e964daa560c5ca7621a568b3c902a93e"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/GenerationScopedRewardLifetimeTests.cs",
+      "sha256": "266bcfa0b209e599793fd1e44ee94f9dd39f91bd6cff3685a306ae93b7874d3e"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/GenerationScopedRewardLifetimeTests.cs.meta",
+      "sha256": "b116dca3474a20b0d1a9b1bde650b2be740a3165a67a59982c04ff8070964329"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/MapAnimalPlacementPolicyTests.cs",
+      "sha256": "ba054e1759ff2cdea28d01b1650db7834030ee90aebbd0c2ecc2498ba9706644"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/MapAnimalPlacementPolicyTests.cs.meta",
+      "sha256": "840fc63cb9fc475d6837fadc25a61670fa98a64a2ead9c1709d4075969c6865e"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/MapCameraBindingServiceTests.cs",
+      "sha256": "7801e5e69044559c373d4fa4c7e290e768e4c9cf6ec92274993435aade84a4ba"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/MapCameraBindingServiceTests.cs.meta",
+      "sha256": "2e5f48e0eb00c0329c76b6be5789c1ec429f0f2ffb6eba295e3ee02c1548b490"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/MapCompatibilityRetirementTests.cs",
+      "sha256": "8a0f485ec7b66c21460b3a391b03a7043a4f89d67800fa4ff61a1e0b656b5feb"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/MapCompatibilityRetirementTests.cs.meta",
+      "sha256": "3309dde7da58b232ca011e739406926d5905787cc40ea38fbffe4fc7f3797b96"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/MapCoordinateBoundaryTests.cs",
+      "sha256": "bf8f3dd55c2fff3024b460bc36271ec757724e563cd4437425c19b06784d5168"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/MapCoordinateBoundaryTests.cs.meta",
+      "sha256": "61bc8ccd6b1dcbf2c669fcbdb87371fca2de140500e19b656ad7f9bb3926e152"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/MapDestructiblePlacementPolicyTests.cs",
+      "sha256": "75b97aa80d8a774684d94e76179f3f5c464d5ff884713f9e725737769e2919a7"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/MapDestructiblePlacementPolicyTests.cs.meta",
+      "sha256": "901fb74a0b38be3a75f55acced51a0774b15cfd6f8c40e04c6138123ebd03e91"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/MapExplorationStateTests.cs",
+      "sha256": "14593433ed9b4c2240a184c5bee489f86e29cbc2a409625c8b05f62db1d853c4"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/MapExplorationStateTests.cs.meta",
+      "sha256": "a298e60cfc7ee55a4a4ffdb401f07bc35fea50202f1df5a8000411b804c8ef12"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/MapGenerationRpgIntegrationTests.cs",
+      "sha256": "8af684ee9d3fc6e060de1672b609e11ab478196432895631d47e9cbaecfc5ac0"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/MapGenerationRpgIntegrationTests.cs.meta",
+      "sha256": "425f1e148a671911495e45913bdcad816b9f5d6747a64133e375b6fcff5e353e"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/MapGenerationSceneTests.cs",
+      "sha256": "f892b66f876fcd080e662115209abc596ff1a6a9ccb27c82f0195755980102c5"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/MapGenerationSceneTests.cs.meta",
+      "sha256": "ea4276b4738256bdf90732a2938c80444485f2a586dd0c4be7183f267d03672c"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/MapIntegrationOrchestratorTests.cs",
+      "sha256": "5adda64861d3b094a817a5ce858b6cf5d2883efc902a016c8e46922d44595fa5"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/MapIntegrationOrchestratorTests.cs.meta",
+      "sha256": "3090440d004c2347998bf3130eecd4ef11aad35f4e7e9c822f35c5398197163d"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/MapMerchantPlacementPolicyTests.cs",
+      "sha256": "26002ef05a1837a60385d28b8228f3998dfbfb11cbff1d97f3e2f5af62ecbcdb"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/MapMerchantPlacementPolicyTests.cs.meta",
+      "sha256": "89f092983246d82e6239475681ca7f7abd0375eeaaa87f87f80590bfdb8fee29"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/MapMinimapExitAvailabilityTests.cs",
+      "sha256": "829bf14465547b770eab6d95945f65485e0764de9bed495f30d0732d78439f4c"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/MapMinimapExitAvailabilityTests.cs.meta",
+      "sha256": "e9d3396dacf60afa953502f8cca458a1ed2d88d38639974c65927b2e366451f2"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/MapMinimapRasterizerTests.cs",
+      "sha256": "8bd060d1e2d8057b91f60e73831f6ed8d0d9878cfe6030cca0b323a4bec944fa"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/MapMinimapRasterizerTests.cs.meta",
+      "sha256": "390b6482a9682ea216b3d821f01e17aacd183481024341e860ab3f592acdfbb3"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/MapMonsterPlacementPolicyTests.cs",
+      "sha256": "f4092b5d9df1128ce7132da42fc26f4f395ca6daa0680f56bdc0f4d22f82ee8c"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/MapMonsterPlacementPolicyTests.cs.meta",
+      "sha256": "622691d08c473517d1f1cc1b036392f8dac0ad1a85fcc9104712e2a477f93ca7"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/MapPlantPlacementPolicyTests.cs",
+      "sha256": "264097e3b8f9e37dc5b0106415e0ee3334b2c561bfad6423fa6b941ebc43f995"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/MapPlantPlacementPolicyTests.cs.meta",
+      "sha256": "ef127fac5cff64b6bc29803a282a2567c3201f5e1a9a119322191c07edc9b34f"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/MapPlayerSpawnServiceTests.cs",
+      "sha256": "034971ae3f61b5652761fce022502003fdc0e26132d66669a2961d180ec722c0"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/MapPlayerSpawnServiceTests.cs.meta",
+      "sha256": "05c074814ffe1b48ef06fe078901eb7cac9637538c09b3194d84c57f75fa2b71"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/MapRuntimeFoundationTests.cs",
+      "sha256": "f28a1acee149fb3ab5ed5739dee3c6459347970528d1565c2e04d8a4f2f73848"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/MapRuntimeFoundationTests.cs.meta",
+      "sha256": "d2060db24e906071a13458e19e65ef975cd9ccc7ce0b1e792f692e6b6d0e5035"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/MapSimpleDecorationAssetTests.cs",
+      "sha256": "3e5fa313b9f70e86464f7f0ac60f4aa41e215be3304a54406a6b2a1f7fdf0888"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/MapSimpleDecorationAssetTests.cs.meta",
+      "sha256": "5fee5d60e6f5d4f5ecb030b07113b4efa7a24b15a873cc1fd60457a243f40550"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/MapSimpleDecorationGeneratorTests.cs",
+      "sha256": "4ee14f62e43aeece8801633e59394cccb6f7dbe8ead0a4e735360b994294d0d0"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/MapSimpleDecorationGeneratorTests.cs.meta",
+      "sha256": "401fa30c68f03d7b15a6bbc485c58daff206eb1c0cf2acc433e14d5c5ce78f05"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/MapTerrainNestingEnforcerTests.cs",
+      "sha256": "dc47be0a40570309ed5913abb4746e68ed6d0d55f6a17e62ec128a35eb025e17"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/MapTerrainNestingEnforcerTests.cs.meta",
+      "sha256": "b14faa1e97a67dbd88a93f80ac4ce822b0c47c365402e12b04a0b0be4367c2ce"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/MapTerrainPassageWidthEnforcerTests.cs",
+      "sha256": "8bf508d893b18c0df93443aaf7e1c8df20ee253dc5f991b52ec9b675fed9f035"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/MapTerrainPassageWidthEnforcerTests.cs.meta",
+      "sha256": "eae4c566d47bb7c65e21bb845f99cc07bb56b05c41ae45d9bd4791bcbbaf6fb7"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/MapTerrainRegionCleanerTests.cs",
+      "sha256": "7f2bce0766d224e5f2c96dd5a11cfdf6b0e04dc8a0cc883a6df50f908be9b699"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/MapTerrainRegionCleanerTests.cs.meta",
+      "sha256": "f22feead74429c2b34c1b5726ab34f89b7c13e7cccfce5a1e08ba2309acdc002"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/BarrelRemediationPlayModeTests.cs",
+      "sha256": "de96feccacb484a373eb32c8c4b40f0eb42ec377bca977c2ccc1d335e31f8f81"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/BarrelRemediationPlayModeTests.cs.meta",
+      "sha256": "2ea0159ba453ed6fc9628a560aaec0fa2e1715d3cd9dda994236462b3ae6ecf6"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/DamageableRewardLoopPlayModeTests.cs",
+      "sha256": "b31f264b2da4caa84aaf47a595c2a2ca1ed01f05ed2a5bd01207db0d2c0f0aad"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/DamageableRewardLoopPlayModeTests.cs.meta",
+      "sha256": "bb90b2060536595550b1bbaadad945b1d6c33b31c335d8df1c70be0555d7eb5d"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/EcologyCandidateGeometryPlayModeTests.cs",
+      "sha256": "764532a40ca17f3e67c1fdd437e4bb8729cb3a229e82b17bacd9f2010e908411"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/EcologyCandidateGeometryPlayModeTests.cs.meta",
+      "sha256": "0e7a3d969e458445c5592ead095f1ed6752b7598b22a805a949cd859efe7db44"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/EcologyDamageBarrierPlayModeTests.cs",
+      "sha256": "1e79b88eac54e93f81d9920096b6b9fba77b1da8e42e8c60e977d88ef344aa64"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/EcologyDamageBarrierPlayModeTests.cs.meta",
+      "sha256": "ed9c3598df8d4a88be1f9831ecbb12664636be8a36ad4cf887aebfbef4087359"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/EcologyJointPlanningPlayModeTests.cs",
+      "sha256": "7b11add4635c2e8d783b4e729fd1b55efc1557e828406d682e30d3f8d22c5f86"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/EcologyJointPlanningPlayModeTests.cs.meta",
+      "sha256": "b46f1072554524744b4631edcae82adae02bd111c2a572073330d2d138b254ef"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/EcologyP1AcceptancePlayModeTests.cs",
+      "sha256": "ad96b3cca855a9de5a207e3c5fdaf40b1427949a7ab70369e1fd271f9424d74f"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/EcologyP1AcceptancePlayModeTests.cs.meta",
+      "sha256": "ecc52c8b1747c82e0b8039fe7f503086cba0577b543b598449993236ce240983"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/EcologyPlanningDataContractTests.cs",
+      "sha256": "fdb2b26c8f99ed4d7c0da9725edcdad79e93278945d52a8987ba70b598633c75"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/EcologyPlanningDataContractTests.cs.meta",
+      "sha256": "552e3573af48b1d3c02ec7ae44e3ff9bcb4a2ce6a63e25ff5a09bb6d8436e972"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/EcologyPreparedPoolPlayModeTests.cs",
+      "sha256": "b838e6aceabe7d1c5dbe21df95c4918777b517185c2d0145fc46a45a29f2d46e"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/EcologyPreparedPoolPlayModeTests.cs.meta",
+      "sha256": "1b3bd89bc8e87907502b8ab73289b159b2d74baa50cbc13009e8c93ea3db3734"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/EcologyPresentationPlayModeTests.cs",
+      "sha256": "f00375e5f25891d98da55922dc39bead161d905d6846fcbac0d89a56932c9c50"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/EcologyPresentationPlayModeTests.cs.meta",
+      "sha256": "b8c66e811f65f8b723396bdb03e0a0f2a4b15b8728ab14a30e925c5dbf90bba9"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/EcologyProtectionGeometryExhaustiveOracle.cs",
+      "sha256": "355b6fc3c2395b0de31c0db2f8c75efa80a97fc1cc49e536b18b42e13a633cb4"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/EcologyProtectionGeometryExhaustiveOracle.cs.meta",
+      "sha256": "bd55d1c1d96fdf9293592a20739bb0c0cfff82ab3a0a5cd1dd8499c1a8b252bf"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/EcologyQueryEquivalencePlayModeTests.cs",
+      "sha256": "32e403fdd448ef8a8e4f7a7450b5d41ce39b38b301a346189632fbf9a1dfa6c7"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/EcologyQueryEquivalencePlayModeTests.cs.meta",
+      "sha256": "49fc81fcd131ce225569f96529ae816fa378825aa047acd693b661ec1f1ed940"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/MainOfficialSaveCompatibilityPlayModeTests.cs",
+      "sha256": "1e71502c9182d1d36609acc3d6739fc4d6419dc6bd2fc683f32ddbea6818bb8a"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/MainOfficialSaveCompatibilityPlayModeTests.cs.meta",
+      "sha256": "fbdb4c8137bed11ab7892a4856c9c76b9e349f9fa0bb1afae69bc92d0c848cf8"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/MapEcologyPlayModeTests.cs",
+      "sha256": "adea93bd5264f869b42e2632683d98a45ea4ed6706ea932846362858ca754225"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/MapEcologyPlayModeTests.cs.meta",
+      "sha256": "55e1c9737516bc7b8e04f09a0b39dc105a594188c3b72212dd0cb6551b7f4a2e"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/MapGenerationRpgPlayModeTests.cs",
+      "sha256": "6fa21cc8c3bdf10a54f844b597574e42a443e248c8b20133c3afb92ae32cf39d"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/MapGenerationRpgPlayModeTests.cs.meta",
+      "sha256": "14088c5a09b77367d9d263e615ed93fde46dcbc09b1b07c6d5a612b16b0ac3dd"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/RPG_Demo.MapGeneration.PlayModeTests.asmdef",
+      "sha256": "63ea38552882614814b190b92e07cec241a8daf4d4f511d3652b355a65812adb"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/RPG_Demo.MapGeneration.PlayModeTests.asmdef.meta",
+      "sha256": "c833cd7b92c88aac06cd9e22f41281edb1b377e9abc867f00492827c150e8171"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/RemediationRetainedIntegrityPlayModeTests.cs",
+      "sha256": "a95b9b8ecdaf271fe2b2288147155b353258d47e9082203da04141b4449e8a8f"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/RemediationRetainedIntegrityPlayModeTests.cs.meta",
+      "sha256": "cc9119552cbb127016b941a679d490fa6db6ef1cba476cfdfc6312d37c119926"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/SurfaceV4BehaviorPlayModeTests.cs",
+      "sha256": "56a9dae5e160e47d89418500c90c1a5b2df2b40c1f1cd4f4703d2a46b986067a"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/SurfaceV4BehaviorPlayModeTests.cs.meta",
+      "sha256": "e79dbe015c3b1cbb67990f6984ef4cd9274f11237d57bc745889f3f8de9820a0"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/SurfaceV4CompatibilityPlayModeTests.cs",
+      "sha256": "705400fdf72b8f4c1624f051e3dfb34f7caaa507c1ecda164d4c228d954770bd"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/SurfaceV4CompatibilityPlayModeTests.cs.meta",
+      "sha256": "22277cf69d2457c1c33604ca4b3fb73988336b28774e798cd686dc6244b58b90"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/SurfaceV4FloorPopulationPlayModeTests.cs",
+      "sha256": "c34d4f98b99e8997df3d79072ef35e8106c19585fab057536b9dae5542ff1545"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/SurfaceV4FloorPopulationPlayModeTests.cs.meta",
+      "sha256": "fb410f8b648406ebc9d1581771cb4fd580af23664689e337ff0b25119af4ff4b"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/SurfaceV4MultiSeedPlayModeTests.cs",
+      "sha256": "1d1a547b61dd2ae60f6b946205b4c2d4e35e7c20cf58ee02f63c330d57d20a95"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/SurfaceV4MultiSeedPlayModeTests.cs.meta",
+      "sha256": "1d2e5b871a3aae7ca6ef1f72201bbcd390268625d70f1fa22358a8b05caad4f1"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/SurfaceV4NativeVideo.cs",
+      "sha256": "98decece6de147b214fd151bf83237cee71e590f8229f52f796916e42ce555dd"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/SurfaceV4NativeVideo.cs.meta",
+      "sha256": "0f94f1a40d8cd1a2a86d5c4bca066b370088f254f8e7c04e21c90892ac50848c"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/TowerRunFlowPlayModeTests.cs",
+      "sha256": "81a48afa73d4430505fd5d354af4f5f1b63917c872e5a39fa3f881e08cfdcf18"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/PlayMode/TowerRunFlowPlayModeTests.cs.meta",
+      "sha256": "85b409b733f031b9c5f473b8c3feaa9d2e51994a93daecd244367725b4938c4f"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/RPG_Demo.MapGeneration.Tests.asmdef",
+      "sha256": "7d2aa4074e71d8d4965addadc8978bc502747b3b12849a448d5f5d609012268d"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/RPG_Demo.MapGeneration.Tests.asmdef.meta",
+      "sha256": "5e272694075995201b814ecd6c4f4ff42b0a22b4a1a5368e1934497b863dfc67"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/RandomMapGeneratorTests.cs",
+      "sha256": "a3178ca06262e8c98fccb6eea9186dba2c5f794c3356dd7b43cc59e68ff13c85"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/RandomMapGeneratorTests.cs.meta",
+      "sha256": "290e24275607887f20e5a2c388c8b68e78ecae118d431676cad8c0694acc7f30"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/TerrainAutotileAssetTests.cs",
+      "sha256": "e6394d7bd223a8fa40531063777e690e597f46c81584a47f87b914875c7c8b81"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/TerrainAutotileAssetTests.cs.meta",
+      "sha256": "03acac985b58eeca08a80108e2ec40026ce41849e9b28fa3acf2b084378f9179"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/TerrainTopologyTests.cs",
+      "sha256": "8ad1214dc5180b97f4745a5ca106bd05c9f491401fb470427340b9d497afc2b3"
+    },
+    {
+      "path": "Assets/Tests/MapGeneration/TerrainTopologyTests.cs.meta",
+      "sha256": "526a67e67e8ffa6b53600e27847a9554c1384a836feaa657d62295e19f6b7dda"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/EditMode/MapVNextEditTests.cs",
+      "sha256": "794c8b1adbd9960171a4531d84e887208eb8b672a2b302543f49df7ccd6bac21"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/EditMode/MapVNextEditTests.cs.meta",
+      "sha256": "bd70cfc6ac4412387720d956265e0fd694df2c8829db4373393f26c8997c6aa4"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/EditMode/MapVNextI1CompatibilityTests.cs",
+      "sha256": "f84d405ac789a33a75a78ba1e5302fcceaa50a7024ecf0f47b0ff1d4907db59e"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/EditMode/MapVNextI1CompatibilityTests.cs.meta",
+      "sha256": "775e2ebde511df5459b083e91a7c6f0a3ac9f4319978871383c630b72005a487"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/EditMode/MapVNextI1GroundTests.cs",
+      "sha256": "bee1f9271636bce792a5a6d4ff1120b21e9c4638387dfab329559407a3bf2d04"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/EditMode/MapVNextI1GroundTests.cs.meta",
+      "sha256": "7d1f32eae18e40b93435e8e9c48d70ecb4d42ae4293b3904705b823c4133ca70"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/EditMode/MapVNextI1LandAuditTests.cs",
+      "sha256": "5f981c0ab2c118e6c94087bd1a555dfc944811d68ed62f5fd44d5d2f8a3bfcd1"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/EditMode/MapVNextI1LandAuditTests.cs.meta",
+      "sha256": "546275c46c9fff7e9efe50bbe4526b79a8a3775da6dc6f4676d4d943fb7c7492"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/EditMode/MapVNextI1RewardTests.cs",
+      "sha256": "d2245554452891c56c02d53fc07e895c44148ea4807eda5e783138ed898ec72c"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/EditMode/MapVNextI1RewardTests.cs.meta",
+      "sha256": "d74772cb1c4274b531d24b9b3032db8733d3698946df0127d00a2f170120129b"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/EditMode/MapVNextI1SeamTests.cs",
+      "sha256": "165e9ba22bed891d31f41444b8304e33f85f528f0d732cac02c791449d339eb1"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/EditMode/MapVNextI1SeamTests.cs.meta",
+      "sha256": "bfbef32d8c5e503c9f2197ef4af02308962eb554a68675f9f84ac6741c0c6c67"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/EditMode/MapVNextI1StartupTests.cs",
+      "sha256": "fe0a62e54b7554827b938256c4a10415e32fb47112af0fa47dcf7dd9a26dce42"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/EditMode/MapVNextI1StartupTests.cs.meta",
+      "sha256": "5310981c1adefb9e35230288049919f1172d5d2184ca70843eb92cd466074694"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/EditMode/MapVNextR3EditTests.cs",
+      "sha256": "1e70d03699572a58ad6a3dad3d07d4440632d60e91f2957d9670785b16f69fea"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/EditMode/MapVNextR3EditTests.cs.meta",
+      "sha256": "8a4ca2258ecd50bb889bf432c005f43cc28e5fe000ae3b552ff6eaa6a7c055e4"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/EditMode/RPG_Demo.MapVNext.EditTests.asmdef",
+      "sha256": "f6eb25c4297bfaa7e7f79f0938d8ba7d0b2c9aef6d9e13649799207a4ed9215c"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/EditMode/RPG_Demo.MapVNext.EditTests.asmdef.meta",
+      "sha256": "d811e41daf68dbc41700a717d087f5ddb97b23e18ab1cd9175133c87a0ae495d"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/PlayMode/MapVNextCliffTests.cs",
+      "sha256": "eb7b5131804e0dca3f7149c7a9b17ba6cec7a8b2cca165f0fff99e04c90dc95d"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/PlayMode/MapVNextCliffTests.cs.meta",
+      "sha256": "f35aa242003c3f38fc758c2dc4d52914418b110d0e77e424ea4b75a4d8948ccf"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/PlayMode/MapVNextI1IntegrationTests.Acceptance.cs",
+      "sha256": "af0ffb0629eb0859ce3047d8eb3c70e6225a0272717747f88c83596de84f99f5"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/PlayMode/MapVNextI1IntegrationTests.Acceptance.cs.meta",
+      "sha256": "6af20b4c0db8f9e2cf7db78af4426588e31b128d9d85e43e360eaedaca2b5c68"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/PlayMode/MapVNextI1IntegrationTests.HomeBoundary.cs",
+      "sha256": "904c8676398a0b32837b6a89bc65cbaaac6885bb95f8ac4378df4a811e030608"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/PlayMode/MapVNextI1IntegrationTests.HomeBoundary.cs.meta",
+      "sha256": "02a045483accd860d94a8d5f6032d16022e94b8b38679c3823416d8e76efa422"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/PlayMode/MapVNextI1IntegrationTests.LegacyLifecycle.cs",
+      "sha256": "8185c71347dbeaa93c20382f31f77ac7b957dbb77318000d750031a29fb352c7"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/PlayMode/MapVNextI1IntegrationTests.LegacyLifecycle.cs.meta",
+      "sha256": "3e7d465f90e5696816f3335b97a37f23ad51fa0e472a59469b3e796387309ebb"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/PlayMode/MapVNextI1IntegrationTests.Motion.cs",
+      "sha256": "046dc91851cfd37468911fb2eb1e357f4b5929b653b8fe5f10cf01f01fa983ef"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/PlayMode/MapVNextI1IntegrationTests.Motion.cs.meta",
+      "sha256": "95d9fadc607c3160419f89b11e464523488f064b8f4c10169b1713321ccb22df"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/PlayMode/MapVNextI1IntegrationTests.PositiveWalkOwner.cs",
+      "sha256": "064efc3be2faad397d61e08fcd651843793349a74669ae8b553e95f31c3ea9b6"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/PlayMode/MapVNextI1IntegrationTests.PositiveWalkOwner.cs.meta",
+      "sha256": "613532a0158ddf1a922e9673b55b531aafa33f555a4f596a57871a1258712f59"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/PlayMode/MapVNextI1IntegrationTests.Recovery.cs",
+      "sha256": "2615e3e0f7c1040b428618c5801f42f3c2fafcfb00cab9d705287ca1b79e3d97"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/PlayMode/MapVNextI1IntegrationTests.Recovery.cs.meta",
+      "sha256": "5780382da039aac2ebd7247534888e3875f8872287ea95d3df27e947e8895030"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/PlayMode/MapVNextI1IntegrationTests.cs",
+      "sha256": "3f7f803f884695f408c1b6164f15ba51a42ecd34fee869429a8ea506020cf223"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/PlayMode/MapVNextI1IntegrationTests.cs.meta",
+      "sha256": "88ec5102dc54bea4877f93d79058c79344295b0709521678a4f3f384150b1165"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/PlayMode/MapVNextP2ContractTests.cs",
+      "sha256": "aec233dfbf176f8c353e0bbb14c7d66b688535bb9adb168d4b37ace54cdbf20b"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/PlayMode/MapVNextP2ContractTests.cs.meta",
+      "sha256": "2e30f6955b7895047a37a2e4e577155562339665aa436af93dc1df752f8b7611"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/PlayMode/MapVNextPlayTests.cs",
+      "sha256": "3a21b7642d7d9c8adc9b891b2ecef842776ab7437ac986866581d9dee8239615"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/PlayMode/MapVNextPlayTests.cs.meta",
+      "sha256": "331db24180948dbab32d51f849daeab3ace04e4a72f4bc6611d321c0e98b6aae"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/PlayMode/MapVNextR3RegressionTests.cs",
+      "sha256": "6f680ce57dd79949135ac4185c581fb63473bb0106697658bf18ee6ec2b9ee6a"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/PlayMode/MapVNextR3RegressionTests.cs.meta",
+      "sha256": "e23d7c232dfb3a80ab314f8903faa2080545aab25eb12a9baadde137817408d5"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/PlayMode/RPG_Demo.MapVNext.PlayTests.asmdef",
+      "sha256": "353fec011abd29404361b623b368f4d2aec912f445978b1317fb1f3465f33af5"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/PlayMode/RPG_Demo.MapVNext.PlayTests.asmdef.meta",
+      "sha256": "7038246e078d44b0058843089091d9b9bc16b9ec9170473583cca451cca86073"
+    },
+    {
+      "path": "Assets/Tests/TowerRun/LegacySaveDetectorTests.cs",
+      "sha256": "3d90d78aac24b3deef084554b2bb46ad8ee32911fae46b7399668d5ce27ca0cb"
+    },
+    {
+      "path": "Assets/Tests/TowerRun/LegacySaveDetectorTests.cs.meta",
+      "sha256": "8925f81465d624d8334e175423882e0392e9a309c3a5851b38e554c821a1b108"
+    },
+    {
+      "path": "Assets/Tests/TowerRun/RPG_Demo.TowerRun.Tests.asmdef",
+      "sha256": "effbb969cb363105e043377b9cd3508b7e20978a53d0dd506335c81471992119"
+    },
+    {
+      "path": "Assets/Tests/TowerRun/RPG_Demo.TowerRun.Tests.asmdef.meta",
+      "sha256": "5b09f27ce0376495fa5e0147343327a07768fe160ff4f8b71e3ab37dd56240b8"
+    },
+    {
+      "path": "Assets/Tests/TowerRun/TowerRunCheckpointRecordTests.cs",
+      "sha256": "90d3948b087376bbd8a24f307cb7df1a42f3cfbcb67b8afef79e9d4577c0038d"
+    },
+    {
+      "path": "Assets/Tests/TowerRun/TowerRunCheckpointRecordTests.cs.meta",
+      "sha256": "29895b85e023e1dfab5a6f67ff43af5d9b7d2fd7222d8f8e10c14c8de0eb2edb"
+    },
+    {
+      "path": "Assets/Tests/TowerRun/TowerRunGateTests.cs",
+      "sha256": "77aafd51b5cc9e95f74861cfc057ad3aeb6b94bda2aeeebb26b99ee0f795924f"
+    },
+    {
+      "path": "Assets/Tests/TowerRun/TowerRunGateTests.cs.meta",
+      "sha256": "2c830c6bcb712064fa879091766de228ef81d8c7d3d8bea78784e8cf78f35aa4"
+    },
+    {
+      "path": "Assets/Tests/TowerRun/TowerRunMapBaselineTests.cs",
+      "sha256": "6deae55a6bc14e59a7716679a365e968f0f23c724da87f8fd1111ef14bf6d706"
+    },
+    {
+      "path": "Assets/Tests/TowerRun/TowerRunMapBaselineTests.cs.meta",
+      "sha256": "4c45a6d068564ac5e58ea1ae72286b83cdde8ee587e7b64b7ee5034ef1047d2c"
+    },
+    {
+      "path": "Assets/Tests/TowerRun/TowerRunSlotStoreTests.cs",
+      "sha256": "cfcae2dc5dbadd56998724d6745b0deaed9af9309782879a9db01340d8ef4841"
+    },
+    {
+      "path": "Assets/Tests/TowerRun/TowerRunSlotStoreTests.cs.meta",
+      "sha256": "0e594cebebd38b1f24bee3ebcc0e6b41b7acbba81abc3c2532083431897e720a"
+    },
+    {
+      "path": "Assets/Tests/TowerRunPersistence/PlayMode/RPG_Demo.TowerRun.Persistence.PlayModeTests.asmdef",
+      "sha256": "218d754ba1124860df6218c0b0b597769c36769f68626b5aa8b2b7cacd99206d"
+    },
+    {
+      "path": "Assets/Tests/TowerRunPersistence/PlayMode/RPG_Demo.TowerRun.Persistence.PlayModeTests.asmdef.meta",
+      "sha256": "f2a79a19397035e5b7178bac2ce0d412c760fbddc219e4626877b10fbc4abd7b"
+    },
+    {
+      "path": "Assets/Tests/TowerRunPersistence/PlayMode/TowerRunIndependentProcessPlayModeTests.cs",
+      "sha256": "3baf966e8cbfd79e0777feee16c3275ced19f0bdc656fb667f025d19c7f5d0c8"
+    },
+    {
+      "path": "Assets/Tests/TowerRunPersistence/PlayMode/TowerRunIndependentProcessPlayModeTests.cs.meta",
+      "sha256": "4e3e13aaaadebef938a57839263e85af2064db0273ab1da8012cef8bda93c9ad"
+    }
+  ],
+  "approvedDifferences": [
+    {
+      "path": "Assets/Scripts/MapGeneration/AnimalPlacementService.cs",
+      "originalSha256": "f5d2478d9bf1848c34cbc3a349e23a2a821356d059591f198109d745aaf4ef44",
+      "currentSha256": "0b21cf5341a81989ad945663c859e1b1e8b6dbc13ccfd8d59bf23d90f73c86f1"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/DestructiblePlacementService.cs",
+      "originalSha256": "48b6a3608ee332ecbca884c2ebcead16157387d2397cc6b4e5d4a7b608589800",
+      "currentSha256": "2a15a8887f6f3ff3dc5099593d0e48eff5fcc668277bfc42e1b2af2c3c956ca3"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyConstructiveCapacity.cs",
+      "originalSha256": "c74788d128b0d595f2115441ca9e2bbb5e9726dcd91e3a74fb476085170a1b50",
+      "currentSha256": "c5f7f2db717b490aa33262e3095c14be3c19894333b07a3c39149f5c73325248"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyHomeNavigation.cs",
+      "originalSha256": "12024b67758d058dc117370dc1a14f55c3d55a21c6a7fa5469a2939b62a18953",
+      "currentSha256": "a467f9f45d59eca0e787d9a4fd8cc94dda9ce8858c69c88aebb5fc38a3b74fc1"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyJointPlacementPlanner.cs",
+      "originalSha256": "9120ef65523e5e4ba367c9957db9cdad77abcfd4d651371a8de9e4bbe2da42f4",
+      "currentSha256": "0a96449c70dcf5b61116d67846dae5abaeb7df2d1c8a393c640156ddac8af5dd"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyNavigationGraph.cs",
+      "originalSha256": "1eb4f6836f626b18886cb7cfa6f69a2d44f38962885e9f35a5a2aa59925bf5da",
+      "currentSha256": "146b9b0fd15f76df791d99587327b79f1d68d98a04e8988deb254f7f489260b4"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyRecipeDefinition.cs",
+      "originalSha256": "94e49b54d4bd31b984a548ac03c4a85911479392d4c458d3f3459824a1fb1c3d",
+      "currentSha256": "6d64a8a9778f61af4c4de1b3ee29978a9453ed0c6f8286b286893a2f657ac076"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyRetainedContentManifest.cs",
+      "originalSha256": "a64eaf4efabb563f253ea123e54518a4352f24e52dbcb78ba5eeb52056f92d20",
+      "currentSha256": "c6c01b4f799df7feea9555bb312a47f62ed0cd2c9f078a823ff007e4a3171fdd"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyRetainedTerrainGenerator.cs",
+      "originalSha256": "cb79ec93279b3ab38449ad4b6e41e204214197c8ebc1b317a65f85b4bdbcb4a4",
+      "currentSha256": "682547b389d3e5be80a6b9f301e37106f5f7506c683f893f08c4eb171391e549"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyTerritoryPlanner.cs",
+      "originalSha256": "2bf0e397f29d9d3c9d25d8ca4f6389d2d1ae7b20e7f21efda0b4edef329c208c",
+      "currentSha256": "c0f33cc76f637732bf229150f3709ecbaad25a2b79500b4c12196c7bdc9d099e"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/MapCandidateCollisionGeometry.Safety.cs",
+      "originalSha256": "0ebf52aec9a88a990fc1fc5fc543232156f12c710889d5941b45e74cb575e3a5",
+      "currentSha256": "101a139b9b8d47e471a8ee40927336ea00f9a5e27d3ce15046be6056dbf96f0e"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/MapCandidateCollisionGeometry.Solids.cs",
+      "originalSha256": "bd2bf5a9bb2a1907e7d2969a34615344f098b766cd3561d1b4c0d0ab9e9ea4de",
+      "currentSha256": "14ab016090903c399cbc45b7e19377f0ba11a269fec494c80256e07125b46b99"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/MapCandidateCollisionGeometry.Territory.cs",
+      "originalSha256": "ec456e05cc6c8aaa4a561da6ac0c2dec1495995a50b0dc17cdbfd0adc5547aae",
+      "currentSha256": "cf4d491471d6115f11c8496831a0bfe2cb9c155a508fa7a3105b03e5a19cc2e5"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/MapCandidateCollisionGeometry.cs",
+      "originalSha256": "724d3afb5a45a5dfb2e002a7f4d55074e91a786c85c74e445879630cb039a0e5",
+      "currentSha256": "0357b2158bfe6b1eceb591d2036db112dac682ef3aa00a035c624aeec5f30a11"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapEcologyPopulationService.cs",
+      "originalSha256": "454d7c639e19635864fbfc8e1313a1a60527b56c4fb0e7c7cacb863bee451dfa",
+      "currentSha256": "d8a4e68bdc6dbb696a7cc082a075eabb766b983b1580998f1e9cd4f53fbc5ade"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "originalSha256": "7bb7c227706e3e7ea7354ff7ef7915eec337f2fb5dce4983881d3a12120a19ba",
+      "currentSha256": "7a75a89d57b6d7d01e275e8c3d663129d96d77f2884e205e142b349b94500b79"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapIntegrationOrchestrator.cs",
+      "originalSha256": "4132f9598ed789406e760084f9a36a33e45c7ad1cbf607c6c8bb25631a353a0c",
+      "currentSha256": "3d446d8f0d2a97a5652b14361696d480ef1d0df83e4e4c9e40950e5b933cdbc1"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapRuntimeFoundation.cs",
+      "originalSha256": "4a3db3a60698c338673c8b9e2e7a4f6f27f7d3b7973f2f6f34bbd5294d19c021",
+      "currentSha256": "a27ac36eb0b6aa33b88f15ce64d70256f5134c0cec46b513c1fbbe2e1b93d3b3"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MerchantPlacementService.cs",
+      "originalSha256": "c78b12cc2e877b8f5e5dea81a0fd29cab885adf717e4a44b6a19c053054371c3",
+      "currentSha256": "6d2c55b34fe438d32c5e4c1dfcf6e66cd3fab7fc1d3e7f8927289cd8558d7d93"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/PlantPlacementService.cs",
+      "originalSha256": "6ea8d4d3ab8da3267d2928e35e9ac1bb60a52995d1bf9888f17fe11b53a83101",
+      "currentSha256": "0c97af80839a291e50f91db7d02d02e1b824811a9c03ad4c91061ac64922cd40"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/PlayerSpawnService.cs",
+      "originalSha256": "17bdb852b1ea972da08b4a9fc45b57ce476391f5f7327f33c10d93fbcbb87827",
+      "currentSha256": "edb20a7895c928cbf8a141cac5773215104987b0b77e2968e44b23b25f6f09ad"
+    },
+    {
+      "path": "Assets/Scripts/TowerRun/TowerRunSlotStore.cs",
+      "originalSha256": "36ba6dd975b7c4395871bab048ca14d6b3390aab67149cf7b25ea202b3029409",
+      "currentSha256": "2ffb75541ed7e409f010c63e9215a3e57a11e983ad1d489bffa55f311d1a2ce7"
+    },
+    {
+      "path": "Assets/Scripts/TowerRunCoordinator.cs",
+      "originalSha256": "d36753c417109928686b874a9937eb082e4d3b1f0c6db8c6f2fd24357b8413ca",
+      "currentSha256": "df844c804e335f22aaf059afda931914996439a55ec873c1ccfb5715a3bfe8f9"
+    }
+  ]
+}

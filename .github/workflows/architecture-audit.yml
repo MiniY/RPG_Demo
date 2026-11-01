@@ -17,6 +17,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+      - name: Check portable path ordering
+        run: python -m unittest discover -s Tools/ArchitectureAudit -p test_snapshot.py -k PortablePathOrderingTests
       - name: Check architecture snapshot
         run: python Tools/ArchitectureAudit/update.py --check
       - name: Explain manual review boundary

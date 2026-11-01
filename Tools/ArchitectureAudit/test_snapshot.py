@@ -9,9 +9,10 @@ import sys
 import tempfile
 import unittest
 from argparse import Namespace
-from pathlib import Path
+from pathlib import Path, PurePosixPath, PureWindowsPath
 from unittest.mock import patch
 
+import scan
 import snapshot
 
 
@@ -246,6 +247,23 @@ class SnapshotTests(unittest.TestCase):
                 code, report = self.verify(folder)
                 self.assertEqual(code, 2)
                 self.assertEqual(report["SNAPSHOT_VERIFICATION"], "BLOCKED")
+
+
+class PortablePathOrderingTests(unittest.TestCase):
+    def test_portable_graph_is_independent_of_native_path_ordering(self):
+        graphs = []
+        for comparison_type in (PureWindowsPath, PurePosixPath):
+            def compare_paths(left, right, path_type=comparison_type):
+                if not isinstance(right, Path):
+                    return NotImplemented
+                return path_type(left.as_posix()) < path_type(right.as_posix())
+
+            with patch.object(type(scan.ROOT), "__lt__", compare_paths):
+                graphs.append(scan.build_graph(portable=True))
+
+        self.assertEqual(graphs[0]["sourceSha256"], graphs[1]["sourceSha256"])
+        self.assertEqual(graphs[0]["nodes"], graphs[1]["nodes"])
+        self.assertEqual(graphs[0]["edges"], graphs[1]["edges"])
 
 
 if __name__ == "__main__":

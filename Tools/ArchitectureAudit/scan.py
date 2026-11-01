@@ -298,7 +298,8 @@ def build_graph(portable: bool = False, source_context: dict | None = None) -> d
         else:
             edges[key]["occurrences"] += 1
 
-    for meta in sorted(ASSETS.rglob("*.meta")):
+    # Native Path ordering differs by OS; fingerprint inputs use repository paths.
+    for meta in sorted(ASSETS.rglob("*.meta"), key=relative):
         asset = Path(str(meta)[:-5])
         if not asset.is_file():
             continue
@@ -509,7 +510,7 @@ def build_graph(portable: bool = False, source_context: dict | None = None) -> d
 
     for config_root in (ROOT / "Packages", ROOT / "ProjectSettings"):
         if config_root.is_dir():
-            for config_file in sorted(p for p in config_root.rglob("*") if p.is_file()):
+            for config_file in sorted((p for p in config_root.rglob("*") if p.is_file()), key=relative):
                 fingerprint.update(relative(config_file).encode("utf-8"))
                 fingerprint.update(config_file.read_bytes())
     fingerprint.update(Path(__file__).read_bytes())

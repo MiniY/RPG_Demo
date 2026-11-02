@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
-  "generatedAtUtc": "2026-11-01T14:52:04.823458+00:00",
+  "generatedAtUtc": "2026-11-02T05:48:40.047023+00:00",
   "root": ".",
-  "head": "583cb3b95fede3b4882f8e08c1adbd0627c7c0a2",
+  "head": "f23c16e95347494577c5362dbdbbe3bb19628ed0",
   "sourceBranch": "main",
   "snapshotMode": "repository",
   "sourceDirty": false,
-  "sourceSha256": "12763a76d74c8719139e8109c59953a95bb9d40819e93f64dcccea4f5c123ef8",
+  "sourceSha256": "8db3767f2850f8ff27968a26f2eee7ebff0167c396fa6478ad2e75aaff39395f",
   "nodes": [
     {
       "id": "asset:Assets/Animations/HappySheep/HappySheep.controller",
@@ -865,6 +865,14 @@
       "system": "Player"
     },
     {
+      "id": "asset:Assets/Editor/MapAcceptance/AssetNameWarningAudit.cs",
+      "label": "AssetNameWarningAudit",
+      "kind": "script",
+      "path": "Assets/Editor/MapAcceptance/AssetNameWarningAudit.cs",
+      "line": 1,
+      "system": "Infrastructure"
+    },
+    {
       "id": "asset:Assets/Editor/MapAcceptance/MainConsolidationPlayerSourceGraph.cs",
       "label": "MainConsolidationPlayerSourceGraph",
       "kind": "script",
@@ -933,6 +941,22 @@
       "label": "SpriteSheetSlicerWindow",
       "kind": "script",
       "path": "Assets/Editor/SpriteSheetSlicerWindow.cs",
+      "line": 1,
+      "system": "Infrastructure"
+    },
+    {
+      "id": "asset:Assets/Editor/TinySwordsEnemyPack/TinySwordsEnemyPackAuthoring.cs",
+      "label": "TinySwordsEnemyPackAuthoring",
+      "kind": "script",
+      "path": "Assets/Editor/TinySwordsEnemyPack/TinySwordsEnemyPackAuthoring.cs",
+      "line": 1,
+      "system": "Infrastructure"
+    },
+    {
+      "id": "asset:Assets/Editor/TinySwordsEnemyPack/TinySwordsEnemyPackBuild.cs",
+      "label": "TinySwordsEnemyPackBuild",
+      "kind": "script",
+      "path": "Assets/Editor/TinySwordsEnemyPack/TinySwordsEnemyPackBuild.cs",
       "line": 1,
       "system": "Infrastructure"
     },
@@ -7788,6 +7812,14 @@
       "line": 1,
       "system": "Infrastructure",
       "compilationTopology": "asmdef"
+    },
+    {
+      "id": "asset:Assets/Tests/PrefabPreview/TinySwordsEnemyPackPreview.cs",
+      "label": "TinySwordsEnemyPackPreview",
+      "kind": "script",
+      "path": "Assets/Tests/PrefabPreview/TinySwordsEnemyPackPreview.cs",
+      "line": 1,
+      "system": "Infrastructure"
     },
     {
       "id": "asset:Assets/Tests/TowerRun/LegacySaveDetectorTests.cs",
@@ -101575,6 +101607,38 @@
     },
     {
       "id": "e4977",
+      "source": "asset:Assets/Editor/TinySwordsEnemyPack/TinySwordsEnemyPackAuthoring.cs",
+      "relation": "code type reference",
+      "target": "asset:Assets/Tests/PrefabPreview/TinySwordsEnemyPackPreview.cs",
+      "evidence": {
+        "path": "Assets/Editor/TinySwordsEnemyPack/TinySwordsEnemyPackAuthoring.cs",
+        "line": 383
+      },
+      "evidenceType": "C# text match",
+      "relationType": "dependency",
+      "confidence": "medium",
+      "validation": "textual only",
+      "occurrences": 2,
+      "issueIds": []
+    },
+    {
+      "id": "e4978",
+      "source": "asset:Assets/Editor/TinySwordsEnemyPack/TinySwordsEnemyPackBuild.cs",
+      "relation": "code type reference",
+      "target": "asset:Assets/Editor/MapVNext/MapVNextI1Authoring.cs",
+      "evidence": {
+        "path": "Assets/Editor/TinySwordsEnemyPack/TinySwordsEnemyPackBuild.cs",
+        "line": 31
+      },
+      "evidenceType": "C# text match",
+      "relationType": "dependency",
+      "confidence": "medium",
+      "validation": "textual only",
+      "occurrences": 1,
+      "issueIds": []
+    },
+    {
+      "id": "e4979",
       "source": "asset:Assets/Effects/BlackHolePortal/Tests/PlayMode/BlackHolePortalPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Effects/BlackHolePortal/Scripts/BlackHolePortalEffect.cs",
@@ -101590,7 +101654,7 @@
       "issueIds": []
     },
     {
-      "id": "e4978",
+      "id": "e4980",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Capture.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/SpatialVersion/MapGroundFootprint.cs",
@@ -101606,7 +101670,7 @@
       "issueIds": []
     },
     {
-      "id": "e4979",
+      "id": "e4981",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.ConsumerLifecycle.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyMotionBody.cs",
@@ -101622,7 +101686,7 @@
       "issueIds": []
     },
     {
-      "id": "e4980",
+      "id": "e4982",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.ConsumerLifecycle.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/Monster/MonsterMovementController.cs",
@@ -101638,7 +101702,7 @@
       "issueIds": []
     },
     {
-      "id": "e4981",
+      "id": "e4983",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.ConsumerLifecycle.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyResidentBinding.cs",
@@ -101654,7 +101718,7 @@
       "issueIds": []
     },
     {
-      "id": "e4982",
+      "id": "e4984",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.ConsumerLifecycle.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyCombatBinding.cs",
@@ -101670,7 +101734,7 @@
       "issueIds": []
     },
     {
-      "id": "e4983",
+      "id": "e4985",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.ConsumerLifecycle.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Player/PlayerDamageController.cs",
@@ -101686,7 +101750,7 @@
       "issueIds": []
     },
     {
-      "id": "e4984",
+      "id": "e4986",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.ConsumerLifecycle.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/Monster/MonsterAIController.cs",
@@ -101702,7 +101766,7 @@
       "issueIds": []
     },
     {
-      "id": "e4985",
+      "id": "e4987",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.ConsumerLifecycle.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/Monster/MonsterPerceptionController.cs",
@@ -101718,7 +101782,7 @@
       "issueIds": []
     },
     {
-      "id": "e4986",
+      "id": "e4988",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.ConsumerLifecycle.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/BaseDamageable.cs",
@@ -101734,7 +101798,7 @@
       "issueIds": []
     },
     {
-      "id": "e4987",
+      "id": "e4989",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Consumers.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/Monster/MonsterAIController.cs",
@@ -101750,7 +101814,7 @@
       "issueIds": []
     },
     {
-      "id": "e4988",
+      "id": "e4990",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Consumers.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/GameSession.cs",
@@ -101766,10 +101830,10 @@
       "issueIds": []
     },
     {
-      "id": "e4989",
+      "id": "e4991",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Consumers.cs",
       "relation": "code type reference",
-      "target": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.cs",
+      "target": "asset:Assets/Editor/TinySwordsEnemyPack/TinySwordsEnemyPackAuthoring.cs",
       "evidence": {
         "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Consumers.cs",
         "line": 103
@@ -101782,7 +101846,7 @@
       "issueIds": []
     },
     {
-      "id": "e4990",
+      "id": "e4992",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Consumers.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/Monster/MonsterPerceptionController.cs",
@@ -101798,7 +101862,7 @@
       "issueIds": []
     },
     {
-      "id": "e4991",
+      "id": "e4993",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Consumers.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/Monster/MonsterAttackController.cs",
@@ -101814,7 +101878,7 @@
       "issueIds": []
     },
     {
-      "id": "e4992",
+      "id": "e4994",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Consumers.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/Monster/BarrelExplosionAttack.cs",
@@ -101830,7 +101894,7 @@
       "issueIds": []
     },
     {
-      "id": "e4993",
+      "id": "e4995",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Consumers.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/Monster/MonsterMovementController.cs",
@@ -101846,7 +101910,7 @@
       "issueIds": []
     },
     {
-      "id": "e4994",
+      "id": "e4996",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Consumers.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyResidentBinding.cs",
@@ -101862,7 +101926,7 @@
       "issueIds": []
     },
     {
-      "id": "e4995",
+      "id": "e4997",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Consumers.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/BaseDamageable.cs",
@@ -101878,7 +101942,7 @@
       "issueIds": []
     },
     {
-      "id": "e4996",
+      "id": "e4998",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Consumers.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/RewardPickup.cs",
@@ -101894,7 +101958,7 @@
       "issueIds": []
     },
     {
-      "id": "e4997",
+      "id": "e4999",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Consumers.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/GameInput.cs",
@@ -101910,7 +101974,7 @@
       "issueIds": []
     },
     {
-      "id": "e4998",
+      "id": "e5000",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Consumers.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Player/PlayerDamageController.cs",
@@ -101926,7 +101990,7 @@
       "issueIds": []
     },
     {
-      "id": "e4999",
+      "id": "e5001",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Consumers.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/Animal/AnimalHurtController.cs",
@@ -101942,7 +102006,7 @@
       "issueIds": []
     },
     {
-      "id": "e5000",
+      "id": "e5002",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Consumers.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/SpatialVersion/MapSpatialActor.cs",
@@ -101958,7 +102022,7 @@
       "issueIds": []
     },
     {
-      "id": "e5001",
+      "id": "e5003",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Consumers.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/ObjectPoolManager.cs",
@@ -101974,7 +102038,7 @@
       "issueIds": []
     },
     {
-      "id": "e5002",
+      "id": "e5004",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Consumers.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1ActivationWitness.cs",
@@ -101990,7 +102054,7 @@
       "issueIds": []
     },
     {
-      "id": "e5003",
+      "id": "e5005",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Defense.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/GameSession.cs",
@@ -102006,7 +102070,7 @@
       "issueIds": []
     },
     {
-      "id": "e5004",
+      "id": "e5006",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Defense.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Player/PlayerAction.cs",
@@ -102022,7 +102086,7 @@
       "issueIds": []
     },
     {
-      "id": "e5005",
+      "id": "e5007",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Defense.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/GameInput.cs",
@@ -102038,7 +102102,7 @@
       "issueIds": []
     },
     {
-      "id": "e5006",
+      "id": "e5008",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Defense.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/Monster/MonsterAIController.cs",
@@ -102054,10 +102118,10 @@
       "issueIds": []
     },
     {
-      "id": "e5007",
+      "id": "e5009",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Defense.cs",
       "relation": "code type reference",
-      "target": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.cs",
+      "target": "asset:Assets/Editor/TinySwordsEnemyPack/TinySwordsEnemyPackAuthoring.cs",
       "evidence": {
         "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Defense.cs",
         "line": 100
@@ -102070,7 +102134,7 @@
       "issueIds": []
     },
     {
-      "id": "e5008",
+      "id": "e5010",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Diagnostics.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyCombatBinding.cs",
@@ -102086,7 +102150,7 @@
       "issueIds": []
     },
     {
-      "id": "e5009",
+      "id": "e5011",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Diagnostics.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyMotionBody.cs",
@@ -102102,7 +102166,7 @@
       "issueIds": []
     },
     {
-      "id": "e5010",
+      "id": "e5012",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Diagnostics.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Player/PlayerDamageController.cs",
@@ -102118,7 +102182,7 @@
       "issueIds": []
     },
     {
-      "id": "e5011",
+      "id": "e5013",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Diagnostics.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/GameSession.cs",
@@ -102134,10 +102198,10 @@
       "issueIds": []
     },
     {
-      "id": "e5012",
+      "id": "e5014",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Diagnostics.cs",
       "relation": "code type reference",
-      "target": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.cs",
+      "target": "asset:Assets/Editor/TinySwordsEnemyPack/TinySwordsEnemyPackAuthoring.cs",
       "evidence": {
         "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Diagnostics.cs",
         "line": 54
@@ -102150,7 +102214,7 @@
       "issueIds": []
     },
     {
-      "id": "e5013",
+      "id": "e5015",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Diagnostics.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Player/PlayerHurtController.cs",
@@ -102166,7 +102230,7 @@
       "issueIds": []
     },
     {
-      "id": "e5014",
+      "id": "e5016",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Input.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Player/PlayerAction.cs",
@@ -102182,7 +102246,7 @@
       "issueIds": []
     },
     {
-      "id": "e5015",
+      "id": "e5017",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Input.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/GameInput.cs",
@@ -102198,7 +102262,7 @@
       "issueIds": []
     },
     {
-      "id": "e5016",
+      "id": "e5018",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Input.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Player/PlayerHurtController.cs",
@@ -102214,7 +102278,7 @@
       "issueIds": []
     },
     {
-      "id": "e5017",
+      "id": "e5019",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Input.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyCombatBinding.cs",
@@ -102230,7 +102294,7 @@
       "issueIds": []
     },
     {
-      "id": "e5018",
+      "id": "e5020",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Input.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/GameSession.cs",
@@ -102246,10 +102310,10 @@
       "issueIds": []
     },
     {
-      "id": "e5019",
+      "id": "e5021",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Input.cs",
       "relation": "code type reference",
-      "target": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.cs",
+      "target": "asset:Assets/Editor/TinySwordsEnemyPack/TinySwordsEnemyPackAuthoring.cs",
       "evidence": {
         "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Input.cs",
         "line": 231
@@ -102262,7 +102326,7 @@
       "issueIds": []
     },
     {
-      "id": "e5020",
+      "id": "e5022",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Input.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyMotionBody.cs",
@@ -102278,7 +102342,7 @@
       "issueIds": []
     },
     {
-      "id": "e5021",
+      "id": "e5023",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Input.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Player/PlayerDamageController.cs",
@@ -102294,7 +102358,7 @@
       "issueIds": []
     },
     {
-      "id": "e5022",
+      "id": "e5024",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.ResidentGroup.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyExcursionState.cs",
@@ -102310,7 +102374,7 @@
       "issueIds": []
     },
     {
-      "id": "e5023",
+      "id": "e5025",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.ResidentGroup.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyResidentBinding.cs",
@@ -102326,7 +102390,7 @@
       "issueIds": []
     },
     {
-      "id": "e5024",
+      "id": "e5026",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.ResidentGroup.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyMotionBody.cs",
@@ -102342,7 +102406,7 @@
       "issueIds": []
     },
     {
-      "id": "e5025",
+      "id": "e5027",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.ResidentGroup.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyCombatBinding.cs",
@@ -102358,7 +102422,7 @@
       "issueIds": []
     },
     {
-      "id": "e5026",
+      "id": "e5028",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.ResidentGroup.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/BaseDamageable.cs",
@@ -102374,7 +102438,7 @@
       "issueIds": []
     },
     {
-      "id": "e5027",
+      "id": "e5029",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Startup.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/GameSession.cs",
@@ -102390,7 +102454,7 @@
       "issueIds": []
     },
     {
-      "id": "e5028",
+      "id": "e5030",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Startup.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
@@ -102406,7 +102470,7 @@
       "issueIds": []
     },
     {
-      "id": "e5029",
+      "id": "e5031",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Startup.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/TowerRun/TowerRunRuntimeEnvironment.cs",
@@ -102422,7 +102486,23 @@
       "issueIds": []
     },
     {
-      "id": "e5030",
+      "id": "e5032",
+      "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.cs",
+      "relation": "code type reference",
+      "target": "asset:Assets/Editor/TinySwordsEnemyPack/TinySwordsEnemyPackAuthoring.cs",
+      "evidence": {
+        "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.cs",
+        "line": 57
+      },
+      "evidenceType": "C# text match",
+      "relationType": "dependency",
+      "confidence": "medium",
+      "validation": "textual only",
+      "occurrences": 2,
+      "issueIds": []
+    },
+    {
+      "id": "e5033",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/GameSession.cs",
@@ -102438,7 +102518,7 @@
       "issueIds": []
     },
     {
-      "id": "e5031",
+      "id": "e5034",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1ActivationWitness.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/RewardPickup.cs",
@@ -102454,7 +102534,7 @@
       "issueIds": []
     },
     {
-      "id": "e5032",
+      "id": "e5035",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Bootstrap.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/TowerRun/TowerRunRuntimeEnvironment.cs",
@@ -102470,7 +102550,7 @@
       "issueIds": []
     },
     {
-      "id": "e5033",
+      "id": "e5036",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Bootstrap.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/GameSession.cs",
@@ -102486,7 +102566,7 @@
       "issueIds": []
     },
     {
-      "id": "e5034",
+      "id": "e5037",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Bootstrap.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Panel.cs",
@@ -102502,7 +102582,7 @@
       "issueIds": []
     },
     {
-      "id": "e5035",
+      "id": "e5038",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Panel.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/GameSession.cs",
@@ -102518,7 +102598,7 @@
       "issueIds": []
     },
     {
-      "id": "e5036",
+      "id": "e5039",
       "source": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Panel.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Bootstrap.cs",
@@ -102534,7 +102614,7 @@
       "issueIds": []
     },
     {
-      "id": "e5037",
+      "id": "e5040",
       "source": "asset:Assets/Scripts/Damageable/Animal/Animal.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/Animal/AnimalHurtController.cs",
@@ -102550,7 +102630,7 @@
       "issueIds": []
     },
     {
-      "id": "e5038",
+      "id": "e5041",
       "source": "asset:Assets/Scripts/Damageable/Animal/AnimalAnimationController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/Animal/Animal.cs",
@@ -102566,7 +102646,7 @@
       "issueIds": []
     },
     {
-      "id": "e5039",
+      "id": "e5042",
       "source": "asset:Assets/Scripts/Damageable/Animal/AnimalHurtController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/Animal/Animal.cs",
@@ -102582,7 +102662,7 @@
       "issueIds": []
     },
     {
-      "id": "e5040",
+      "id": "e5043",
       "source": "asset:Assets/Scripts/Damageable/Animal/AnimalHurtController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/SpatialVersion/MapSpatialActor.cs",
@@ -102598,7 +102678,7 @@
       "issueIds": []
     },
     {
-      "id": "e5041",
+      "id": "e5044",
       "source": "asset:Assets/Scripts/Damageable/BaseDamageable.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/RewardPickup.cs",
@@ -102614,7 +102694,7 @@
       "issueIds": []
     },
     {
-      "id": "e5042",
+      "id": "e5045",
       "source": "asset:Assets/Scripts/Damageable/BaseDamageable.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/SpatialVersion/MapSpatialPendingRewards.cs",
@@ -102630,7 +102710,7 @@
       "issueIds": []
     },
     {
-      "id": "e5043",
+      "id": "e5046",
       "source": "asset:Assets/Scripts/Damageable/BaseDamageable.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/GenerationScopedRewardLifetime.cs",
@@ -102646,7 +102726,7 @@
       "issueIds": []
     },
     {
-      "id": "e5044",
+      "id": "e5047",
       "source": "asset:Assets/Scripts/Damageable/BaseDamageable.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapRuntimeBootstrap.cs",
@@ -102662,7 +102742,7 @@
       "issueIds": []
     },
     {
-      "id": "e5045",
+      "id": "e5048",
       "source": "asset:Assets/Scripts/Damageable/DestructiblePlacementTargetBridge.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/BaseDamageable.cs",
@@ -102678,7 +102758,7 @@
       "issueIds": []
     },
     {
-      "id": "e5046",
+      "id": "e5049",
       "source": "asset:Assets/Scripts/Damageable/Monster/BarrelExplosionAttack.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/Monster/MonsterAttackController.cs",
@@ -102694,7 +102774,7 @@
       "issueIds": []
     },
     {
-      "id": "e5047",
+      "id": "e5050",
       "source": "asset:Assets/Scripts/Damageable/Monster/BarrelExplosionAttack.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/Monster/BaseMonster.cs",
@@ -102710,7 +102790,7 @@
       "issueIds": []
     },
     {
-      "id": "e5048",
+      "id": "e5051",
       "source": "asset:Assets/Scripts/Damageable/Monster/BarrelExplosionAttack.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/Monster/MonsterMovementController.cs",
@@ -102726,7 +102806,7 @@
       "issueIds": []
     },
     {
-      "id": "e5049",
+      "id": "e5052",
       "source": "asset:Assets/Scripts/Damageable/Monster/BarrelExplosionAttack.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Player/PlayerDamageController.cs",
@@ -102742,7 +102822,7 @@
       "issueIds": []
     },
     {
-      "id": "e5050",
+      "id": "e5053",
       "source": "asset:Assets/Scripts/Damageable/Monster/BarrelExplosionAttack.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyCombatBinding.cs",
@@ -102758,7 +102838,7 @@
       "issueIds": []
     },
     {
-      "id": "e5051",
+      "id": "e5054",
       "source": "asset:Assets/Scripts/Damageable/Monster/BarrelExplosionAttack.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyResidentBinding.cs",
@@ -102774,7 +102854,7 @@
       "issueIds": []
     },
     {
-      "id": "e5052",
+      "id": "e5055",
       "source": "asset:Assets/Scripts/Damageable/Monster/BarrelExplosionAttack.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Player/PlayerColliderRoles.cs",
@@ -102790,7 +102870,7 @@
       "issueIds": []
     },
     {
-      "id": "e5053",
+      "id": "e5056",
       "source": "asset:Assets/Scripts/Damageable/Monster/MonsterAIController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/Monster/BaseMonster.cs",
@@ -102806,7 +102886,7 @@
       "issueIds": []
     },
     {
-      "id": "e5054",
+      "id": "e5057",
       "source": "asset:Assets/Scripts/Damageable/Monster/MonsterAIController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/Monster/MonsterMovementController.cs",
@@ -102822,7 +102902,7 @@
       "issueIds": []
     },
     {
-      "id": "e5055",
+      "id": "e5058",
       "source": "asset:Assets/Scripts/Damageable/Monster/MonsterAIController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/Monster/MonsterPerceptionController.cs",
@@ -102838,7 +102918,7 @@
       "issueIds": []
     },
     {
-      "id": "e5056",
+      "id": "e5059",
       "source": "asset:Assets/Scripts/Damageable/Monster/MonsterAIController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/Monster/MonsterAttackController.cs",
@@ -102854,7 +102934,7 @@
       "issueIds": []
     },
     {
-      "id": "e5057",
+      "id": "e5060",
       "source": "asset:Assets/Scripts/Damageable/Monster/MonsterAIController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyResidentBinding.cs",
@@ -102870,7 +102950,7 @@
       "issueIds": []
     },
     {
-      "id": "e5058",
+      "id": "e5061",
       "source": "asset:Assets/Scripts/Damageable/Monster/MonsterAIController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/Monster/MonsterPatrolState.cs",
@@ -102886,7 +102966,7 @@
       "issueIds": []
     },
     {
-      "id": "e5059",
+      "id": "e5062",
       "source": "asset:Assets/Scripts/Damageable/Monster/MonsterAIController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/Monster/MonsterSearchState.cs",
@@ -102902,7 +102982,7 @@
       "issueIds": []
     },
     {
-      "id": "e5060",
+      "id": "e5063",
       "source": "asset:Assets/Scripts/Damageable/Monster/MonsterAIController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/Monster/MonsterChaseState.cs",
@@ -102918,7 +102998,7 @@
       "issueIds": []
     },
     {
-      "id": "e5061",
+      "id": "e5064",
       "source": "asset:Assets/Scripts/Damageable/Monster/MonsterAIController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/Monster/MonsterAttackState.cs",
@@ -102934,7 +103014,7 @@
       "issueIds": []
     },
     {
-      "id": "e5062",
+      "id": "e5065",
       "source": "asset:Assets/Scripts/Damageable/Monster/MonsterAIController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/Monster/MonsterReturnState.cs",
@@ -102950,7 +103030,7 @@
       "issueIds": []
     },
     {
-      "id": "e5063",
+      "id": "e5066",
       "source": "asset:Assets/Scripts/Damageable/Monster/MonsterAIController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyCombatBinding.cs",
@@ -102966,7 +103046,7 @@
       "issueIds": []
     },
     {
-      "id": "e5064",
+      "id": "e5067",
       "source": "asset:Assets/Scripts/Damageable/Monster/MonsterAnimationController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/Monster/MonsterMovementController.cs",
@@ -102982,7 +103062,7 @@
       "issueIds": []
     },
     {
-      "id": "e5065",
+      "id": "e5068",
       "source": "asset:Assets/Scripts/Damageable/Monster/MonsterAnimationController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/Monster/MonsterAttackController.cs",
@@ -102998,7 +103078,7 @@
       "issueIds": []
     },
     {
-      "id": "e5066",
+      "id": "e5069",
       "source": "asset:Assets/Scripts/Damageable/Monster/MonsterAnimationController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/Monster/BaseMonster.cs",
@@ -103014,7 +103094,7 @@
       "issueIds": []
     },
     {
-      "id": "e5067",
+      "id": "e5070",
       "source": "asset:Assets/Scripts/Damageable/Monster/MonsterAttackController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/Monster/MonsterMovementController.cs",
@@ -103030,7 +103110,7 @@
       "issueIds": []
     },
     {
-      "id": "e5068",
+      "id": "e5071",
       "source": "asset:Assets/Scripts/Damageable/Monster/MonsterAttackController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/Monster/BarrelExplosionAttack.cs",
@@ -103046,7 +103126,7 @@
       "issueIds": []
     },
     {
-      "id": "e5069",
+      "id": "e5072",
       "source": "asset:Assets/Scripts/Damageable/Monster/MonsterAttackController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyCombatBinding.cs",
@@ -103062,7 +103142,7 @@
       "issueIds": []
     },
     {
-      "id": "e5070",
+      "id": "e5073",
       "source": "asset:Assets/Scripts/Damageable/Monster/MonsterAttackController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Player/PlayerDamageController.cs",
@@ -103078,7 +103158,7 @@
       "issueIds": []
     },
     {
-      "id": "e5071",
+      "id": "e5074",
       "source": "asset:Assets/Scripts/Damageable/Monster/MonsterHurtController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/Monster/BaseMonster.cs",
@@ -103094,7 +103174,7 @@
       "issueIds": []
     },
     {
-      "id": "e5072",
+      "id": "e5075",
       "source": "asset:Assets/Scripts/Damageable/Monster/MonsterHurtController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/Monster/MonsterMovementController.cs",
@@ -103110,7 +103190,7 @@
       "issueIds": []
     },
     {
-      "id": "e5073",
+      "id": "e5076",
       "source": "asset:Assets/Scripts/Damageable/Monster/MonsterHurtController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyMotionBody.cs",
@@ -103126,7 +103206,7 @@
       "issueIds": []
     },
     {
-      "id": "e5074",
+      "id": "e5077",
       "source": "asset:Assets/Scripts/Damageable/Monster/MonsterMovementController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyResidentBinding.cs",
@@ -103142,7 +103222,7 @@
       "issueIds": []
     },
     {
-      "id": "e5075",
+      "id": "e5078",
       "source": "asset:Assets/Scripts/Damageable/Monster/MonsterPerceptionController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/Monster/BaseMonster.cs",
@@ -103158,7 +103238,7 @@
       "issueIds": []
     },
     {
-      "id": "e5076",
+      "id": "e5079",
       "source": "asset:Assets/Scripts/Damageable/Monster/MonsterPopulationTargetBridge.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/Monster/BaseMonster.cs",
@@ -103174,7 +103254,7 @@
       "issueIds": []
     },
     {
-      "id": "e5077",
+      "id": "e5080",
       "source": "asset:Assets/Scripts/Damageable/Monster/MonsterPopulationTargetBridge.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/Monster/MonsterMovementController.cs",
@@ -103190,7 +103270,7 @@
       "issueIds": []
     },
     {
-      "id": "e5078",
+      "id": "e5081",
       "source": "asset:Assets/Scripts/Damageable/Plant/Plant.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/Plant/PlantBehaviorController.cs",
@@ -103206,7 +103286,7 @@
       "issueIds": []
     },
     {
-      "id": "e5079",
+      "id": "e5082",
       "source": "asset:Assets/Scripts/Damageable/Plant/PlantAnimationController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/Plant/Plant.cs",
@@ -103222,7 +103302,7 @@
       "issueIds": []
     },
     {
-      "id": "e5080",
+      "id": "e5083",
       "source": "asset:Assets/Scripts/Damageable/Plant/PlantBehaviorController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/Plant/Plant.cs",
@@ -103238,7 +103318,7 @@
       "issueIds": []
     },
     {
-      "id": "e5081",
+      "id": "e5084",
       "source": "asset:Assets/Scripts/EcologyRegionDebugOverlay.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
@@ -103254,7 +103334,7 @@
       "issueIds": []
     },
     {
-      "id": "e5082",
+      "id": "e5085",
       "source": "asset:Assets/Scripts/GameSession.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/PlayerStatsRuntime.cs",
@@ -103270,7 +103350,7 @@
       "issueIds": []
     },
     {
-      "id": "e5083",
+      "id": "e5086",
       "source": "asset:Assets/Scripts/GameSession.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/PlayerProgressionService.cs",
@@ -103286,7 +103366,7 @@
       "issueIds": []
     },
     {
-      "id": "e5084",
+      "id": "e5087",
       "source": "asset:Assets/Scripts/GameSession.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/TowerRunCoordinator.cs",
@@ -103302,7 +103382,7 @@
       "issueIds": []
     },
     {
-      "id": "e5085",
+      "id": "e5088",
       "source": "asset:Assets/Scripts/GameSession.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/PlayerStaminaController.cs",
@@ -103318,7 +103398,7 @@
       "issueIds": []
     },
     {
-      "id": "e5086",
+      "id": "e5089",
       "source": "asset:Assets/Scripts/GameSession.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/UI/PlayerStatsUpgradeUI.cs",
@@ -103334,7 +103414,7 @@
       "issueIds": []
     },
     {
-      "id": "e5087",
+      "id": "e5090",
       "source": "asset:Assets/Scripts/MapAcceptancePlayerSmoke.RemediationSurface.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
@@ -103350,7 +103430,7 @@
       "issueIds": []
     },
     {
-      "id": "e5088",
+      "id": "e5091",
       "source": "asset:Assets/Scripts/MapAcceptancePlayerSmoke.RemediationSurface.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Player/PlayerAction.cs",
@@ -103366,7 +103446,7 @@
       "issueIds": []
     },
     {
-      "id": "e5089",
+      "id": "e5092",
       "source": "asset:Assets/Scripts/MapAcceptancePlayerSmoke.RemediationSurface.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyCombatBinding.cs",
@@ -103382,7 +103462,7 @@
       "issueIds": []
     },
     {
-      "id": "e5090",
+      "id": "e5093",
       "source": "asset:Assets/Scripts/MapAcceptancePlayerSmoke.RemediationSurface.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/GameInput.cs",
@@ -103398,7 +103478,7 @@
       "issueIds": []
     },
     {
-      "id": "e5091",
+      "id": "e5094",
       "source": "asset:Assets/Scripts/MapAcceptancePlayerSmoke.RemediationSurface.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapSurfaceV4Visuals.cs",
@@ -103414,7 +103494,7 @@
       "issueIds": []
     },
     {
-      "id": "e5092",
+      "id": "e5095",
       "source": "asset:Assets/Scripts/MapAcceptancePlayerSmoke.SurfaceV4.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapSurfaceV4Visuals.cs",
@@ -103430,7 +103510,7 @@
       "issueIds": []
     },
     {
-      "id": "e5093",
+      "id": "e5096",
       "source": "asset:Assets/Scripts/MapAcceptancePlayerSmoke.UnitsCandidate.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/TowerRunCoordinator.cs",
@@ -103446,7 +103526,7 @@
       "issueIds": []
     },
     {
-      "id": "e5094",
+      "id": "e5097",
       "source": "asset:Assets/Scripts/MapAcceptancePlayerSmoke.UnitsCandidate.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/TowerRun/TowerRunCheckpointRecord.cs",
@@ -103462,7 +103542,7 @@
       "issueIds": []
     },
     {
-      "id": "e5095",
+      "id": "e5098",
       "source": "asset:Assets/Scripts/MapAcceptancePlayerSmoke.UnitsCandidate.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/PooledObject.cs",
@@ -103478,7 +103558,7 @@
       "issueIds": []
     },
     {
-      "id": "e5096",
+      "id": "e5099",
       "source": "asset:Assets/Scripts/MapAcceptancePlayerSmoke.UnitsCandidate.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyResidentBinding.cs",
@@ -103494,7 +103574,7 @@
       "issueIds": []
     },
     {
-      "id": "e5097",
+      "id": "e5100",
       "source": "asset:Assets/Scripts/MapAcceptancePlayerSmoke.UnitsCandidate.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyCombatBinding.cs",
@@ -103510,7 +103590,7 @@
       "issueIds": []
     },
     {
-      "id": "e5098",
+      "id": "e5101",
       "source": "asset:Assets/Scripts/MapAcceptancePlayerSmoke.UnitsCandidate.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/EcologyRegionDebugOverlay.cs",
@@ -103526,7 +103606,7 @@
       "issueIds": []
     },
     {
-      "id": "e5099",
+      "id": "e5102",
       "source": "asset:Assets/Scripts/MapAcceptancePlayerSmoke.UnitsCandidate.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Player/PlayerAction.cs",
@@ -103542,7 +103622,7 @@
       "issueIds": []
     },
     {
-      "id": "e5100",
+      "id": "e5103",
       "source": "asset:Assets/Scripts/MapAcceptancePlayerSmoke.UnitsCandidate.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyMotionBody.cs",
@@ -103558,7 +103638,7 @@
       "issueIds": []
     },
     {
-      "id": "e5101",
+      "id": "e5104",
       "source": "asset:Assets/Scripts/MapAcceptancePlayerSmoke.UnitsCandidate.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/GameInput.cs",
@@ -103574,7 +103654,7 @@
       "issueIds": []
     },
     {
-      "id": "e5102",
+      "id": "e5105",
       "source": "asset:Assets/Scripts/MapAcceptancePlayerSmoke.UnitsCandidate.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyMapRuntime.cs",
@@ -103590,7 +103670,7 @@
       "issueIds": []
     },
     {
-      "id": "e5103",
+      "id": "e5106",
       "source": "asset:Assets/Scripts/MapAcceptancePlayerSmoke.UnitsCandidate.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
@@ -103606,7 +103686,7 @@
       "issueIds": []
     },
     {
-      "id": "e5104",
+      "id": "e5107",
       "source": "asset:Assets/Scripts/MapAcceptancePlayerSmoke.UnitsCandidateFinal.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/MapCandidateCollisionGeometry.Fan.cs",
@@ -103622,7 +103702,7 @@
       "issueIds": []
     },
     {
-      "id": "e5105",
+      "id": "e5108",
       "source": "asset:Assets/Scripts/MapAcceptancePlayerSmoke.UnitsCandidateFinal.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
@@ -103638,7 +103718,7 @@
       "issueIds": []
     },
     {
-      "id": "e5106",
+      "id": "e5109",
       "source": "asset:Assets/Scripts/MapAcceptancePlayerSmoke.UnitsCandidateFinal.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MerchantPlacementService.cs",
@@ -103654,7 +103734,7 @@
       "issueIds": []
     },
     {
-      "id": "e5107",
+      "id": "e5110",
       "source": "asset:Assets/Scripts/MapAcceptancePlayerSmoke.UnitsCandidateFinal.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/PlantPlacementService.cs",
@@ -103670,7 +103750,7 @@
       "issueIds": []
     },
     {
-      "id": "e5108",
+      "id": "e5111",
       "source": "asset:Assets/Scripts/MapAcceptancePlayerSmoke.UnitsCandidateFinal.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/AnimalPlacementService.cs",
@@ -103686,7 +103766,7 @@
       "issueIds": []
     },
     {
-      "id": "e5109",
+      "id": "e5112",
       "source": "asset:Assets/Scripts/MapAcceptancePlayerSmoke.UnitsCandidateFinal.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyCombatBinding.cs",
@@ -103702,7 +103782,7 @@
       "issueIds": []
     },
     {
-      "id": "e5110",
+      "id": "e5113",
       "source": "asset:Assets/Scripts/MapAcceptancePlayerSmoke.UnitsCandidateFinal.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Player/PlayerDamageController.cs",
@@ -103718,7 +103798,7 @@
       "issueIds": []
     },
     {
-      "id": "e5111",
+      "id": "e5114",
       "source": "asset:Assets/Scripts/MapAcceptancePlayerSmoke.UnitsCandidateFinal.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapEcologyPopulationService.cs",
@@ -103734,7 +103814,7 @@
       "issueIds": []
     },
     {
-      "id": "e5112",
+      "id": "e5115",
       "source": "asset:Assets/Scripts/MapAcceptancePlayerSmoke.UnitsCandidateFinal.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/Monster/MonsterAIController.cs",
@@ -103750,7 +103830,7 @@
       "issueIds": []
     },
     {
-      "id": "e5113",
+      "id": "e5116",
       "source": "asset:Assets/Scripts/MapAcceptancePlayerSmoke.UnitsCandidateFinal.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyDamageBarrier.cs",
@@ -103766,7 +103846,7 @@
       "issueIds": []
     },
     {
-      "id": "e5114",
+      "id": "e5117",
       "source": "asset:Assets/Scripts/MapAcceptancePlayerSmoke.UnitsCandidateFinal.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/PooledObject.cs",
@@ -103782,7 +103862,7 @@
       "issueIds": []
     },
     {
-      "id": "e5115",
+      "id": "e5118",
       "source": "asset:Assets/Scripts/MapAcceptancePlayerSmoke.UnitsCandidateFinal.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/Monster/BaseMonster.cs",
@@ -103798,7 +103878,7 @@
       "issueIds": []
     },
     {
-      "id": "e5116",
+      "id": "e5119",
       "source": "asset:Assets/Scripts/MapAcceptancePlayerSmoke.UnitsCandidateFinal.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/Monster/BarrelExplosionAttack.cs",
@@ -103814,7 +103894,7 @@
       "issueIds": []
     },
     {
-      "id": "e5117",
+      "id": "e5120",
       "source": "asset:Assets/Scripts/MapAcceptancePlayerSmoke.UnitsCandidateFinal.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/BaseDamageable.cs",
@@ -103830,7 +103910,7 @@
       "issueIds": []
     },
     {
-      "id": "e5118",
+      "id": "e5121",
       "source": "asset:Assets/Scripts/MapAcceptancePlayerSmoke.UnitsCandidateFinal.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Player/PlayerAction.cs",
@@ -103846,7 +103926,7 @@
       "issueIds": []
     },
     {
-      "id": "e5119",
+      "id": "e5122",
       "source": "asset:Assets/Scripts/MapAcceptancePlayerSmoke.UnitsCandidateFinal.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/GameInput.cs",
@@ -103862,7 +103942,7 @@
       "issueIds": []
     },
     {
-      "id": "e5120",
+      "id": "e5123",
       "source": "asset:Assets/Scripts/MapAcceptancePlayerSmoke.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Player/PlayerAction.cs",
@@ -103878,7 +103958,7 @@
       "issueIds": []
     },
     {
-      "id": "e5121",
+      "id": "e5124",
       "source": "asset:Assets/Scripts/MapAcceptancePlayerSmoke.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/GameInput.cs",
@@ -103894,7 +103974,7 @@
       "issueIds": []
     },
     {
-      "id": "e5122",
+      "id": "e5125",
       "source": "asset:Assets/Scripts/MapGeneration/AnimalPlacementService.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/AnimalPlacementPolicy.cs",
@@ -103910,7 +103990,7 @@
       "issueIds": []
     },
     {
-      "id": "e5123",
+      "id": "e5126",
       "source": "asset:Assets/Scripts/MapGeneration/AnimalPlacementService.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapPlacementPlanning.cs",
@@ -103926,7 +104006,7 @@
       "issueIds": []
     },
     {
-      "id": "e5124",
+      "id": "e5127",
       "source": "asset:Assets/Scripts/MapGeneration/AnimalPlacementService.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapRuntimeFoundation.cs",
@@ -103942,7 +104022,7 @@
       "issueIds": []
     },
     {
-      "id": "e5125",
+      "id": "e5128",
       "source": "asset:Assets/Scripts/MapGeneration/CameraBindingService.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapRuntimeFoundation.cs",
@@ -103958,7 +104038,7 @@
       "issueIds": []
     },
     {
-      "id": "e5126",
+      "id": "e5129",
       "source": "asset:Assets/Scripts/MapGeneration/DestructiblePlacementService.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/DestructiblePlacementPolicy.cs",
@@ -103974,7 +104054,7 @@
       "issueIds": []
     },
     {
-      "id": "e5127",
+      "id": "e5130",
       "source": "asset:Assets/Scripts/MapGeneration/DestructiblePlacementService.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapPlacementPlanning.cs",
@@ -103990,7 +104070,7 @@
       "issueIds": []
     },
     {
-      "id": "e5128",
+      "id": "e5131",
       "source": "asset:Assets/Scripts/MapGeneration/DestructiblePlacementService.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/DestructiblePlacementTarget.cs",
@@ -104006,7 +104086,7 @@
       "issueIds": []
     },
     {
-      "id": "e5129",
+      "id": "e5132",
       "source": "asset:Assets/Scripts/MapGeneration/DestructiblePlacementService.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/GenerationScopedDestructibleLifetime.cs",
@@ -104022,7 +104102,7 @@
       "issueIds": []
     },
     {
-      "id": "e5130",
+      "id": "e5133",
       "source": "asset:Assets/Scripts/MapGeneration/DestructiblePlacementService.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapRuntimeFoundation.cs",
@@ -104038,7 +104118,7 @@
       "issueIds": []
     },
     {
-      "id": "e5131",
+      "id": "e5134",
       "source": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyDamageBarrier.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyMotionBody.cs",
@@ -104054,7 +104134,7 @@
       "issueIds": []
     },
     {
-      "id": "e5132",
+      "id": "e5135",
       "source": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyDamageBarrier.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyMotionCommitter.cs",
@@ -104070,7 +104150,7 @@
       "issueIds": []
     },
     {
-      "id": "e5133",
+      "id": "e5136",
       "source": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyHomeNavigation.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyMotionDomain.cs",
@@ -104086,7 +104166,7 @@
       "issueIds": []
     },
     {
-      "id": "e5134",
+      "id": "e5137",
       "source": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyHomeNavigation.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyNavigationGraph.cs",
@@ -104102,7 +104182,7 @@
       "issueIds": []
     },
     {
-      "id": "e5135",
+      "id": "e5138",
       "source": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyJointPlacementPlanner.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MerchantPlacementPolicy.cs",
@@ -104118,7 +104198,7 @@
       "issueIds": []
     },
     {
-      "id": "e5136",
+      "id": "e5139",
       "source": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyJointPlacementPlanner.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapPlacementPlanning.cs",
@@ -104134,7 +104214,7 @@
       "issueIds": []
     },
     {
-      "id": "e5137",
+      "id": "e5140",
       "source": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyLiveNavigation.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyStaticCollisionRevision.cs",
@@ -104150,7 +104230,7 @@
       "issueIds": []
     },
     {
-      "id": "e5138",
+      "id": "e5141",
       "source": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyLiveNavigation.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyHomeNavigation.cs",
@@ -104166,7 +104246,7 @@
       "issueIds": []
     },
     {
-      "id": "e5139",
+      "id": "e5142",
       "source": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyMapRuntime.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
@@ -104182,7 +104262,7 @@
       "issueIds": []
     },
     {
-      "id": "e5140",
+      "id": "e5143",
       "source": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyMapRuntime.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyResidentBinding.cs",
@@ -104198,7 +104278,7 @@
       "issueIds": []
     },
     {
-      "id": "e5141",
+      "id": "e5144",
       "source": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyMapRuntime.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyMotionBody.cs",
@@ -104214,7 +104294,7 @@
       "issueIds": []
     },
     {
-      "id": "e5142",
+      "id": "e5145",
       "source": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyMapRuntime.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyCombatBinding.cs",
@@ -104230,7 +104310,7 @@
       "issueIds": []
     },
     {
-      "id": "e5143",
+      "id": "e5146",
       "source": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyMapRuntime.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyLiveNavigation.cs",
@@ -104246,7 +104326,7 @@
       "issueIds": []
     },
     {
-      "id": "e5144",
+      "id": "e5147",
       "source": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyMotionBody.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyCombatBinding.cs",
@@ -104262,7 +104342,7 @@
       "issueIds": []
     },
     {
-      "id": "e5145",
+      "id": "e5148",
       "source": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyMotionBody.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyResidentBinding.cs",
@@ -104278,7 +104358,7 @@
       "issueIds": []
     },
     {
-      "id": "e5146",
+      "id": "e5149",
       "source": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyPlanningAttempts.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapPlacementPlanning.cs",
@@ -104294,7 +104374,7 @@
       "issueIds": []
     },
     {
-      "id": "e5147",
+      "id": "e5150",
       "source": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyPopulationActivation.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyHomeNavigation.cs",
@@ -104310,7 +104390,7 @@
       "issueIds": []
     },
     {
-      "id": "e5148",
+      "id": "e5151",
       "source": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyPopulationActivation.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/IGenerationScopedPopulationTarget.cs",
@@ -104326,7 +104406,7 @@
       "issueIds": []
     },
     {
-      "id": "e5149",
+      "id": "e5152",
       "source": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyPopulationActivation.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyResidentBinding.cs",
@@ -104342,7 +104422,7 @@
       "issueIds": []
     },
     {
-      "id": "e5150",
+      "id": "e5153",
       "source": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyPopulationActivation.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyCombatBinding.cs",
@@ -104358,7 +104438,7 @@
       "issueIds": []
     },
     {
-      "id": "e5151",
+      "id": "e5154",
       "source": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyPopulationActivation.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyMotionBody.cs",
@@ -104374,7 +104454,7 @@
       "issueIds": []
     },
     {
-      "id": "e5152",
+      "id": "e5155",
       "source": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyRecipeDefinition.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyTerritoryPlanner.cs",
@@ -104390,7 +104470,7 @@
       "issueIds": []
     },
     {
-      "id": "e5153",
+      "id": "e5156",
       "source": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyRecipeDefinition.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyRetainedContentManifest.cs",
@@ -104406,7 +104486,7 @@
       "issueIds": []
     },
     {
-      "id": "e5154",
+      "id": "e5157",
       "source": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyResidentBinding.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyExcursionState.cs",
@@ -104422,7 +104502,7 @@
       "issueIds": []
     },
     {
-      "id": "e5155",
+      "id": "e5158",
       "source": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyRetainedContentManifest.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/SpatialVersion/MapHostCompatibility.cs",
@@ -104438,7 +104518,7 @@
       "issueIds": []
     },
     {
-      "id": "e5156",
+      "id": "e5159",
       "source": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyTerritoryPlanner.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapEcologyProfile.cs",
@@ -104454,7 +104534,7 @@
       "issueIds": []
     },
     {
-      "id": "e5157",
+      "id": "e5160",
       "source": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyTerritoryPlanner.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/MapEcologyLayout.cs",
@@ -104470,7 +104550,7 @@
       "issueIds": []
     },
     {
-      "id": "e5158",
+      "id": "e5161",
       "source": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyTerritoryPlanner.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapPlacementPlanning.cs",
@@ -104486,7 +104566,7 @@
       "issueIds": []
     },
     {
-      "id": "e5159",
+      "id": "e5162",
       "source": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyTerritoryPlanner.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyNavigationGraph.cs",
@@ -104502,7 +104582,7 @@
       "issueIds": []
     },
     {
-      "id": "e5160",
+      "id": "e5163",
       "source": "asset:Assets/Scripts/MapGeneration/Ecology/MapCandidateCollisionGeometry.Solids.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/MapCandidateCollisionGeometry.cs",
@@ -104518,7 +104598,7 @@
       "issueIds": []
     },
     {
-      "id": "e5161",
+      "id": "e5164",
       "source": "asset:Assets/Scripts/MapGeneration/Ecology/MapCandidateCollisionGeometry.Solids.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/MapCandidateCollisionGeometry.Fan.cs",
@@ -104534,7 +104614,7 @@
       "issueIds": []
     },
     {
-      "id": "e5162",
+      "id": "e5165",
       "source": "asset:Assets/Scripts/MapGeneration/Ecology/MapCandidateCollisionGeometry.Territory.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyNavigationGraph.cs",
@@ -104550,7 +104630,7 @@
       "issueIds": []
     },
     {
-      "id": "e5163",
+      "id": "e5166",
       "source": "asset:Assets/Scripts/MapGeneration/Ecology/MapCandidateCollisionGeometry.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/MapCandidateCollisionGeometry.Fan.cs",
@@ -104566,7 +104646,7 @@
       "issueIds": []
     },
     {
-      "id": "e5164",
+      "id": "e5167",
       "source": "asset:Assets/Scripts/MapGeneration/Ecology/MapCandidateCollisionGeometry.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyNavigationGraph.cs",
@@ -104582,7 +104662,7 @@
       "issueIds": []
     },
     {
-      "id": "e5165",
+      "id": "e5168",
       "source": "asset:Assets/Scripts/MapGeneration/Ecology/MapCandidateCollisionGeometry.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapPlacementPlanning.cs",
@@ -104598,7 +104678,7 @@
       "issueIds": []
     },
     {
-      "id": "e5166",
+      "id": "e5169",
       "source": "asset:Assets/Scripts/MapGeneration/Ecology/MapEcologyLayout.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapPlacementPlanning.cs",
@@ -104614,7 +104694,7 @@
       "issueIds": []
     },
     {
-      "id": "e5167",
+      "id": "e5170",
       "source": "asset:Assets/Scripts/MapGeneration/Ecology/MapPlannedSolidGeometry.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapPlacementPlanning.cs",
@@ -104630,7 +104710,7 @@
       "issueIds": []
     },
     {
-      "id": "e5168",
+      "id": "e5171",
       "source": "asset:Assets/Scripts/MapGeneration/MapDependentReinitializationService.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapRuntimeFoundation.cs",
@@ -104646,7 +104726,7 @@
       "issueIds": []
     },
     {
-      "id": "e5169",
+      "id": "e5172",
       "source": "asset:Assets/Scripts/MapGeneration/MapEcologyPopulationService.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyPopulationActivation.cs",
@@ -104662,7 +104742,7 @@
       "issueIds": []
     },
     {
-      "id": "e5170",
+      "id": "e5173",
       "source": "asset:Assets/Scripts/MapGeneration/MapEcologyPopulationService.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapPlacementPlanning.cs",
@@ -104678,7 +104758,7 @@
       "issueIds": []
     },
     {
-      "id": "e5171",
+      "id": "e5174",
       "source": "asset:Assets/Scripts/MapGeneration/MapEcologyPopulationService.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapEcologyPlacementPolicy.cs",
@@ -104694,7 +104774,7 @@
       "issueIds": []
     },
     {
-      "id": "e5172",
+      "id": "e5175",
       "source": "asset:Assets/Scripts/MapGeneration/MapEcologyPopulationService.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/IGenerationScopedPopulationTarget.cs",
@@ -104710,7 +104790,7 @@
       "issueIds": []
     },
     {
-      "id": "e5173",
+      "id": "e5176",
       "source": "asset:Assets/Scripts/MapGeneration/MapEcologyPopulationService.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/GenerationScopedPopulationLifetime.cs",
@@ -104726,7 +104806,7 @@
       "issueIds": []
     },
     {
-      "id": "e5174",
+      "id": "e5177",
       "source": "asset:Assets/Scripts/MapGeneration/MapEcologyPopulationService.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapRuntimeFoundation.cs",
@@ -104742,7 +104822,7 @@
       "issueIds": []
     },
     {
-      "id": "e5175",
+      "id": "e5178",
       "source": "asset:Assets/Scripts/MapGeneration/MapElevationProjector.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapStage1ProjectionPlan.cs",
@@ -104758,7 +104838,7 @@
       "issueIds": []
     },
     {
-      "id": "e5176",
+      "id": "e5179",
       "source": "asset:Assets/Scripts/MapGeneration/MapGeneratedObjectPlacementAdapter.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MonsterPlacementService.cs",
@@ -104774,7 +104854,7 @@
       "issueIds": []
     },
     {
-      "id": "e5177",
+      "id": "e5180",
       "source": "asset:Assets/Scripts/MapGeneration/MapGeneratedObjectPlacementAdapter.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/AnimalPlacementService.cs",
@@ -104790,7 +104870,7 @@
       "issueIds": []
     },
     {
-      "id": "e5178",
+      "id": "e5181",
       "source": "asset:Assets/Scripts/MapGeneration/MapGeneratedObjectPlacementAdapter.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/PlantPlacementService.cs",
@@ -104806,7 +104886,7 @@
       "issueIds": []
     },
     {
-      "id": "e5179",
+      "id": "e5182",
       "source": "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapRuntimeBootstrap.cs",
@@ -104822,7 +104902,7 @@
       "issueIds": []
     },
     {
-      "id": "e5180",
+      "id": "e5183",
       "source": "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapGenerationLifecycle.cs",
@@ -104838,7 +104918,7 @@
       "issueIds": []
     },
     {
-      "id": "e5181",
+      "id": "e5184",
       "source": "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyMapRuntime.cs",
@@ -104854,7 +104934,7 @@
       "issueIds": []
     },
     {
-      "id": "e5182",
+      "id": "e5185",
       "source": "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapRuntimeFoundation.cs",
@@ -104870,7 +104950,7 @@
       "issueIds": []
     },
     {
-      "id": "e5183",
+      "id": "e5186",
       "source": "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapIntegrationOrchestrator.cs",
@@ -104888,7 +104968,7 @@
       ]
     },
     {
-      "id": "e5184",
+      "id": "e5187",
       "source": "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapPlacementPlanning.cs",
@@ -104904,7 +104984,7 @@
       "issueIds": []
     },
     {
-      "id": "e5185",
+      "id": "e5188",
       "source": "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyEntryIdentity.cs",
@@ -104920,7 +105000,7 @@
       "issueIds": []
     },
     {
-      "id": "e5186",
+      "id": "e5189",
       "source": "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyRecipeDefinition.cs",
@@ -104936,7 +105016,7 @@
       "issueIds": []
     },
     {
-      "id": "e5187",
+      "id": "e5190",
       "source": "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapSurfaceV4Visuals.cs",
@@ -104952,7 +105032,7 @@
       "issueIds": []
     },
     {
-      "id": "e5188",
+      "id": "e5191",
       "source": "asset:Assets/Scripts/MapGeneration/MapIntegrationOrchestrator.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapGenerationLifecycle.cs",
@@ -104968,7 +105048,7 @@
       "issueIds": []
     },
     {
-      "id": "e5189",
+      "id": "e5192",
       "source": "asset:Assets/Scripts/MapGeneration/MapIntegrationOrchestrator.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapRuntimeFoundation.cs",
@@ -104984,7 +105064,7 @@
       "issueIds": []
     },
     {
-      "id": "e5190",
+      "id": "e5193",
       "source": "asset:Assets/Scripts/MapGeneration/MapMinimapController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
@@ -105000,7 +105080,7 @@
       "issueIds": []
     },
     {
-      "id": "e5191",
+      "id": "e5194",
       "source": "asset:Assets/Scripts/MapGeneration/MapMinimapController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapExplorationState.cs",
@@ -105016,7 +105096,7 @@
       "issueIds": []
     },
     {
-      "id": "e5192",
+      "id": "e5195",
       "source": "asset:Assets/Scripts/MapGeneration/MapObjectRegistry.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapPlacementPlanning.cs",
@@ -105032,7 +105112,7 @@
       "issueIds": []
     },
     {
-      "id": "e5193",
+      "id": "e5196",
       "source": "asset:Assets/Scripts/MapGeneration/MapOutboardStairGeometry.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Editor/MapVNext/MapVNextI1Authoring.cs",
@@ -105048,7 +105128,7 @@
       "issueIds": []
     },
     {
-      "id": "e5194",
+      "id": "e5197",
       "source": "asset:Assets/Scripts/MapGeneration/MapOutboardStairGeometry.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapPlacementPlanning.cs",
@@ -105064,7 +105144,7 @@
       "issueIds": []
     },
     {
-      "id": "e5195",
+      "id": "e5198",
       "source": "asset:Assets/Scripts/MapGeneration/MapRemediationSurfacePolicy.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapPlacementPlanning.cs",
@@ -105080,7 +105160,7 @@
       "issueIds": []
     },
     {
-      "id": "e5196",
+      "id": "e5199",
       "source": "asset:Assets/Scripts/MapGeneration/MapRemediationSurfacePolicy.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapSimpleDecorationData.cs",
@@ -105096,7 +105176,7 @@
       "issueIds": []
     },
     {
-      "id": "e5197",
+      "id": "e5200",
       "source": "asset:Assets/Scripts/MapGeneration/MapRuntimeBootstrap.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapRuntimeFoundation.cs",
@@ -105112,7 +105192,7 @@
       "issueIds": []
     },
     {
-      "id": "e5198",
+      "id": "e5201",
       "source": "asset:Assets/Scripts/MapGeneration/MapRuntimeFoundation.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapObjectRegistry.cs",
@@ -105128,7 +105208,7 @@
       "issueIds": []
     },
     {
-      "id": "e5199",
+      "id": "e5202",
       "source": "asset:Assets/Scripts/MapGeneration/MapSimpleDecorationGenerator.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapSimpleDecorationData.cs",
@@ -105144,7 +105224,7 @@
       "issueIds": []
     },
     {
-      "id": "e5200",
+      "id": "e5203",
       "source": "asset:Assets/Scripts/MapGeneration/MapStage1ProjectionPlan.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapPlacementPlanning.cs",
@@ -105160,7 +105240,7 @@
       "issueIds": []
     },
     {
-      "id": "e5201",
+      "id": "e5204",
       "source": "asset:Assets/Scripts/MapGeneration/MapStage1SouthStairProjectionRequest.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapPlacementPlanning.cs",
@@ -105176,7 +105256,7 @@
       "issueIds": []
     },
     {
-      "id": "e5202",
+      "id": "e5205",
       "source": "asset:Assets/Scripts/MapGeneration/MapSurfaceV4Policy.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapSimpleDecorationData.cs",
@@ -105192,7 +105272,7 @@
       "issueIds": []
     },
     {
-      "id": "e5203",
+      "id": "e5206",
       "source": "asset:Assets/Scripts/MapGeneration/MapSurfaceV4Policy.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapRemediationSurfacePolicy.cs",
@@ -105208,7 +105288,7 @@
       "issueIds": []
     },
     {
-      "id": "e5204",
+      "id": "e5207",
       "source": "asset:Assets/Scripts/MapGeneration/MapSurfaceV4Policy.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapSurfaceV4Visuals.cs",
@@ -105224,7 +105304,7 @@
       "issueIds": []
     },
     {
-      "id": "e5205",
+      "id": "e5208",
       "source": "asset:Assets/Scripts/MapGeneration/MapTilemapRenderer.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapCoordinateBoundary.cs",
@@ -105240,7 +105320,7 @@
       "issueIds": []
     },
     {
-      "id": "e5206",
+      "id": "e5209",
       "source": "asset:Assets/Scripts/MapGeneration/MapTilemapRenderer.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapElevationProjector.cs",
@@ -105256,7 +105336,7 @@
       "issueIds": []
     },
     {
-      "id": "e5207",
+      "id": "e5210",
       "source": "asset:Assets/Scripts/MapGeneration/MapTilemapRenderer.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapPlacementPlanning.cs",
@@ -105272,7 +105352,7 @@
       "issueIds": []
     },
     {
-      "id": "e5208",
+      "id": "e5211",
       "source": "asset:Assets/Scripts/MapGeneration/MerchantPlacementPolicy.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapPlacementPlanning.cs",
@@ -105288,7 +105368,7 @@
       "issueIds": []
     },
     {
-      "id": "e5209",
+      "id": "e5212",
       "source": "asset:Assets/Scripts/MapGeneration/MerchantPlacementService.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MerchantPlacementPolicy.cs",
@@ -105304,7 +105384,7 @@
       "issueIds": []
     },
     {
-      "id": "e5210",
+      "id": "e5213",
       "source": "asset:Assets/Scripts/MapGeneration/MerchantPlacementService.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapPlacementPlanning.cs",
@@ -105320,7 +105400,7 @@
       "issueIds": []
     },
     {
-      "id": "e5211",
+      "id": "e5214",
       "source": "asset:Assets/Scripts/MapGeneration/MerchantPlacementService.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapRuntimeFoundation.cs",
@@ -105336,7 +105416,7 @@
       "issueIds": []
     },
     {
-      "id": "e5212",
+      "id": "e5215",
       "source": "asset:Assets/Scripts/MapGeneration/MonsterPlacementPolicy.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapPlacementPlanning.cs",
@@ -105352,7 +105432,7 @@
       "issueIds": []
     },
     {
-      "id": "e5213",
+      "id": "e5216",
       "source": "asset:Assets/Scripts/MapGeneration/MonsterPlacementService.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MonsterPlacementPolicy.cs",
@@ -105368,7 +105448,7 @@
       "issueIds": []
     },
     {
-      "id": "e5214",
+      "id": "e5217",
       "source": "asset:Assets/Scripts/MapGeneration/MonsterPlacementService.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapPlacementPlanning.cs",
@@ -105384,7 +105464,7 @@
       "issueIds": []
     },
     {
-      "id": "e5215",
+      "id": "e5218",
       "source": "asset:Assets/Scripts/MapGeneration/MonsterPlacementService.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapRuntimeFoundation.cs",
@@ -105400,7 +105480,7 @@
       "issueIds": []
     },
     {
-      "id": "e5216",
+      "id": "e5219",
       "source": "asset:Assets/Scripts/MapGeneration/PlantPlacementPolicy.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/DestructiblePlacementPolicy.cs",
@@ -105416,7 +105496,7 @@
       "issueIds": []
     },
     {
-      "id": "e5217",
+      "id": "e5220",
       "source": "asset:Assets/Scripts/MapGeneration/PlantPlacementService.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/PlantPlacementPolicy.cs",
@@ -105432,7 +105512,7 @@
       "issueIds": []
     },
     {
-      "id": "e5218",
+      "id": "e5221",
       "source": "asset:Assets/Scripts/MapGeneration/PlantPlacementService.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapPlacementPlanning.cs",
@@ -105448,7 +105528,7 @@
       "issueIds": []
     },
     {
-      "id": "e5219",
+      "id": "e5222",
       "source": "asset:Assets/Scripts/MapGeneration/PlantPlacementService.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapRuntimeFoundation.cs",
@@ -105464,7 +105544,7 @@
       "issueIds": []
     },
     {
-      "id": "e5220",
+      "id": "e5223",
       "source": "asset:Assets/Scripts/MapGeneration/PlayerSpawnService.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapRuntimeFoundation.cs",
@@ -105480,7 +105560,7 @@
       "issueIds": []
     },
     {
-      "id": "e5221",
+      "id": "e5224",
       "source": "asset:Assets/Scripts/MapGeneration/RandomMapGenerator.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapData.cs",
@@ -105496,7 +105576,7 @@
       "issueIds": []
     },
     {
-      "id": "e5222",
+      "id": "e5225",
       "source": "asset:Assets/Scripts/MapGeneration/RemediationRuntimeAudit.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapEcologyPopulationService.cs",
@@ -105512,7 +105592,7 @@
       "issueIds": []
     },
     {
-      "id": "e5223",
+      "id": "e5226",
       "source": "asset:Assets/Scripts/MapGeneration/RemediationRuntimeAudit.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapRuntimeBootstrap.cs",
@@ -105528,7 +105608,7 @@
       "issueIds": []
     },
     {
-      "id": "e5224",
+      "id": "e5227",
       "source": "asset:Assets/Scripts/MapGeneration/RetainedNumerics/Float32V1/MapSimpleDecorationGenerator.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapSimpleDecorationData.cs",
@@ -105544,7 +105624,7 @@
       "issueIds": []
     },
     {
-      "id": "e5225",
+      "id": "e5228",
       "source": "asset:Assets/Scripts/MapGeneration/RetainedNumerics/Float32V1/RandomMapGenerator.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapData.cs",
@@ -105560,7 +105640,7 @@
       "issueIds": []
     },
     {
-      "id": "e5226",
+      "id": "e5229",
       "source": "asset:Assets/Scripts/MapGeneration/SpatialVersion/EcologyNavigationGraph.Versioned.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyNavigationGraph.cs",
@@ -105576,7 +105656,7 @@
       "issueIds": []
     },
     {
-      "id": "e5227",
+      "id": "e5230",
       "source": "asset:Assets/Scripts/MapGeneration/SpatialVersion/MapCandidateCollisionGeometry.Rewards.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/MapPlannedSolidGeometry.cs",
@@ -105592,7 +105672,7 @@
       "issueIds": []
     },
     {
-      "id": "e5228",
+      "id": "e5231",
       "source": "asset:Assets/Scripts/MapGeneration/SpatialVersion/MapCandidateCollisionGeometry.Versioned.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/SpatialVersion/MapSpatialContext.cs",
@@ -105608,7 +105688,7 @@
       "issueIds": []
     },
     {
-      "id": "e5229",
+      "id": "e5232",
       "source": "asset:Assets/Scripts/MapGeneration/SpatialVersion/MapCandidateCollisionGeometry.Versioned.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyMotionDomain.cs",
@@ -105624,7 +105704,7 @@
       "issueIds": []
     },
     {
-      "id": "e5230",
+      "id": "e5233",
       "source": "asset:Assets/Scripts/MapGeneration/SpatialVersion/MapCandidateCollisionGeometry.Versioned.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapPlacementPlanning.cs",
@@ -105640,7 +105720,7 @@
       "issueIds": []
     },
     {
-      "id": "e5231",
+      "id": "e5234",
       "source": "asset:Assets/Scripts/MapGeneration/SpatialVersion/MapCandidateCollisionGeometry.Versioned.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/SpatialVersion/MapGroundFootprint.cs",
@@ -105656,7 +105736,7 @@
       "issueIds": []
     },
     {
-      "id": "e5232",
+      "id": "e5235",
       "source": "asset:Assets/Scripts/MapGeneration/SpatialVersion/MapCandidateCollisionGeometry.Versioned.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/MapPlannedSolidGeometry.cs",
@@ -105672,7 +105752,7 @@
       "issueIds": []
     },
     {
-      "id": "e5233",
+      "id": "e5236",
       "source": "asset:Assets/Scripts/MapGeneration/SpatialVersion/MapSpatialDecorationFilter.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapSimpleDecorationData.cs",
@@ -105688,7 +105768,7 @@
       "issueIds": []
     },
     {
-      "id": "e5234",
+      "id": "e5237",
       "source": "asset:Assets/Scripts/MapGeneration/SpatialVersion/MapSpatialPlacement.Planning.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/SpatialVersion/MapGroundFootprint.cs",
@@ -105704,7 +105784,7 @@
       "issueIds": []
     },
     {
-      "id": "e5235",
+      "id": "e5238",
       "source": "asset:Assets/Scripts/MapGeneration/SpatialVersion/MapSpatialPlacement.Planning.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapPlacementPlanning.cs",
@@ -105720,7 +105800,7 @@
       "issueIds": []
     },
     {
-      "id": "e5236",
+      "id": "e5239",
       "source": "asset:Assets/Scripts/MapGeneration/TerrainTopology.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapPlacementPlanning.cs",
@@ -105736,7 +105816,7 @@
       "issueIds": []
     },
     {
-      "id": "e5237",
+      "id": "e5240",
       "source": "asset:Assets/Scripts/MapGeneration/VNext/MapVNextCliffExclusion.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/RemediationRuntimeAudit.cs",
@@ -105752,7 +105832,7 @@
       "issueIds": []
     },
     {
-      "id": "e5238",
+      "id": "e5241",
       "source": "asset:Assets/Scripts/MapGeneration/VNext/MapVNextDemo.Approach.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/VNext/MapVNextSurfaceQuery.cs",
@@ -105768,7 +105848,7 @@
       "issueIds": []
     },
     {
-      "id": "e5239",
+      "id": "e5242",
       "source": "asset:Assets/Scripts/MapGeneration/VNext/MapVNextDemo.Approach.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyNavigationGraph.cs",
@@ -105784,7 +105864,7 @@
       "issueIds": []
     },
     {
-      "id": "e5240",
+      "id": "e5243",
       "source": "asset:Assets/Scripts/MapGeneration/VNext/MapVNextDemo.Cliff.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/VNext/MapVNextSurfaceQuery.cs",
@@ -105800,7 +105880,7 @@
       "issueIds": []
     },
     {
-      "id": "e5241",
+      "id": "e5244",
       "source": "asset:Assets/Scripts/MapGeneration/VNext/MapVNextDemo.P2.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/VNext/MapVNextFixture.cs",
@@ -105816,7 +105896,7 @@
       "issueIds": []
     },
     {
-      "id": "e5242",
+      "id": "e5245",
       "source": "asset:Assets/Scripts/MapGeneration/VNext/MapVNextDemo.P2.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/VNext/MapVNextSurfaceQuery.cs",
@@ -105832,7 +105912,7 @@
       "issueIds": []
     },
     {
-      "id": "e5243",
+      "id": "e5246",
       "source": "asset:Assets/Scripts/MapGeneration/VNext/MapVNextDemo.P2.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/VNext/MapVNextRandomLayout.cs",
@@ -105848,7 +105928,7 @@
       "issueIds": []
     },
     {
-      "id": "e5244",
+      "id": "e5247",
       "source": "asset:Assets/Scripts/MapGeneration/VNext/MapVNextDemo.R3.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/VNext/MapVNextDemo.cs",
@@ -105864,7 +105944,7 @@
       "issueIds": []
     },
     {
-      "id": "e5245",
+      "id": "e5248",
       "source": "asset:Assets/Scripts/MapGeneration/VNext/MapVNextDemo.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/VNext/MapVNextSurfaceQuery.cs",
@@ -105880,7 +105960,7 @@
       "issueIds": []
     },
     {
-      "id": "e5246",
+      "id": "e5249",
       "source": "asset:Assets/Scripts/MapGeneration/VNext/MapVNextFixture.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapData.cs",
@@ -105896,7 +105976,7 @@
       "issueIds": []
     },
     {
-      "id": "e5247",
+      "id": "e5250",
       "source": "asset:Assets/Scripts/MapGeneration/VNext/MapVNextFormalTerrain.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/SpatialVersion/MapSpatialContext.cs",
@@ -105912,7 +105992,7 @@
       "issueIds": []
     },
     {
-      "id": "e5248",
+      "id": "e5251",
       "source": "asset:Assets/Scripts/MapGeneration/VNext/MapVNextProjection.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/VNext/MapVNextSurfaceQuery.cs",
@@ -105928,7 +106008,7 @@
       "issueIds": []
     },
     {
-      "id": "e5249",
+      "id": "e5252",
       "source": "asset:Assets/Scripts/MapGeneration/VNext/MapVNextRandomLayout.Formal.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/VNext/MapVNextRandomLayout.cs",
@@ -105944,7 +106024,7 @@
       "issueIds": []
     },
     {
-      "id": "e5250",
+      "id": "e5253",
       "source": "asset:Assets/Scripts/MapGeneration/VNext/MapVNextRandomLayout.Formal.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapPlacementPlanning.cs",
@@ -105960,7 +106040,7 @@
       "issueIds": []
     },
     {
-      "id": "e5251",
+      "id": "e5254",
       "source": "asset:Assets/Scripts/MapGeneration/VNext/MapVNextRandomLayout.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/RemediationRuntimeAudit.cs",
@@ -105976,7 +106056,7 @@
       "issueIds": []
     },
     {
-      "id": "e5252",
+      "id": "e5255",
       "source": "asset:Assets/Scripts/MapGeneration/VNext/MapVNextRandomLayout.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapData.cs",
@@ -105992,7 +106072,7 @@
       "issueIds": []
     },
     {
-      "id": "e5253",
+      "id": "e5256",
       "source": "asset:Assets/Scripts/MountainGateTrigger.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Player/PlayerAction.cs",
@@ -106008,7 +106088,7 @@
       "issueIds": []
     },
     {
-      "id": "e5254",
+      "id": "e5257",
       "source": "asset:Assets/Scripts/MountainGateTrigger.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Player/PlayerSortingController.cs",
@@ -106024,7 +106104,7 @@
       "issueIds": []
     },
     {
-      "id": "e5255",
+      "id": "e5258",
       "source": "asset:Assets/Scripts/NPC/MerchantInteractionController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/GameInput.cs",
@@ -106040,7 +106120,7 @@
       "issueIds": []
     },
     {
-      "id": "e5256",
+      "id": "e5259",
       "source": "asset:Assets/Scripts/ObjectPoolManager.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/PooledObject.cs",
@@ -106056,7 +106136,7 @@
       "issueIds": []
     },
     {
-      "id": "e5257",
+      "id": "e5260",
       "source": "asset:Assets/Scripts/Player/PlayerAction.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyCombatBinding.cs",
@@ -106072,7 +106152,7 @@
       "issueIds": []
     },
     {
-      "id": "e5258",
+      "id": "e5261",
       "source": "asset:Assets/Scripts/Player/PlayerAction.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/GameInput.cs",
@@ -106088,7 +106168,7 @@
       "issueIds": []
     },
     {
-      "id": "e5259",
+      "id": "e5262",
       "source": "asset:Assets/Scripts/Player/PlayerAction.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/GameSession.cs",
@@ -106104,7 +106184,7 @@
       "issueIds": []
     },
     {
-      "id": "e5260",
+      "id": "e5263",
       "source": "asset:Assets/Scripts/Player/PlayerAnimationController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Player/PlayerAction.cs",
@@ -106120,7 +106200,7 @@
       "issueIds": []
     },
     {
-      "id": "e5261",
+      "id": "e5264",
       "source": "asset:Assets/Scripts/Player/PlayerDamageController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/GameSession.cs",
@@ -106136,7 +106216,7 @@
       "issueIds": []
     },
     {
-      "id": "e5262",
+      "id": "e5265",
       "source": "asset:Assets/Scripts/Player/PlayerHurtController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Player/PlayerAction.cs",
@@ -106152,7 +106232,7 @@
       "issueIds": []
     },
     {
-      "id": "e5263",
+      "id": "e5266",
       "source": "asset:Assets/Scripts/Player/PlayerHurtController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Player/PlayerDamageController.cs",
@@ -106168,7 +106248,7 @@
       "issueIds": []
     },
     {
-      "id": "e5264",
+      "id": "e5267",
       "source": "asset:Assets/Scripts/Player/PlayerHurtController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/Monster/MonsterAttackController.cs",
@@ -106184,7 +106264,7 @@
       "issueIds": []
     },
     {
-      "id": "e5265",
+      "id": "e5268",
       "source": "asset:Assets/Scripts/Player/PlayerHurtController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Player/PlayerColliderRoles.cs",
@@ -106200,7 +106280,7 @@
       "issueIds": []
     },
     {
-      "id": "e5266",
+      "id": "e5269",
       "source": "asset:Assets/Scripts/Player/PlayerSortingController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Player/PlayerColliderRoles.cs",
@@ -106216,7 +106296,7 @@
       "issueIds": []
     },
     {
-      "id": "e5267",
+      "id": "e5270",
       "source": "asset:Assets/Scripts/PlayerInventory.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/GameSaveService.cs",
@@ -106232,7 +106312,7 @@
       "issueIds": []
     },
     {
-      "id": "e5268",
+      "id": "e5271",
       "source": "asset:Assets/Scripts/PlayerInventory.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/TowerRun/TowerRunCheckpointRecord.cs",
@@ -106248,7 +106328,7 @@
       "issueIds": []
     },
     {
-      "id": "e5269",
+      "id": "e5272",
       "source": "asset:Assets/Scripts/PlayerProgressionService.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/GameSession.cs",
@@ -106264,7 +106344,7 @@
       "issueIds": []
     },
     {
-      "id": "e5270",
+      "id": "e5273",
       "source": "asset:Assets/Scripts/PlayerStaminaController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Player/PlayerAction.cs",
@@ -106280,7 +106360,7 @@
       "issueIds": []
     },
     {
-      "id": "e5271",
+      "id": "e5274",
       "source": "asset:Assets/Scripts/PlayerStaminaController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/GameInput.cs",
@@ -106296,7 +106376,7 @@
       "issueIds": []
     },
     {
-      "id": "e5272",
+      "id": "e5275",
       "source": "asset:Assets/Scripts/PlayerStaminaController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/GameSession.cs",
@@ -106312,7 +106392,7 @@
       "issueIds": []
     },
     {
-      "id": "e5273",
+      "id": "e5276",
       "source": "asset:Assets/Scripts/PlayerStatsRuntime.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/GameSaveService.cs",
@@ -106328,7 +106408,7 @@
       "issueIds": []
     },
     {
-      "id": "e5274",
+      "id": "e5277",
       "source": "asset:Assets/Scripts/RewardPickup.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/RewardVisualController.cs",
@@ -106344,7 +106424,7 @@
       "issueIds": []
     },
     {
-      "id": "e5275",
+      "id": "e5278",
       "source": "asset:Assets/Scripts/Shop/ShopTradeController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/GameSaveService.cs",
@@ -106360,7 +106440,7 @@
       "issueIds": []
     },
     {
-      "id": "e5276",
+      "id": "e5279",
       "source": "asset:Assets/Scripts/Shop/ShopTradeController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/TowerRun/TowerRunCheckpointRecord.cs",
@@ -106376,7 +106456,7 @@
       "issueIds": []
     },
     {
-      "id": "e5277",
+      "id": "e5280",
       "source": "asset:Assets/Scripts/TowerFloorRuntimeController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Damageable/BaseDamageable.cs",
@@ -106392,7 +106472,7 @@
       "issueIds": []
     },
     {
-      "id": "e5278",
+      "id": "e5281",
       "source": "asset:Assets/Scripts/TowerFloorRuntimeController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Player/PlayerDamageController.cs",
@@ -106408,7 +106488,7 @@
       "issueIds": []
     },
     {
-      "id": "e5279",
+      "id": "e5282",
       "source": "asset:Assets/Scripts/TowerFloorRuntimeController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
@@ -106424,7 +106504,7 @@
       "issueIds": []
     },
     {
-      "id": "e5280",
+      "id": "e5283",
       "source": "asset:Assets/Scripts/TowerFloorRuntimeController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/GameInput.cs",
@@ -106440,7 +106520,7 @@
       "issueIds": []
     },
     {
-      "id": "e5281",
+      "id": "e5284",
       "source": "asset:Assets/Scripts/TowerRun/TowerRunCheckpointRecord.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyEntryIdentity.cs",
@@ -106456,7 +106536,7 @@
       "issueIds": []
     },
     {
-      "id": "e5282",
+      "id": "e5285",
       "source": "asset:Assets/Scripts/TowerRunCoordinator.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Player/PlayerColliderRoles.cs",
@@ -106472,7 +106552,7 @@
       "issueIds": []
     },
     {
-      "id": "e5283",
+      "id": "e5286",
       "source": "asset:Assets/Scripts/TowerRunCoordinator.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Player/PlayerHurtController.cs",
@@ -106488,7 +106568,7 @@
       "issueIds": []
     },
     {
-      "id": "e5284",
+      "id": "e5287",
       "source": "asset:Assets/Scripts/TowerRunCoordinator.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyCombatBinding.cs",
@@ -106504,7 +106584,7 @@
       "issueIds": []
     },
     {
-      "id": "e5285",
+      "id": "e5288",
       "source": "asset:Assets/Scripts/TowerRunCoordinator.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyMotionBody.cs",
@@ -106520,7 +106600,7 @@
       "issueIds": []
     },
     {
-      "id": "e5286",
+      "id": "e5289",
       "source": "asset:Assets/Scripts/TowerRunCoordinator.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/TowerRun/TowerRunSlotStore.cs",
@@ -106536,7 +106616,7 @@
       "issueIds": []
     },
     {
-      "id": "e5287",
+      "id": "e5290",
       "source": "asset:Assets/Scripts/TowerRunCoordinator.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/EcologyRegionDebugOverlay.cs",
@@ -106552,7 +106632,7 @@
       "issueIds": []
     },
     {
-      "id": "e5288",
+      "id": "e5291",
       "source": "asset:Assets/Scripts/TowerRunCoordinator.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/GameSession.cs",
@@ -106568,7 +106648,7 @@
       "issueIds": []
     },
     {
-      "id": "e5289",
+      "id": "e5292",
       "source": "asset:Assets/Scripts/TowerRunCoordinator.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/TowerRun/TowerRunCheckpointRecord.cs",
@@ -106584,7 +106664,7 @@
       "issueIds": []
     },
     {
-      "id": "e5290",
+      "id": "e5293",
       "source": "asset:Assets/Scripts/TowerRunCoordinator.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/Player/PlayerAction.cs",
@@ -106600,7 +106680,7 @@
       "issueIds": []
     },
     {
-      "id": "e5291",
+      "id": "e5294",
       "source": "asset:Assets/Scripts/TowerRunCoordinator.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapGenerationLifecycle.cs",
@@ -106616,7 +106696,7 @@
       "issueIds": []
     },
     {
-      "id": "e5292",
+      "id": "e5295",
       "source": "asset:Assets/Scripts/TowerRunGateHub.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/TowerRun/TowerRunGate.cs",
@@ -106632,7 +106712,7 @@
       "issueIds": []
     },
     {
-      "id": "e5293",
+      "id": "e5296",
       "source": "asset:Assets/Scripts/TowerRunRestoreFinalizer.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/GameSession.cs",
@@ -106648,7 +106728,7 @@
       "issueIds": []
     },
     {
-      "id": "e5294",
+      "id": "e5297",
       "source": "asset:Assets/Scripts/TowerRunRuntimeStateBridge.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/TowerRun/TowerRunCheckpointRecord.cs",
@@ -106664,7 +106744,7 @@
       "issueIds": []
     },
     {
-      "id": "e5295",
+      "id": "e5298",
       "source": "asset:Assets/Scripts/TowerRunRuntimeStateBridge.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/PlayerStatsRuntime.cs",
@@ -106680,7 +106760,7 @@
       "issueIds": []
     },
     {
-      "id": "e5296",
+      "id": "e5299",
       "source": "asset:Assets/Scripts/TowerRunRuntimeStateBridge.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/GameSaveService.cs",
@@ -106696,7 +106776,7 @@
       "issueIds": []
     },
     {
-      "id": "e5297",
+      "id": "e5300",
       "source": "asset:Assets/Scripts/UI/PackagePanelController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/GameInput.cs",
@@ -106712,7 +106792,7 @@
       "issueIds": []
     },
     {
-      "id": "e5298",
+      "id": "e5301",
       "source": "asset:Assets/Scripts/UI/PlayerStatsUpgradeUI.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/GameSession.cs",
@@ -106728,7 +106808,7 @@
       "issueIds": []
     },
     {
-      "id": "e5299",
+      "id": "e5302",
       "source": "asset:Assets/Scripts/UI/PlayerStatusPanelUI.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/GameSession.cs",
@@ -106744,7 +106824,7 @@
       "issueIds": []
     },
     {
-      "id": "e5300",
+      "id": "e5303",
       "source": "asset:Assets/Scripts/UI/Shop/ShopGridUI.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/UI/Shop/ShopPanelController.cs",
@@ -106760,7 +106840,7 @@
       "issueIds": []
     },
     {
-      "id": "e5301",
+      "id": "e5304",
       "source": "asset:Assets/Scripts/UI/Shop/ShopPanelController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/UI/Shop/ShopGridUI.cs",
@@ -106776,7 +106856,7 @@
       "issueIds": []
     },
     {
-      "id": "e5302",
+      "id": "e5305",
       "source": "asset:Assets/Scripts/UI/Shop/ShopPanelController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/GameInput.cs",
@@ -106792,7 +106872,7 @@
       "issueIds": []
     },
     {
-      "id": "e5303",
+      "id": "e5306",
       "source": "asset:Assets/Scripts/UI/TowerRunUiController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/UI/TowerRunUiSkin.cs",
@@ -106808,7 +106888,7 @@
       "issueIds": []
     },
     {
-      "id": "e5304",
+      "id": "e5307",
       "source": "asset:Assets/Scripts/UI/TowerRunUiController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/TowerRun/LegacySaveDetector.cs",
@@ -106824,7 +106904,7 @@
       "issueIds": []
     },
     {
-      "id": "e5305",
+      "id": "e5308",
       "source": "asset:Assets/Scripts/UI/TowerRunUiController.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/UI/PackageHudButtonUI.cs",
@@ -106840,7 +106920,7 @@
       "issueIds": []
     },
     {
-      "id": "e5306",
+      "id": "e5309",
       "source": "asset:Assets/Tests/MapGeneration/MapAnimalPlacementPolicyTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/AnimalPlacementPolicy.cs",
@@ -106856,7 +106936,7 @@
       "issueIds": []
     },
     {
-      "id": "e5307",
+      "id": "e5310",
       "source": "asset:Assets/Tests/MapGeneration/MapAnimalPlacementPolicyTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapPlacementPlanning.cs",
@@ -106872,7 +106952,7 @@
       "issueIds": []
     },
     {
-      "id": "e5308",
+      "id": "e5311",
       "source": "asset:Assets/Tests/MapGeneration/MapAnimalPlacementPolicyTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapIntegrationOrchestrator.cs",
@@ -106888,7 +106968,7 @@
       "issueIds": []
     },
     {
-      "id": "e5309",
+      "id": "e5312",
       "source": "asset:Assets/Tests/MapGeneration/MapAnimalPlacementPolicyTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapCoordinateBoundary.cs",
@@ -106904,7 +106984,7 @@
       "issueIds": []
     },
     {
-      "id": "e5310",
+      "id": "e5313",
       "source": "asset:Assets/Tests/MapGeneration/MapAnimalPlacementPolicyTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapData.cs",
@@ -106920,7 +107000,7 @@
       "issueIds": []
     },
     {
-      "id": "e5311",
+      "id": "e5314",
       "source": "asset:Assets/Tests/MapGeneration/MapAnimalPlacementPolicyTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/AnimalPlacementService.cs",
@@ -106936,7 +107016,7 @@
       "issueIds": []
     },
     {
-      "id": "e5312",
+      "id": "e5315",
       "source": "asset:Assets/Tests/MapGeneration/MapAnimalPlacementPolicyTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapGenerationLifecycle.cs",
@@ -106952,7 +107032,7 @@
       "issueIds": []
     },
     {
-      "id": "e5313",
+      "id": "e5316",
       "source": "asset:Assets/Tests/MapGeneration/MapAnimalPlacementPolicyTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapRuntimeFoundation.cs",
@@ -106968,7 +107048,7 @@
       "issueIds": []
     },
     {
-      "id": "e5314",
+      "id": "e5317",
       "source": "asset:Assets/Tests/MapGeneration/MapCameraBindingServiceTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapCoordinateBoundary.cs",
@@ -106984,7 +107064,7 @@
       "issueIds": []
     },
     {
-      "id": "e5315",
+      "id": "e5318",
       "source": "asset:Assets/Tests/MapGeneration/MapCameraBindingServiceTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapRuntimeFoundation.cs",
@@ -107000,7 +107080,7 @@
       "issueIds": []
     },
     {
-      "id": "e5316",
+      "id": "e5319",
       "source": "asset:Assets/Tests/MapGeneration/MapCameraBindingServiceTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapIntegrationOrchestrator.cs",
@@ -107016,7 +107096,7 @@
       "issueIds": []
     },
     {
-      "id": "e5317",
+      "id": "e5320",
       "source": "asset:Assets/Tests/MapGeneration/MapCameraBindingServiceTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapGenerationLifecycle.cs",
@@ -107032,7 +107112,7 @@
       "issueIds": []
     },
     {
-      "id": "e5318",
+      "id": "e5321",
       "source": "asset:Assets/Tests/MapGeneration/MapCameraBindingServiceTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapPlacementPlanning.cs",
@@ -107048,7 +107128,7 @@
       "issueIds": []
     },
     {
-      "id": "e5319",
+      "id": "e5322",
       "source": "asset:Assets/Tests/MapGeneration/MapCameraBindingServiceTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapData.cs",
@@ -107064,7 +107144,7 @@
       "issueIds": []
     },
     {
-      "id": "e5320",
+      "id": "e5323",
       "source": "asset:Assets/Tests/MapGeneration/MapCompatibilityRetirementTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapData.cs",
@@ -107080,7 +107160,7 @@
       "issueIds": []
     },
     {
-      "id": "e5321",
+      "id": "e5324",
       "source": "asset:Assets/Tests/MapGeneration/MapCompatibilityRetirementTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapRuntimeBootstrap.cs",
@@ -107096,7 +107176,7 @@
       "issueIds": []
     },
     {
-      "id": "e5322",
+      "id": "e5325",
       "source": "asset:Assets/Tests/MapGeneration/MapCompatibilityRetirementTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
@@ -107112,7 +107192,7 @@
       "issueIds": []
     },
     {
-      "id": "e5323",
+      "id": "e5326",
       "source": "asset:Assets/Tests/MapGeneration/MapCompatibilityRetirementTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapGeneratedObjectPlacementAdapter.cs",
@@ -107128,7 +107208,7 @@
       "issueIds": []
     },
     {
-      "id": "e5324",
+      "id": "e5327",
       "source": "asset:Assets/Tests/MapGeneration/MapCoordinateBoundaryTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapCoordinateBoundary.cs",
@@ -107144,7 +107224,7 @@
       "issueIds": []
     },
     {
-      "id": "e5325",
+      "id": "e5328",
       "source": "asset:Assets/Tests/MapGeneration/MapCoordinateBoundaryTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapData.cs",
@@ -107160,7 +107240,7 @@
       "issueIds": []
     },
     {
-      "id": "e5326",
+      "id": "e5329",
       "source": "asset:Assets/Tests/MapGeneration/MapDestructiblePlacementPolicyTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/DestructiblePlacementPolicy.cs",
@@ -107176,7 +107256,7 @@
       "issueIds": []
     },
     {
-      "id": "e5327",
+      "id": "e5330",
       "source": "asset:Assets/Tests/MapGeneration/MapDestructiblePlacementPolicyTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapPlacementPlanning.cs",
@@ -107192,7 +107272,7 @@
       "issueIds": []
     },
     {
-      "id": "e5328",
+      "id": "e5331",
       "source": "asset:Assets/Tests/MapGeneration/MapDestructiblePlacementPolicyTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapIntegrationOrchestrator.cs",
@@ -107208,7 +107288,7 @@
       "issueIds": []
     },
     {
-      "id": "e5329",
+      "id": "e5332",
       "source": "asset:Assets/Tests/MapGeneration/MapDestructiblePlacementPolicyTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapCoordinateBoundary.cs",
@@ -107224,7 +107304,7 @@
       "issueIds": []
     },
     {
-      "id": "e5330",
+      "id": "e5333",
       "source": "asset:Assets/Tests/MapGeneration/MapDestructiblePlacementPolicyTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapData.cs",
@@ -107240,7 +107320,7 @@
       "issueIds": []
     },
     {
-      "id": "e5331",
+      "id": "e5334",
       "source": "asset:Assets/Tests/MapGeneration/MapDestructiblePlacementPolicyTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapGenerationLifecycle.cs",
@@ -107256,7 +107336,7 @@
       "issueIds": []
     },
     {
-      "id": "e5332",
+      "id": "e5335",
       "source": "asset:Assets/Tests/MapGeneration/MapDestructiblePlacementPolicyTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapRuntimeFoundation.cs",
@@ -107272,7 +107352,7 @@
       "issueIds": []
     },
     {
-      "id": "e5333",
+      "id": "e5336",
       "source": "asset:Assets/Tests/MapGeneration/MapExplorationStateTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapData.cs",
@@ -107288,7 +107368,7 @@
       "issueIds": []
     },
     {
-      "id": "e5334",
+      "id": "e5337",
       "source": "asset:Assets/Tests/MapGeneration/MapExplorationStateTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapExplorationState.cs",
@@ -107304,7 +107384,7 @@
       "issueIds": []
     },
     {
-      "id": "e5335",
+      "id": "e5338",
       "source": "asset:Assets/Tests/MapGeneration/MapGenerationRpgIntegrationTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
@@ -107320,7 +107400,7 @@
       "issueIds": []
     },
     {
-      "id": "e5336",
+      "id": "e5339",
       "source": "asset:Assets/Tests/MapGeneration/MapGenerationRpgIntegrationTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapRuntimeBootstrap.cs",
@@ -107336,7 +107416,7 @@
       "issueIds": []
     },
     {
-      "id": "e5337",
+      "id": "e5340",
       "source": "asset:Assets/Tests/MapGeneration/MapGenerationRpgIntegrationTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapMinimapController.cs",
@@ -107352,7 +107432,7 @@
       "issueIds": []
     },
     {
-      "id": "e5338",
+      "id": "e5341",
       "source": "asset:Assets/Tests/MapGeneration/MapGenerationRpgIntegrationTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapGeneratedObjectPlacementAdapter.cs",
@@ -107368,7 +107448,7 @@
       "issueIds": []
     },
     {
-      "id": "e5339",
+      "id": "e5342",
       "source": "asset:Assets/Tests/MapGeneration/MapGenerationRpgIntegrationTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MerchantPlacementService.cs",
@@ -107384,7 +107464,7 @@
       "issueIds": []
     },
     {
-      "id": "e5340",
+      "id": "e5343",
       "source": "asset:Assets/Tests/MapGeneration/MapGenerationRpgIntegrationTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MonsterPlacementService.cs",
@@ -107400,7 +107480,7 @@
       "issueIds": []
     },
     {
-      "id": "e5341",
+      "id": "e5344",
       "source": "asset:Assets/Tests/MapGeneration/MapGenerationRpgIntegrationTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/AnimalPlacementService.cs",
@@ -107416,7 +107496,7 @@
       "issueIds": []
     },
     {
-      "id": "e5342",
+      "id": "e5345",
       "source": "asset:Assets/Tests/MapGeneration/MapGenerationRpgIntegrationTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/PlantPlacementService.cs",
@@ -107432,7 +107512,7 @@
       "issueIds": []
     },
     {
-      "id": "e5343",
+      "id": "e5346",
       "source": "asset:Assets/Tests/MapGeneration/MapGenerationRpgIntegrationTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapGenerationCameraFollow.cs",
@@ -107448,7 +107528,7 @@
       "issueIds": []
     },
     {
-      "id": "e5344",
+      "id": "e5347",
       "source": "asset:Assets/Tests/MapGeneration/MapGenerationSceneTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapData.cs",
@@ -107464,7 +107544,7 @@
       "issueIds": []
     },
     {
-      "id": "e5345",
+      "id": "e5348",
       "source": "asset:Assets/Tests/MapGeneration/MapGenerationSceneTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapRuntimeBootstrap.cs",
@@ -107480,7 +107560,7 @@
       "issueIds": []
     },
     {
-      "id": "e5346",
+      "id": "e5349",
       "source": "asset:Assets/Tests/MapGeneration/MapGenerationSceneTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
@@ -107496,7 +107576,7 @@
       "issueIds": []
     },
     {
-      "id": "e5347",
+      "id": "e5350",
       "source": "asset:Assets/Tests/MapGeneration/MapGenerationSceneTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapMinimapController.cs",
@@ -107512,7 +107592,7 @@
       "issueIds": []
     },
     {
-      "id": "e5348",
+      "id": "e5351",
       "source": "asset:Assets/Tests/MapGeneration/MapIntegrationOrchestratorTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapIntegrationOrchestrator.cs",
@@ -107528,7 +107608,7 @@
       "issueIds": []
     },
     {
-      "id": "e5349",
+      "id": "e5352",
       "source": "asset:Assets/Tests/MapGeneration/MapIntegrationOrchestratorTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapGenerationLifecycle.cs",
@@ -107544,7 +107624,7 @@
       "issueIds": []
     },
     {
-      "id": "e5350",
+      "id": "e5353",
       "source": "asset:Assets/Tests/MapGeneration/MapIntegrationOrchestratorTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapPlacementPlanning.cs",
@@ -107560,7 +107640,7 @@
       "issueIds": []
     },
     {
-      "id": "e5351",
+      "id": "e5354",
       "source": "asset:Assets/Tests/MapGeneration/MapIntegrationOrchestratorTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapSimpleDecorationData.cs",
@@ -107576,7 +107656,7 @@
       "issueIds": []
     },
     {
-      "id": "e5352",
+      "id": "e5355",
       "source": "asset:Assets/Tests/MapGeneration/MapIntegrationOrchestratorTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapObjectRegistry.cs",
@@ -107592,7 +107672,7 @@
       "issueIds": []
     },
     {
-      "id": "e5353",
+      "id": "e5356",
       "source": "asset:Assets/Tests/MapGeneration/MapIntegrationOrchestratorTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapData.cs",
@@ -107608,7 +107688,7 @@
       "issueIds": []
     },
     {
-      "id": "e5354",
+      "id": "e5357",
       "source": "asset:Assets/Tests/MapGeneration/MapIntegrationOrchestratorTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapRuntimeFoundation.cs",
@@ -107624,7 +107704,7 @@
       "issueIds": []
     },
     {
-      "id": "e5355",
+      "id": "e5358",
       "source": "asset:Assets/Tests/MapGeneration/MapMerchantPlacementPolicyTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MerchantPlacementPolicy.cs",
@@ -107640,7 +107720,7 @@
       "issueIds": []
     },
     {
-      "id": "e5356",
+      "id": "e5359",
       "source": "asset:Assets/Tests/MapGeneration/MapMerchantPlacementPolicyTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapPlacementPlanning.cs",
@@ -107656,7 +107736,7 @@
       "issueIds": []
     },
     {
-      "id": "e5357",
+      "id": "e5360",
       "source": "asset:Assets/Tests/MapGeneration/MapMerchantPlacementPolicyTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapData.cs",
@@ -107672,7 +107752,7 @@
       "issueIds": []
     },
     {
-      "id": "e5358",
+      "id": "e5361",
       "source": "asset:Assets/Tests/MapGeneration/MapMerchantPlacementPolicyTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapIntegrationOrchestrator.cs",
@@ -107688,7 +107768,7 @@
       "issueIds": []
     },
     {
-      "id": "e5359",
+      "id": "e5362",
       "source": "asset:Assets/Tests/MapGeneration/MapMerchantPlacementPolicyTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapGenerationLifecycle.cs",
@@ -107704,7 +107784,7 @@
       "issueIds": []
     },
     {
-      "id": "e5360",
+      "id": "e5363",
       "source": "asset:Assets/Tests/MapGeneration/MapMerchantPlacementPolicyTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapCoordinateBoundary.cs",
@@ -107720,7 +107800,7 @@
       "issueIds": []
     },
     {
-      "id": "e5361",
+      "id": "e5364",
       "source": "asset:Assets/Tests/MapGeneration/MapMerchantPlacementPolicyTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapRuntimeFoundation.cs",
@@ -107736,7 +107816,7 @@
       "issueIds": []
     },
     {
-      "id": "e5362",
+      "id": "e5365",
       "source": "asset:Assets/Tests/MapGeneration/MapMerchantPlacementPolicyTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MerchantPlacementService.cs",
@@ -107752,7 +107832,7 @@
       "issueIds": []
     },
     {
-      "id": "e5363",
+      "id": "e5366",
       "source": "asset:Assets/Tests/MapGeneration/MapMinimapExitAvailabilityTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapGenerationLifecycle.cs",
@@ -107768,7 +107848,7 @@
       "issueIds": []
     },
     {
-      "id": "e5364",
+      "id": "e5367",
       "source": "asset:Assets/Tests/MapGeneration/MapMinimapExitAvailabilityTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapIntegrationOrchestrator.cs",
@@ -107784,7 +107864,7 @@
       "issueIds": []
     },
     {
-      "id": "e5365",
+      "id": "e5368",
       "source": "asset:Assets/Tests/MapGeneration/MapMinimapExitAvailabilityTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapPlacementPlanning.cs",
@@ -107800,7 +107880,7 @@
       "issueIds": []
     },
     {
-      "id": "e5366",
+      "id": "e5369",
       "source": "asset:Assets/Tests/MapGeneration/MapMinimapExitAvailabilityTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapData.cs",
@@ -107816,7 +107896,7 @@
       "issueIds": []
     },
     {
-      "id": "e5367",
+      "id": "e5370",
       "source": "asset:Assets/Tests/MapGeneration/MapMinimapRasterizerTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapData.cs",
@@ -107832,7 +107912,7 @@
       "issueIds": []
     },
     {
-      "id": "e5368",
+      "id": "e5371",
       "source": "asset:Assets/Tests/MapGeneration/MapMonsterPlacementPolicyTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MonsterPlacementPolicy.cs",
@@ -107848,7 +107928,7 @@
       "issueIds": []
     },
     {
-      "id": "e5369",
+      "id": "e5372",
       "source": "asset:Assets/Tests/MapGeneration/MapMonsterPlacementPolicyTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapPlacementPlanning.cs",
@@ -107864,7 +107944,7 @@
       "issueIds": []
     },
     {
-      "id": "e5370",
+      "id": "e5373",
       "source": "asset:Assets/Tests/MapGeneration/MapMonsterPlacementPolicyTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapIntegrationOrchestrator.cs",
@@ -107880,7 +107960,7 @@
       "issueIds": []
     },
     {
-      "id": "e5371",
+      "id": "e5374",
       "source": "asset:Assets/Tests/MapGeneration/MapMonsterPlacementPolicyTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapGenerationLifecycle.cs",
@@ -107896,7 +107976,7 @@
       "issueIds": []
     },
     {
-      "id": "e5372",
+      "id": "e5375",
       "source": "asset:Assets/Tests/MapGeneration/MapMonsterPlacementPolicyTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapCoordinateBoundary.cs",
@@ -107912,7 +107992,7 @@
       "issueIds": []
     },
     {
-      "id": "e5373",
+      "id": "e5376",
       "source": "asset:Assets/Tests/MapGeneration/MapMonsterPlacementPolicyTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapData.cs",
@@ -107928,7 +108008,7 @@
       "issueIds": []
     },
     {
-      "id": "e5374",
+      "id": "e5377",
       "source": "asset:Assets/Tests/MapGeneration/MapMonsterPlacementPolicyTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapRuntimeFoundation.cs",
@@ -107944,7 +108024,7 @@
       "issueIds": []
     },
     {
-      "id": "e5375",
+      "id": "e5378",
       "source": "asset:Assets/Tests/MapGeneration/MapPlantPlacementPolicyTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/PlantPlacementPolicy.cs",
@@ -107960,7 +108040,7 @@
       "issueIds": []
     },
     {
-      "id": "e5376",
+      "id": "e5379",
       "source": "asset:Assets/Tests/MapGeneration/MapPlantPlacementPolicyTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapPlacementPlanning.cs",
@@ -107976,7 +108056,7 @@
       "issueIds": []
     },
     {
-      "id": "e5377",
+      "id": "e5380",
       "source": "asset:Assets/Tests/MapGeneration/MapPlantPlacementPolicyTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapIntegrationOrchestrator.cs",
@@ -107992,7 +108072,7 @@
       "issueIds": []
     },
     {
-      "id": "e5378",
+      "id": "e5381",
       "source": "asset:Assets/Tests/MapGeneration/MapPlantPlacementPolicyTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapCoordinateBoundary.cs",
@@ -108008,7 +108088,7 @@
       "issueIds": []
     },
     {
-      "id": "e5379",
+      "id": "e5382",
       "source": "asset:Assets/Tests/MapGeneration/MapPlantPlacementPolicyTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapData.cs",
@@ -108024,7 +108104,7 @@
       "issueIds": []
     },
     {
-      "id": "e5380",
+      "id": "e5383",
       "source": "asset:Assets/Tests/MapGeneration/MapPlantPlacementPolicyTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/PlantPlacementService.cs",
@@ -108040,7 +108120,7 @@
       "issueIds": []
     },
     {
-      "id": "e5381",
+      "id": "e5384",
       "source": "asset:Assets/Tests/MapGeneration/MapPlantPlacementPolicyTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapGenerationLifecycle.cs",
@@ -108056,7 +108136,7 @@
       "issueIds": []
     },
     {
-      "id": "e5382",
+      "id": "e5385",
       "source": "asset:Assets/Tests/MapGeneration/MapPlantPlacementPolicyTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapRuntimeFoundation.cs",
@@ -108072,7 +108152,7 @@
       "issueIds": []
     },
     {
-      "id": "e5383",
+      "id": "e5386",
       "source": "asset:Assets/Tests/MapGeneration/MapPlayerSpawnServiceTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapCoordinateBoundary.cs",
@@ -108088,7 +108168,7 @@
       "issueIds": []
     },
     {
-      "id": "e5384",
+      "id": "e5387",
       "source": "asset:Assets/Tests/MapGeneration/MapPlayerSpawnServiceTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapRuntimeFoundation.cs",
@@ -108104,7 +108184,7 @@
       "issueIds": []
     },
     {
-      "id": "e5385",
+      "id": "e5388",
       "source": "asset:Assets/Tests/MapGeneration/MapPlayerSpawnServiceTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapIntegrationOrchestrator.cs",
@@ -108120,7 +108200,7 @@
       "issueIds": []
     },
     {
-      "id": "e5386",
+      "id": "e5389",
       "source": "asset:Assets/Tests/MapGeneration/MapPlayerSpawnServiceTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapGenerationLifecycle.cs",
@@ -108136,7 +108216,7 @@
       "issueIds": []
     },
     {
-      "id": "e5387",
+      "id": "e5390",
       "source": "asset:Assets/Tests/MapGeneration/MapPlayerSpawnServiceTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapPlacementPlanning.cs",
@@ -108152,7 +108232,7 @@
       "issueIds": []
     },
     {
-      "id": "e5388",
+      "id": "e5391",
       "source": "asset:Assets/Tests/MapGeneration/MapPlayerSpawnServiceTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapData.cs",
@@ -108168,7 +108248,7 @@
       "issueIds": []
     },
     {
-      "id": "e5389",
+      "id": "e5392",
       "source": "asset:Assets/Tests/MapGeneration/MapRuntimeFoundationTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapRuntimeFoundation.cs",
@@ -108184,7 +108264,7 @@
       "issueIds": []
     },
     {
-      "id": "e5390",
+      "id": "e5393",
       "source": "asset:Assets/Tests/MapGeneration/MapSimpleDecorationGeneratorTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapSimpleDecorationPalette.cs",
@@ -108200,7 +108280,7 @@
       "issueIds": []
     },
     {
-      "id": "e5391",
+      "id": "e5394",
       "source": "asset:Assets/Tests/MapGeneration/MapSimpleDecorationGeneratorTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapData.cs",
@@ -108216,7 +108296,7 @@
       "issueIds": []
     },
     {
-      "id": "e5392",
+      "id": "e5395",
       "source": "asset:Assets/Tests/MapGeneration/MapTerrainNestingEnforcerTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapData.cs",
@@ -108232,7 +108312,7 @@
       "issueIds": []
     },
     {
-      "id": "e5393",
+      "id": "e5396",
       "source": "asset:Assets/Tests/MapGeneration/MapTerrainPassageWidthEnforcerTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapData.cs",
@@ -108248,7 +108328,7 @@
       "issueIds": []
     },
     {
-      "id": "e5394",
+      "id": "e5397",
       "source": "asset:Assets/Tests/MapGeneration/MapTerrainRegionCleanerTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapData.cs",
@@ -108264,7 +108344,7 @@
       "issueIds": []
     },
     {
-      "id": "e5395",
+      "id": "e5398",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/BarrelRemediationPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyCombatBinding.cs",
@@ -108280,7 +108360,7 @@
       "issueIds": []
     },
     {
-      "id": "e5396",
+      "id": "e5399",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/BarrelRemediationPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyMotionBody.cs",
@@ -108296,7 +108376,7 @@
       "issueIds": []
     },
     {
-      "id": "e5397",
+      "id": "e5400",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/DamageableRewardLoopPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
@@ -108312,7 +108392,7 @@
       "issueIds": []
     },
     {
-      "id": "e5398",
+      "id": "e5401",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/DamageableRewardLoopPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MonsterPlacementService.cs",
@@ -108328,7 +108408,7 @@
       "issueIds": []
     },
     {
-      "id": "e5399",
+      "id": "e5402",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/DamageableRewardLoopPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/DestructiblePlacementService.cs",
@@ -108344,7 +108424,7 @@
       "issueIds": []
     },
     {
-      "id": "e5400",
+      "id": "e5403",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/DamageableRewardLoopPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapRuntimeBootstrap.cs",
@@ -108360,7 +108440,7 @@
       "issueIds": []
     },
     {
-      "id": "e5401",
+      "id": "e5404",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/DamageableRewardLoopPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MerchantPlacementService.cs",
@@ -108376,7 +108456,7 @@
       "issueIds": []
     },
     {
-      "id": "e5402",
+      "id": "e5405",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/DamageableRewardLoopPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MerchantPlacementPolicy.cs",
@@ -108392,7 +108472,7 @@
       "issueIds": []
     },
     {
-      "id": "e5403",
+      "id": "e5406",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/DamageableRewardLoopPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/GenerationScopedRewardLifetime.cs",
@@ -108408,7 +108488,7 @@
       "issueIds": []
     },
     {
-      "id": "e5404",
+      "id": "e5407",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/EcologyCandidateGeometryPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapData.cs",
@@ -108424,7 +108504,7 @@
       "issueIds": []
     },
     {
-      "id": "e5405",
+      "id": "e5408",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/EcologyCandidateGeometryPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapTilemapRenderer.cs",
@@ -108440,7 +108520,7 @@
       "issueIds": []
     },
     {
-      "id": "e5406",
+      "id": "e5409",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/EcologyCandidateGeometryPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapSimpleDecorationRenderer.cs",
@@ -108456,7 +108536,7 @@
       "issueIds": []
     },
     {
-      "id": "e5407",
+      "id": "e5410",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/EcologyCandidateGeometryPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapSimpleDecorationData.cs",
@@ -108472,7 +108552,7 @@
       "issueIds": []
     },
     {
-      "id": "e5408",
+      "id": "e5411",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/EcologyCandidateGeometryPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapPlacementPlanning.cs",
@@ -108488,7 +108568,7 @@
       "issueIds": []
     },
     {
-      "id": "e5409",
+      "id": "e5412",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/EcologyCandidateGeometryPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/MapEcologyLayout.cs",
@@ -108504,7 +108584,7 @@
       "issueIds": []
     },
     {
-      "id": "e5410",
+      "id": "e5413",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/EcologyCandidateGeometryPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyTerritoryPlanner.cs",
@@ -108520,7 +108600,7 @@
       "issueIds": []
     },
     {
-      "id": "e5411",
+      "id": "e5414",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/EcologyCandidateGeometryPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MerchantPlacementPolicy.cs",
@@ -108536,7 +108616,7 @@
       "issueIds": []
     },
     {
-      "id": "e5412",
+      "id": "e5415",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/EcologyDamageBarrierPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyDamageBarrier.cs",
@@ -108552,7 +108632,7 @@
       "issueIds": []
     },
     {
-      "id": "e5413",
+      "id": "e5416",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/EcologyDamageBarrierPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyCombatBinding.cs",
@@ -108568,7 +108648,7 @@
       "issueIds": []
     },
     {
-      "id": "e5414",
+      "id": "e5417",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/EcologyJointPlanningPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/TowerRun/TowerRunCheckpointRecord.cs",
@@ -108584,7 +108664,7 @@
       "issueIds": []
     },
     {
-      "id": "e5415",
+      "id": "e5418",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/EcologyJointPlanningPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapEcologyPopulationService.cs",
@@ -108600,7 +108680,7 @@
       "issueIds": []
     },
     {
-      "id": "e5416",
+      "id": "e5419",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/EcologyJointPlanningPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyCombatBinding.cs",
@@ -108616,7 +108696,7 @@
       "issueIds": []
     },
     {
-      "id": "e5417",
+      "id": "e5420",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/EcologyJointPlanningPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyMotionBody.cs",
@@ -108632,7 +108712,7 @@
       "issueIds": []
     },
     {
-      "id": "e5418",
+      "id": "e5421",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/EcologyJointPlanningPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyResidentBinding.cs",
@@ -108648,7 +108728,7 @@
       "issueIds": []
     },
     {
-      "id": "e5419",
+      "id": "e5422",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/EcologyJointPlanningPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapRuntimeBootstrap.cs",
@@ -108664,7 +108744,7 @@
       "issueIds": []
     },
     {
-      "id": "e5420",
+      "id": "e5423",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/EcologyJointPlanningPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/TowerRun/TowerRunSlotStore.cs",
@@ -108680,7 +108760,7 @@
       "issueIds": []
     },
     {
-      "id": "e5421",
+      "id": "e5424",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/EcologyJointPlanningPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyDamageBarrier.cs",
@@ -108696,7 +108776,7 @@
       "issueIds": []
     },
     {
-      "id": "e5422",
+      "id": "e5425",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/EcologyJointPlanningPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyExcursionState.cs",
@@ -108712,7 +108792,7 @@
       "issueIds": []
     },
     {
-      "id": "e5423",
+      "id": "e5426",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/EcologyJointPlanningPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MerchantPlacementService.cs",
@@ -108728,7 +108808,7 @@
       "issueIds": []
     },
     {
-      "id": "e5424",
+      "id": "e5427",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/EcologyJointPlanningPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/PlantPlacementService.cs",
@@ -108744,7 +108824,7 @@
       "issueIds": []
     },
     {
-      "id": "e5425",
+      "id": "e5428",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/EcologyJointPlanningPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/AnimalPlacementService.cs",
@@ -108760,7 +108840,7 @@
       "issueIds": []
     },
     {
-      "id": "e5426",
+      "id": "e5429",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/EcologyJointPlanningPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapTilemapRenderer.cs",
@@ -108776,7 +108856,7 @@
       "issueIds": []
     },
     {
-      "id": "e5427",
+      "id": "e5430",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/EcologyJointPlanningPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapSimpleDecorationRenderer.cs",
@@ -108792,7 +108872,7 @@
       "issueIds": []
     },
     {
-      "id": "e5428",
+      "id": "e5431",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/EcologyJointPlanningPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapGenerationLifecycle.cs",
@@ -108808,7 +108888,7 @@
       "issueIds": []
     },
     {
-      "id": "e5429",
+      "id": "e5432",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/EcologyJointPlanningPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyTerritoryPlanner.cs",
@@ -108824,7 +108904,7 @@
       "issueIds": []
     },
     {
-      "id": "e5430",
+      "id": "e5433",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/EcologyJointPlanningPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapRuntimeFoundation.cs",
@@ -108840,7 +108920,7 @@
       "issueIds": []
     },
     {
-      "id": "e5431",
+      "id": "e5434",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/EcologyJointPlanningPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapIntegrationOrchestrator.cs",
@@ -108856,7 +108936,7 @@
       "issueIds": []
     },
     {
-      "id": "e5432",
+      "id": "e5435",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/EcologyJointPlanningPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/IGenerationScopedPopulationTarget.cs",
@@ -108872,7 +108952,7 @@
       "issueIds": []
     },
     {
-      "id": "e5433",
+      "id": "e5436",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/EcologyJointPlanningPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyHomeNavigation.cs",
@@ -108888,7 +108968,7 @@
       "issueIds": []
     },
     {
-      "id": "e5434",
+      "id": "e5437",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/EcologyJointPlanningPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Tests/MapGeneration/PlayMode/EcologyDamageBarrierPlayModeTests.cs",
@@ -108904,7 +108984,7 @@
       "issueIds": []
     },
     {
-      "id": "e5435",
+      "id": "e5438",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/EcologyJointPlanningPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
@@ -108920,7 +109000,7 @@
       "issueIds": []
     },
     {
-      "id": "e5436",
+      "id": "e5439",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/EcologyJointPlanningPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/MapCandidateCollisionGeometry.Fan.cs",
@@ -108936,7 +109016,7 @@
       "issueIds": []
     },
     {
-      "id": "e5437",
+      "id": "e5440",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/EcologyJointPlanningPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyStaticCollisionRevision.cs",
@@ -108952,7 +109032,7 @@
       "issueIds": []
     },
     {
-      "id": "e5438",
+      "id": "e5441",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/EcologyJointPlanningPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyLiveNavigation.cs",
@@ -108968,7 +109048,7 @@
       "issueIds": []
     },
     {
-      "id": "e5439",
+      "id": "e5442",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/EcologyPlanningDataContractTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapData.cs",
@@ -108984,7 +109064,7 @@
       "issueIds": []
     },
     {
-      "id": "e5440",
+      "id": "e5443",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/EcologyPlanningDataContractTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyNavigationGraph.cs",
@@ -109000,7 +109080,7 @@
       "issueIds": []
     },
     {
-      "id": "e5441",
+      "id": "e5444",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/EcologyPlanningDataContractTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/MapEcologyLayout.cs",
@@ -109016,7 +109096,7 @@
       "issueIds": []
     },
     {
-      "id": "e5442",
+      "id": "e5445",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/EcologyPlanningDataContractTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapPlacementPlanning.cs",
@@ -109032,7 +109112,7 @@
       "issueIds": []
     },
     {
-      "id": "e5443",
+      "id": "e5446",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/EcologyPreparedPoolPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyCombatBinding.cs",
@@ -109048,7 +109128,7 @@
       "issueIds": []
     },
     {
-      "id": "e5444",
+      "id": "e5447",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/EcologyPreparedPoolPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyMotionBody.cs",
@@ -109064,7 +109144,7 @@
       "issueIds": []
     },
     {
-      "id": "e5445",
+      "id": "e5448",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/EcologyQueryEquivalencePlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyDamageBarrier.cs",
@@ -109080,7 +109160,7 @@
       "issueIds": []
     },
     {
-      "id": "e5446",
+      "id": "e5449",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/MapEcologyPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
@@ -109096,7 +109176,7 @@
       "issueIds": []
     },
     {
-      "id": "e5447",
+      "id": "e5450",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/MapEcologyPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapEcologyPopulationService.cs",
@@ -109112,7 +109192,7 @@
       "issueIds": []
     },
     {
-      "id": "e5448",
+      "id": "e5451",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/MapEcologyPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapRuntimeBootstrap.cs",
@@ -109128,7 +109208,7 @@
       "issueIds": []
     },
     {
-      "id": "e5449",
+      "id": "e5452",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/MapGenerationRpgPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
@@ -109144,7 +109224,7 @@
       "issueIds": []
     },
     {
-      "id": "e5450",
+      "id": "e5453",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/MapGenerationRpgPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapRuntimeBootstrap.cs",
@@ -109160,7 +109240,7 @@
       "issueIds": []
     },
     {
-      "id": "e5451",
+      "id": "e5454",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/MapGenerationRpgPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/CanonicalPlayerProvider.cs",
@@ -109176,7 +109256,7 @@
       "issueIds": []
     },
     {
-      "id": "e5452",
+      "id": "e5455",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/MapGenerationRpgPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/PlayerSpawnService.cs",
@@ -109192,7 +109272,7 @@
       "issueIds": []
     },
     {
-      "id": "e5453",
+      "id": "e5456",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/MapGenerationRpgPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapDependentReinitializationService.cs",
@@ -109208,7 +109288,7 @@
       "issueIds": []
     },
     {
-      "id": "e5454",
+      "id": "e5457",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/MapGenerationRpgPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/PlayerFollowCameraProvider.cs",
@@ -109224,7 +109304,7 @@
       "issueIds": []
     },
     {
-      "id": "e5455",
+      "id": "e5458",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/MapGenerationRpgPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/CameraBindingService.cs",
@@ -109240,7 +109320,7 @@
       "issueIds": []
     },
     {
-      "id": "e5456",
+      "id": "e5459",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/MapGenerationRpgPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MerchantPlacementService.cs",
@@ -109256,7 +109336,7 @@
       "issueIds": []
     },
     {
-      "id": "e5457",
+      "id": "e5460",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/MapGenerationRpgPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MonsterPlacementService.cs",
@@ -109272,7 +109352,7 @@
       "issueIds": []
     },
     {
-      "id": "e5458",
+      "id": "e5461",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/MapGenerationRpgPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/AnimalPlacementService.cs",
@@ -109288,7 +109368,7 @@
       "issueIds": []
     },
     {
-      "id": "e5459",
+      "id": "e5462",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/MapGenerationRpgPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/PlantPlacementService.cs",
@@ -109304,7 +109384,7 @@
       "issueIds": []
     },
     {
-      "id": "e5460",
+      "id": "e5463",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/MapGenerationRpgPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/DestructiblePlacementService.cs",
@@ -109320,7 +109400,7 @@
       "issueIds": []
     },
     {
-      "id": "e5461",
+      "id": "e5464",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/MapGenerationRpgPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapGeneratedObjectPlacementAdapter.cs",
@@ -109336,7 +109416,7 @@
       "issueIds": []
     },
     {
-      "id": "e5462",
+      "id": "e5465",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/MapGenerationRpgPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapMinimapController.cs",
@@ -109352,7 +109432,7 @@
       "issueIds": []
     },
     {
-      "id": "e5463",
+      "id": "e5466",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/MapGenerationRpgPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MerchantPlacementPolicy.cs",
@@ -109368,7 +109448,7 @@
       "issueIds": []
     },
     {
-      "id": "e5464",
+      "id": "e5467",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/MapGenerationRpgPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/DestructiblePlacementPolicy.cs",
@@ -109384,7 +109464,7 @@
       "issueIds": []
     },
     {
-      "id": "e5465",
+      "id": "e5468",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/SurfaceV4BehaviorPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapTilemapRenderer.cs",
@@ -109400,7 +109480,7 @@
       "issueIds": []
     },
     {
-      "id": "e5466",
+      "id": "e5469",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/SurfaceV4BehaviorPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapSimpleDecorationRenderer.cs",
@@ -109416,7 +109496,7 @@
       "issueIds": []
     },
     {
-      "id": "e5467",
+      "id": "e5470",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/SurfaceV4BehaviorPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapData.cs",
@@ -109432,7 +109512,7 @@
       "issueIds": []
     },
     {
-      "id": "e5468",
+      "id": "e5471",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/SurfaceV4BehaviorPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapSimpleDecorationData.cs",
@@ -109448,7 +109528,7 @@
       "issueIds": []
     },
     {
-      "id": "e5469",
+      "id": "e5472",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/SurfaceV4BehaviorPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapSurfaceV4Visuals.cs",
@@ -109464,7 +109544,7 @@
       "issueIds": []
     },
     {
-      "id": "e5470",
+      "id": "e5473",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/SurfaceV4CompatibilityPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapGenerationLifecycle.cs",
@@ -109480,7 +109560,23 @@
       "issueIds": []
     },
     {
-      "id": "e5471",
+      "id": "e5474",
+      "source": "asset:Assets/Tests/MapGeneration/PlayMode/SurfaceV4FloorPopulationPlayModeTests.cs",
+      "relation": "code type reference",
+      "target": "asset:Assets/Editor/MapAcceptance/AssetNameWarningAudit.cs",
+      "evidence": {
+        "path": "Assets/Tests/MapGeneration/PlayMode/SurfaceV4FloorPopulationPlayModeTests.cs",
+        "line": 36
+      },
+      "evidenceType": "C# text match",
+      "relationType": "dependency",
+      "confidence": "medium",
+      "validation": "textual only",
+      "occurrences": 1,
+      "issueIds": []
+    },
+    {
+      "id": "e5475",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/SurfaceV4FloorPopulationPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/TowerRun/TowerRunCheckpointRecord.cs",
@@ -109496,7 +109592,7 @@
       "issueIds": []
     },
     {
-      "id": "e5472",
+      "id": "e5476",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/SurfaceV4FloorPopulationPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapEcologyPopulationService.cs",
@@ -109512,7 +109608,7 @@
       "issueIds": []
     },
     {
-      "id": "e5473",
+      "id": "e5477",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/SurfaceV4FloorPopulationPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyResidentBinding.cs",
@@ -109528,7 +109624,7 @@
       "issueIds": []
     },
     {
-      "id": "e5474",
+      "id": "e5478",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/SurfaceV4MultiSeedPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/TowerRun/TowerRunCheckpointRecord.cs",
@@ -109544,7 +109640,7 @@
       "issueIds": []
     },
     {
-      "id": "e5475",
+      "id": "e5479",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/SurfaceV4MultiSeedPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
@@ -109560,7 +109656,7 @@
       "issueIds": []
     },
     {
-      "id": "e5476",
+      "id": "e5480",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/TowerRunFlowPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapRuntimeBootstrap.cs",
@@ -109576,7 +109672,7 @@
       "issueIds": []
     },
     {
-      "id": "e5477",
+      "id": "e5481",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/TowerRunFlowPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
@@ -109592,7 +109688,7 @@
       "issueIds": []
     },
     {
-      "id": "e5478",
+      "id": "e5482",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/TowerRunFlowPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapMinimapController.cs",
@@ -109608,7 +109704,7 @@
       "issueIds": []
     },
     {
-      "id": "e5479",
+      "id": "e5483",
       "source": "asset:Assets/Tests/MapGeneration/PlayMode/TowerRunFlowPlayModeTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapExplorationState.cs",
@@ -109624,7 +109720,7 @@
       "issueIds": []
     },
     {
-      "id": "e5480",
+      "id": "e5484",
       "source": "asset:Assets/Tests/MapGeneration/RandomMapGeneratorTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapData.cs",
@@ -109640,7 +109736,7 @@
       "issueIds": []
     },
     {
-      "id": "e5481",
+      "id": "e5485",
       "source": "asset:Assets/Tests/MapGeneration/TerrainTopologyTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapData.cs",
@@ -109656,7 +109752,7 @@
       "issueIds": []
     },
     {
-      "id": "e5482",
+      "id": "e5486",
       "source": "asset:Assets/Tests/MapVNext/EditMode/MapVNextEditTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Capture.cs",
@@ -109672,7 +109768,7 @@
       "issueIds": []
     },
     {
-      "id": "e5483",
+      "id": "e5487",
       "source": "asset:Assets/Tests/MapVNext/EditMode/MapVNextEditTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapData.cs",
@@ -109688,7 +109784,7 @@
       "issueIds": []
     },
     {
-      "id": "e5484",
+      "id": "e5488",
       "source": "asset:Assets/Tests/MapVNext/EditMode/MapVNextI1CompatibilityTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/SpatialVersion/MapHostCompatibility.cs",
@@ -109704,7 +109800,7 @@
       "issueIds": []
     },
     {
-      "id": "e5485",
+      "id": "e5489",
       "source": "asset:Assets/Tests/MapVNext/EditMode/MapVNextI1GroundTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapTilemapRenderer.cs",
@@ -109720,7 +109816,7 @@
       "issueIds": []
     },
     {
-      "id": "e5486",
+      "id": "e5490",
       "source": "asset:Assets/Tests/MapVNext/EditMode/MapVNextI1GroundTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapSimpleDecorationRenderer.cs",
@@ -109736,7 +109832,7 @@
       "issueIds": []
     },
     {
-      "id": "e5487",
+      "id": "e5491",
       "source": "asset:Assets/Tests/MapVNext/EditMode/MapVNextI1GroundTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapData.cs",
@@ -109752,7 +109848,7 @@
       "issueIds": []
     },
     {
-      "id": "e5488",
+      "id": "e5492",
       "source": "asset:Assets/Tests/MapVNext/EditMode/MapVNextI1GroundTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapSimpleDecorationData.cs",
@@ -109768,10 +109864,10 @@
       "issueIds": []
     },
     {
-      "id": "e5489",
+      "id": "e5493",
       "source": "asset:Assets/Tests/MapVNext/EditMode/MapVNextI1LandAuditTests.cs",
       "relation": "code type reference",
-      "target": "asset:Assets/Tests/MapGeneration/PlayMode/SurfaceV4FloorPopulationPlayModeTests.cs",
+      "target": "asset:Assets/Editor/MapAcceptance/AssetNameWarningAudit.cs",
       "evidence": {
         "path": "Assets/Tests/MapVNext/EditMode/MapVNextI1LandAuditTests.cs",
         "line": 22
@@ -109780,11 +109876,27 @@
       "relationType": "dependency",
       "confidence": "medium",
       "validation": "textual only",
-      "occurrences": 2,
+      "occurrences": 1,
       "issueIds": []
     },
     {
-      "id": "e5490",
+      "id": "e5494",
+      "source": "asset:Assets/Tests/MapVNext/EditMode/MapVNextI1LandAuditTests.cs",
+      "relation": "code type reference",
+      "target": "asset:Assets/Tests/MapGeneration/PlayMode/SurfaceV4FloorPopulationPlayModeTests.cs",
+      "evidence": {
+        "path": "Assets/Tests/MapVNext/EditMode/MapVNextI1LandAuditTests.cs",
+        "line": 29
+      },
+      "evidenceType": "C# text match",
+      "relationType": "dependency",
+      "confidence": "medium",
+      "validation": "textual only",
+      "occurrences": 1,
+      "issueIds": []
+    },
+    {
+      "id": "e5495",
       "source": "asset:Assets/Tests/MapVNext/EditMode/MapVNextI1LandAuditTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapGenerationLifecycle.cs",
@@ -109800,7 +109912,7 @@
       "issueIds": []
     },
     {
-      "id": "e5491",
+      "id": "e5496",
       "source": "asset:Assets/Tests/MapVNext/EditMode/MapVNextI1LandAuditTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapTilemapRenderer.cs",
@@ -109816,7 +109928,7 @@
       "issueIds": []
     },
     {
-      "id": "e5492",
+      "id": "e5497",
       "source": "asset:Assets/Tests/MapVNext/EditMode/MapVNextI1LandAuditTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapSimpleDecorationRenderer.cs",
@@ -109832,7 +109944,7 @@
       "issueIds": []
     },
     {
-      "id": "e5493",
+      "id": "e5498",
       "source": "asset:Assets/Tests/MapVNext/EditMode/MapVNextI1LandAuditTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapSimpleDecorationData.cs",
@@ -109848,7 +109960,7 @@
       "issueIds": []
     },
     {
-      "id": "e5494",
+      "id": "e5499",
       "source": "asset:Assets/Tests/MapVNext/EditMode/MapVNextI1RewardTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapTilemapRenderer.cs",
@@ -109864,7 +109976,7 @@
       "issueIds": []
     },
     {
-      "id": "e5495",
+      "id": "e5500",
       "source": "asset:Assets/Tests/MapVNext/EditMode/MapVNextI1RewardTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapSimpleDecorationRenderer.cs",
@@ -109880,7 +109992,7 @@
       "issueIds": []
     },
     {
-      "id": "e5496",
+      "id": "e5501",
       "source": "asset:Assets/Tests/MapVNext/EditMode/MapVNextI1RewardTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapData.cs",
@@ -109896,7 +110008,7 @@
       "issueIds": []
     },
     {
-      "id": "e5497",
+      "id": "e5502",
       "source": "asset:Assets/Tests/MapVNext/EditMode/MapVNextI1RewardTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapSimpleDecorationData.cs",
@@ -109912,7 +110024,7 @@
       "issueIds": []
     },
     {
-      "id": "e5498",
+      "id": "e5503",
       "source": "asset:Assets/Tests/MapVNext/EditMode/MapVNextI1SeamTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyNavigationGraph.cs",
@@ -109928,7 +110040,7 @@
       "issueIds": []
     },
     {
-      "id": "e5499",
+      "id": "e5504",
       "source": "asset:Assets/Tests/MapVNext/EditMode/MapVNextI1SeamTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/SpatialVersion/MapSpatialContext.cs",
@@ -109944,7 +110056,7 @@
       "issueIds": []
     },
     {
-      "id": "e5500",
+      "id": "e5505",
       "source": "asset:Assets/Tests/MapVNext/EditMode/MapVNextR3EditTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapData.cs",
@@ -109960,7 +110072,7 @@
       "issueIds": []
     },
     {
-      "id": "e5501",
+      "id": "e5506",
       "source": "asset:Assets/Tests/MapVNext/EditMode/MapVNextR3EditTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapCoordinateBoundary.cs",
@@ -109976,7 +110088,7 @@
       "issueIds": []
     },
     {
-      "id": "e5502",
+      "id": "e5507",
       "source": "asset:Assets/Tests/MapVNext/PlayMode/MapVNextCliffTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/VNext/MapVNextDemo.Approach.cs",
@@ -109992,7 +110104,7 @@
       "issueIds": []
     },
     {
-      "id": "e5503",
+      "id": "e5508",
       "source": "asset:Assets/Tests/MapVNext/PlayMode/MapVNextCliffTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/VNext/MapVNextSurfaceQuery.cs",
@@ -110008,7 +110120,7 @@
       "issueIds": []
     },
     {
-      "id": "e5504",
+      "id": "e5509",
       "source": "asset:Assets/Tests/MapVNext/PlayMode/MapVNextCliffTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapData.cs",
@@ -110024,7 +110136,7 @@
       "issueIds": []
     },
     {
-      "id": "e5505",
+      "id": "e5510",
       "source": "asset:Assets/Tests/MapVNext/PlayMode/MapVNextI1IntegrationTests.HomeBoundary.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyResidentBinding.cs",
@@ -110040,7 +110152,7 @@
       "issueIds": []
     },
     {
-      "id": "e5506",
+      "id": "e5511",
       "source": "asset:Assets/Tests/MapVNext/PlayMode/MapVNextI1IntegrationTests.HomeBoundary.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyCombatBinding.cs",
@@ -110056,7 +110168,7 @@
       "issueIds": []
     },
     {
-      "id": "e5507",
+      "id": "e5512",
       "source": "asset:Assets/Tests/MapVNext/PlayMode/MapVNextI1IntegrationTests.PositiveWalkOwner.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyCombatBinding.cs",
@@ -110072,7 +110184,7 @@
       "issueIds": []
     },
     {
-      "id": "e5508",
+      "id": "e5513",
       "source": "asset:Assets/Tests/MapVNext/PlayMode/MapVNextI1IntegrationTests.Recovery.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/TowerRun/LegacySaveDetector.cs",
@@ -110088,7 +110200,7 @@
       "issueIds": []
     },
     {
-      "id": "e5509",
+      "id": "e5514",
       "source": "asset:Assets/Tests/MapVNext/PlayMode/MapVNextI1IntegrationTests.Recovery.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapGenerationLifecycle.cs",
@@ -110104,7 +110216,7 @@
       "issueIds": []
     },
     {
-      "id": "e5510",
+      "id": "e5515",
       "source": "asset:Assets/Tests/MapVNext/PlayMode/MapVNextI1IntegrationTests.Recovery.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapPlacementPlanning.cs",
@@ -110120,7 +110232,7 @@
       "issueIds": []
     },
     {
-      "id": "e5511",
+      "id": "e5516",
       "source": "asset:Assets/Tests/MapVNext/PlayMode/MapVNextI1IntegrationTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/SpatialVersion/MapSpatialActor.cs",
@@ -110136,7 +110248,7 @@
       "issueIds": []
     },
     {
-      "id": "e5512",
+      "id": "e5517",
       "source": "asset:Assets/Tests/MapVNext/PlayMode/MapVNextP2ContractTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapData.cs",
@@ -110152,7 +110264,7 @@
       "issueIds": []
     },
     {
-      "id": "e5513",
+      "id": "e5518",
       "source": "asset:Assets/Tests/MapVNext/PlayMode/MapVNextP2ContractTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/VNext/MapVNextRandomLayout.cs",
@@ -110168,7 +110280,39 @@
       "issueIds": []
     },
     {
-      "id": "e5514",
+      "id": "e5519",
+      "source": "asset:Assets/Tests/PrefabPreview/TinySwordsEnemyPackPreview.cs",
+      "relation": "code type reference",
+      "target": "asset:Assets/Editor/MapAcceptance/AssetNameWarningAudit.cs",
+      "evidence": {
+        "path": "Assets/Tests/PrefabPreview/TinySwordsEnemyPackPreview.cs",
+        "line": 245
+      },
+      "evidenceType": "C# text match",
+      "relationType": "dependency",
+      "confidence": "medium",
+      "validation": "textual only",
+      "occurrences": 1,
+      "issueIds": []
+    },
+    {
+      "id": "e5520",
+      "source": "asset:Assets/Tests/PrefabPreview/TinySwordsEnemyPackPreview.cs",
+      "relation": "code type reference",
+      "target": "asset:Assets/Scripts/MapGeneration/VNext/MapVNextDemo.cs",
+      "evidence": {
+        "path": "Assets/Tests/PrefabPreview/TinySwordsEnemyPackPreview.cs",
+        "line": 283
+      },
+      "evidenceType": "C# text match",
+      "relationType": "dependency",
+      "confidence": "medium",
+      "validation": "textual only",
+      "occurrences": 1,
+      "issueIds": []
+    },
+    {
+      "id": "e5521",
       "source": "asset:Assets/Tests/TowerRun/LegacySaveDetectorTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/TowerRun/LegacySaveDetector.cs",
@@ -110184,7 +110328,7 @@
       "issueIds": []
     },
     {
-      "id": "e5515",
+      "id": "e5522",
       "source": "asset:Assets/Tests/TowerRun/TowerRunCheckpointRecordTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/TowerRun/TowerRunCheckpointRecord.cs",
@@ -110200,7 +110344,7 @@
       "issueIds": []
     },
     {
-      "id": "e5516",
+      "id": "e5523",
       "source": "asset:Assets/Tests/TowerRun/TowerRunGateTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/TowerRun/TowerRunGate.cs",
@@ -110216,7 +110360,7 @@
       "issueIds": []
     },
     {
-      "id": "e5517",
+      "id": "e5524",
       "source": "asset:Assets/Tests/TowerRun/TowerRunMapBaselineTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapPlacementPlanning.cs",
@@ -110232,7 +110376,7 @@
       "issueIds": []
     },
     {
-      "id": "e5518",
+      "id": "e5525",
       "source": "asset:Assets/Tests/TowerRun/TowerRunMapBaselineTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapData.cs",
@@ -110248,7 +110392,7 @@
       "issueIds": []
     },
     {
-      "id": "e5519",
+      "id": "e5526",
       "source": "asset:Assets/Tests/TowerRun/TowerRunMapBaselineTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/MapGeneration/MapSimpleDecorationData.cs",
@@ -110264,7 +110408,7 @@
       "issueIds": []
     },
     {
-      "id": "e5520",
+      "id": "e5527",
       "source": "asset:Assets/Tests/TowerRun/TowerRunSlotStoreTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/TowerRun/TowerRunSlotStore.cs",
@@ -110280,7 +110424,7 @@
       "issueIds": []
     },
     {
-      "id": "e5521",
+      "id": "e5528",
       "source": "asset:Assets/Tests/TowerRun/TowerRunSlotStoreTests.cs",
       "relation": "code type reference",
       "target": "asset:Assets/Scripts/TowerRun/TowerRunCheckpointRecord.cs",
@@ -110296,7 +110440,7 @@
       "issueIds": []
     },
     {
-      "id": "e5522",
+      "id": "e5529",
       "source": "asset:Assets/Scripts/GameInput.cs",
       "relation": "OnBattlePressed event reaches subscriber",
       "target": "asset:Assets/Scripts/Player/PlayerAction.cs",
@@ -110319,7 +110463,7 @@
       "issueIds": []
     },
     {
-      "id": "e5523",
+      "id": "e5530",
       "source": "asset:Assets/Scripts/Player/PlayerAction.cs",
       "relation": "TakeDamage call",
       "target": "asset:Assets/Scripts/Damageable/BaseDamageable.cs",
@@ -110342,7 +110486,7 @@
       "issueIds": []
     },
     {
-      "id": "e5524",
+      "id": "e5531",
       "source": "asset:Assets/Scripts/Damageable/BaseDamageable.cs",
       "relation": "spawns pooled reward",
       "target": "asset:Assets/Scripts/ObjectPoolManager.cs",
@@ -110366,7 +110510,7 @@
       "issueIds": []
     },
     {
-      "id": "e5525",
+      "id": "e5532",
       "source": "asset:Assets/Scripts/Damageable/BaseDamageable.cs",
       "relation": "initializes reward pickup",
       "target": "asset:Assets/Scripts/RewardPickup.cs",
@@ -110390,7 +110534,7 @@
       "issueIds": []
     },
     {
-      "id": "e5526",
+      "id": "e5533",
       "source": "asset:Assets/Scripts/RewardPickup.cs",
       "relation": "pickup request event subscriber",
       "target": "asset:Assets/Scripts/PlayerInventory.cs",
@@ -110416,7 +110560,7 @@
       ]
     },
     {
-      "id": "e5527",
+      "id": "e5534",
       "source": "asset:Assets/Scripts/PlayerInventory.cs",
       "relation": "saves inventory via GameSaveService",
       "target": "asset:Assets/Scripts/GameSaveService.cs",
@@ -110440,13 +110584,13 @@
       "issueIds": []
     },
     {
-      "id": "e5528",
+      "id": "e5535",
       "source": "asset:Assets/Scripts/PlayerInventory.cs",
       "relation": "OnInventoryChanged event subscriber",
       "target": "asset:Assets/Scripts/UI/PackageGridUI.cs",
       "evidence": {
         "path": "Assets/Scripts/UI/PackageGridUI.cs",
-        "line": 61
+        "line": 68
       },
       "evidenceType": "reviewed source line",
       "relationType": "event",
@@ -110466,7 +110610,7 @@
       ]
     },
     {
-      "id": "e5529",
+      "id": "e5536",
       "source": "asset:Assets/Scripts/PlayerInventory.cs",
       "relation": "OnInventoryChanged event subscriber",
       "target": "asset:Assets/Scripts/UI/CurrencyHudUI.cs",
@@ -110489,7 +110633,7 @@
       "issueIds": []
     },
     {
-      "id": "e5530",
+      "id": "e5537",
       "source": "asset:Assets/Scripts/Player/PlayerAction.cs",
       "relation": "persists stamina after attack start",
       "target": "asset:Assets/Scripts/GameSession.cs",
@@ -110512,7 +110656,7 @@
       "issueIds": []
     },
     {
-      "id": "e5531",
+      "id": "e5538",
       "source": "asset:Assets/Scripts/GameSession.cs",
       "relation": "writes current runtime state",
       "target": "asset:Assets/Scripts/GameSaveService.cs",
@@ -110535,7 +110679,7 @@
       "issueIds": []
     },
     {
-      "id": "e5532",
+      "id": "e5539",
       "source": "asset:Assets/Scripts/TowerRunCoordinator.cs",
       "relation": "requests map generation",
       "target": "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
@@ -110558,7 +110702,7 @@
       "issueIds": []
     },
     {
-      "id": "e5533",
+      "id": "e5540",
       "source": "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
       "relation": "executes generation transaction",
       "target": "asset:Assets/Scripts/MapGeneration/MapIntegrationOrchestrator.cs",
@@ -110583,7 +110727,7 @@
       ]
     },
     {
-      "id": "e5534",
+      "id": "e5541",
       "source": "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
       "relation": "generates MapData",
       "target": "asset:Assets/Scripts/MapGeneration/RandomMapGenerator.cs",
@@ -110606,7 +110750,7 @@
       "issueIds": []
     },
     {
-      "id": "e5535",
+      "id": "e5542",
       "source": "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
       "relation": "plans scene-bound monster placement",
       "target": "asset:Assets/Scripts/MapGeneration/MonsterPlacementService.cs",
@@ -110629,7 +110773,7 @@
       "issueIds": []
     },
     {
-      "id": "e5536",
+      "id": "e5543",
       "source": "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
       "relation": "materializes scene-bound monster",
       "target": "asset:Assets/Scripts/MapGeneration/MonsterPlacementService.cs",
@@ -110652,7 +110796,7 @@
       "issueIds": []
     },
     {
-      "id": "e5537",
+      "id": "e5544",
       "source": "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
       "relation": "materializes generation-scoped destructibles",
       "target": "asset:Assets/Scripts/MapGeneration/DestructiblePlacementService.cs",
@@ -110675,7 +110819,7 @@
       "issueIds": []
     },
     {
-      "id": "e5538",
+      "id": "e5545",
       "source": "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
       "relation": "spawns or relocates canonical player",
       "target": "asset:Assets/Scripts/MapGeneration/PlayerSpawnService.cs",
@@ -110698,7 +110842,7 @@
       "issueIds": []
     },
     {
-      "id": "e5539",
+      "id": "e5546",
       "source": "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
       "relation": "binds camera after spawn",
       "target": "asset:Assets/Scripts/MapGeneration/CameraBindingService.cs",
@@ -110721,7 +110865,7 @@
       "issueIds": []
     },
     {
-      "id": "e5540",
+      "id": "e5547",
       "source": "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
       "relation": "MapGenerated event subscriber",
       "target": "asset:Assets/Scripts/MapGeneration/MapMinimapController.cs",
@@ -110742,7 +110886,7 @@
       "issueIds": []
     },
     {
-      "id": "e5541",
+      "id": "e5548",
       "source": "asset:Assets/Scripts/Damageable/BaseDamageable.cs",
       "relation": "OnDefeated event subscriber",
       "target": "asset:Assets/Scripts/TowerFloorRuntimeController.cs",
@@ -110765,7 +110909,7 @@
       "issueIds": []
     },
     {
-      "id": "e5542",
+      "id": "e5549",
       "source": "asset:Assets/Scripts/TowerFloorRuntimeController.cs",
       "relation": "ExitUseRequested event subscriber",
       "target": "asset:Assets/Scripts/TowerRunCoordinator.cs",
@@ -110786,7 +110930,7 @@
       "issueIds": []
     },
     {
-      "id": "e5543",
+      "id": "e5550",
       "source": "asset:Assets/Scripts/GameInput.cs",
       "relation": "OnInteractPressed event subscriber",
       "target": "asset:Assets/Scripts/TowerFloorRuntimeController.cs",
@@ -110807,7 +110951,7 @@
       "issueIds": []
     },
     {
-      "id": "e5544",
+      "id": "e5551",
       "source": "asset:Assets/Scripts/TowerRunCoordinator.cs",
       "relation": "commits entrance checkpoint slot",
       "target": "asset:Assets/Scripts/TowerRun/TowerRunSlotStore.cs",
@@ -110828,7 +110972,7 @@
       "issueIds": []
     },
     {
-      "id": "e5545",
+      "id": "e5552",
       "source": "asset:Assets/Scripts/TowerRunCoordinator.cs",
       "relation": "applies staged runtime state",
       "target": "asset:Assets/Scripts/TowerRunRuntimeStateBridge.cs",
@@ -110849,7 +110993,7 @@
       "issueIds": []
     },
     {
-      "id": "e5546",
+      "id": "e5553",
       "source": "asset:Assets/Scripts/TowerRunRuntimeStateBridge.cs",
       "relation": "replaces legacy runtime cache",
       "target": "asset:Assets/Scripts/GameSaveService.cs",
@@ -110870,7 +111014,7 @@
       "issueIds": []
     },
     {
-      "id": "e5547",
+      "id": "e5554",
       "source": "asset:Assets/Scripts/Damageable/Monster/BaseMonster.cs",
       "relation": "OnDamaged and OnDefeated subscribers",
       "target": "asset:Assets/Scripts/Damageable/Monster/MonsterAIController.cs",
@@ -110893,7 +111037,7 @@
       "issueIds": []
     },
     {
-      "id": "e5548",
+      "id": "e5555",
       "source": "asset:Assets/Scripts/Damageable/Monster/MonsterAIController.cs",
       "relation": "constructs attack state",
       "target": "asset:Assets/Scripts/Damageable/Monster/MonsterAttackState.cs",
@@ -110914,7 +111058,7 @@
       "issueIds": []
     },
     {
-      "id": "e5549",
+      "id": "e5556",
       "source": "asset:Assets/Scripts/UI/Shop/ShopGridUI.cs",
       "relation": "calls TryPurchase",
       "target": "asset:Assets/Scripts/Shop/ShopTradeController.cs",
@@ -110935,7 +111079,7 @@
       "issueIds": []
     },
     {
-      "id": "e5550",
+      "id": "e5557",
       "source": "asset:Assets/Scripts/Shop/ShopTradeController.cs",
       "relation": "mutates inventory without separate persistence",
       "target": "asset:Assets/Scripts/PlayerInventory.cs",
@@ -110956,7 +111100,7 @@
       "issueIds": []
     },
     {
-      "id": "e5551",
+      "id": "e5558",
       "source": "asset:Assets/Scripts/MapGeneration/RandomMapGenerator.cs",
       "relation": "creates terrain-bearing MapData",
       "target": "asset:Assets/Scripts/MapGeneration/MapData.cs",
@@ -110979,7 +111123,7 @@
       "issueIds": []
     },
     {
-      "id": "e5552",
+      "id": "e5559",
       "source": "asset:Assets/Scripts/MapGeneration/MonsterPlacementService.cs",
       "relation": "selects Required Monster cell",
       "target": "asset:Assets/Scripts/MapGeneration/MonsterPlacementPolicy.cs",
@@ -111002,7 +111146,7 @@
       "issueIds": []
     },
     {
-      "id": "e5553",
+      "id": "e5560",
       "source": "asset:Assets/Scripts/MapGeneration/DestructiblePlacementService.cs",
       "relation": "selects Destructible cells",
       "target": "asset:Assets/Scripts/MapGeneration/DestructiblePlacementPolicy.cs",
@@ -111025,7 +111169,7 @@
       "issueIds": []
     },
     {
-      "id": "e5554",
+      "id": "e5561",
       "source": "asset:Assets/Scripts/MapGeneration/DestructiblePlacementService.cs",
       "relation": "spawns pooled Destructible via bridge",
       "target": "asset:Assets/Scripts/Damageable/DestructiblePlacementTargetBridge.cs",
@@ -111048,7 +111192,7 @@
       "issueIds": []
     },
     {
-      "id": "e5555",
+      "id": "e5562",
       "source": "asset:Assets/Scripts/Damageable/Monster/MonsterMovementController.cs",
       "relation": "movement event reaches Visual animator",
       "target": "asset:Assets/Scripts/Damageable/Monster/MonsterAnimationController.cs",
@@ -111071,7 +111215,7 @@
       "issueIds": []
     },
     {
-      "id": "e5556",
+      "id": "e5563",
       "source": "asset:Assets/Scripts/Damageable/Monster/MonsterAttackController.cs",
       "relation": "attack event reaches Visual animator",
       "target": "asset:Assets/Scripts/Damageable/Monster/MonsterAnimationController.cs",
@@ -111094,7 +111238,7 @@
       "issueIds": []
     },
     {
-      "id": "e5557",
+      "id": "e5564",
       "source": "asset:Assets/Scripts/RewardPickup.cs",
       "relation": "computes reward pickup amount",
       "target": "asset:Assets/Scripts/ScriptableObject/RewardSO.cs",
@@ -111118,13 +111262,13 @@
       "issueIds": []
     },
     {
-      "id": "e5558",
+      "id": "e5565",
       "source": "asset:Assets/Scripts/UI/PackageGridUI.cs",
       "relation": "passes stack data to visible slot",
       "target": "asset:Assets/Scripts/UI/PackageSlotUI.cs",
       "evidence": {
         "path": "Assets/Scripts/UI/PackageGridUI.cs",
-        "line": 99
+        "line": 156
       },
       "evidenceType": "reviewed source line",
       "relationType": "data flow",
@@ -111141,7 +111285,7 @@
       "issueIds": []
     },
     {
-      "id": "e5559",
+      "id": "e5566",
       "source": "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
       "relation": "plans generation-scoped destructibles",
       "target": "asset:Assets/Scripts/MapGeneration/DestructiblePlacementService.cs",
@@ -111164,7 +111308,7 @@
       "issueIds": []
     },
     {
-      "id": "e5560",
+      "id": "e5567",
       "source": "asset:Assets/Scripts/Damageable/DestructiblePlacementTargetBridge.cs",
       "relation": "gets Destructible instance from object pool",
       "target": "asset:Assets/Scripts/ObjectPoolManager.cs",
@@ -111187,7 +111331,7 @@
       "issueIds": []
     },
     {
-      "id": "e5561",
+      "id": "e5568",
       "source": "asset:Assets/Scripts/MapGeneration/DestructiblePlacementService.cs",
       "relation": "returns retired Destructible instance",
       "target": "asset:Assets/Scripts/Damageable/DestructiblePlacementTargetBridge.cs",
@@ -111210,7 +111354,7 @@
       "issueIds": []
     },
     {
-      "id": "e5562",
+      "id": "e5569",
       "source": "asset:Assets/Scripts/Damageable/BaseDamageable.cs",
       "relation": "returns defeated Damageable to pool",
       "target": "asset:Assets/Scripts/ObjectPoolManager.cs",
@@ -111233,7 +111377,7 @@
       "issueIds": []
     },
     {
-      "id": "e5563",
+      "id": "e5570",
       "source": "asset:Assets/Scripts/Damageable/BaseDamageable.cs",
       "relation": "prepares versioned pooled reward before activation",
       "target": "asset:Assets/Scripts/ObjectPoolManager.cs",
@@ -111263,7 +111407,7 @@
       ".controller": 9,
       ".anim": 104,
       ".overridecontroller": 15,
-      ".cs": 312,
+      ".cs": 316,
       ".asset": 483,
       ".mat": 8,
       ".prefab": 37,
@@ -111283,13 +111427,13 @@
       "components": 890,
       "builtinGuidReferences": 571
     },
-    "metaGuidCount": 1643,
+    "metaGuidCount": 1647,
     "packageGuidCount": 31,
     "duplicateGuids": [],
     "unresolvedGuids": [],
     "edgeValidationCounts": {
       "static": 4969,
-      "textual only": 552,
+      "textual only": 559,
       "source confirmed; runtime unverified": 35,
       "source confirmed; runtime evidence stale or unavailable": 7
     },
@@ -111297,7 +111441,7 @@
       "serialized reference": 3242,
       "hierarchy": 1719,
       "event": 16,
-      "dependency": 552,
+      "dependency": 559,
       "call": 17,
       "generation": 11,
       "data flow": 6

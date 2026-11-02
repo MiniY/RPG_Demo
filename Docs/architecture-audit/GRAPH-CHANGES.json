@@ -1,21 +1,175 @@
 {
   "schemaVersion": 1,
-  "fromSourceSha256": "15a46dc53848f64b20afc3265712121404f3dc5038c29938ab2d2081302ebd0d",
-  "toSourceSha256": "12763a76d74c8719139e8109c59953a95bb9d40819e93f64dcccea4f5c123ef8",
-  "generatedAtUtc": "2026-11-01T14:52:04.823458+00:00",
+  "fromSourceSha256": "12763a76d74c8719139e8109c59953a95bb9d40819e93f64dcccea4f5c123ef8",
+  "toSourceSha256": "8db3767f2850f8ff27968a26f2eee7ebff0167c396fa6478ad2e75aaff39395f",
+  "generatedAtUtc": "2026-11-02T05:48:40.047023+00:00",
   "sourceBranch": "main",
-  "sourceCommitAtGeneration": "583cb3b95fede3b4882f8e08c1adbd0627c7c0a2",
+  "sourceCommitAtGeneration": "f23c16e95347494577c5362dbdbbe3bb19628ed0",
   "oldNodeCount": 2448,
-  "newNodeCount": 2448,
+  "newNodeCount": 2452,
   "oldEdgeCount": 5563,
-  "newEdgeCount": 5563,
+  "newEdgeCount": 5570,
   "unresolvedGuidCount": 0,
   "duplicateGuidCount": 0,
-  "addedNodes": [],
+  "addedNodes": [
+    "asset:Assets/Editor/MapAcceptance/AssetNameWarningAudit.cs",
+    "asset:Assets/Editor/TinySwordsEnemyPack/TinySwordsEnemyPackAuthoring.cs",
+    "asset:Assets/Editor/TinySwordsEnemyPack/TinySwordsEnemyPackBuild.cs",
+    "asset:Assets/Tests/PrefabPreview/TinySwordsEnemyPackPreview.cs"
+  ],
   "removedNodes": [],
   "changedNodes": [],
-  "addedEdges": [],
-  "removedEdges": [],
+  "addedEdges": [
+    [
+      "asset:Assets/Editor/TinySwordsEnemyPack/TinySwordsEnemyPackAuthoring.cs",
+      "code type reference",
+      "asset:Assets/Tests/PrefabPreview/TinySwordsEnemyPackPreview.cs",
+      "Assets/Editor/TinySwordsEnemyPack/TinySwordsEnemyPackAuthoring.cs",
+      383
+    ],
+    [
+      "asset:Assets/Editor/TinySwordsEnemyPack/TinySwordsEnemyPackBuild.cs",
+      "code type reference",
+      "asset:Assets/Editor/MapVNext/MapVNextI1Authoring.cs",
+      "Assets/Editor/TinySwordsEnemyPack/TinySwordsEnemyPackBuild.cs",
+      31
+    ],
+    [
+      "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Consumers.cs",
+      "code type reference",
+      "asset:Assets/Editor/TinySwordsEnemyPack/TinySwordsEnemyPackAuthoring.cs",
+      "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Consumers.cs",
+      103
+    ],
+    [
+      "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Defense.cs",
+      "code type reference",
+      "asset:Assets/Editor/TinySwordsEnemyPack/TinySwordsEnemyPackAuthoring.cs",
+      "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Defense.cs",
+      100
+    ],
+    [
+      "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Diagnostics.cs",
+      "code type reference",
+      "asset:Assets/Editor/TinySwordsEnemyPack/TinySwordsEnemyPackAuthoring.cs",
+      "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Diagnostics.cs",
+      54
+    ],
+    [
+      "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Input.cs",
+      "code type reference",
+      "asset:Assets/Editor/TinySwordsEnemyPack/TinySwordsEnemyPackAuthoring.cs",
+      "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Input.cs",
+      231
+    ],
+    [
+      "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.cs",
+      "code type reference",
+      "asset:Assets/Editor/TinySwordsEnemyPack/TinySwordsEnemyPackAuthoring.cs",
+      "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.cs",
+      57
+    ],
+    [
+      "asset:Assets/Scripts/PlayerInventory.cs",
+      "OnInventoryChanged event subscriber",
+      "asset:Assets/Scripts/UI/PackageGridUI.cs",
+      "Assets/Scripts/UI/PackageGridUI.cs",
+      68
+    ],
+    [
+      "asset:Assets/Scripts/UI/PackageGridUI.cs",
+      "passes stack data to visible slot",
+      "asset:Assets/Scripts/UI/PackageSlotUI.cs",
+      "Assets/Scripts/UI/PackageGridUI.cs",
+      156
+    ],
+    [
+      "asset:Assets/Tests/MapGeneration/PlayMode/SurfaceV4FloorPopulationPlayModeTests.cs",
+      "code type reference",
+      "asset:Assets/Editor/MapAcceptance/AssetNameWarningAudit.cs",
+      "Assets/Tests/MapGeneration/PlayMode/SurfaceV4FloorPopulationPlayModeTests.cs",
+      36
+    ],
+    [
+      "asset:Assets/Tests/MapVNext/EditMode/MapVNextI1LandAuditTests.cs",
+      "code type reference",
+      "asset:Assets/Editor/MapAcceptance/AssetNameWarningAudit.cs",
+      "Assets/Tests/MapVNext/EditMode/MapVNextI1LandAuditTests.cs",
+      22
+    ],
+    [
+      "asset:Assets/Tests/MapVNext/EditMode/MapVNextI1LandAuditTests.cs",
+      "code type reference",
+      "asset:Assets/Tests/MapGeneration/PlayMode/SurfaceV4FloorPopulationPlayModeTests.cs",
+      "Assets/Tests/MapVNext/EditMode/MapVNextI1LandAuditTests.cs",
+      29
+    ],
+    [
+      "asset:Assets/Tests/PrefabPreview/TinySwordsEnemyPackPreview.cs",
+      "code type reference",
+      "asset:Assets/Editor/MapAcceptance/AssetNameWarningAudit.cs",
+      "Assets/Tests/PrefabPreview/TinySwordsEnemyPackPreview.cs",
+      245
+    ],
+    [
+      "asset:Assets/Tests/PrefabPreview/TinySwordsEnemyPackPreview.cs",
+      "code type reference",
+      "asset:Assets/Scripts/MapGeneration/VNext/MapVNextDemo.cs",
+      "Assets/Tests/PrefabPreview/TinySwordsEnemyPackPreview.cs",
+      283
+    ]
+  ],
+  "removedEdges": [
+    [
+      "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Consumers.cs",
+      "code type reference",
+      "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.cs",
+      "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Consumers.cs",
+      103
+    ],
+    [
+      "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Defense.cs",
+      "code type reference",
+      "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.cs",
+      "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Defense.cs",
+      100
+    ],
+    [
+      "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Diagnostics.cs",
+      "code type reference",
+      "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.cs",
+      "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Diagnostics.cs",
+      54
+    ],
+    [
+      "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Input.cs",
+      "code type reference",
+      "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.cs",
+      "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Input.cs",
+      231
+    ],
+    [
+      "asset:Assets/Scripts/PlayerInventory.cs",
+      "OnInventoryChanged event subscriber",
+      "asset:Assets/Scripts/UI/PackageGridUI.cs",
+      "Assets/Scripts/UI/PackageGridUI.cs",
+      61
+    ],
+    [
+      "asset:Assets/Scripts/UI/PackageGridUI.cs",
+      "passes stack data to visible slot",
+      "asset:Assets/Scripts/UI/PackageSlotUI.cs",
+      "Assets/Scripts/UI/PackageGridUI.cs",
+      99
+    ],
+    [
+      "asset:Assets/Tests/MapVNext/EditMode/MapVNextI1LandAuditTests.cs",
+      "code type reference",
+      "asset:Assets/Tests/MapGeneration/PlayMode/SurfaceV4FloorPopulationPlayModeTests.cs",
+      "Assets/Tests/MapVNext/EditMode/MapVNextI1LandAuditTests.cs",
+      22
+    ]
+  ],
   "manualReview": [
     "Review ISSUES.md, SYSTEM-OVERVIEW.md, ARCHITECTURE-DIAGRAMS.md and teaching examples when related nodes or edges changed.",
     "Static regeneration does not renew Unity compile, Editor, Play Mode, visual or runtime evidence."

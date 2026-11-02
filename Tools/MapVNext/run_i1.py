@@ -4,9 +4,48 @@ import argparse,json,os,sys,subprocess,hashlib,re
 C=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(C/'Tools/EngineeringAssurance'));import unity_guard as guard
 from i1_native_trace import Trace,selftest
-UNITY=r'D:\UnityHubSetup\Unity\Hub\Editor\2022.3.62f3c1\Editor\Unity.exe'
 ROOT=C/'Artifacts/MapAcceptance/MapVNext-Integration-I1-20261029'
 FONT='Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback.asset'
+
+
+# Resolve an installed Editor without launching it or changing project packages.
+def resolve_unity_editor(project, explicit=None):
+    version_text=(project/'ProjectSettings/ProjectVersion.txt').read_text('utf-8-sig')
+    match=re.search(r'^m_EditorVersion: (\S+)$',version_text,re.MULTILINE)
+    if match is None:raise RuntimeError('ProjectEditorVersionMissing')
+    expected=match.group(1)
+    configured=explicit if explicit is not None else os.environ.get('RPG_I1_UNITY')
+    if configured is not None:
+        candidates=[Path(configured).expanduser()]
+    else:
+        candidates=[Path(base)/'Unity/Hub/Editor'/expected/'Editor/Unity.exe'
+                    for key in ('ProgramFiles','ProgramFiles(x86)')
+                    if (base:=os.environ.get(key))]
+    editor=next((path.resolve() for path in candidates if path.is_file()),None)
+    if editor is None or editor.name.lower()!='unity.exe':
+        raise RuntimeError('UnityEditorRequired: pass --unity <installed Unity.exe> or RPG_I1_UNITY; expected '+expected)
+    actual=unity_product_version(editor)
+    if actual!=expected:raise RuntimeError('UnityEditorVersionMismatch: expected '+expected+', actual '+actual)
+    return editor
+
+
+def unity_product_version(editor):
+    env=os.environ.copy();env['RPG_I1_EDITOR_PROBE']=str(editor)
+    result=subprocess.run(['powershell.exe','-NoProfile','-NonInteractive','-Command',
+        "([System.Diagnostics.FileVersionInfo]::GetVersionInfo($env:RPG_I1_EDITOR_PROBE)).ProductVersion"],
+        env=env,capture_output=True,text=True,timeout=15,check=True)
+    return result.stdout.strip().split('_',1)[0]
+
+
+def font_rule_evidence(project, rule):
+    # Choose one complete reviewed pair. A damaged bundle must not fall back or mix files.
+    bundled=project/'Tools/MapVNext/ReviewedRules/FontCache-a41'
+    folder=bundled if bundled.exists() else project/rule.QUAL_REL
+    for name in ('qualification.json','independent-review.json'):
+        path=folder/name
+        if not path.is_file() or sha(path)!=rule.QUAL_BINDINGS[name]:
+            raise RuntimeError('OriginalCacheRuleEvidenceChanged:'+name)
+    return folder
 def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 def save(p,d):p.write_text(json.dumps(d,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
 def tree(root):return {p.relative_to(root).as_posix():sha(p) for p in sorted(root.rglob('*')) if p.is_file()}
@@ -80,9 +119,8 @@ def recover_known_font_cache(font,before,out,result,native,before_inputs,build):
     if changes!={FONT}:
         save(out/'font-recovery-blocked.json',{'status':'OTHER_PRODUCT_INPUTS_CHANGED_NOT_RESTORED','changes':sorted(changes)});return False
     if not lifecycle_qualified(result,guard.status(C),True,native):return False
-    for name in ('qualification.json','independent-review.json'):
-        if sha(C/rule.QUAL_REL/name)!=rule.QUAL_BINDINGS[name]:raise RuntimeError('OriginalCacheRuleEvidenceChanged')
-    original_qualification=json.loads((C/rule.QUAL_REL/'qualification.json').read_text('utf-8'))
+    evidence=font_rule_evidence(C,rule)
+    original_qualification=json.loads((evidence/'qualification.json').read_text('utf-8'))
     callbacks=original_qualification['callbackSource']
     if len(callbacks)!=3 or any(sha(C/row['path'])!=row['sha256'] for row in callbacks):
         save(out/'font-recovery-blocked.json',{'status':'ORIGINAL_TMP_CALLBACK_PINS_MISMATCH_NOT_RESTORED'});return False
@@ -99,7 +137,10 @@ def main():
     p=argparse.ArgumentParser();p.add_argument('phase',choices=['edit','play','prepare','build','player']);p.add_argument('--id',required=True);p.add_argument('--filter',default='MapVNextI1SeamTests');p.add_argument('--timeout',type=int,default=900)
     p.add_argument('--player-phase',choices=['pilot','full','restore','startup'],default='pilot');p.add_argument('--build-dir',type=Path);p.add_argument('--restore-copy',type=Path)
     p.add_argument('--startup-target',choices=['normal','i1']);p.add_argument('--startup-request',choices=['normal','i1']);p.add_argument('--expect-startup-rejection',action='store_true')
-    a=p.parse_args();out=ROOT/'VersionedRuns'/a.id;out.mkdir(parents=True,exist_ok=False)
+    p.add_argument('--unity',type=Path,help='Installed Editor matching ProjectVersion.txt; defaults to RPG_I1_UNITY or the standard Unity Hub directory')
+    a=p.parse_args()
+    unity=None if a.phase=='player' else resolve_unity_editor(C,a.unity)
+    out=ROOT/'VersionedRuns'/a.id;out.mkdir(parents=True,exist_ok=False)
     save(out/'observer-offline-selftest.json',selftest());save(out/'guard-before.json',before:=guard.status(C))
     if before['state']!='FREE':raise RuntimeError('GUARD_NOT_FREE:'+before['state'])
     os.environ['RPG_I1_RUNTIME_ROOT']=str(ROOT/'RuntimeData'/a.id);os.environ['RPG_I1_EVIDENCE']=str(out)
@@ -139,7 +180,7 @@ def main():
             if Path(project).resolve()!=C or actual!=command or sha(exe)!=expected or tree(build/'MVP_Windows_x64')!=built_tree:raise RuntimeError('I1PlayerBuildOrCommandChanged')
             require_player(report,build)
     else:
-        command=[UNITY,'-batchmode','-projectPath',str(C),'-logFile',str(out/'unity.log')]
+        command=[str(unity),'-batchmode','-projectPath',str(C),'-logFile',str(out/'unity.log')]
         if a.phase in ('edit','play'):command+=['-runTests','-testPlatform','EditMode' if a.phase=='edit' else 'PlayMode','-testFilter',a.filter,'-testResults',str(out/'results.xml')]
         else:command+=['-executeMethod','MapVNextI1Authoring.Prepare' if a.phase=='prepare' else 'MapVNextI1Build.Build']
         if a.phase=='build':

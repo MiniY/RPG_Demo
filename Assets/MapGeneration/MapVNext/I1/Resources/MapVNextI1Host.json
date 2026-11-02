@@ -4,14 +4,22 @@
     "DEFAULT",
     "I1_PRIVATE"
   ],
-  "buildId": "map-vnext-m0-startup-20261101-b01",
-  "implementationDigest": "6b478efe1d85d8c12dba5840279641ae2dc7425807ffae0d0b112168f448333c",
+  "buildId": "map-main-host-c01",
+  "implementationDigest": "20bf8438a5eda76c13d8c1a65c76244fe075594f4d2f771b34e08d141dfd96a1",
   "oldContentVersion": "content-r1:c55fb3b4b0362e8bb59e84f4624fbb22c2f9ef96f3dcd5f61481a92dab9c9802",
   "newContentVersion": "content-r1:c1b30f168534f17598f385ad32ab67078f9fb28b5f8cb6f346dcb6b800249ec9",
-  "closureSha256": "6c7a4d7f970ac20ae942097c59203a6667a9e991a4a428dda72a8477e7f22be0",
-  "reviewEvidenceSha256": "2a1317e43c4ad0f2750f9e794c848e47f553ffb410a3efef645b13e43ba546ae",
-  "stampSha256": "4e31ac4de6e808888d9c3e583ff7538e2a8141743cc36c1a1034910eb1bf63ab",
+  "closureSha256": "5b870712b2a1583a5c2ae2053be3a54c142d9c9c0f8f39a0f0c21af1e5db2a34",
+  "reviewEvidenceSha256": "826f7d38cf841da140a8fe2005b254d7aa9d24a6c0b61c3492297e52f18b937f",
+  "stampSha256": "a535327817e84564263be5761dc98c8ee8a4cee29ff67da7fb57961a8f979577",
   "files": [
+    {
+      "path": "Assets/Editor/MapAcceptance/AssetNameWarningAudit.cs",
+      "sha256": "08344848c5627de4a10f40c95bb2a874c60898ba6c05d6995fef7aeca46b65ca"
+    },
+    {
+      "path": "Assets/Editor/MapAcceptance/AssetNameWarningAudit.cs.meta",
+      "sha256": "8fb72a52518f6a92ebaba1aa10608d2c51994feeda91f486b48e96da682478f0"
+    },
     {
       "path": "Assets/Editor/MapAcceptance/MainConsolidationPlayerSourceGraph.cs",
       "sha256": "57c7d2bfcc5b1172ebb99a9f6d0585d2d42be2883c69cb966f456bf74d463bf1"
@@ -83,6 +91,22 @@
     {
       "path": "Assets/Editor/SpriteSheetSlicerWindow.cs.meta",
       "sha256": "3ad82741f63248461f4f9e76c98208fa544671bf9946f41fd1c9423cc5b5ad3f"
+    },
+    {
+      "path": "Assets/Editor/TinySwordsEnemyPack/TinySwordsEnemyPackAuthoring.cs",
+      "sha256": "c54147a18d45dcb5739c098203594f2fdf9fc62d62eae96cf567359fa749adce"
+    },
+    {
+      "path": "Assets/Editor/TinySwordsEnemyPack/TinySwordsEnemyPackAuthoring.cs.meta",
+      "sha256": "1cce69e563cf17cf2ae68559e30c3badec93cd33ceb75a64852180c923676592"
+    },
+    {
+      "path": "Assets/Editor/TinySwordsEnemyPack/TinySwordsEnemyPackBuild.cs",
+      "sha256": "1576698818a40dab2dd0d7c742c86cc86b134163c00f441fbb35c575016007e0"
+    },
+    {
+      "path": "Assets/Editor/TinySwordsEnemyPack/TinySwordsEnemyPackBuild.cs.meta",
+      "sha256": "d43068ded9d52412ca14f3b975e94d4a066586f033c4b54ee1965aa7a80b152e"
     },
     {
       "path": "Assets/Effects/BlackHolePortal/Editor/BlackHolePortalAssetBuilder.cs",
@@ -1970,7 +1994,7 @@
     },
     {
       "path": "Assets/Scripts/UI/PackageGridUI.cs",
-      "sha256": "23ce5826275926b5dbad46ae007f88f2355d958c7e338680224b36ac8113f95d"
+      "sha256": "c9bc0f26f4bce3736d67e54acb015a4d8151948ad1f50d80adfe5c9d8d6bb72c"
     },
     {
       "path": "Assets/Scripts/UI/PackageGridUI.cs.meta",
@@ -1994,7 +2018,7 @@
     },
     {
       "path": "Assets/Scripts/UI/PackageRewardTooltipUI.cs",
-      "sha256": "9f18eff2c079a335693d67be0a80320080f7cbbeec1d9431a07e2e253c19fc70"
+      "sha256": "5771f9e569a5eb52cddd5672318e2cbe037e1dde461fdf0cb6baac7c4ed97dbe"
     },
     {
       "path": "Assets/Scripts/UI/PackageRewardTooltipUI.cs.meta",
@@ -2631,6 +2655,14 @@
     {
       "path": "Assets/Tests/MapVNext/PlayMode/RPG_Demo.MapVNext.PlayTests.asmdef.meta",
       "sha256": "7038246e078d44b0058843089091d9b9bc16b9ec9170473583cca451cca86073"
+    },
+    {
+      "path": "Assets/Tests/PrefabPreview/TinySwordsEnemyPackPreview.cs",
+      "sha256": "3f07adbcfb91811e69ed65570fa4c8f609ac222a8d06446d81d1ae418000c4f8"
+    },
+    {
+      "path": "Assets/Tests/PrefabPreview/TinySwordsEnemyPackPreview.cs.meta",
+      "sha256": "8d5e4cbf6e6a11a7dec99a7bbe5cd62fbd757e39f8e355cea1ed529e9c2a85a8"
     },
     {
       "path": "Assets/Tests/TowerRun/LegacySaveDetectorTests.cs",

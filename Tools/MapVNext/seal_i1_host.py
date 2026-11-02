@@ -17,12 +17,12 @@ def unreviewed_sources(encoded,reviewed):
     return [path for path in encoded.decode('utf-8').split('\0') if path and path.endswith(('.cs','.asmdef','.rsp')) and path not in reviewed]
 
 def main():
-    ap=argparse.ArgumentParser();ap.add_argument('--build-id',required=True);ap.add_argument('--review-snapshot',type=Path,required=True);ap.add_argument('--review-receipt',type=Path,required=True);args=ap.parse_args()
+    ap=argparse.ArgumentParser();ap.add_argument('--build-id',required=True);ap.add_argument('--review-snapshot',type=Path,required=True);ap.add_argument('--review-receipt',type=Path,required=True);ap.add_argument('--source-closure',type=Path,default=A/'source-closure-before.json');args=ap.parse_args()
     snap=json.loads(args.review_snapshot.read_text('utf-8'));review=json.loads(args.review_receipt.read_text('utf-8'))
     require_review(review,sha(args.review_snapshot))
     for row in snap['files']:
         if sha(C/row['path'])!=row['sha256']:raise RuntimeError('Review stale: '+row['path'])
-    closure,closure_digest=require_closure(snap,(A/'source-closure-before.json').read_bytes());allowed={r['path']:r for r in closure['closedExistingSourcePaths']}
+    closure,closure_digest=require_closure(snap,args.source_closure.read_bytes());allowed={r['path']:r for r in closure['closedExistingSourcePaths']}
     existing_changes=subprocess.check_output(['git','diff','--name-only','-z','HEAD','--','Assets','Packages','ProjectSettings'],cwd=C).decode('utf-8').split('\0')
     if any(path and path not in allowed for path in existing_changes):raise RuntimeError('Changed existing product path outside approved closure')
     reviewed_paths={r['path'] for r in snap['files']}

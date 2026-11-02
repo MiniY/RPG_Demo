@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -35,6 +36,10 @@ public class PackageGridUI : MonoBehaviour
     /// 当前被选中的背包格子。
     /// </summary>
     private PackageSlotUI currentSelectedSlot; // 当前选中格子。
+    private PackageSlotUI currentTooltipSlot;
+    private PlayerInventory subscribedInventory;
+    private readonly Dictionary<string, PackageSlotUI> slotsByRewardId =
+        new Dictionary<string, PackageSlotUI>(StringComparer.Ordinal);
 
     /// <summary>
     /// 脚本加载时补全没有手动绑定的引用。
@@ -52,13 +57,15 @@ public class PackageGridUI : MonoBehaviour
     /// </summary>
     private void OnEnable()
     {
+        UnsubscribeInventory();
         ResolvePlayerInventory();
         ResolveRewardTooltip();
 
         if (playerInventory != null)
         {
             playerInventory.EnsureInitializedForRuntime();
-            playerInventory.OnInventoryChanged += Refresh;
+            subscribedInventory = playerInventory;
+            subscribedInventory.OnInventoryChanged += Refresh;
         }
 
         Refresh();
@@ -69,24 +76,57 @@ public class PackageGridUI : MonoBehaviour
     /// </summary>
     private void OnDisable()
     {
-        if (playerInventory != null)
-            playerInventory.OnInventoryChanged -= Refresh;
+        UnsubscribeInventory();
+        ClearSlots();
+    }
 
-        if (rewardTooltip != null)
-            rewardTooltip.Hide();
+    private void OnDestroy()
+    {
+        UnsubscribeInventory();
+        ClearSlots();
+    }
+
+    private void UnsubscribeInventory()
+    {
+        if (subscribedInventory != null)
+            subscribedInventory.OnInventoryChanged -= Refresh;
+        subscribedInventory = null;
     }
 
     /// <summary>
-    /// 根据当前背包数据重建所有背包格子。
+    /// 根据权威背包数据同步格子，复用具有唯一稳定身份的已有视图。
     /// </summary>
     public void Refresh()
     {
-        ClearSlots();
-
-        if (playerInventory == null || slotPrefab == null || contentRoot == null)
+        if (!isActiveAndEnabled || playerInventory == null || slotPrefab == null || contentRoot == null)
+        {
+            ClearSlots();
             return;
+        }
+
+        // Unity 已销毁的对象仍可能保留托管引用；外部重建格子时也清理展示关联。
+        if (!ReferenceEquals(currentSelectedSlot, null) && currentSelectedSlot == null)
+        {
+            currentSelectedSlot = null;
+            HideTooltip();
+        }
 
         IReadOnlyList<InventoryItemStack> itemStacks = playerInventory.ItemStacks; // 当前背包数据。
+        var identityCounts = new Dictionary<string, int>(StringComparer.Ordinal);
+        for (int i = 0; i < itemStacks.Count; i++)
+        {
+            InventoryItemStack stack = itemStacks[i];
+            if (stack == null || stack.Reward == null || stack.Amount <= 0 ||
+                string.IsNullOrWhiteSpace(stack.Reward.RewardId))
+                continue;
+            string id = stack.Reward.RewardId;
+            identityCounts.TryGetValue(id, out int count);
+            identityCounts[id] = count + 1;
+        }
+
+        var nextSlots = new List<PackageSlotUI>();
+        var nextByRewardId = new Dictionary<string, PackageSlotUI>(StringComparer.Ordinal);
+        var retained = new HashSet<PackageSlotUI>();
 
         for (int i = 0; i < itemStacks.Count; i++)
         {
@@ -95,13 +135,48 @@ public class PackageGridUI : MonoBehaviour
             if (itemStack == null || itemStack.Reward == null || itemStack.Amount <= 0)
                 continue;
 
-            PackageSlotUI slot = Instantiate(slotPrefab, contentRoot); // 新生成的背包格子。
-            slot.SetData(itemStack.Reward, itemStack.Amount);
-            slot.OnSlotSelected += HandleSlotSelected;
-            slot.OnTooltipRequested += HandleTooltipRequested;
-            slot.OnTooltipHidden += HandleTooltipHidden;
-            generatedSlots.Add(slot);
+            string id = itemStack.Reward.RewardId;
+            bool stableIdentity = !string.IsNullOrWhiteSpace(id) && identityCounts[id] == 1;
+            PackageSlotUI slot = null;
+            if (stableIdentity && slotsByRewardId.TryGetValue(id, out PackageSlotUI existing) &&
+                existing != null && existing.CurrentReward != null &&
+                string.Equals(existing.CurrentReward.RewardId, id, StringComparison.Ordinal))
+                slot = existing;
+
+            // 空/重复 ID 不合并，也不修复业务 ID；异常行仅使用本次刷新的临时视图。
+            if (slot == null)
+            {
+                slot = Instantiate(slotPrefab, contentRoot);
+                slot.OnSlotSelected += HandleSlotSelected;
+                slot.OnTooltipRequested += HandleTooltipRequested;
+                slot.OnTooltipHidden += HandleTooltipHidden;
+            }
+            if (slot.CurrentReward != itemStack.Reward || slot.CurrentAmount != itemStack.Amount)
+            {
+                slot.SetData(itemStack.Reward, itemStack.Amount);
+                slot.SetSelected(slot == currentSelectedSlot);
+            }
+            slot.transform.SetSiblingIndex(nextSlots.Count);
+            nextSlots.Add(slot);
+            retained.Add(slot);
+            if (stableIdentity)
+                nextByRewardId.Add(id, slot);
         }
+
+        for (int i = 0; i < generatedSlots.Count; i++)
+            if (generatedSlots[i] != null && !retained.Contains(generatedSlots[i]))
+                ReleaseSlot(generatedSlots[i]);
+
+        generatedSlots.Clear();
+        generatedSlots.AddRange(nextSlots);
+        slotsByRewardId.Clear();
+        foreach (KeyValuePair<string, PackageSlotUI> pair in nextByRewardId)
+            slotsByRewardId.Add(pair.Key, pair.Value);
+
+        if (currentTooltipSlot != null && retained.Contains(currentTooltipSlot) && rewardTooltip != null)
+            rewardTooltip.Show(currentTooltipSlot.CurrentReward, currentTooltipSlot.GetComponent<RectTransform>());
+        else
+            HideTooltip();
     }
 
     /// <summary>
@@ -110,6 +185,8 @@ public class PackageGridUI : MonoBehaviour
     /// <param name="selectedSlot">刚刚被选中的背包格子。</param>
     private void HandleSlotSelected(PackageSlotUI selectedSlot)
     {
+        if (!isActiveAndEnabled || selectedSlot == null || !generatedSlots.Contains(selectedSlot))
+            return;
         if (currentSelectedSlot != null && currentSelectedSlot != selectedSlot)
             currentSelectedSlot.SetSelected(false);
 
@@ -123,9 +200,10 @@ public class PackageGridUI : MonoBehaviour
     /// <param name="slot">请求显示说明的背包格子。</param>
     private void HandleTooltipRequested(PackageSlotUI slot)
     {
-        if (slot == null || rewardTooltip == null)
+        if (!isActiveAndEnabled || slot == null || rewardTooltip == null || !generatedSlots.Contains(slot))
             return;
 
+        currentTooltipSlot = slot;
         RectTransform slotRect = slot.GetComponent<RectTransform>(); // 当前格子的矩形变换。
         rewardTooltip.Show(slot.CurrentReward, slotRect);
     }
@@ -136,8 +214,33 @@ public class PackageGridUI : MonoBehaviour
     /// <param name="slot">请求隐藏说明的背包格子。</param>
     private void HandleTooltipHidden(PackageSlotUI slot)
     {
+        if (slot == currentTooltipSlot)
+            HideTooltip();
+    }
+
+    private void HideTooltip()
+    {
+        currentTooltipSlot = null;
         if (rewardTooltip != null)
             rewardTooltip.Hide();
+    }
+
+    private void ReleaseSlot(PackageSlotUI slot)
+    {
+        if (slot == currentSelectedSlot)
+        {
+            slot.SetSelected(false);
+            currentSelectedSlot = null;
+            HideTooltip();
+        }
+        else if (slot == currentTooltipSlot)
+            HideTooltip();
+        slot.OnSlotSelected -= HandleSlotSelected;
+        slot.OnTooltipRequested -= HandleTooltipRequested;
+        slot.OnTooltipHidden -= HandleTooltipHidden;
+        // 停用旧行后再延迟销毁，避免旧格子继续布局或触发 Hover。
+        slot.gameObject.SetActive(false);
+        Destroy(slot.gameObject);
     }
 
     /// <summary>
@@ -152,17 +255,13 @@ public class PackageGridUI : MonoBehaviour
             if (slot == null)
                 continue;
 
-            slot.OnSlotSelected -= HandleSlotSelected;
-            slot.OnTooltipRequested -= HandleTooltipRequested;
-            slot.OnTooltipHidden -= HandleTooltipHidden;
-            Destroy(slot.gameObject);
+            ReleaseSlot(slot);
         }
 
         generatedSlots.Clear();
+        slotsByRewardId.Clear();
         currentSelectedSlot = null;
-
-        if (rewardTooltip != null)
-            rewardTooltip.Hide();
+        HideTooltip();
     }
 
     /// <summary>

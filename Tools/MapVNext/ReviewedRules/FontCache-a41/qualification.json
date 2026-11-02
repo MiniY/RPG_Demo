@@ -1,0 +1,54 @@
+{
+  "status": "EXACT_CACHE_ONLY_DIFF_INDEPENDENT_REVIEW_PENDING",
+  "failedBuildId": "map-vnext-i1-integration-20261031-a41",
+  "failedRunId": "2837914d0f764494991eb3eba8b936be",
+  "fontPath": "Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback.asset",
+  "beforeSha256": "54406f3fac18227d9780201699a619dd60ebf495fe0179684c0ac200ec2c16b5",
+  "generatedSha256": "5e72dec23b070c83d6efdba58431d808ad1bfe48a8e563690f39c08ff4134a1d",
+  "beforeMatchesGitHead": true,
+  "gitHead": "0db982ca2feaecb5163febbb9dfe3c59a6c48a03",
+  "fontInOriginalMainPins": false,
+  "fontProtection": "User preserves font baseline; complete Build input inventory includes asset. Not in Main1220 pins.",
+  "onlyBuildInputDelta": [
+    "Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback.asset"
+  ],
+  "exactPredictedCacheResetEqualsGenerated": true,
+  "cacheFields": [
+    "m_GlyphTable",
+    "m_CharacterTable",
+    "m_UsedGlyphRects",
+    "m_FreeGlyphRects",
+    "Texture2D.m_Width",
+    "Texture2D.m_Height",
+    "Texture2D.m_CompleteImageSize",
+    "Texture2D.image data",
+    "Texture2D._typelessdata"
+  ],
+  "allOtherSerializedBytes": "IDENTICAL",
+  "removedDynamicCharacterCodes": [
+    95,
+    98,
+    105,
+    110,
+    8230
+  ],
+  "policySourceFaceInfoFallbackMaterialAndGUID": "UNCHANGED",
+  "callbackSource": [
+    {
+      "path": "Library/PackageCache/com.unity.textmeshpro@3.0.7/Scripts/Editor/TMP_PreBuildProcessor.cs",
+      "sha256": "443fe39c24528195c427d840c044bd984d8629c1b9b5fbaf65110eb4fa22e50d"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.textmeshpro@3.0.7/Scripts/Runtime/TMP_FontAsset.cs",
+      "sha256": "4944761e316e6c3e6053507283f4c1b310dd47312830346ef7efc4715ac403af"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.textmeshpro@3.0.7/Scripts/Runtime/TMP_EditorResourceManager.cs",
+      "sha256": "3d6897a03cc683a0d5eeafd53a299c3c80e37a12dc75b0f9ee026e5e9e67a48d"
+    }
+  ],
+  "callbackBehavior": "TMP3.0.7 prebuild exact Dynamic/clearDynamicDataOnBuild/atlaswidth predicate -> ClearFontAssetDataInternal -> ClearFontAssetTables plus ClearAtlasTextures(true) -> RegisterResourceForUpdate",
+  "causalEvidence": "Exact observed reset matches pinned callback; a41 callback was not individually instrumented. No direct call trace claimed.",
+  "proposedSourceRecovery": "After independent review, restore only exact raw before bytes if current matches generated SHA and all other Build inputs unchanged. No font policy/source, old manifest, a41 failure receipt or blocked BuildValidation edits.",
+  "persistentAutomaticRestorationAuthorized": false
+}

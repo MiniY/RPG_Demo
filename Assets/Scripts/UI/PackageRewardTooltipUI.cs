@@ -92,6 +92,10 @@ public class PackageRewardTooltipUI : MonoBehaviour
         if (tooltipRoot == null || boundsRoot == null)
             return;
 
+        // 场景允许提示框初始禁用；启用后再设置内容和透明度，确保首次 Show 真正可见。
+        if (!tooltipRoot.gameObject.activeSelf)
+            tooltipRoot.gameObject.SetActive(true);
+
         if (rewardNameText != null)
             rewardNameText.text = reward.rewardName;
 

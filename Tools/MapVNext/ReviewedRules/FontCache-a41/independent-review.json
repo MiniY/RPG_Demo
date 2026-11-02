@@ -1,0 +1,380 @@
+{
+  "reviewPerformed": true,
+  "reviewer": "/root/i1_contract_review",
+  "status": "APPROVED_EXACT_A41_ONE_TIME_CACHE_RECOVERY",
+  "boundQualificationSha256": "19fd015eea0cedd74d0e32593da7522c92d10b52b6eef4bdce764451dd06308f",
+  "buildId": "map-vnext-i1-integration-20261031-a41",
+  "implementationDigest": "bb5853645afad37a0fcade20f89edf0bf278c308b1447131de924ccc324afa19",
+  "runId": "2837914d0f764494991eb3eba8b936be",
+  "runFolder": "VersionedRuns/i1-build41",
+  "openFindings": 0,
+  "axes": {
+    "Standards": "NO_OPEN_FINDINGS",
+    "Spec": "NO_OPEN_FINDINGS"
+  },
+  "axisReviewers": {
+    "Standards": "/root/i1_contract_review/i1_snapshot_standards",
+    "Spec": "/root/i1_contract_review/i1_snapshot_spec",
+    "aggregation": "Primary independently rebuilt nine named cache property extents in memory, rehashed all current inputs/Player files/665 host entries, verified readonly Git HEAD font and exact root lifecycle. Parallel axes independently checked Standards evidence and Spec byte/source semantics."
+  },
+  "findings": [],
+  "independentlyRecomputed": {
+    "beforeSha256": "54406f3fac18227d9780201699a619dd60ebf495fe0179684c0ac200ec2c16b5",
+    "beforeBytes": 536400,
+    "generatedSha256": "5e72dec23b070c83d6efdba58431d808ad1bfe48a8e563690f39c08ff4134a1d",
+    "generatedBytes": 9624,
+    "currentStillExactGenerated": true,
+    "cacheFields": [
+      "m_GlyphTable",
+      "m_CharacterTable",
+      "m_UsedGlyphRects",
+      "m_FreeGlyphRects",
+      "Texture2D.m_Width",
+      "Texture2D.m_Height",
+      "Texture2D.m_CompleteImageSize",
+      "Texture2D.image data",
+      "Texture2D._typelessdata"
+    ],
+    "removedDynamicCharacterCodes": [
+      95,
+      98,
+      105,
+      110,
+      8230
+    ],
+    "exactPredictedBytesEqualGenerated": true,
+    "allOtherSerializedBytesIdentical": true,
+    "unchangedPolicyGUIDMaterialSourceFaceAndFallback": true,
+    "actualInputs": 3564,
+    "otherUnchangedInputs": 3563,
+    "actualOutputFiles": 158,
+    "hostEntriesCurrentExact": 665,
+    "git": {
+      "status": "INDEPENDENTLY_VERIFIED_ESCALATED_READONLY_GIT",
+      "head": "0db982ca2feaecb5163febbb9dfe3c59a6c48a03",
+      "branch": "codex/map-vnext-integration-i1-20261029",
+      "stagedPaths": 0,
+      "headFontBytesEqualRawBefore": true,
+      "headFontSha256": "54406f3fac18227d9780201699a619dd60ebf495fe0179684c0ac200ec2c16b5",
+      "commands": "git rev-parse HEAD; git branch --show-current; git diff --cached --name-only; git show HEAD:exactfont all exit0; no Git writes."
+    },
+    "callbackEvidence": "Three exact retained/live TMP3.0.7 sources and matching reset bytes support Dynamic + clearDynamicDataOnBuild + nonzero atlas -> clear tables/atlas -> register persistent update. Actual a41 callback was not individually instrumented; no direct invocation trace claimed.",
+    "fontProtection": "Not in original Main1220 retained manifest. User font baseline and complete Build input inventory protect it; no Main-pin claim."
+  },
+  "actualBuildAndLifecycle": {
+    "reportStatus": "BUILD_SUCCEEDED_PLAYER_NOT_RUN",
+    "errors": 0,
+    "warnings": 0,
+    "reportedBuildBytes": 114292392,
+    "actualFilesystemPayloadBytes": 114337991,
+    "byteMetricBoundary": "BuildReport.bytes and actual filesystem payload total are distinct recorded metrics; exact payload integrity is the 158-file tree comparison.",
+    "inputCounts": {
+      "Assets": 3539,
+      "Packages": 2,
+      "ProjectSettings": 23
+    },
+    "currentInputsExactlyOriginalAfter": true,
+    "onlyBeforeToAfterDelta": [
+      "Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback.asset"
+    ],
+    "actualPlayerFiles": 158,
+    "actualPlayerTreeExactlyOriginal": true,
+    "buildTreeSha256": "85bd2bb7473044d326411ed808736bdb3077c203715efbffaf2750fd9706c6ed",
+    "hostManifestSha256": "aa90914a2314e1a3ec209c671f6d16fe7c5f3dc6d85a0b35e1e4e041fcfb0fe3",
+    "stampSha256": "14671042eb2f9abe8855a685f7094baf6cae883141233c2c53673863a638b84e",
+    "strictOriginalCheck": "ORIGINAL_BYTES_DIFFER_23",
+    "compatibilityCheck": "REVIEWED_GROUP_MATCH_EDITOR_SOURCE_CHECKED",
+    "originalDifferences": 23,
+    "supervisor": {
+      "naturalExit": true,
+      "exitCode": 0,
+      "cleanup": {
+        "status": "PASS",
+        "forced": false,
+        "residualPids": [],
+        "errors": [],
+        "reason": null,
+        "rootWaitResult": 0,
+        "verifiedAtUtc": "2026-10-31T04:41:31.838124+00:00"
+      },
+      "locks": {
+        "heavy": {
+          "name": "Global\\RPG_Demo_UnityHeavy_v1",
+          "acquired": true,
+          "released": true,
+          "abandoned": false
+        },
+        "project": {
+          "name": "Global\\RPG_Demo_UnityProject_148cd99d7428ea7b5afdb5b9",
+          "acquired": true,
+          "released": true,
+          "abandoned": false
+        }
+      }
+    },
+    "nativeStatus": "VALID_NATIVE_TIME_LINE",
+    "nativeRecords": 81,
+    "nativeRoot": {
+      "pid": 80708,
+      "createdAtUtc": "2026-10-31T04:40:29.405994+00:00",
+      "creationTime100ns": "134378952294059943",
+      "imagePath": "D:\\UnityHubSetup\\Unity\\Hub\\Editor\\2022.3.62f3c1\\Editor\\Unity.exe",
+      "state": "LIVE_CONFIRMED",
+      "parentPid": null,
+      "firstSeenAtUtc": "2026-10-31T04:40:29.497980+00:00",
+      "ownership": "exact Supervisor Run root",
+      "command": [
+        "D:\\UnityHubSetup\\Unity\\Hub\\Editor\\2022.3.62f3c1\\Editor\\Unity.exe",
+        "-batchmode",
+        "-projectPath",
+        "D:\\.codex\\worktrees\\map-vnext-integration-i1\\RPG_Demo",
+        "-logFile",
+        "D:\\.codex\\worktrees\\map-vnext-integration-i1\\RPG_Demo\\Artifacts\\MapAcceptance\\MapVNext-Integration-I1-20261029\\VersionedRuns\\i1-build41\\unity.log",
+        "-executeMethod",
+        "MapVNextI1Build.Build"
+      ],
+      "exitObservedAtUtc": "2026-10-31T04:41:30.568318+00:00",
+      "exitCode": 0
+    },
+    "nativeRootExactSupervisorAndCommand": true,
+    "guardAfterHistoricalState": "FREE"
+  },
+  "retainedOriginalStatuses": {
+    "receipt": "FAIL",
+    "receiptSha256": "ba6d69272c4f31b6775e700a498e279c8ccb66e7d55bb853e16c2df82ca7cc43",
+    "buildValidation": "BUILD_BLOCKED",
+    "buildValidationSha256": "72ea3757c463e14c9c02af2a956afd77b14d9207fc6e8a357e23bec47585c614",
+    "fontDeltaQualified": false,
+    "unchangedRequired": true
+  },
+  "firstAuditErrorBoundary": {
+    "originalStatusRetained": "AUDIT_REJECTED_ACTUAL_INPUT_DELTA_NOT_SINGLE_FONT",
+    "actualCause": "Author selected i1-build40 raw Run while comparing against a41 prebuild. Rejected mixed-Run assertion is not an actual multi-input a41 product failure.",
+    "correctedAuditSemanticDifference": "Exactly i1-build40 -> i1-build41 Run literal after AST normalization; current-input equality assert existed in the first script. Raw script also has CR/blank-line format changes.",
+    "independentErratum": "Primary initially relayed a mistaken additional-assert observation; independent AST and original-line inspection disproved it, and this receipt records the corrected fact.",
+    "originalScriptAndFailureUnchanged": true,
+    "actualA41RawIdentityRechecked": true
+  },
+  "permittedRecoveryScope": {
+    "operation": "ONE_TIME_EXACT_RAW_BEFORE_BYTE_RESTORE_FOR_THIS_A41_BUILD_ONLY",
+    "target": "Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback.asset",
+    "source": "VersionedRuns/i1-build41/TMP.before.asset",
+    "sourceSha256": "54406f3fac18227d9780201699a619dd60ebf495fe0179684c0ac200ec2c16b5",
+    "requiredCurrentSha256": "5e72dec23b070c83d6efdba58431d808ad1bfe48a8e563690f39c08ff4134a1d",
+    "preconditions": [
+      "Immediately before this single restore obtain fresh verified FREE under existing Guard rules; historical guard-after is not fresh authority.",
+      "Require exact current generated SHA, exact retained raw-before source SHA, and all other 3563 Build inputs unchanged. Any mismatch/unknown refuses the write; no normalization/fallback/hash enrollment.",
+      "Restore only these raw-before bytes once. Preserve raw/generated originals, qualification and original FAIL receipt/BLOCKED validation unchanged."
+    ],
+    "postconditions": [
+      "Re-enumerate all3564 product inputs exactly equal prebuild and all158 Player outputs exactly equal original tree.",
+      "Append this recovery evidence without overwriting original Build/Run/failure records."
+    ],
+    "persistentAutomaticWriter": false,
+    "futureBuildHashAdmission": false,
+    "playerAdmission": false
+  },
+  "limits": {
+    "recoveryPerformedByReviewer": false,
+    "newPostbuildTools": "NOT_REVIEWED; cache-only recovery qualification does not authorize new a41 tools, qualify or Player admission.",
+    "actualRuntimeAndHumanAcceptance": "NOT_PROVEN_BY_BUILD_OR_CACHE_REVIEW",
+    "originalFailureMustRemain": true,
+    "oldMainManifestAndFontPolicy": "UNCHANGED",
+    "historicalNavFaultRootCause": "UNKNOWN",
+    "a40TwoPilotFailures": "RETAINED_NOT_REPAIRED_BY_THIS_CACHE_QUALIFICATION",
+    "MERGE_READY": "NO"
+  },
+  "rawBindings": [
+    {
+      "path": "Artifacts/MapAcceptance/MapVNext-Integration-I1-20261029/Authoring/VersionedExtension/FontCacheQualification-a41/audit_font_cache-first-mixed-run.py",
+      "bytes": 4823,
+      "sha256": "af532215b457eec372e20dbd12f900596582b37b78b0217e9a8531f93331c9d3"
+    },
+    {
+      "path": "Artifacts/MapAcceptance/MapVNext-Integration-I1-20261029/Authoring/VersionedExtension/FontCacheQualification-a41/audit_font_cache.py",
+      "bytes": 4849,
+      "sha256": "82b4369c7ddd5bcb2d827e88eca6c98472868d1f990d68280724970fe3ed7c21"
+    },
+    {
+      "path": "Artifacts/MapAcceptance/MapVNext-Integration-I1-20261029/Authoring/VersionedExtension/FontCacheQualification-a41/cache-only-first-mixed-run.diff",
+      "bytes": 3989,
+      "sha256": "fc67d437ce7d22972a7ff2a8ccb27429aee311a2e1e434a2023a91ac1bfb010e"
+    },
+    {
+      "path": "Artifacts/MapAcceptance/MapVNext-Integration-I1-20261029/Authoring/VersionedExtension/FontCacheQualification-a41/cache-only.diff",
+      "bytes": 3989,
+      "sha256": "fc67d437ce7d22972a7ff2a8ccb27429aee311a2e1e434a2023a91ac1bfb010e"
+    },
+    {
+      "path": "Artifacts/MapAcceptance/MapVNext-Integration-I1-20261029/Authoring/VersionedExtension/FontCacheQualification-a41/first-audit-rejection-erratum-r2.json",
+      "bytes": 818,
+      "sha256": "7c75f0b16bb3d7f66cd2e8d357d2f10af017108ad1c109f71644fc771a7c31f8"
+    },
+    {
+      "path": "Artifacts/MapAcceptance/MapVNext-Integration-I1-20261029/Authoring/VersionedExtension/FontCacheQualification-a41/first-audit-rejection-erratum.json",
+      "bytes": 1069,
+      "sha256": "8bc268be69e7a08edd6928cd6528e45c4f66287e3617c5ec24f2ed5b49262a77"
+    },
+    {
+      "path": "Artifacts/MapAcceptance/MapVNext-Integration-I1-20261029/Authoring/VersionedExtension/FontCacheQualification-a41/first-audit-rejection.json",
+      "bytes": 543,
+      "sha256": "5633d36e3eb854dd73d32935ee6ba63dfded6beb1ad5759583e094679ee11660"
+    },
+    {
+      "path": "Artifacts/MapAcceptance/MapVNext-Integration-I1-20261029/Authoring/VersionedExtension/FontCacheQualification-a41/Library/PackageCache/com.unity.textmeshpro@3.0.7/Scripts/Editor/TMP_PreBuildProcessor.cs",
+      "bytes": 1170,
+      "sha256": "443fe39c24528195c427d840c044bd984d8629c1b9b5fbaf65110eb4fa22e50d"
+    },
+    {
+      "path": "Artifacts/MapAcceptance/MapVNext-Integration-I1-20261029/Authoring/VersionedExtension/FontCacheQualification-a41/Library/PackageCache/com.unity.textmeshpro@3.0.7/Scripts/Runtime/TMP_EditorResourceManager.cs",
+      "bytes": 5532,
+      "sha256": "3d6897a03cc683a0d5eeafd53a299c3c80e37a12dc75b0f9ee026e5e9e67a48d"
+    },
+    {
+      "path": "Artifacts/MapAcceptance/MapVNext-Integration-I1-20261029/Authoring/VersionedExtension/FontCacheQualification-a41/Library/PackageCache/com.unity.textmeshpro@3.0.7/Scripts/Runtime/TMP_FontAsset.cs",
+      "bytes": 125693,
+      "sha256": "4944761e316e6c3e6053507283f4c1b310dd47312830346ef7efc4715ac403af"
+    },
+    {
+      "path": "Artifacts/MapAcceptance/MapVNext-Integration-I1-20261029/Authoring/VersionedExtension/FontCacheQualification-a41/qualification.json",
+      "bytes": 2679,
+      "sha256": "19fd015eea0cedd74d0e32593da7522c92d10b52b6eef4bdce764451dd06308f"
+    },
+    {
+      "path": "Artifacts/MapAcceptance/MapVNext-Integration-I1-20261029/Authoring/VersionedExtension/HostSeal-map-vnext-i1-integration-20261031-a41/host.json",
+      "bytes": 124998,
+      "sha256": "aa90914a2314e1a3ec209c671f6d16fe7c5f3dc6d85a0b35e1e4e041fcfb0fe3"
+    },
+    {
+      "path": "Artifacts/MapAcceptance/MapVNext-Integration-I1-20261029/Authoring/VersionedExtension/HostSeal-map-vnext-i1-integration-20261031-a41/review-receipt.json",
+      "bytes": 10238,
+      "sha256": "39c56c426f6521579881c118094ae1971e149b430bb9459ef81a0ee92079fb56"
+    },
+    {
+      "path": "Artifacts/MapAcceptance/MapVNext-Integration-I1-20261029/Authoring/VersionedExtension/HostSeal-map-vnext-i1-integration-20261031-a41/seal.json",
+      "bytes": 1062,
+      "sha256": "427e1f00fa0133e7d064bccce7b317fc4e54c4c00469c2a8c7ba63c10061d638"
+    },
+    {
+      "path": "Artifacts/MapAcceptance/MapVNext-Integration-I1-20261029/Authoring/VersionedExtension/HostSeal-map-vnext-i1-integration-20261031-a41/stamp.cs",
+      "bytes": 869,
+      "sha256": "14671042eb2f9abe8855a685f7094baf6cae883141233c2c53673863a638b84e"
+    },
+    {
+      "path": "Artifacts/MapAcceptance/MapVNext-Integration-I1-20261029/Build-map-vnext-i1-integration-20261031-a41/build-inputs.json",
+      "bytes": 474275,
+      "sha256": "bf64a1cb2af81234ecf5320d4c709d102c698d1f9e7c9f2a0c80409cbe49c9f9"
+    },
+    {
+      "path": "Artifacts/MapAcceptance/MapVNext-Integration-I1-20261029/Build-map-vnext-i1-integration-20261031-a41/build-tree.json",
+      "bytes": 21128,
+      "sha256": "85bd2bb7473044d326411ed808736bdb3077c203715efbffaf2750fd9706c6ed"
+    },
+    {
+      "path": "Artifacts/MapAcceptance/MapVNext-Integration-I1-20261029/Build-map-vnext-i1-integration-20261031-a41/BuildReport.json",
+      "bytes": 230076,
+      "sha256": "9f427fdaf8a9f3e1374300c58eab9b8096c8754b7f2a00e9859cad01cbc84121"
+    },
+    {
+      "path": "Artifacts/MapAcceptance/MapVNext-Integration-I1-20261029/Build-map-vnext-i1-integration-20261031-a41/BuildValidation.json",
+      "bytes": 391,
+      "sha256": "72ea3757c463e14c9c02af2a956afd77b14d9207fc6e8a357e23bec47585c614"
+    },
+    {
+      "path": "Artifacts/MapAcceptance/MapVNext-Integration-I1-20261029/Build-map-vnext-i1-integration-20261031-a41/source-fingerprint.txt",
+      "bytes": 162,
+      "sha256": "57f057562173c331c6d987e8327a405e123e51f8946abc8863c091ec6779be47"
+    },
+    {
+      "path": "Artifacts/MapAcceptance/MapVNext-Integration-I1-20261029/VersionedRuns/i1-build41/build-inputs-after.json",
+      "bytes": 474275,
+      "sha256": "6aef6b671bc9c81c08a7e8752c076a355797897700e03f9e14aca91e1b70fdbd"
+    },
+    {
+      "path": "Artifacts/MapAcceptance/MapVNext-Integration-I1-20261029/VersionedRuns/i1-build41/command.json",
+      "bytes": 792,
+      "sha256": "2fc426c5982aa8a170806424f575ac203e99d80f4c0ec6a73bc1cdbc809fad6c"
+    },
+    {
+      "path": "Artifacts/MapAcceptance/MapVNext-Integration-I1-20261029/VersionedRuns/i1-build41/font-side-effect.json",
+      "bytes": 582,
+      "sha256": "4dae60a1c45fe2f72f1fc3110e923acf96be460804638d7e0ba8b6a8c910aa7a"
+    },
+    {
+      "path": "Artifacts/MapAcceptance/MapVNext-Integration-I1-20261029/VersionedRuns/i1-build41/guard-after.json",
+      "bytes": 14128,
+      "sha256": "9faf76d9f2f0f3a31768c8d5c7c3ef24d6ab60be9a697a54ec1e6124d2cc77c3"
+    },
+    {
+      "path": "Artifacts/MapAcceptance/MapVNext-Integration-I1-20261029/VersionedRuns/i1-build41/guard-before.json",
+      "bytes": 14363,
+      "sha256": "a473415833455622a033fa5cd26744270bba94b3cbabdd083e59418243dbad90"
+    },
+    {
+      "path": "Artifacts/MapAcceptance/MapVNext-Integration-I1-20261029/VersionedRuns/i1-build41/native-events.jsonl",
+      "bytes": 47533,
+      "sha256": "94c586bc63c8d0266708950b28c1b5bdd7ad429d534500e002eb24182bb0ef69"
+    },
+    {
+      "path": "Artifacts/MapAcceptance/MapVNext-Integration-I1-20261029/VersionedRuns/i1-build41/native-trace.json",
+      "bytes": 56553,
+      "sha256": "8a96566f3ea49596e00317ec34acea33841e30a0c67e68c9045f1afcfdf5847f"
+    },
+    {
+      "path": "Artifacts/MapAcceptance/MapVNext-Integration-I1-20261029/VersionedRuns/i1-build41/observer-offline-selftest.json",
+      "bytes": 363,
+      "sha256": "8033d5bb3a8678fc2846d3212f630ffa408a962b0b80331471df57eb0ffad017"
+    },
+    {
+      "path": "Artifacts/MapAcceptance/MapVNext-Integration-I1-20261029/VersionedRuns/i1-build41/receipt.json",
+      "bytes": 513,
+      "sha256": "ba6d69272c4f31b6775e700a498e279c8ccb66e7d55bb853e16c2df82ca7cc43"
+    },
+    {
+      "path": "Artifacts/MapAcceptance/MapVNext-Integration-I1-20261029/VersionedRuns/i1-build41/source-fingerprint.txt",
+      "bytes": 162,
+      "sha256": "57f057562173c331c6d987e8327a405e123e51f8946abc8863c091ec6779be47"
+    },
+    {
+      "path": "Artifacts/MapAcceptance/MapVNext-Integration-I1-20261029/VersionedRuns/i1-build41/supervisor.json",
+      "bytes": 11057,
+      "sha256": "e67e6d5bbb88d50fe61f6a488fbd903690663ea457058dbd84537a85721a73d1"
+    },
+    {
+      "path": "Artifacts/MapAcceptance/MapVNext-Integration-I1-20261029/VersionedRuns/i1-build41/TMP.before.asset",
+      "bytes": 536400,
+      "sha256": "54406f3fac18227d9780201699a619dd60ebf495fe0179684c0ac200ec2c16b5"
+    },
+    {
+      "path": "Artifacts/MapAcceptance/MapVNext-Integration-I1-20261029/VersionedRuns/i1-build41/TMP.editor-generated.asset",
+      "bytes": 9624,
+      "sha256": "5e72dec23b070c83d6efdba58431d808ad1bfe48a8e563690f39c08ff4134a1d"
+    },
+    {
+      "path": "Artifacts/MapAcceptance/MapVNext-Integration-I1-20261029/VersionedRuns/i1-build41/unity.log",
+      "bytes": 495498,
+      "sha256": "85a5f7a2526df6c00a04616ea7880f47511b4b77275941e8510554f3816dd7e4"
+    },
+    {
+      "path": "Assets/Resources/Ecology/SurfaceV4MainV1/RetainedContent_MainV1.json",
+      "bytes": 214735,
+      "sha256": "c55fb3b4b0362e8bb59e84f4624fbb22c2f9ef96f3dcd5f61481a92dab9c9802"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.textmeshpro@3.0.7/Scripts/Editor/TMP_PreBuildProcessor.cs",
+      "bytes": 1170,
+      "sha256": "443fe39c24528195c427d840c044bd984d8629c1b9b5fbaf65110eb4fa22e50d"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.textmeshpro@3.0.7/Scripts/Runtime/TMP_EditorResourceManager.cs",
+      "bytes": 5532,
+      "sha256": "3d6897a03cc683a0d5eeafd53a299c3c80e37a12dc75b0f9ee026e5e9e67a48d"
+    },
+    {
+      "path": "Library/PackageCache/com.unity.textmeshpro@3.0.7/Scripts/Runtime/TMP_FontAsset.cs",
+      "bytes": 125693,
+      "sha256": "4944761e316e6c3e6053507283f4c1b310dd47312830346ef7efc4715ac403af"
+    }
+  ],
+  "reviewedAtUtc": "2026-10-31T04:52:43.961647+00:00"
+}

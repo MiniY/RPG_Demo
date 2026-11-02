@@ -23,7 +23,7 @@
 
 - 工具、源码副作用、封印和资格拒绝回归：66/66，通过。
 - 无项目Library冷检出：21个包meta由UPM恢复且原SHA全部匹配；源文件在两次构建/运行后保持干净。
-- I1_PRIVATE Build Run `3984136dbd52412ebf8746f7c2e0494c`，DEFAULT Build Run `76567a61499e4184bac76e58ee45bf43`：各errors=0/warnings=1，自然exit0、无强制回收/残留、双锁释放。已知TMP缓存字节对按原规则复核后恢复，旧失败记录不改写。
+- I1_PRIVATE Build Run `3984136dbd52412ebf8746f7c2e0494c`，DEFAULT Build Run `76567a61499e4184bac76e58ee45bf43`：两者errors=0；I1_PRIVATE warnings=1、DEFAULT warnings=2，自然exit0、无强制回收/残留、双锁释放。已知TMP缓存字节对按原规则复核后恢复，旧失败记录不改写。
 - VNext真实恢复/保存/新进程重开：Run `1038ff9b497d4f4fa263c2830367d22f`、`71149be5dad54ab394cbb617c738f844`；MainV1同流程：`7deaa03d9c924e6db4ea524f23788870`、`7167872a17c24b93b80ae6ee3f02f888`。4进程自然exit0；8份完整世界逐字节等于原基准，不排除位置/碰撞/布局字段。
 - 错误入口Run `10543e235a474a8db586ff78cf0f77da`：自然exit2、原FAILED保留，在Session/Ready之前quarantine并拒绝，作为预期反例，不算恢复成功。
 - 对精确成品/工具提交的Standards与Spec独立静态审阅：各0开放项；不代表全项目或新人工验收PASS。

@@ -90,6 +90,9 @@ public sealed partial class MapVNextI1Acceptance : MonoBehaviour
         Require(session!=null&&map!=null&&session.State==TowerRunFlowState.StartupChoice,"FormalStartupChoiceMissing");
         if(phase=="startup") {yield return ProveStartupAndRestore();yield break;}
         if(phase=="formal") {yield return ProveFormalNewGame();yield break;}
+#if UNITY_EDITOR || RPG_SHOP_INTEGRATION_TESTS
+        if(phase=="shop") {yield return ProveShopIntegration();yield break;}
+#endif
         Require(TowerRunRuntimeEnvironment.SlotRoot.StartsWith(Environment.GetEnvironmentVariable("RPG_I1_RUNTIME_ROOT")??"UNSPECIFIED",StringComparison.OrdinalIgnoreCase),"PrivateDataRootNotAppliedBeforeStartup");
         autoDefense=true;BindInput();if(capturePlayerFrames)yield return CaptureFrame("Startup.png","Startup");
         if(phase=="restore") {yield return RestoreInFreshProcess();yield break;}

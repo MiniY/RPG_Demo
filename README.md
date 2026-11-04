@@ -1,3 +1,7 @@
+
+<!-- SHOP-V35-CURRENT-20261105 -->
+> **2026-11-05 当前商店成果**：正式 `SampleScene` 接入已完成的商店 UI，并包含必要的统一 MyTMP 内容／Host 前置代码。新版字体沿原 GUID；新增 UI 位图与字体图集为本地私有资源，首次冷克隆须先按 [精确恢复说明](Tools/ShopUI/README.md) 恢复17项，再打开 Unity。当前新槽位1保留。使用、实际验证范围及最终成品人工待验收状态见 [本次集成记录](Docs/Releases/ShopUI-V35-FormalIntegration-20261105.md)。下方按日期保留的旧发布范围不覆盖这次新增成果；原始日志与本地完整验收包不随Git公开。
+
 # RPG_Demo
 
 Unity 像素 ARPG 项目。正式新冒险默认使用已验收的 VNext 地图与背包 UI。旧地图版本可在 GitHub 提交历史中查看。

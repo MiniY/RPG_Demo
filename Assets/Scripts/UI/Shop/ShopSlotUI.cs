@@ -14,6 +14,12 @@ public class ShopSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
     /// 当前商品请求购买时发出的事件。
     /// </summary>
     public event Action<ShopSlotUI> OnPurchaseRequested;
+    public event Action<ShopSlotUI, bool> OnDetailsRequested;
+    public event Action<ShopSlotUI> OnDetailsHidden;
+
+    [SerializeField] private bool useExternalDetails;
+    [SerializeField] private UnityEngine.UI.Graphic selectionGraphic;
+    [SerializeField] private TMP_Text missingIconText;
 
     /// <summary>
     /// 显示商品图标的 Image（图片）组件。
@@ -163,6 +169,7 @@ public class ShopSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
     public void ResetInteractionState()
     {
         SetOverlayImmediate(false);
+        SetSelected(false);
     }
 
     /// <summary>
@@ -185,6 +192,9 @@ public class ShopSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
         if (currentProduct == null || !currentProduct.IsValid)
             return;
 
+        if (eventData != null && eventData.button != PointerEventData.InputButton.Left)
+            return;
+        OnDetailsRequested?.Invoke(this, true);
         RequestPurchase();
     }
 
@@ -197,7 +207,9 @@ public class ShopSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
         if (currentProduct == null || !currentProduct.IsValid)
             return;
 
-        SetOverlayTarget(true);
+        OnDetailsRequested?.Invoke(this, false);
+        if (!useExternalDetails)
+            SetOverlayTarget(true);
     }
 
     /// <summary>
@@ -206,12 +218,19 @@ public class ShopSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
     /// <param name="eventData">鼠标离开事件数据。</param>
     public void OnPointerExit(PointerEventData eventData)
     {
+        OnDetailsHidden?.Invoke(this);
         SetOverlayTarget(false);
     }
 
     /// <summary>
     /// 根据当前商品刷新图标、名称、单价、说明和库存。
     /// </summary>
+    public void SetSelected(bool selected)
+    {
+        if (selectionGraphic != null)
+            selectionGraphic.gameObject.SetActive(selected);
+    }
+
     private void RefreshVisuals()
     {
         if (itemIcon != null)
@@ -221,13 +240,16 @@ public class ShopSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
         }
 
         if (itemNameText != null)
-            itemNameText.text = currentProduct == null ? "Empty" : currentProduct.DisplayName;
+            itemNameText.text = ShopUiText.Name(currentProduct);
 
         if (priceText != null)
-            priceText.text = currentProduct == null ? "--" : currentProduct.UnitPrice.ToString();
+            priceText.text = ShopUiText.Price(currentProduct);
 
         if (descriptionText != null)
-            descriptionText.text = currentProduct == null ? string.Empty : currentProduct.Description;
+            descriptionText.text = ShopUiText.Description(currentProduct);
+
+        if (missingIconText != null)
+            missingIconText.gameObject.SetActive(currentProduct != null && currentProduct.Icon == null);
 
         RefreshStockState();
     }
@@ -255,13 +277,13 @@ public class ShopSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
             return "0";
 
         if (currentProduct.InfiniteStock)
-            return "∞";
+            return "库存：无限";
 
         int stock = tradeController == null
             ? currentProduct.InitialStock
             : tradeController.GetCurrentStock(currentProduct);
 
-        return Mathf.Max(0, stock).ToString();
+        return $"库存：{Mathf.Max(0, stock)}";
     }
 
     /// <summary>

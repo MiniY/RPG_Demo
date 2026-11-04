@@ -731,3 +731,23 @@ MainV1旧几何/恢复与VNext明确版本路由继续并存；DEFAULT无I1专�
 d01 Editor 真实单次按钮和旧/新副本保存重开 2/2，自然退出 0。发现原随机按钮 5 次拒绝后第 6 次重试进入 Playing。接入补充有限复用原 RetryFailedOperation，普通随机新游戏和无固定输入换层最多 12 个输入，仅针对已知提交前拒绝；显式 Seed、排队换层输入和恢复仍为原精确语义。普通入口验证改为单次按钮必须真正 Ready 并保存重开。新旧 manifest 原件不改，主场景新字节作为第 24 项受控差异登记，严格检查为 1196 项原字节一致、24 项差异、0 缺失，另验完整 HostSeal。
 
 当前进展与本轮精确验证见 Docs/Releases/MapVNext-FormalDefault-20261104.md 和 Artifacts/MapAcceptance/MapVNext-FormalDefault-20261104/。新版当前集成的人工视觉复验按实际新 Build 待用户确认，旧 a41/r3 人工结论保留原范围。
+
+
+<!-- MAIN-MYTMP-MAP-TEST-CLEANUP-20261105 -->
+#### 2026-11-05 主工程统一 MyTMP 与旧地图测试档精确清理
+
+用户明确授权本次必要main工作区修改、旧Editor Play地图测试档备份清理和新冒险保存/新会话恢复，不授权提交/推送/合并或整店迁移。main@5316ea63521fbf63fe88c9068e4518b85ca97afb；本条只追加，保留原其他任务dirty与历史失败。
+
+真实main Editor探针确认DefaultCompany/RPG_Demo默认存储，无shadow/override。旧schema1/default/TRB2五个精确槽位主/恢复备份已逐SHA备份、隔离恢复读回后清理；原save.json/stock/全部Prefs键保留，2/3槽空。首次Play原按钮进入当前新内容并保存槽1；两个独立新Editor进程恢复同runId/内容身份/完整World，磁盘新槽位字节未变。新冒险完整World SHA930b1511aab6908a18bcbc3db4193c2d42616a8aab9d870d822b4d6f7691c297。
+
+MyTMP复用原GUID18feaf95d90fd2545a36fb4b573dbe0a/meta，资产采用准备好的d369760a46cfd85e4af65dac61fec167bc7548dadbcb3ece7363b09b12ef7503，368旧字包含于388新字。新内容清单只变字体pin，新配方数值不变，普通目录优先新版并保留原精确身份。原MainV1/旧VNext清单、配方及历史Seal保持；schema2 Host真实封存f03，694成员/330编译输入，旧25/当前24批准差异如实区分，不跳过校验。不新增schema3/旧字体运行时bytes，不改地图算法、规则、参数或生成数值。
+
+Probe04、实际新冒险、独立batch恢复、EditMode4/4均自然0/unforced/Job清理与双锁释放；离线11/11。非batch截图恢复1/1和八张真实GameView图已采集，主进程自然0但后代由Supervisor回收，完整生命周期FAILED原样保留；没有声称此退出问题修复。助手检查所采样字体未见明显缺字/材质丢失，人工视觉NOT_RUN。Probe编译/字段名、fixture环境/长路径失败证据保留，后续通过不覆盖历史。
+
+说明与逐文件清单：Docs/MapGeneration/Main-MyTMP-and-Map-Test-Save-Cleanup-20261105.md。唯一原始证据：Artifacts/ShopUiFontUpgrade/ShopUI-V35-UnifiedMyTMP-20261030-133415/MainFontAndMapSave-20261104-235001/。本轮按不改变地图算法/行为的字体和本地维护范围交付，无新Windows Build/多Seed重验，无Git发布。下次SampleScene Play可用槽1恢复本轮新档或开始新冒险；不得自动从旧备份覆盖新档。
+
+
+<!-- SHOP-V35-FORMAL-INTEGRATION-20261105 -->
+## 2026-11-05 商店正式场景接入与统一字体发布
+
+仅商店 UI 表现与正式 SampleScene 挂接、现有 Host/封存工具必要适配和针对性验证；地图R01–R18、生成/配方数值、四个地图辅助场景及存档格式不改。73项商店增量语义合并，415个非UI块保持；真实商人F链及原交易/库存/背包权威继续复用。前序已落地统一MyTMP内容身份与原GUID保持，旧manifest/配方和严格校验保留，不重复清档或字体生成。私有像素本地保留、公开代码/meta/hash/恢复入口，当前新槽1与Prefs受保护。详细变更、复用、测试及人工验收范围见[商店正式集成记录](Docs/Releases/ShopUI-V35-FormalIntegration-20261105.md)，最终成品人工PENDING_USER。此段只记录本次，不采纳其他dirty或新怪物。

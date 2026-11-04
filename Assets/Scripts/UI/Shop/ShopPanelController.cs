@@ -38,6 +38,9 @@ public class ShopPanelController : MonoBehaviour
     /// </summary>
     public bool IsShopPanelVisible => IsShopPanelOpen();
 
+    /// <summary>最后一次由本控制器接受的商人，仅供界面读取身份。</summary>
+    public MerchantInteractionController CurrentMerchant { get; private set; }
+
     /// <summary>
     /// 初始化商店面板显示状态。
     /// </summary>
@@ -88,6 +91,8 @@ public class ShopPanelController : MonoBehaviour
         if (merchant == null || IsShopPanelOpen() ||
             TowerRunGateHub.IsGameplayBlockedByOtherThan(GameplayGateOwner))
             return;
+
+        CurrentMerchant = merchant;
 
         if (merchant.ShopCatalog != null && shopGridUI != null)
             shopGridUI.SetShopCatalog(merchant.ShopCatalog);

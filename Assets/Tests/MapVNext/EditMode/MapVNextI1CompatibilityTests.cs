@@ -36,4 +36,27 @@ public sealed class MapVNextI1CompatibilityTests
         File.Delete(extra); File.Delete(dependency);
         Assert.Throws<InvalidOperationException>(() => MapHostCompatibility.ValidateSourceGroup(host, root));
     }
+    [Test] public void CurrentFontContentMustDifferOnlyByTheExplicitFontRow()
+    {
+        var font = Difference("Assets/Font/MyTMP.asset");
+        var host = new MapHostCompatibility.Host {
+            approvedDifferences = new[] { Difference(), font },
+            currentContentDifferences = new[] { Difference() },
+            files = new[] { new MapHostCompatibility.FileEntry { path = font.path, sha256 = font.currentSha256 } }
+        };
+        Assert.DoesNotThrow(() => MapHostCompatibility.ValidateCurrentContentDifferences(host));
+        host.currentContentDifferences = new[] { Difference("Assets/Other.cs") };
+        Assert.Throws<InvalidOperationException>(() => MapHostCompatibility.ValidateCurrentContentDifferences(host));
+        host.currentContentDifferences = new[] { Difference(), font };
+        Assert.Throws<InvalidOperationException>(() => MapHostCompatibility.ValidateCurrentContentDifferences(host));
+    }
+    [Test] public void RetainedAndCurrentIdentitySetsCannotBeMixed()
+    {
+        var old = new[] { Difference() }; var current = Array.Empty<MapHostCompatibility.Difference>();
+        var host = new MapHostCompatibility.Host {oldContentVersion="old", retainedContentVersion="retained", newContentVersion="current", approvedDifferences=old, currentContentDifferences=current};
+        Assert.AreSame(old,MapHostCompatibility.DifferencesFor(host,EcologyRecipeDefinition.MainV1ProfileId,"old"));
+        Assert.AreSame(old,MapHostCompatibility.DifferencesFor(host,EcologyRecipeDefinition.VNextI1ProfileId,"retained"));
+        Assert.AreSame(current,MapHostCompatibility.DifferencesFor(host,EcologyRecipeDefinition.VNextI1ProfileId,"current"));
+        Assert.Throws<InvalidOperationException>(()=>MapHostCompatibility.DifferencesFor(host,EcologyRecipeDefinition.MainV1ProfileId,"current"));
+    }
 }

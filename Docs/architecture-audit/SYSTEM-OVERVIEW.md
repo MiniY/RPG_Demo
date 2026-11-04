@@ -40,3 +40,11 @@
 ## 如何判断证据
 
 当前图谱的 `static` 表示读到了 GUID、组件/层级或持久化绑定；`source confirmed; runtime unverified` 表示人工对照了代码行并校验了关系；`textual only` 是有限正则命中的类型词，可能不代表运行调用。双向“引用”并不自动是业务循环；问题页只列有实际机制或验证缺口的风险。
+
+
+<!-- SHOP-V35-PRESENTATION-SEAM-20261105 -->
+## 正式商店表现接缝（Shop UI V3.5）
+
+`SampleScene` 的 `ShopPanelController` 继续订阅真实 `MerchantInteractionController.OnAnyMerchantInteracted`，由原 `GameInput` F 事件触发；原 `ShopTradeController` 和 `PlayerInventory` 仍是交易/库存/物品数据权威，ADR-03列表/选中/Tooltip链保持。`ShopMerchantPresentationUI` 只读取被交互商人的prefab/Animator/SpriteRenderer及样式数据，维护自有预览相机/RenderTexture，不生成目录或交易状态；关闭停绘、退订与销毁路径独立。
+
+`ShopDetailsUI` 和 `ShopUiText` 是表现扩展；分类与商品仍经原 `ShopGridUI/ShopSlotUI`。MyTMP保留原GUID并使用当前统一内容身份。公开图谱对17个本地私有像素资源使用经过精确meta/GUID校验的opaque节点，不宣称读取其像素；恢复器负责完整SHA，Unity/真实帧负责运行与视觉证据。完整范围及人工待验收见[正式商店集成](../Releases/ShopUI-V35-FormalIntegration-20261105.md)。

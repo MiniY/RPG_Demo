@@ -16,6 +16,7 @@ public static class MapHostCompatibility
         public int schema;
         public string buildId, implementationDigest, oldContentVersion, newContentVersion, closureSha256, reviewEvidenceSha256, stampSha256;
         public FileEntry[] files; public Difference[] approvedDifferences; public string[] startupTargets;
+        public string retainedContentVersion; public Difference[] currentContentDifferences;
     }
     public static string LastStrictSourceResult { get; private set; }
     public static int LastStrictDifferenceCount { get; private set; }
@@ -59,17 +60,38 @@ public static class MapHostCompatibility
         var declared = host.files.Where(p => SourceInput(p.path)).Select(p => p.path).OrderBy(p => p, StringComparer.Ordinal).ToArray();
         if (!authored.SequenceEqual(declared)) throw new InvalidOperationException("HostSourceInventoryMismatch");
     }
+    // The current font version has one fewer original-pin difference. Observe, never redirect, the real path.
+    public static void ValidateCurrentContentDifferences(Host host)
+    {
+        ValidateDifferences(host.approvedDifferences); ValidateDifferences(host.currentContentDifferences);
+        var font = host.approvedDifferences.Where(p => p.path == "Assets/Font/MyTMP.asset").ToArray();
+        if (font.Length != 1 || host.currentContentDifferences.Any(p => p.path == font[0].path) ||
+            host.files == null || !host.files.Any(p => p.path == font[0].path && p.sha256 == font[0].currentSha256))
+            throw new InvalidOperationException("UnreviewedFontContentDifference");
+        ValidateDifferenceSet(host.approvedDifferences.Where(p => p.path != font[0].path), host.currentContentDifferences);
+    }
+    public static Difference[] DifferencesFor(Host host, string profile, string contentVersion)
+    {
+        if (profile == EcologyRecipeDefinition.VNextI1ProfileId && contentVersion == host.newContentVersion)
+            return host.currentContentDifferences;
+        if (profile == EcologyRecipeDefinition.MainV1ProfileId && contentVersion == host.oldContentVersion ||
+            profile == EcologyRecipeDefinition.VNextI1ProfileId && contentVersion == host.retainedContentVersion)
+            return host.approvedDifferences;
+        throw new InvalidOperationException("UnknownOrMixedHostContentVersion");
+    }
     public static Host ValidateDocument(string json, string profile, string contentVersion)
     {
         Host host = JsonUtility.FromJson<Host>(json);
         if (host != null && host.approvedDifferences != null) ValidateDifferences(host.approvedDifferences);
-        if (host == null || host.schema != 2 || host.files == null || host.approvedDifferences == null ||
+        if (host == null || host.schema != 2 || host.files == null || host.approvedDifferences == null || host.currentContentDifferences == null ||
             host.files.Length == 0 || host.files.Any(p => p == null || !IsPath(p.path) || !IsSha(p.sha256)) ||
             host.files.Select(p => p.path).Distinct(StringComparer.Ordinal).Count() != host.files.Length ||
             !MapHostBuildStamp.IsReviewedCompatibleHost ||
             host.startupTargets == null || !host.startupTargets.OrderBy(p => p, StringComparer.Ordinal).SequenceEqual(new[] { "DEFAULT", "I1_PRIVATE" }) ||
             host.reviewEvidenceSha256 != MapHostBuildStamp.ReviewEvidenceSha256 || host.closureSha256 != MapHostBuildStamp.SourceClosureSha256 ||
             DifferenceDigest(host.approvedDifferences) != MapHostBuildStamp.ApprovedDifferencesDigest ||
+            DifferenceDigest(host.currentContentDifferences) != MapHostBuildStamp.CurrentContentDifferencesDigest ||
+            host.retainedContentVersion != MapHostBuildStamp.RetainedContentVersion ||
             host.buildId != MapHostBuildStamp.BuildId || host.implementationDigest != MapHostBuildStamp.ImplementationDigest ||
             GroupDigest(host.files) != MapHostBuildStamp.ImplementationDigest ||
             host.oldContentVersion != MapHostBuildStamp.OldContentVersion || host.newContentVersion != MapHostBuildStamp.NewContentVersion ||
@@ -78,9 +100,8 @@ public static class MapHostCompatibility
         ValidateDifferences(host.approvedDifferences);
         if (host.approvedDifferences.Any(p => !host.files.Any(f => f.path == p.path && f.sha256 == p.currentSha256)))
             throw new InvalidOperationException("ApprovedDifferenceDependencyMissing");
-        bool old = profile == EcologyRecipeDefinition.MainV1ProfileId && contentVersion == host.oldContentVersion;
-        bool next = profile == EcologyRecipeDefinition.VNextI1ProfileId && contentVersion == host.newContentVersion;
-        if (!old && !next) throw new InvalidOperationException("UnknownOrMixedHostContentVersion");
+        ValidateCurrentContentDifferences(host);
+        DifferencesFor(host, profile, contentVersion);
         return host;
     }
     public static void Verify(string profile, string contentVersion, IReadOnlyList<Difference> strictDifferences)
@@ -100,7 +121,7 @@ public static class MapHostCompatibility
         }
         Host host = ValidateDocument(source.text, profile, contentVersion);
 #if UNITY_EDITOR
-        ValidateDifferenceSet(host.approvedDifferences, strictDifferences);
+        ValidateDifferenceSet(DifferencesFor(host, profile, contentVersion), strictDifferences);
         ValidateSourceGroup(host, Path.GetFullPath(Path.Combine(Application.dataPath, "..")));
         LastCompatibilityResult = "REVIEWED_GROUP_MATCH_EDITOR_SOURCE_CHECKED";
 #else

@@ -4,17 +4,157 @@
     "DEFAULT",
     "I1_PRIVATE"
   ],
-  "buildId": "map-play-error-fix-20261104-e02",
-  "implementationDigest": "1fd96fc163f4d6b2466985ea3234a1a16a8ed082ad28f398a4eaeeaf83462b97",
+  "buildId": "map-shop-ui-v35-20261105-g04",
+  "implementationDigest": "420e3f3cda380800c25ae249100845ccebf69d355dfbf9a504c44bc644efc1ea",
   "oldContentVersion": "content-r1:c55fb3b4b0362e8bb59e84f4624fbb22c2f9ef96f3dcd5f61481a92dab9c9802",
-  "newContentVersion": "content-r1:c1b30f168534f17598f385ad32ab67078f9fb28b5f8cb6f346dcb6b800249ec9",
-  "closureSha256": "420dd226ed63a8d8c8084a898ef10eb2797ab461e969c27e13aac2182e7522d6",
-  "reviewEvidenceSha256": "f940314d9097107a0c803608a46ff24ed224c57320065f0b304cdf19490e0f7c",
-  "stampSha256": "4b618db54c376b923db290139d7a75ebe01fce77f7d2678f53012a17fa0ebbbd",
+  "newContentVersion": "content-r1:a4d222a9bf0aa3952ea231ed097e746a6348ff2e571a7a193ea7a61a55f4daac",
+  "closureSha256": "22ecfdbeccea9a22d391f6c2ef54dabd99d2d8aa313609d5dfe41a5354c2f307",
+  "reviewEvidenceSha256": "ab7db70d85c24dcc2fd78410fba9af5fceb40c1c716dde6f077a3cd56e0c9c86",
+  "stampSha256": "c73592487e0892131228aa0402a4868ea1d6472dff05962a4ffaaaca5e1e543f",
   "files": [
     {
+      "path": "Assets/Animations/MerchantSign/MerchanSignFloating.anim",
+      "sha256": "d815405082f03b256fd8d943ee44f67476448718ebe60dfd7fac029e3f20b99e"
+    },
+    {
+      "path": "Assets/Animations/MerchantSign/MerchanSignFloating.anim.meta",
+      "sha256": "02ff9fefb44fa7feb51d8fcb52c6461d2ac6761ab0bff0efdc54d2c269da9e23"
+    },
+    {
+      "path": "Assets/Animations/MerchantSign/MerchantSign.controller",
+      "sha256": "f59daa876f86f3a63d636fc7961b6e4b7aa5b866546f9234303611d9878103c7"
+    },
+    {
+      "path": "Assets/Animations/MerchantSign/MerchantSign.controller.meta",
+      "sha256": "0288bcdc100121aa14128c728baf0c9b7d8d81817afff743c035d1d2821098bc"
+    },
+    {
+      "path": "Assets/Animations/MerchantVisual/MerchantIdle.anim",
+      "sha256": "07a0515c16dc7e3a4201c7fab25627ea16eda7fe55c2ec66dcac4a34f95fbf3d"
+    },
+    {
+      "path": "Assets/Animations/MerchantVisual/MerchantIdle.anim.meta",
+      "sha256": "008af9379f8c777fb0d28334301884e3eec64f32e372e8e90e342ddeaee20777"
+    },
+    {
+      "path": "Assets/Animations/MerchantVisual/Pawn_Purple.meta",
+      "sha256": "da0a157953f2f40716ef79341a4bbc62bedde3bb5131938ed542adfeb8507ccb"
+    },
+    {
+      "path": "Assets/Animations/MerchantVisual/Pawn_Purple/MerchantIdle.anim",
+      "sha256": "5559dad4f3693b19d28819c3b35a7ceb84d9cf9915081f177b91df791b81c684"
+    },
+    {
+      "path": "Assets/Animations/MerchantVisual/Pawn_Purple/MerchantIdle.anim.meta",
+      "sha256": "aa9050dc7e69cf2452789ce49055e009565186cc29ea706ce644dccb5ef9cb5f"
+    },
+    {
+      "path": "Assets/Animations/MerchantVisual/Pawn_Purple/Visual.overrideController",
+      "sha256": "ab08a4700fd77479c4cdec00dadf2165051612c63ca0012aedecf2683dc9b73c"
+    },
+    {
+      "path": "Assets/Animations/MerchantVisual/Pawn_Purple/Visual.overrideController.meta",
+      "sha256": "2468c20b223cb0e231692d1901c21eecfeb5d76e1b16c2d99f9d5661c631dc87"
+    },
+    {
+      "path": "Assets/Animations/MerchantVisual/Pawn_Red.meta",
+      "sha256": "f53a2e7a873b25387931c3efec199f7168da89a5bc33fdc56ec004bc088f5e51"
+    },
+    {
+      "path": "Assets/Animations/MerchantVisual/Pawn_Red/MerchantIdle.anim",
+      "sha256": "6044a74b1f065c67422b8a04555aca5e7bcfc30d89140d3f331dd715fa01a58a"
+    },
+    {
+      "path": "Assets/Animations/MerchantVisual/Pawn_Red/MerchantIdle.anim.meta",
+      "sha256": "d68aafb0c20de00ec811c3227ecfa4661fd8e194a9f59e5d7e892991c69bc40a"
+    },
+    {
+      "path": "Assets/Animations/MerchantVisual/Pawn_Red/Visual.overrideController",
+      "sha256": "1e479e1e0fa904c234ada6e6a13b93e359e8bbfe6d17e88cd32a56eb527c9547"
+    },
+    {
+      "path": "Assets/Animations/MerchantVisual/Pawn_Red/Visual.overrideController.meta",
+      "sha256": "fe502dfaeea810aae1c906205808a07b60912878759095af83371308565f574f"
+    },
+    {
+      "path": "Assets/Animations/MerchantVisual/Pawn_Yellow.meta",
+      "sha256": "e57755a1a1a67bebea32793ae053c7f036db9846ff2b29d76ee92706ca26aa5f"
+    },
+    {
+      "path": "Assets/Animations/MerchantVisual/Pawn_Yellow/MerchantIdle.anim",
+      "sha256": "070c70d7a9a3d551d5a1c861c80304444adf4a895e3f78eb722958f7f9d15403"
+    },
+    {
+      "path": "Assets/Animations/MerchantVisual/Pawn_Yellow/MerchantIdle.anim.meta",
+      "sha256": "4ac3ebad400e1d0632b27b9c56662da5956d7977fa1178295be8046cf0f9dd41"
+    },
+    {
+      "path": "Assets/Animations/MerchantVisual/Pawn_Yellow/Visual.overrideController",
+      "sha256": "ad5c0b185e485027eac91bdc35b95b9f7d57857a1d99af87f666e5856d582969"
+    },
+    {
+      "path": "Assets/Animations/MerchantVisual/Pawn_Yellow/Visual.overrideController.meta",
+      "sha256": "70de04d78478ccdfcdcac7b16ddc86055195e8a9a61f5a42c1829f5c83a91855"
+    },
+    {
+      "path": "Assets/Animations/MerchantVisual/Visual.controller",
+      "sha256": "edf3e5cba3b930436b7050a4c1f4eeefc607b09ee4b15efd98ccca8c483e5124"
+    },
+    {
+      "path": "Assets/Animations/MerchantVisual/Visual.controller.meta",
+      "sha256": "147ed881b0ac58a3bbe9edd50fa83d97a873ec14527928448282090742a5413e"
+    },
+    {
+      "path": "Assets/Animations/RewardVisual/GoldVisual/GoldVisual.controller",
+      "sha256": "d4a9879c23102cbf6e073718593c332591efc5b94c6de6244841ab5e3f7545f0"
+    },
+    {
+      "path": "Assets/Animations/RewardVisual/GoldVisual/GoldVisual.controller.meta",
+      "sha256": "5993cceb4c73117c355046e6d222bf67ab0c7f14315266ce40f3076059d98f13"
+    },
+    {
+      "path": "Assets/Animations/RewardVisual/GoldVisual/GoldVisual_Idle.anim",
+      "sha256": "356fb4e5b6bc0fc969c18811981f6d9a5573d5e6781ef57a3062a1e435c059a5"
+    },
+    {
+      "path": "Assets/Animations/RewardVisual/GoldVisual/GoldVisual_Idle.anim.meta",
+      "sha256": "b6d04c23a095b3bc71f0adf327e0d41b1aa0b63a2c23cb1f08064274cea95475"
+    },
+    {
+      "path": "Assets/Animations/RewardVisual/GoldVisual/GoldVisual_Spawn.anim",
+      "sha256": "025a55ed4f3f7d382ed9832b7a1247ddff9b973abe38ec49709e7423e78692c4"
+    },
+    {
+      "path": "Assets/Animations/RewardVisual/GoldVisual/GoldVisual_Spawn.anim.meta",
+      "sha256": "69b692a19ef65cc5f945ec4d6902776247bc537fdf7f90e45a2ac2f8b5d1c743"
+    },
+    {
+      "path": "Assets/Animations/RewardVisual/MeatVisual/GoldVisual.controller",
+      "sha256": "6180568bfb88147883d7410bd4af7415229460d235065c968200ac85e1768f76"
+    },
+    {
+      "path": "Assets/Animations/RewardVisual/MeatVisual/GoldVisual.controller.meta",
+      "sha256": "c367b6353a5bd3943f7b4cef5cf06b7f6014ba779feb21c19b65bf3b48b831d4"
+    },
+    {
+      "path": "Assets/Animations/RewardVisual/MeatVisual/MeatVisual_Idle.anim",
+      "sha256": "6d51f246b35a84daeb1ae0b9b090796c813c6b84d5a457bdb5bb3ed441d6a3de"
+    },
+    {
+      "path": "Assets/Animations/RewardVisual/MeatVisual/MeatVisual_Idle.anim.meta",
+      "sha256": "5d9922fdd08dc7aca2e0b761100fd6d1335026ed0f4b53b493934eb52f1191bb"
+    },
+    {
+      "path": "Assets/Animations/RewardVisual/MeatVisual/MeatVisual_Spawn.anim",
+      "sha256": "6b362af57cd3ad56f669e5d95761cfa88d37fcb8cb5804f42068650cac354e37"
+    },
+    {
+      "path": "Assets/Animations/RewardVisual/MeatVisual/MeatVisual_Spawn.anim.meta",
+      "sha256": "8ae336aa7202c34175275c44fb518134af9828ffd3c5b146deae0b73519e9326"
+    },
+    {
       "path": "Assets/Editor/MapAcceptance/AssetNameWarningAudit.cs",
-      "sha256": "08344848c5627de4a10f40c95bb2a874c60898ba6c05d6995fef7aeca46b65ca"
+      "sha256": "48bb50da82d81406cb5d28cf9ce18533b810ce6619409c61df0f9546149ef0ca"
     },
     {
       "path": "Assets/Editor/MapAcceptance/AssetNameWarningAudit.cs.meta",
@@ -70,7 +210,7 @@
     },
     {
       "path": "Assets/Editor/MapVNext/MapVNextI1Build.cs",
-      "sha256": "57f98bfe76b8ef0bfb39edac034ac217ad5df05f4a2409ac6c8d73424ef2c3ca"
+      "sha256": "985690236584df70a5d37385f6b90e2f8b8fe5afacabad7bab45342f5c02bab8"
     },
     {
       "path": "Assets/Editor/MapVNext/MapVNextI1Build.cs.meta",
@@ -149,6 +289,14 @@
       "sha256": "7eaa640edfe432a7e91d064dd0db0bc59e1aedc215d955d98d16d471455f9a00"
     },
     {
+      "path": "Assets/Font/MyTMP.asset",
+      "sha256": "d369760a46cfd85e4af65dac61fec167bc7548dadbcb3ece7363b09b12ef7503"
+    },
+    {
+      "path": "Assets/Font/MyTMP.asset.meta",
+      "sha256": "9914efe8c23c18667a168632d9e9be9898349b11f6229ba8378f4214a02e5980"
+    },
+    {
       "path": "Assets/GameControls.cs",
       "sha256": "9101f4bbe3339453fb44fb85d38fa7227b65de9f57dd6909ac992fd149940fd1"
     },
@@ -177,6 +325,14 @@
       "sha256": "e20bcb79a3a12b93c1f1b14888e680af886d0f78926624623fad180d045a092b"
     },
     {
+      "path": "Assets/MapGeneration/MapVNext/I1/Recipe_MyTMPV1.asset",
+      "sha256": "5ab095f2afda1aeef800ab81da4f6d4b9a006d88c8e906503bd9d1fb312dccbc"
+    },
+    {
+      "path": "Assets/MapGeneration/MapVNext/I1/Recipe_MyTMPV1.asset.meta",
+      "sha256": "362eebe3b78c8c81d3fab9ccc2ebb138eb0617d8e78c6ec5c67c1ab5977426de"
+    },
+    {
       "path": "Assets/MapGeneration/MapVNext/I1/Resources.meta",
       "sha256": "bb665532d3a1a22dae17ab0eba8aad391c4303c47e481e764f1a337db4b2c1cd"
     },
@@ -187,6 +343,14 @@
     {
       "path": "Assets/MapGeneration/MapVNext/I1/Resources/CandidateContent_I1.json.meta",
       "sha256": "f4283f77724b28cbfbbc5c3a67fc7238852eb5087a4a1f959b65b3ceb7e87663"
+    },
+    {
+      "path": "Assets/MapGeneration/MapVNext/I1/Resources/CandidateContent_I1_MyTMPV1.json",
+      "sha256": "a4d222a9bf0aa3952ea231ed097e746a6348ff2e571a7a193ea7a61a55f4daac"
+    },
+    {
+      "path": "Assets/MapGeneration/MapVNext/I1/Resources/CandidateContent_I1_MyTMPV1.json.meta",
+      "sha256": "5e347a4e1be6a38b625ffb38777f6b7b164c8f39dd4fdd7687d8be201aec23ec"
     },
     {
       "path": "Assets/MapGeneration/MapVNext/I1/Settings.asset",
@@ -213,12 +377,92 @@
       "sha256": "04d9bfcf4970386a2606155c424fad2782246c51ed9ed1a589961932b2acff03"
     },
     {
+      "path": "Assets/Prefabs/NPC/Merchant_Pawn.prefab",
+      "sha256": "73578e59d516645a57cfce9a3c047fae5b8681a1c3da4fec0738bedbb8f4f6e1"
+    },
+    {
+      "path": "Assets/Prefabs/NPC/Merchant_Pawn.prefab.meta",
+      "sha256": "60d020ec2063f83be3e867ebe5a8c05328ab365d6e151791b0454bc5f1e665c6"
+    },
+    {
+      "path": "Assets/Prefabs/NPC/Merchant_Pawn_Purple.prefab",
+      "sha256": "ad51141a105dc5fa028e5a0ec5d8fa28334680a08cdb4a6c5125fc90ed99cfa7"
+    },
+    {
+      "path": "Assets/Prefabs/NPC/Merchant_Pawn_Purple.prefab.meta",
+      "sha256": "7273d26c24203d7deeb7e1b2bc1d6e2e870b0fc6b9ad7349057b9d032c40f165"
+    },
+    {
+      "path": "Assets/Prefabs/NPC/Merchant_Pawn_Red.prefab",
+      "sha256": "509d9dbe5da85382b35f2f793a5fee23e4be6317e0609ca1f5139935904e1021"
+    },
+    {
+      "path": "Assets/Prefabs/NPC/Merchant_Pawn_Red.prefab.meta",
+      "sha256": "91e2dfb54ce11f11e199feae447973081b8e8f80bbe72a0a67ef025481e53934"
+    },
+    {
+      "path": "Assets/Prefabs/NPC/Merchant_Pawn_Yellow.prefab",
+      "sha256": "7f0e49ca1b5ef1007885ca85684370a62f4f477736207721a7f92e7e1ee014e5"
+    },
+    {
+      "path": "Assets/Prefabs/NPC/Merchant_Pawn_Yellow.prefab.meta",
+      "sha256": "d556bdf8d961a01e1e896f43d5bc32cfb76714c604bb9f115bb9d25a891f17c1"
+    },
+    {
+      "path": "Assets/Prefabs/Rewards/Gold.prefab",
+      "sha256": "17b48ba2fb758296825190324f81614fa842120488b79351a9990c25bd81991b"
+    },
+    {
+      "path": "Assets/Prefabs/Rewards/Gold.prefab.meta",
+      "sha256": "7ff99dca108d245f935881ac18e2a53fb465fe1f2d48272531b6991f243e285f"
+    },
+    {
+      "path": "Assets/Prefabs/Rewards/Meat.prefab",
+      "sha256": "2c0938412ff3c5671c32ba70e40d432f34f61692688d5547efae074ee2e9336f"
+    },
+    {
+      "path": "Assets/Prefabs/Rewards/Meat.prefab.meta",
+      "sha256": "02c4c050f965d6fb7299d3924e568756b51482d9c2fd2323640a510da6efb690"
+    },
+    {
+      "path": "Assets/Prefabs/UI/ShopSlot.prefab",
+      "sha256": "9d3ff4a1228d0b76031aa3b0782079dc57127189574c56375e5affbe0f4d26dc"
+    },
+    {
+      "path": "Assets/Prefabs/UI/ShopSlot.prefab.meta",
+      "sha256": "461a327df7f01a7e2fa38c8c9b7e2b7adb855be30ed815bb4e5e3fe734c0cc50"
+    },
+    {
+      "path": "Assets/Prefabs/UI/ShopSlotNightRun.prefab",
+      "sha256": "bcd70c27941d0f21bc2b24be98cd3b4d98c3d77283bab88c02c7f955cf97fc8e"
+    },
+    {
+      "path": "Assets/Prefabs/UI/ShopSlotNightRun.prefab.meta",
+      "sha256": "071cd7ca6d615d9959653543df8b5b6dbae4a5c0ed420b9c8c2cef79715ad0b8"
+    },
+    {
+      "path": "Assets/Resources/Ecology/SurfaceV4MainV1/Recipe.asset",
+      "sha256": "f0bbc397ce73f582e67619cba434a0bc25731bf67e0faf5c832912cef07ec1f4"
+    },
+    {
+      "path": "Assets/Resources/Ecology/SurfaceV4MainV1/Recipe.asset.meta",
+      "sha256": "f29aa65863039f9b19f8ec8047130f9c414dd40370381384024ebc6ce3d78f56"
+    },
+    {
+      "path": "Assets/Resources/Ecology/SurfaceV4MainV1/RetainedContent_MainV1.json",
+      "sha256": "c55fb3b4b0362e8bb59e84f4624fbb22c2f9ef96f3dcd5f61481a92dab9c9802"
+    },
+    {
+      "path": "Assets/Resources/Ecology/SurfaceV4MainV1/RetainedContent_MainV1.json.meta",
+      "sha256": "34d47de7000985730fa4681b5ff81727c00004d5678cf830eed690b0e46fa557"
+    },
+    {
       "path": "Assets/Scenes/MapVNext/I1.meta",
       "sha256": "20a72e6107080b7d7e630b4d85c47f1185edde196746c64063e3420f6caa3852"
     },
     {
       "path": "Assets/Scenes/MapVNext/I1/I1Game.unity",
-      "sha256": "a9ae2a19dd85b7d70d9deaa1990b2d1054f9277566ce66e49bab1759160c5c78"
+      "sha256": "dcaf32798da15a67d47828627609126cea05a9058c3eb3c9d860739bc303fc08"
     },
     {
       "path": "Assets/Scenes/MapVNext/I1/I1Game.unity.meta",
@@ -293,8 +537,16 @@
       "sha256": "44783dc34f4f447de0d83ee82c2491d0678264a94cfbbdc7dc45b41801d3ec02"
     },
     {
+      "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Shop.cs",
+      "sha256": "794efe7a02fae2325abc9715eb810aac3efcde404f6c2f2fb47ecfb492c10366"
+    },
+    {
+      "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Shop.cs.meta",
+      "sha256": "da395aced6752d50a53f3fabb8ee574319f9a3bcee05cfae94cf232e0ce20fb9"
+    },
+    {
       "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Startup.cs",
-      "sha256": "4830407359b76e7cfa8207a12ad6dc1de8482109ecad95997a34f7530b9b429c"
+      "sha256": "48e5a99d01118484b85f1b68239cd036d0a5c7732a35e57e72617df299687b2f"
     },
     {
       "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Startup.cs.meta",
@@ -302,7 +554,7 @@
     },
     {
       "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.cs",
-      "sha256": "9965245ce36f581d712d7cb97336c3265c72a3b878dfd70538cb635dbfcc7f8f"
+      "sha256": "ecaaa4d748e3694c3c589c55768e51202c63d516dcbc173962ba685185274f76"
     },
     {
       "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.cs.meta",
@@ -318,7 +570,7 @@
     },
     {
       "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Bootstrap.cs",
-      "sha256": "76361c84335e86e08dd3a3fcff8225fd5af8287e420aadeb6c0736e1ebc63375"
+      "sha256": "edd4fc591df365e2be80ea05dfa0eff441725be847e991399eac5a941a7c7604"
     },
     {
       "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Bootstrap.cs.meta",
@@ -350,7 +602,31 @@
     },
     {
       "path": "Assets/Scenes/SampleScene.unity",
-      "sha256": "a0744d426f11252646c7bb17487fe4f3fe650f6d28ae47628b1a92a6b60fff31"
+      "sha256": "9007a06addd28a20880037ecdb6a89924e7d377e57dcc5435f87ccc8a9cbfa41"
+    },
+    {
+      "path": "Assets/ScriptObjects/RewardSOs/Gold.asset",
+      "sha256": "1a307497bb99cb1c0287ce856fbed993e086e6b7b99141f08a6c112e96164ada"
+    },
+    {
+      "path": "Assets/ScriptObjects/RewardSOs/Gold.asset.meta",
+      "sha256": "565a8f79414d96352035a5f5b15dd669b163f1b5e3acf0f2f58d770384bff29a"
+    },
+    {
+      "path": "Assets/ScriptObjects/RewardSOs/Meat.asset",
+      "sha256": "2d41a73a0895f37a59162a2d50becb047ab25ff108bfced98867038f789e84c2"
+    },
+    {
+      "path": "Assets/ScriptObjects/RewardSOs/Meat.asset.meta",
+      "sha256": "8b0f50f00c49c62541c8070446fe459dc2e7d78e18c43845ca7abbbd65a015e1"
+    },
+    {
+      "path": "Assets/ScriptObjects/Shop/ShopCatalog_Merchant.asset",
+      "sha256": "0c267a3ba8262ffe5e74fc1ee5b6836d0cba46ec92a1e168ce406636c9d0ea9a"
+    },
+    {
+      "path": "Assets/ScriptObjects/Shop/ShopCatalog_Merchant.asset.meta",
+      "sha256": "0835bc6b9b84f04c8f41c4c313abe676785a7c5a253758c3082ace016dd5031d"
     },
     {
       "path": "Assets/Scripts/Damageable/Animal/Animal.cs",
@@ -1502,7 +1778,7 @@
     },
     {
       "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapHostCompatibility.cs",
-      "sha256": "7275a49a6c9b3a5788dd1c366f7606a44b81b31a2eb2b8d5919904dedb7cb39f"
+      "sha256": "cdb8a9a4223b8d49a2b14da48fc266e197bde72c9b2212ab5dd1dac506c19dea"
     },
     {
       "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapHostCompatibility.cs.meta",
@@ -2061,16 +2337,32 @@
       "sha256": "d7d38f424359c75dc5186ef0c30a48714a5009e3ca492ca7e1997bdbdb2ae27c"
     },
     {
+      "path": "Assets/Scripts/UI/Shop/ShopDetailsUI.cs",
+      "sha256": "2f0e430a2860ae4c27bc914a7054bf6d90521eff55fd10e6356752b15e46f999"
+    },
+    {
+      "path": "Assets/Scripts/UI/Shop/ShopDetailsUI.cs.meta",
+      "sha256": "ea439f0aea2083b93e6607f0ba3c754f324e9a482425a98f0f39282dfed76e73"
+    },
+    {
       "path": "Assets/Scripts/UI/Shop/ShopGridUI.cs",
-      "sha256": "b5599dfd1de6c5d266495e2d2d300007c8172cf6de2f6c6ff51daa0bde50b2dd"
+      "sha256": "651984c687359be4e77ffe42ab0b58194e893297d1425f8ef73bd2648efdc708"
     },
     {
       "path": "Assets/Scripts/UI/Shop/ShopGridUI.cs.meta",
       "sha256": "91355dec7d3965bf71aa8bace277fe3a02194061dc3d769ad85481eaa4d95e25"
     },
     {
+      "path": "Assets/Scripts/UI/Shop/ShopMerchantPresentationUI.cs",
+      "sha256": "4bb519253ca5d61286e515d21881dbb913286bdad547d45f3482b7dfd084991b"
+    },
+    {
+      "path": "Assets/Scripts/UI/Shop/ShopMerchantPresentationUI.cs.meta",
+      "sha256": "586c00c05dea8c4cae0e593004475c7482de7869a8aae2976fa49fc8842d7ded"
+    },
+    {
       "path": "Assets/Scripts/UI/Shop/ShopModeTabButtonUI.cs",
-      "sha256": "e579c4ed42b1c6a871cc92e42830fc26758476b4a1e5d51eb3269c69d287c39f"
+      "sha256": "9d1a47798c34e7b154ebbf36f9d5ac8b8087bb14a815edebdc8aed856e1d6934"
     },
     {
       "path": "Assets/Scripts/UI/Shop/ShopModeTabButtonUI.cs.meta",
@@ -2078,11 +2370,19 @@
     },
     {
       "path": "Assets/Scripts/UI/Shop/ShopPanelController.cs",
-      "sha256": "daf69e702857a860835a1ae0bf8ae9924edf015b0e9efb88f63dd0917a709caf"
+      "sha256": "faeb7507e6a04770f765b6102eb2fbd9076621ff470d73c258e018195e68a027"
     },
     {
       "path": "Assets/Scripts/UI/Shop/ShopPanelController.cs.meta",
       "sha256": "0799587008a2320f6bf8d85e48f6911f689a7e1993f0221da18c93314020f95e"
+    },
+    {
+      "path": "Assets/Scripts/UI/Shop/ShopPatchGraphic.cs",
+      "sha256": "935b167ec2f5935000766d9f07c847c68168f8d55b20cf9fc6b692ebec7411d0"
+    },
+    {
+      "path": "Assets/Scripts/UI/Shop/ShopPatchGraphic.cs.meta",
+      "sha256": "e60ab0c0a228774b9f88f75d21bb80fd334a6f06b9002ff5315ffd7d91f7b241"
     },
     {
       "path": "Assets/Scripts/UI/Shop/ShopPurchaseFlyEffect.cs",
@@ -2094,11 +2394,19 @@
     },
     {
       "path": "Assets/Scripts/UI/Shop/ShopSlotUI.cs",
-      "sha256": "7bda6c60302c211b7531cc8e2c121bc23c16cb92b3270e0fdf11dfa9d34984d0"
+      "sha256": "95c719610d87696c1c0e19c4279272713e82f5bd7302a6239fa6ae1914d8af42"
     },
     {
       "path": "Assets/Scripts/UI/Shop/ShopSlotUI.cs.meta",
       "sha256": "61fec1cccb1225c3325d76c309a5478f55bdae653c0e450c7137b3463f8617aa"
+    },
+    {
+      "path": "Assets/Scripts/UI/Shop/ShopUiText.cs",
+      "sha256": "fa775f171c099e3706fdb7e6007a32808963d05e76d941e448b211dc00ba519c"
+    },
+    {
+      "path": "Assets/Scripts/UI/Shop/ShopUiText.cs.meta",
+      "sha256": "c0e121a2900dfc7adeb2402cd8e6f0161f098a3fdca79147c387f1fdce1487c1"
     },
     {
       "path": "Assets/Scripts/UI/TowerRunUiController.cs",
@@ -2115,6 +2423,158 @@
     {
       "path": "Assets/Scripts/UI/TowerRunUiSkin.cs.meta",
       "sha256": "5e8d98fe03a65774931cdb7d567edf52e964daa560c5ca7621a568b3c902a93e"
+    },
+    {
+      "path": "Assets/ShopUiNightRun.meta",
+      "sha256": "00ef9dd30d3a10f57c06a59c2326a3adc7bbb7337a150c64c431b91c3e913da7"
+    },
+    {
+      "path": "Assets/ShopUiNightRun/Textures.meta",
+      "sha256": "6451076d1c858668294bf9525f1433c7466a3d70718585d19e8839696072a7b0"
+    },
+    {
+      "path": "Assets/ShopUiNightRun/Textures/Banner.png",
+      "sha256": "6870540fe516ebff26c7f7b123cffa5329ed0b3d8fa0ad323f7459707157a249"
+    },
+    {
+      "path": "Assets/ShopUiNightRun/Textures/Banner.png.meta",
+      "sha256": "c562906cd6c1ed1054c27a0b36c3c675a09837f5183a55225060dc5f58b58f34"
+    },
+    {
+      "path": "Assets/ShopUiNightRun/Textures/BigBlueButton_Pressed.png",
+      "sha256": "6d4108619670a1e10bb3a684a15e65834724d3b96907ea72ce8cdf1909a1ca8d"
+    },
+    {
+      "path": "Assets/ShopUiNightRun/Textures/BigBlueButton_Pressed.png.meta",
+      "sha256": "2ac6337f0565612bfc615c8d6b174b7f4f587f1ec27ddf1c123b7d31d195606b"
+    },
+    {
+      "path": "Assets/ShopUiNightRun/Textures/BigBlueButton_Regular.png",
+      "sha256": "70d504ccd5f414b9d894f067883d3ab4f575a143504b87d3583e60922bc563c8"
+    },
+    {
+      "path": "Assets/ShopUiNightRun/Textures/BigBlueButton_Regular.png.meta",
+      "sha256": "3b74ef854523700a40b6b9b87a815c1377125a3df78f561a9a4e7f4a18d0c5d9"
+    },
+    {
+      "path": "Assets/ShopUiNightRun/Textures/BigRibbons.png",
+      "sha256": "d5463691b52e90ce8b6dfdb340aa563b1b7bfd9d697977d2cc38a2a661db0053"
+    },
+    {
+      "path": "Assets/ShopUiNightRun/Textures/BigRibbons.png.meta",
+      "sha256": "8ab07e0854ebe61b34e6fc1d42692be8ab607a8672d9add612c28ddd3e9736d9"
+    },
+    {
+      "path": "Assets/ShopUiNightRun/Textures/RegularPaper.png",
+      "sha256": "4a91bbde509af741580e514961ed25dd309695536046536b600ab63bec080a1e"
+    },
+    {
+      "path": "Assets/ShopUiNightRun/Textures/RegularPaper.png.meta",
+      "sha256": "f2be70ec5e182d6bec8af497202446b36813b9e650a45483e7d74f84569a8ec9"
+    },
+    {
+      "path": "Assets/ShopUiNightRun/Textures/WoodTable.png",
+      "sha256": "d2abdb31e7fdc3cc2bcad7988c03aaab28aa73a2cb5f869b615c157595034a79"
+    },
+    {
+      "path": "Assets/ShopUiNightRun/Textures/WoodTable.png.meta",
+      "sha256": "e6815b8fa89e273a34e804695d4475574c9fb5e89b4f1d6605543db220366f64"
+    },
+    {
+      "path": "Assets/ShopUiNightRun/VisualV31.meta",
+      "sha256": "60b614b4f83f2f31b343c4ff970626a190d5d65b87c42dcb92b5b79d7c8986f3"
+    },
+    {
+      "path": "Assets/ShopUiNightRun/VisualV31/BlueSelected.png",
+      "sha256": "f9f08dc6e0900c80c6096291224a375ed6246e5b4f615e9d404cba9eebe3e38c"
+    },
+    {
+      "path": "Assets/ShopUiNightRun/VisualV31/BlueSelected.png.meta",
+      "sha256": "b4eadb39026421ec550de705e56f6fb30abe24ef1f7afbd3921939a396faf4aa"
+    },
+    {
+      "path": "Assets/ShopUiNightRun/VisualV31/BlueSlot.png",
+      "sha256": "59ef888dc5094f206615916ba4ff15a42dc43fc2d1d50cc9c820fc6390e72ecc"
+    },
+    {
+      "path": "Assets/ShopUiNightRun/VisualV31/BlueSlot.png.meta",
+      "sha256": "dca506d3ebf62f6fd784cb1a61b8f970488a3f7f4393c4fbe99dbbfb6dea3798"
+    },
+    {
+      "path": "Assets/ShopUiNightRun/VisualV31/CarvedWood.png",
+      "sha256": "4792041b526cbf8824959b56ff2b820dafbfb7fc6423415b1d035599608f8e3d"
+    },
+    {
+      "path": "Assets/ShopUiNightRun/VisualV31/CarvedWood.png.meta",
+      "sha256": "a87062bfde6411e1407354cb0e0a15e4d8b157ec9d3d50d85b2a37ae8d56454f"
+    },
+    {
+      "path": "Assets/ShopUiNightRun/VisualV31/MyTMP_ShopOutline.mat",
+      "sha256": "07edad3039ef38a1f251dbce9f58d2ef37cc9679e110729b296e9920dc25534a"
+    },
+    {
+      "path": "Assets/ShopUiNightRun/VisualV31/MyTMP_ShopOutline.mat.meta",
+      "sha256": "6a60a5e53861e853da9da490e9483389124e6ed0a2d65513ca42b1ff71b367ca"
+    },
+    {
+      "path": "Assets/ShopUiNightRun/VisualV31/RedRibbon.png",
+      "sha256": "35c36a44bcdfaa6ebc1d12178775e28f2db4c54a5414d4d131b8fa4dbed98f0a"
+    },
+    {
+      "path": "Assets/ShopUiNightRun/VisualV31/RedRibbon.png.meta",
+      "sha256": "461a6acd4e18bcea4de48ded196d811e66636db20d32723d70353ee03ec63e62"
+    },
+    {
+      "path": "Assets/ShopUiNightRun/VisualV31/StockBadge.png",
+      "sha256": "07a704762d6aba5675f1d9e6a313bec61040ac15182c17fbc56ad7137c0d5fd8"
+    },
+    {
+      "path": "Assets/ShopUiNightRun/VisualV31/StockBadge.png.meta",
+      "sha256": "9f508c1721c4c1e649e6fb7efbf40337a659682998052beec68dd1a92057b584"
+    },
+    {
+      "path": "Assets/ShopUiNightRun/VisualV31/VerticalScroll.png",
+      "sha256": "0d6bcf94a72cba6f055b60f5f05d3cda50ddf447f432eb1c5276be2a01d1c9d2"
+    },
+    {
+      "path": "Assets/ShopUiNightRun/VisualV31/VerticalScroll.png.meta",
+      "sha256": "578e30cb37bcbc015d0b5de07518dc29c75570b0eb6599bf25886aabfbeb0809"
+    },
+    {
+      "path": "Assets/ShopUiNightRun/VisualV32.meta",
+      "sha256": "3781668665afe202c16bb6c8fce4bc424c3b3d0af775f9402b78e962a10e76d9"
+    },
+    {
+      "path": "Assets/ShopUiNightRun/VisualV32/TitleBanner_Blue.png",
+      "sha256": "92cf22843a9e156b6c46f58a4d7e66ee819143012e672d1e9bcefe11879c0c12"
+    },
+    {
+      "path": "Assets/ShopUiNightRun/VisualV32/TitleBanner_Blue.png.meta",
+      "sha256": "287ebe0e65d8b979f39c43410540338520ad5591c349820e385f52fa8c2c7121"
+    },
+    {
+      "path": "Assets/ShopUiNightRun/VisualV32/TitleBanner_Purple.png",
+      "sha256": "344f975108e2784109bb3f453d13c72a6f3e5be47828c727c2c65f2079ec70c0"
+    },
+    {
+      "path": "Assets/ShopUiNightRun/VisualV32/TitleBanner_Purple.png.meta",
+      "sha256": "946f0349ad5b84494740262f9988012f3e7d82f97dc136fd24fbd4f9546e6f83"
+    },
+    {
+      "path": "Assets/ShopUiNightRun/VisualV32/TitleBanner_Red.png",
+      "sha256": "35c36a44bcdfaa6ebc1d12178775e28f2db4c54a5414d4d131b8fa4dbed98f0a"
+    },
+    {
+      "path": "Assets/ShopUiNightRun/VisualV32/TitleBanner_Red.png.meta",
+      "sha256": "10865fe617fb9a1bd09df15e12f8d3ca9f3a01279485cd2382eef9aac6f7ec81"
+    },
+    {
+      "path": "Assets/ShopUiNightRun/VisualV32/TitleBanner_Yellow.png",
+      "sha256": "2c3d4256f8b29a66fef15c5d805d2635288a7fcb81a0100dbb83a9db0bed63e4"
+    },
+    {
+      "path": "Assets/ShopUiNightRun/VisualV32/TitleBanner_Yellow.png.meta",
+      "sha256": "1f942aa7425172919de24c9136a21702582160c6cce512c702df6bdbdfcb8abf"
     },
     {
       "path": "Assets/Tests/MapGeneration/GenerationScopedRewardLifetimeTests.cs",
@@ -2510,7 +2970,7 @@
     },
     {
       "path": "Assets/Tests/MapVNext/EditMode/MapVNextI1CompatibilityTests.cs",
-      "sha256": "f84d405ac789a33a75a78ba1e5302fcceaa50a7024ecf0f47b0ff1d4907db59e"
+      "sha256": "ec2262807ccb1b116bf4ed45be1fb99aad371775cdb9c18ff849f0fa6dbee957"
     },
     {
       "path": "Assets/Tests/MapVNext/EditMode/MapVNextI1CompatibilityTests.cs.meta",
@@ -2582,7 +3042,7 @@
     },
     {
       "path": "Assets/Tests/MapVNext/PlayMode/MapVNextFormalDefaultTests.cs",
-      "sha256": "ff463f46cff5fb8a91cafed9f3ce815c48e3557ce4c858be3578c9f05b93d9d9"
+      "sha256": "cd2bde7223f8a48c792369c7b7696c6032b6230725cf60457fbb5f5beaf53e3a"
     },
     {
       "path": "Assets/Tests/MapVNext/PlayMode/MapVNextFormalDefaultTests.cs.meta",
@@ -2747,13 +3207,325 @@
     {
       "path": "Assets/Tests/TowerRunPersistence/PlayMode/TowerRunIndependentProcessPlayModeTests.cs.meta",
       "sha256": "4e3e13aaaadebef938a57839263e85af2064db0273ab1da8012cef8bda93c9ad"
+    },
+    {
+      "path": "Assets/TextMesh Pro/Shaders/TMP_SDF.shader",
+      "sha256": "bbae422625f31bfa560ac5ce44c402fafd16dba55d496c6279ca985b652b58bf"
+    },
+    {
+      "path": "Assets/TextMesh Pro/Shaders/TMP_SDF.shader.meta",
+      "sha256": "0897fb06d170043fffa2d28783b347bbaee87a3f09f08374ca44b2c3848697d6"
+    },
+    {
+      "path": "Assets/_Resources/TinySwords/Factions/Knights/Troops/Pawn/Blue/Pawn_Blue.png",
+      "sha256": "38c47fc4766fa1fad73c188e5c6a1f2d2257aebc9dfdd5b37f1c8dad913e8cfe"
+    },
+    {
+      "path": "Assets/_Resources/TinySwords/Factions/Knights/Troops/Pawn/Blue/Pawn_Blue.png.meta",
+      "sha256": "5355458cd46d1e461b095ff73839f791b09df36dd42a5fb869f1a18689fbc8a6"
+    },
+    {
+      "path": "Assets/_Resources/TinySwords/Factions/Knights/Troops/Pawn/Purple/Pawn_Purple.png",
+      "sha256": "c88b5db861d94d342b0420b8cefacb4865e49ae104af4fb934f46556d9274c12"
+    },
+    {
+      "path": "Assets/_Resources/TinySwords/Factions/Knights/Troops/Pawn/Purple/Pawn_Purple.png.meta",
+      "sha256": "1055216df237b11bffcf88f1973d135d888e00c578c2831a9532ad17f4b94421"
+    },
+    {
+      "path": "Assets/_Resources/TinySwords/Factions/Knights/Troops/Pawn/Red/Pawn_Red.png",
+      "sha256": "0d207ad590425917b71d3dc538b88d6765e76c90aa24ed5ff80c0ad842738705"
+    },
+    {
+      "path": "Assets/_Resources/TinySwords/Factions/Knights/Troops/Pawn/Red/Pawn_Red.png.meta",
+      "sha256": "df8c44cc1984ca581583fbde9fee1aadab23289a40c2192779d092a95cf8e8b7"
+    },
+    {
+      "path": "Assets/_Resources/TinySwords/Factions/Knights/Troops/Pawn/Yellow/Pawn_Yellow.png",
+      "sha256": "22cbf2126c68f61a3a359d0d19d45f8fdaa24700d2b9492c9b17f03977405d1f"
+    },
+    {
+      "path": "Assets/_Resources/TinySwords/Factions/Knights/Troops/Pawn/Yellow/Pawn_Yellow.png.meta",
+      "sha256": "6876cc5a3ebe2c7308aad61d3a0e4b844ce2f8cd6d88fe2374a9a04332773e6c"
+    },
+    {
+      "path": "Assets/_Resources/TinySwords/Resources/Resources/G_Idle.png",
+      "sha256": "ee9a2018e179b95839105d0b6d39725f22ae57e28d73532421fb1994c4b4de78"
+    },
+    {
+      "path": "Assets/_Resources/TinySwords/Resources/Resources/G_Idle.png.meta",
+      "sha256": "61f0817c3248353c58e3ab0245b69c4c51983133c5576c178132702e0cbe6774"
+    },
+    {
+      "path": "Assets/_Resources/TinySwords/Resources/Resources/G_Spawn.png",
+      "sha256": "c631caee640977312839cf533c5c48b20011ae826b2b64f8c1c1cd39a5e7d277"
+    },
+    {
+      "path": "Assets/_Resources/TinySwords/Resources/Resources/G_Spawn.png.meta",
+      "sha256": "fa9cae440af380a76ab31a8b43dc0e20578c662826309f9b2e0b3e24ee21f0ae"
+    },
+    {
+      "path": "Assets/_Resources/TinySwords/Resources/Resources/M_Idle.png",
+      "sha256": "5c7b717272597e383fa05eb2010f5a7fe8e42a5f8643543c56640a3d42bd6b33"
+    },
+    {
+      "path": "Assets/_Resources/TinySwords/Resources/Resources/M_Idle.png.meta",
+      "sha256": "f42724360ce4c0e9b9f7b409feef7636e6e43b3a4cb2849e88c8b03ccdaa1df1"
+    },
+    {
+      "path": "Assets/_Resources/TinySwords/Resources/Resources/M_Spawn.png",
+      "sha256": "1d86e71839a4c688bc1be59537fbe05c6fdb7dfe6bc868e5f0c4b3a32ca003d5"
+    },
+    {
+      "path": "Assets/_Resources/TinySwords/Resources/Resources/M_Spawn.png.meta",
+      "sha256": "2cb001cfb2b45b1b4b7548cff6c092b6a1ae36f68285874a88cd5e298a68f051"
+    },
+    {
+      "path": "Assets/_Resources/TinySwords/UI/Banners/Banner_Vertical.png",
+      "sha256": "0d6bcf94a72cba6f055b60f5f05d3cda50ddf447f432eb1c5276be2a01d1c9d2"
+    },
+    {
+      "path": "Assets/_Resources/TinySwords/UI/Banners/Banner_Vertical.png.meta",
+      "sha256": "1e87dfb1679f2c8df02b911be05c82b7aaf88e3af3dd71f98aeee4cf8793bf96"
+    },
+    {
+      "path": "Assets/_Resources/TinySwords/UI/BlackIcons/BackPack.png",
+      "sha256": "39480dd4f988d0317ba44425dc984113ad0d1fb8d8e351c5746f3e74461a6969"
+    },
+    {
+      "path": "Assets/_Resources/TinySwords/UI/BlackIcons/BackPack.png.meta",
+      "sha256": "6a89055942d0770ab50a02a7b97a05e6711e61da42ba8598e8c4806b316033d0"
+    },
+    {
+      "path": "Assets/_Resources/TinySwords/UI/BlackIcons/Pressed_01.png",
+      "sha256": "5a06426a237c04ce6c323138516c4dfd84b1d3314897a51976326405b104afd7"
+    },
+    {
+      "path": "Assets/_Resources/TinySwords/UI/BlackIcons/Pressed_01.png.meta",
+      "sha256": "c56048f3a680cc9f6592d93a7245d0d00c3e6341de33bc01017880a0bf7b07f7"
+    },
+    {
+      "path": "Assets/_Resources/TinySwords/UI/Buttons/Button_Blue_3Slides.png",
+      "sha256": "e49daebb8844d601850e8290e413aa150b09272435eee20f0b98f7cd14f67268"
+    },
+    {
+      "path": "Assets/_Resources/TinySwords/UI/Buttons/Button_Blue_3Slides.png.meta",
+      "sha256": "a1839ce5a46fa8bd5bf6b164c458c1c34084cada74a8c0adddca4ed577f53afa"
+    },
+    {
+      "path": "Assets/_Resources/TinySwords/UI/Buttons/Button_Blue_9Slides.png",
+      "sha256": "59ef888dc5094f206615916ba4ff15a42dc43fc2d1d50cc9c820fc6390e72ecc"
+    },
+    {
+      "path": "Assets/_Resources/TinySwords/UI/Buttons/Button_Blue_9Slides.png.meta",
+      "sha256": "3ff5119eb611bc63c6c30edd30eeeb526dbd3e8f67b2c501b8f4d0cecc5572f1"
+    },
+    {
+      "path": "Assets/_Resources/TinySwords/UI/Buttons/Button_Disable_9Slides.png",
+      "sha256": "8060425562fde2d68062191712b811896f86e91087e12e9d083cf08ea39f2cb8"
+    },
+    {
+      "path": "Assets/_Resources/TinySwords/UI/Buttons/Button_Disable_9Slides.png.meta",
+      "sha256": "ef4182e182997638f364db5568da0cdd45af7a591e0bcd8fd1ab9f6aa090ade3"
+    },
+    {
+      "path": "Assets/_Resources/TinySwords/UI/Buttons/Button_Hover_3Slides.png",
+      "sha256": "d5c177db0519f3c39e5f8ceadfcfa9e17fb097ae28ef1a5e676a36eee7cb6141"
+    },
+    {
+      "path": "Assets/_Resources/TinySwords/UI/Buttons/Button_Hover_3Slides.png.meta",
+      "sha256": "1ad15944857449f50e780c38330cc97b624f5f749a7d1586ce54d8cccf0c838b"
+    },
+    {
+      "path": "Assets/_Resources/TinySwords/UI/Ribbons/Ribbon_Red_3Slides.png",
+      "sha256": "35c36a44bcdfaa6ebc1d12178775e28f2db4c54a5414d4d131b8fa4dbed98f0a"
+    },
+    {
+      "path": "Assets/_Resources/TinySwords/UI/Ribbons/Ribbon_Red_3Slides.png.meta",
+      "sha256": "54ef0de4e0da6e9ffa633c2e64a7cc56eaea36d38abf0c004a3f69cbeb340ca4"
+    },
+    {
+      "path": "Assets/_Resources/TinySwords/UI/Ribbons/Ribbon_Yellow_Connection_Left.png",
+      "sha256": "1e03c391d7902c457d2658e2a31c3acf9be6c70278aaf1c8f8f9639981341830"
+    },
+    {
+      "path": "Assets/_Resources/TinySwords/UI/Ribbons/Ribbon_Yellow_Connection_Left.png.meta",
+      "sha256": "cc419a08fd94d044b3699d825375eaea814bab42a59de361ad35b115072dc4be"
+    },
+    {
+      "path": "Assets/_Resources/TinySwords/UI/Ribbons/Ribbon_Yellow_Connection_Up.png",
+      "sha256": "2b9f82d88603e19d708e12bed5f8a6cbbbd2ab5b1968ff0a9bca4e1e4068e27c"
+    },
+    {
+      "path": "Assets/_Resources/TinySwords/UI/Ribbons/Ribbon_Yellow_Connection_Up.png.meta",
+      "sha256": "009e8427f5fa52b02dc32fbea48b5f766f761797f9f7630d51e1111a4a4dce61"
+    },
+    {
+      "path": "Assets/_Resources/TinySwordsFreePack/UI Elements/UI Elements/Banners/Banner_Slots.png",
+      "sha256": "bf585619c1ab7bf3ad42eba012aecf89d9cf90ba03cbf70e82a0971e0514df77"
+    },
+    {
+      "path": "Assets/_Resources/TinySwordsFreePack/UI Elements/UI Elements/Banners/Banner_Slots.png.meta",
+      "sha256": "ca014af301a10cdaa566c2760985f0a72f461d8a50aee7cb4b682fbd785a936f"
+    },
+    {
+      "path": "Assets/_Resources/TinySwordsFreePack/UI Elements/UI Elements/Buttons/SmallRedRoundButton_Regular.png",
+      "sha256": "d5b53a9a685e3029924d1bf842d240506f82911b742f7258706304c81d5074f2"
+    },
+    {
+      "path": "Assets/_Resources/TinySwordsFreePack/UI Elements/UI Elements/Buttons/SmallRedRoundButton_Regular.png.meta",
+      "sha256": "108b5b967babae76010f6a6b0b9d038e2b467ef23f507202dcafe5ad27b71c75"
+    },
+    {
+      "path": "Assets/_Resources/TinySwordsFreePack/UI Elements/UI Elements/Icons/Icon_03.png",
+      "sha256": "87e913c8cac52427dadba7c1688da6b105eaf63437f8d1bccc3c9f33edd0658b"
+    },
+    {
+      "path": "Assets/_Resources/TinySwordsFreePack/UI Elements/UI Elements/Icons/Icon_03.png.meta",
+      "sha256": "133841cf1f655b0b61cd82ec3b1d76e81b0f2d9982b5521c6355d8c94d92860f"
+    },
+    {
+      "path": "Assets/_Resources/_Font/ICE.ttf",
+      "sha256": "1648dba9dbc6eca8c8ed48d5044e5b239d7d22b5ed619f4ee89de4b17ec16702"
+    },
+    {
+      "path": "Assets/_Resources/_Font/ICE.ttf.meta",
+      "sha256": "bd3467622fd3c900d40829995d48ab67ab5891f8cd1d4e1c4228499d6a1ee9a8"
     }
   ],
   "approvedDifferences": [
     {
+      "path": "Assets/Font/MyTMP.asset",
+      "originalSha256": "0cf1e34120a47968ed4417bfb31f8ba892e72d3864ce48c7260d1a61a3c3a48a",
+      "currentSha256": "d369760a46cfd85e4af65dac61fec167bc7548dadbcb3ece7363b09b12ef7503"
+    },
+    {
       "path": "Assets/Scenes/SampleScene.unity",
       "originalSha256": "d5357b094cdbc2ad53b5e781b42d8fa5e5591566d3e0d3f4c2a01a236ca99fc6",
-      "currentSha256": "a0744d426f11252646c7bb17487fe4f3fe650f6d28ae47628b1a92a6b60fff31"
+      "currentSha256": "9007a06addd28a20880037ecdb6a89924e7d377e57dcc5435f87ccc8a9cbfa41"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/AnimalPlacementService.cs",
+      "originalSha256": "f5d2478d9bf1848c34cbc3a349e23a2a821356d059591f198109d745aaf4ef44",
+      "currentSha256": "0b21cf5341a81989ad945663c859e1b1e8b6dbc13ccfd8d59bf23d90f73c86f1"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/DestructiblePlacementService.cs",
+      "originalSha256": "48b6a3608ee332ecbca884c2ebcead16157387d2397cc6b4e5d4a7b608589800",
+      "currentSha256": "2a15a8887f6f3ff3dc5099593d0e48eff5fcc668277bfc42e1b2af2c3c956ca3"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyConstructiveCapacity.cs",
+      "originalSha256": "c74788d128b0d595f2115441ca9e2bbb5e9726dcd91e3a74fb476085170a1b50",
+      "currentSha256": "c5f7f2db717b490aa33262e3095c14be3c19894333b07a3c39149f5c73325248"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyHomeNavigation.cs",
+      "originalSha256": "12024b67758d058dc117370dc1a14f55c3d55a21c6a7fa5469a2939b62a18953",
+      "currentSha256": "a467f9f45d59eca0e787d9a4fd8cc94dda9ce8858c69c88aebb5fc38a3b74fc1"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyJointPlacementPlanner.cs",
+      "originalSha256": "9120ef65523e5e4ba367c9957db9cdad77abcfd4d651371a8de9e4bbe2da42f4",
+      "currentSha256": "0a96449c70dcf5b61116d67846dae5abaeb7df2d1c8a393c640156ddac8af5dd"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyNavigationGraph.cs",
+      "originalSha256": "1eb4f6836f626b18886cb7cfa6f69a2d44f38962885e9f35a5a2aa59925bf5da",
+      "currentSha256": "146b9b0fd15f76df791d99587327b79f1d68d98a04e8988deb254f7f489260b4"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyRecipeDefinition.cs",
+      "originalSha256": "94e49b54d4bd31b984a548ac03c4a85911479392d4c458d3f3459824a1fb1c3d",
+      "currentSha256": "6d64a8a9778f61af4c4de1b3ee29978a9453ed0c6f8286b286893a2f657ac076"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyRetainedContentManifest.cs",
+      "originalSha256": "a64eaf4efabb563f253ea123e54518a4352f24e52dbcb78ba5eeb52056f92d20",
+      "currentSha256": "c6c01b4f799df7feea9555bb312a47f62ed0cd2c9f078a823ff007e4a3171fdd"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyRetainedTerrainGenerator.cs",
+      "originalSha256": "cb79ec93279b3ab38449ad4b6e41e204214197c8ebc1b317a65f85b4bdbcb4a4",
+      "currentSha256": "682547b389d3e5be80a6b9f301e37106f5f7506c683f893f08c4eb171391e549"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyTerritoryPlanner.cs",
+      "originalSha256": "2bf0e397f29d9d3c9d25d8ca4f6389d2d1ae7b20e7f21efda0b4edef329c208c",
+      "currentSha256": "c0f33cc76f637732bf229150f3709ecbaad25a2b79500b4c12196c7bdc9d099e"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/MapCandidateCollisionGeometry.Safety.cs",
+      "originalSha256": "0ebf52aec9a88a990fc1fc5fc543232156f12c710889d5941b45e74cb575e3a5",
+      "currentSha256": "101a139b9b8d47e471a8ee40927336ea00f9a5e27d3ce15046be6056dbf96f0e"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/MapCandidateCollisionGeometry.Solids.cs",
+      "originalSha256": "bd2bf5a9bb2a1907e7d2969a34615344f098b766cd3561d1b4c0d0ab9e9ea4de",
+      "currentSha256": "14ab016090903c399cbc45b7e19377f0ba11a269fec494c80256e07125b46b99"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/MapCandidateCollisionGeometry.Territory.cs",
+      "originalSha256": "ec456e05cc6c8aaa4a561da6ac0c2dec1495995a50b0dc17cdbfd0adc5547aae",
+      "currentSha256": "cf4d491471d6115f11c8496831a0bfe2cb9c155a508fa7a3105b03e5a19cc2e5"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/Ecology/MapCandidateCollisionGeometry.cs",
+      "originalSha256": "724d3afb5a45a5dfb2e002a7f4d55074e91a786c85c74e445879630cb039a0e5",
+      "currentSha256": "0357b2158bfe6b1eceb591d2036db112dac682ef3aa00a035c624aeec5f30a11"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapEcologyPopulationService.cs",
+      "originalSha256": "454d7c639e19635864fbfc8e1313a1a60527b56c4fb0e7c7cacb863bee451dfa",
+      "currentSha256": "d8a4e68bdc6dbb696a7cc082a075eabb766b983b1580998f1e9cd4f53fbc5ade"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "originalSha256": "7bb7c227706e3e7ea7354ff7ef7915eec337f2fb5dce4983881d3a12120a19ba",
+      "currentSha256": "eb10c361840c223c776cf056924a65043ced8a9c5841604559fc62bbbebb9bce"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapIntegrationOrchestrator.cs",
+      "originalSha256": "4132f9598ed789406e760084f9a36a33e45c7ad1cbf607c6c8bb25631a353a0c",
+      "currentSha256": "3d446d8f0d2a97a5652b14361696d480ef1d0df83e4e4c9e40950e5b933cdbc1"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MapRuntimeFoundation.cs",
+      "originalSha256": "4a3db3a60698c338673c8b9e2e7a4f6f27f7d3b7973f2f6f34bbd5294d19c021",
+      "currentSha256": "a27ac36eb0b6aa33b88f15ce64d70256f5134c0cec46b513c1fbbe2e1b93d3b3"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/MerchantPlacementService.cs",
+      "originalSha256": "c78b12cc2e877b8f5e5dea81a0fd29cab885adf717e4a44b6a19c053054371c3",
+      "currentSha256": "6d2c55b34fe438d32c5e4c1dfcf6e66cd3fab7fc1d3e7f8927289cd8558d7d93"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/PlantPlacementService.cs",
+      "originalSha256": "6ea8d4d3ab8da3267d2928e35e9ac1bb60a52995d1bf9888f17fe11b53a83101",
+      "currentSha256": "0c97af80839a291e50f91db7d02d02e1b824811a9c03ad4c91061ac64922cd40"
+    },
+    {
+      "path": "Assets/Scripts/MapGeneration/PlayerSpawnService.cs",
+      "originalSha256": "17bdb852b1ea972da08b4a9fc45b57ce476391f5f7327f33c10d93fbcbb87827",
+      "currentSha256": "edb20a7895c928cbf8a141cac5773215104987b0b77e2968e44b23b25f6f09ad"
+    },
+    {
+      "path": "Assets/Scripts/TowerRun/TowerRunSlotStore.cs",
+      "originalSha256": "36ba6dd975b7c4395871bab048ca14d6b3390aab67149cf7b25ea202b3029409",
+      "currentSha256": "2ffb75541ed7e409f010c63e9215a3e57a11e983ad1d489bffa55f311d1a2ce7"
+    },
+    {
+      "path": "Assets/Scripts/TowerRunCoordinator.cs",
+      "originalSha256": "d36753c417109928686b874a9937eb082e4d3b1f0c6db8c6f2fd24357b8413ca",
+      "currentSha256": "23246c39fc528f9258dddc7733b5ef14cd397b8e5dc64a3d4b473e075a8695a3"
+    }
+  ],
+  "retainedContentVersion": "content-r1:c1b30f168534f17598f385ad32ab67078f9fb28b5f8cb6f346dcb6b800249ec9",
+  "currentContentDifferences": [
+    {
+      "path": "Assets/Scenes/SampleScene.unity",
+      "originalSha256": "d5357b094cdbc2ad53b5e781b42d8fa5e5591566d3e0d3f4c2a01a236ca99fc6",
+      "currentSha256": "9007a06addd28a20880037ecdb6a89924e7d377e57dcc5435f87ccc8a9cbfa41"
     },
     {
       "path": "Assets/Scripts/MapGeneration/AnimalPlacementService.cs",

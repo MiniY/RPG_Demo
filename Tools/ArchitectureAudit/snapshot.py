@@ -19,7 +19,7 @@ import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 
-from scan import FINGERPRINT_EXTENSIONS, TRANSIENT_TEST_SCENE_RE
+from scan import FINGERPRINT_EXTENSIONS, TRANSIENT_TEST_SCENE_RE, private_payloads
 
 SCAN_FILES = ("scan.py", "viewer-template.html", "package-guid-map.json",
               "chain-relations.json", "curated-relations.json", "node-notes.json", "issues.json")
@@ -77,6 +77,11 @@ def inventory(repo: Path) -> dict[str, dict]:
         result[name] = {"mode": "presence" if marker else "content",
                         "sha256": None if marker else digest(path)}
 
+    private = private_payloads(repo)
+    if private:
+        include(repo / "Tools/ShopUI/private_assets.py")
+        include(repo / "Tools/ShopUI/private-assets.json")
+
     assets = repo / "Assets"
     if not assets.is_dir():
         raise ValueError("Assets directory missing")
@@ -86,6 +91,9 @@ def inventory(repo: Path) -> dict[str, dict]:
         if TRANSIENT_TEST_SCENE_RE.fullmatch(name):
             continue
         if asset.is_dir():
+            continue
+        if name in private:
+            include(meta)  # Exact public metadata represents an opaque licensed asset in a static copy.
             continue
         if not asset.is_file():
             raise ValueError(f"Asset for .meta is missing: {asset}")

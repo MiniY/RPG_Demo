@@ -29,7 +29,11 @@ public sealed partial class MapVNextI1Acceptance
         {
             startupRows.rows.Clear();
             Application.quitting-=ObserveStartupQuitting;Application.quitting+=ObserveStartupQuitting;
-            if (Application.companyName != "CodexMapAcceptance" || Application.productName != "RPG_M0_" + MapHostBuildStamp.BuildId + "_" + MapHostBuildStamp.StartupTarget)
+            string proofProduct="RPG_M0_" + MapHostBuildStamp.BuildId + "_" + MapHostBuildStamp.StartupTarget;
+#if RPG_SHOP_INTEGRATION_TESTS && !UNITY_EDITOR
+            proofProduct+="_SHOP_REVIEW";
+#endif
+            if (Application.companyName != "CodexMapAcceptance" || Application.productName != proofProduct)
                 throw new InvalidOperationException("OrdinaryStartupProofRequiresBakedShadowCompanyProductBeforeSession");
         }
         var preferences = TowerRunRuntimeEnvironment.Preferences;

@@ -43,6 +43,11 @@ public class ShopModeTabButtonUI : MonoBehaviour
     /// </summary>
     [SerializeField] private Color selectedTextColor = new Color(1f, 0.84f, 0.32f); // 选中文字颜色。
 
+    // Opt-in for sliced faces whose pale interior moves when selected.
+    [SerializeField] private bool alignLabelToInnerFace;
+    [SerializeField] private float normalLabelOffsetY;
+    [SerializeField] private float selectedLabelOffsetY;
+
     /// <summary>
     /// 视觉过渡速度，数值越大变化越快。
     /// </summary>
@@ -136,6 +141,13 @@ public class ShopModeTabButtonUI : MonoBehaviour
     {
         targetScale = isSelected ? selectedScale : normalScale;
         targetTextColor = isSelected ? selectedTextColor : normalTextColor;
+
+        if (alignLabelToInnerFace && labelText != null)
+        {
+            var position = labelText.rectTransform.anchoredPosition;
+            position.y = isSelected ? selectedLabelOffsetY : normalLabelOffsetY;
+            labelText.rectTransform.anchoredPosition = position;
+        }
     }
 
     /// <summary>

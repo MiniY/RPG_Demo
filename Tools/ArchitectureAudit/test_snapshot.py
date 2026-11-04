@@ -249,6 +249,40 @@ class SnapshotTests(unittest.TestCase):
                 self.assertEqual(report["SNAPSHOT_VERIFICATION"], "BLOCKED")
 
 
+class PrivatePayloadGraphTests(unittest.TestCase):
+    def test_opaque_private_graph_is_identical_before_and_after_restore(self):
+        import hashlib
+        with tempfile.TemporaryDirectory(prefix="private-graph-") as temp:
+            root=Path(temp);assets=root/"Assets";assets.mkdir()
+            name="Assets/Font/MyTMP.asset";font=root/name;font.parent.mkdir()
+            meta=Path(str(font)+".meta");meta.write_text("fileFormatVersion: 2\nguid: "+"a"*32+"\n",encoding="utf-8")
+            payload=b"licensed atlas pixels must not be parsed into the public graph"
+            document={"schema":1,"kind":"SHOP_PRIVATE_PAYLOADS_V1","files":[dict(path=name,sha256=hashlib.sha256(payload).hexdigest(),bytes=len(payload),guid="a"*32,metaSha256=hashlib.sha256(meta.read_bytes()).hexdigest())]}
+            manifest=root/"Tools/ShopUI/private-assets.json";manifest.parent.mkdir(parents=True)
+            manifest.write_text(json.dumps(document),encoding="utf-8")
+            shutil.copyfile(Path(scan.__file__).resolve().parents[1]/"ShopUI/private_assets.py",manifest.parent/"private_assets.py")
+            scan_file=Path(scan.__file__)
+            fixture_tools=root/"Tools/ArchitectureAudit";fixture_tools.mkdir()
+            for tool_name in ("scan.py","viewer-template.html","package-guid-map.json"):
+                shutil.copyfile(scan_file.with_name(tool_name),fixture_tools/tool_name)
+            context=dict(head="fixed",branch="main",snapshotId="private-fixture",sourceDirty=False)
+            with patch.object(scan,"ROOT",root),patch.object(scan,"ASSETS",assets),patch.object(scan,"__file__",str(fixture_tools/"scan.py")):
+                missing=scan.build_graph(portable=True,source_context=context)
+                font.write_bytes(payload)
+                restored=scan.build_graph(portable=True,source_context=context)
+                self.assertEqual(missing["sourceSha256"],restored["sourceSha256"])
+                self.assertEqual(missing["nodes"],restored["nodes"])
+                self.assertEqual(missing["edges"],restored["edges"])
+                self.assertEqual(missing["nodes"][0]["kind"],"private asset")
+                inputs=snapshot.inventory(root)
+                self.assertNotIn(name,inputs)
+                self.assertIn(name+".meta",inputs)
+                self.assertIn("Tools/ShopUI/private-assets.json",inputs)
+                meta.write_text("unknown metadata",encoding="utf-8")
+                with self.assertRaisesRegex(RuntimeError,"MetadataMismatch"):
+                    scan.build_graph(portable=True,source_context=context)
+
+
 class PortablePathOrderingTests(unittest.TestCase):
     def test_portable_graph_is_independent_of_native_path_ordering(self):
         graphs = []

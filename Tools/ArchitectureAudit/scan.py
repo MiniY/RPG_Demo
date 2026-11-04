@@ -261,6 +261,18 @@ def event_subscription_candidates(graph: dict, root: Path) -> dict:
                            "No C# control-flow or delegate alias analysis"]}
 
 
+def private_payloads(root: Path) -> dict:
+    manifest = root / "Tools/ShopUI/private-assets.json"
+    if not manifest.is_file():
+        return {}
+    import sys
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "ShopUI"))
+    from private_assets import load_manifest, verify_metadata
+    document, _ = load_manifest(manifest)
+    verify_metadata(root, document)  # Opaque graph nodes; complete payload validation remains a separate check.
+    return {row["path"]: row for row in document["files"]}
+
+
 def build_graph(portable: bool = False, source_context: dict | None = None) -> dict:
     nodes: dict[str, dict] = {}
     edges: dict[tuple, dict] = {}
@@ -298,10 +310,14 @@ def build_graph(portable: bool = False, source_context: dict | None = None) -> d
         else:
             edges[key]["occurrences"] += 1
 
+    private = private_payloads(ROOT)
+    if private:
+        fingerprint.update((ROOT / "Tools/ShopUI/private-assets.json").read_bytes())
+
     # Native Path ordering differs by OS; fingerprint inputs use repository paths.
     for meta in sorted(ASSETS.rglob("*.meta"), key=relative):
         asset = Path(str(meta)[:-5])
-        if not asset.is_file():
+        if not asset.is_file() and relative(asset) not in private:
             continue
         # Unity Test Runner can create an ephemeral root-level scene during tests.
         # It is not an authored project scene and may disappear mid-scan.
@@ -341,6 +357,10 @@ def build_graph(portable: bool = False, source_context: dict | None = None) -> d
 
     for path in sorted(guid_to_path.values()):
         asset = ROOT / path
+        if path in private:
+            add_node("asset:" + path, asset.stem, "private asset", path,
+                     payloadSha256=private[path]["sha256"], payloadInspection="opaque licensed payload; separate recovery/runtime checks")
+            continue
         if asset.suffix.lower() in FINGERPRINT_EXTENSIONS:
             fingerprint.update(path.encode("utf-8"))
             fingerprint.update(asset.read_bytes())
@@ -357,7 +377,7 @@ def build_graph(portable: bool = False, source_context: dict | None = None) -> d
 
     for path in sorted(guid_to_path.values()):
         asset = ROOT / path
-        if asset.suffix.lower() not in YAML_EXTENSIONS:
+        if path in private or asset.suffix.lower() not in YAML_EXTENSIONS:
             continue
         raw = asset.read_text(encoding="utf-8-sig", errors="replace")
         source_id = "asset:" + path

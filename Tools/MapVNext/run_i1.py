@@ -135,23 +135,39 @@ def recover_known_font_cache(font,before,out,result,native,before_inputs,build):
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('phase',choices=['edit','play','prepare','build','player']);p.add_argument('--id',required=True);p.add_argument('--filter',default='MapVNextI1SeamTests');p.add_argument('--timeout',type=int,default=900)
-    p.add_argument('--player-phase',choices=['pilot','full','restore','startup','formal'],default='pilot');p.add_argument('--build-dir',type=Path);p.add_argument('--restore-copy',type=Path)
+    p.add_argument('--player-phase',choices=['pilot','full','restore','startup','formal','shop'],default='pilot');p.add_argument('--build-dir',type=Path);p.add_argument('--restore-copy',type=Path)
     p.add_argument('--startup-target',choices=['normal','i1']);p.add_argument('--startup-request',choices=['normal','i1']);p.add_argument('--expect-startup-rejection',action='store_true')
+    p.add_argument('--baseline-manifest',type=Path);p.add_argument('--materialization',type=Path)
+    p.add_argument('--shop-review',action='store_true');p.add_argument('--width',type=int,default=1920);p.add_argument('--height',type=int,default=1080);p.add_argument('--isolate-editor-data',action='store_true')
     p.add_argument('--unity',type=Path,help='Installed Editor matching ProjectVersion.txt; defaults to RPG_I1_UNITY or the standard Unity Hub directory')
     a=p.parse_args()
+    if a.isolate_editor_data:
+        if a.phase not in ('edit','play'):raise RuntimeError('EditorNamespaceOnlyForTests')
+        from captured_inputs import private_editor_settings
+        with private_editor_settings(C,a.id):return execute(a)
+    return execute(a)
+
+def execute(a):
     unity=None if a.phase=='player' else resolve_unity_editor(C,a.unity)
     out=ROOT/'VersionedRuns'/a.id;out.mkdir(parents=True,exist_ok=False)
     save(out/'observer-offline-selftest.json',selftest());save(out/'guard-before.json',before:=guard.status(C))
     if before['state']!='FREE':raise RuntimeError('GUARD_NOT_FREE:'+before['state'])
-    os.environ['RPG_I1_RUNTIME_ROOT']=str(ROOT/'RuntimeData'/a.id);os.environ['RPG_I1_EVIDENCE']=str(out)
-    fingerprint=subprocess.check_output([sys.executable,str(C/'Tools/EngineeringAssurance/assure.py'),'fingerprint'],cwd=C)
+    os.environ['RPG_I1_RUNTIME_ROOT']=str(C/'Artifacts/_rt'/a.id);os.environ['RPG_I1_EVIDENCE']=str(out)
+    if a.baseline_manifest:
+        from captured_inputs import fingerprint as captured_fingerprint
+        fingerprint=json.dumps(captured_fingerprint(C,a.baseline_manifest,a.materialization)).encode('utf-8')
+    else:
+        if a.materialization:raise RuntimeError('MaterializationRequiresCapturedBaseline')
+        fingerprint=subprocess.check_output([sys.executable,str(C/'Tools/EngineeringAssurance/assure.py'),'fingerprint'],cwd=C)
     (out/'source-fingerprint.txt').write_bytes(fingerprint);os.environ['RPG_I1_SOURCE_FINGERPRINT']=json.loads(fingerprint)['sourceFingerprint']
     variant={'normal':'DEFAULT','i1':'I1_PRIVATE'}.get(a.startup_target)
     if a.expect_startup_rejection and (a.phase!='player' or variant is None or a.startup_request is None):raise RuntimeError('ExplicitOwnedStartupRejectionRequired')
     if a.phase=='build' and variant is None and json.loads((C/'Assets/MapGeneration/MapVNext/I1/Resources/MapVNextI1Host.json').read_text('utf-8')).get('schema')==2:raise RuntimeError('ExplicitStartupBuildTargetRequired')
+    if a.shop_review and variant!='DEFAULT':raise RuntimeError('ShopReviewRequiresNormalTarget')
+    os.environ['RPG_SHOP_INTEGRATION_TESTS']='1' if a.shop_review else '0'
     if variant is not None:os.environ['RPG_I1_BUILD_TARGET']=variant
     default_build=ROOT/('Build-'+current_id())
-    if variant is not None:default_build=default_build/variant
+    if variant is not None:default_build=default_build/(variant+"_SHOP_REVIEW" if a.shop_review else variant)
     build=(a.build_dir or default_build).resolve();validator=None;built_tree=None;build_inputs=None
     if a.phase=='player':
         if not build.is_relative_to(ROOT.resolve()):raise RuntimeError('I1BuildMustBeInsideOwnArtifactRoot')
@@ -159,17 +175,18 @@ def main():
         built_tree=json.loads((build/'build-tree.json').read_text('utf-8'));build_inputs=json.loads((build/'build-inputs.json').read_text('utf-8'))
         if tree(build/'MVP_Windows_x64')!=built_tree or inputs()!=build_inputs:raise RuntimeError('I1BuildTreeOrRuntimeSourcesChanged')
         save(out/'build-tree-before.json',built_tree)
-        command=[str(exe),'-screen-width','1920','-screen-height','1080','-screen-fullscreen','0','-logFile',str(out/'player.log'),'--i1-accept',str(out/'Player'),'--i1-phase',a.player_phase]
+        command=[str(exe),'-screen-width',str(a.width),'-screen-height',str(a.height),'-screen-fullscreen','0','-logFile',str(out/'player.log'),'--i1-accept',str(out/'Player'),'--i1-phase',a.player_phase]
         if a.player_phase=='restore':
             if a.restore_copy is None or not a.restore_copy.resolve().is_relative_to(ROOT.resolve()) or not a.restore_copy.is_file():raise RuntimeError('OwnedCopiedCheckpointRequired')
             os.environ['RPG_I1_RESTORE_COPY']=str(a.restore_copy.resolve());save(out/'restore-input.json',{'path':str(a.restore_copy.resolve()),'sha256':sha(a.restore_copy),'originalFormalDataUsed':False})
         if variant is not None:
-            if report.get('startupTarget')!=variant or report.get('extraScriptingDefines')!=(['RPG_I1_ISOLATED_STARTUP'] if variant=='I1_PRIVATE' else []) or report.get('companyName')!='CodexMapAcceptance' or report.get('productName')!='RPG_M0_'+current_id()+'_'+variant:raise RuntimeError('ExactSealedStartupBuildMetadataRequired')
-            proof_phase='formal' if a.player_phase=='formal' else 'startup'
+            if report.get('startupTarget')!=variant or report.get('extraScriptingDefines')!=(['RPG_I1_ISOLATED_STARTUP'] if variant=='I1_PRIVATE' else ['RPG_SHOP_INTEGRATION_TESTS'] if a.shop_review else []) or report.get('companyName')!='CodexMapAcceptance' or report.get('productName')!='RPG_M0_'+current_id()+'_'+variant+('_SHOP_REVIEW' if a.shop_review else ''):raise RuntimeError('ExactSealedStartupBuildMetadataRequired')
+            proof_phase=a.player_phase if a.player_phase in ('formal','shop') else 'startup'
+            if proof_phase=='shop' and not a.shop_review:raise RuntimeError('ShopProbeRequiresExplicitReviewBuild')
             if proof_phase=='formal' and variant!='DEFAULT':raise RuntimeError('FormalNewGameRequiresOrdinaryDefaultBuild')
-            command=[str(exe),'-screen-width','1920','-screen-height','1080','-screen-fullscreen','0','-logFile',str(out/'player.log'),'--m0-startup-proof',str(out/'Player'),'--i1-phase',proof_phase]
+            command=[str(exe),'-screen-width',str(a.width),'-screen-height',str(a.height),'-screen-fullscreen','0','-logFile',str(out/'player.log'),'--m0-startup-proof',str(out/'Player'),'--i1-phase',proof_phase]
             if a.startup_request is not None:command+=['--m0-startup-request',a.startup_request]
-            if not a.expect_startup_rejection and a.player_phase!='formal':
+            if not a.expect_startup_rejection and a.player_phase not in ('formal','shop'):
                 if a.restore_copy is None or not a.restore_copy.resolve().is_relative_to(ROOT.resolve()) or not a.restore_copy.is_file():raise RuntimeError('OwnedActualSavedCopyRequired')
                 os.environ['RPG_I1_RESTORE_COPY']=str(a.restore_copy.resolve())
                 runtime=Path(os.environ['RPG_I1_RUNTIME_ROOT']) if variant=='I1_PRIVATE' else Path(os.environ['USERPROFILE'])/'AppData/LocalLow'/report['companyName']/report['productName']
@@ -177,6 +194,16 @@ def main():
                 if target.exists():(out/'OwnedPriorShadowInputSlot1.json').write_bytes(target.read_bytes())
                 target.write_bytes(a.restore_copy.read_bytes())
                 save(out/'restore-input.json',{'path':str(a.restore_copy.resolve()),'sha256':sha(a.restore_copy),'preparedInput':str(target),'preparedInputSha256':sha(target),'startupTarget':variant,'runtimeRoot':str(runtime),'originalFormalDataUsed':False,'normalNamespaceMode':'Baked company/product, original path resolver and actual PlayerPrefs, no ConfigureTestIsolation' if variant=='DEFAULT' else 'Compile-time explicit I1 isolation'})
+        if a.player_phase=='shop':
+            runtime=Path(os.environ['USERPROFILE'])/'AppData/LocalLow'/report['companyName']/report['productName']
+            if report['companyName']!='CodexMapAcceptance' or not report['productName'].endswith('_SHOP_REVIEW'):raise RuntimeError('ShopPrivateNamespaceRequired')
+            slots=runtime/'tower-run-slots';saved=[]
+            for i in range(1,4):
+                for suffix in ('','.backup','.tmp'):
+                    prior=slots/('tower-run-slot-'+str(i)+'.json'+suffix)
+                    if prior.is_file():
+                        backup=out/('OwnedPriorShadow-'+prior.name);backup.write_bytes(prior.read_bytes());saved.append({'path':str(prior),'sha256':sha(prior),'backup':str(backup)});prior.unlink()
+            save(out/'fresh-owned-review-slots.json',{'namespace':str(runtime),'files':saved,'productionDataTouched':False})
         expected=sha(exe)
         def validator(project,actual):
             if Path(project).resolve()!=C or actual!=command or sha(exe)!=expected or tree(build/'MVP_Windows_x64')!=built_tree:raise RuntimeError('I1PlayerBuildOrCommandChanged')

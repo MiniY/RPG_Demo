@@ -8,6 +8,7 @@ using UnityEngine;
 /// </summary>
 public class ShopGridUI : MonoBehaviour
 {
+    [SerializeField] private ShopDetailsUI detailsView;
     /// <summary>
     /// 当前商店使用的商品目录数据。
     /// </summary>
@@ -140,6 +141,9 @@ public class ShopGridUI : MonoBehaviour
     /// <param name="catalog">新的商店目录数据。</param>
     public void SetShopCatalog(ShopCatalogSO catalog)
     {
+        // 目录切换通知前先释放旧商品详情，避免用新交易上下文读取旧引用。
+        if (detailsView != null)
+            detailsView.Clear();
         shopCatalog = catalog;
         ApplyCatalogToTradeController();
         Refresh();
@@ -274,7 +278,7 @@ public class ShopGridUI : MonoBehaviour
 
         if (shopCatalog == null || slotPrefab == null || contentRoot == null)
         {
-            ShowWarning("商店 UI 配置不完整");
+            ShowWarning("商店界面配置不完整");
             return;
         }
 
@@ -290,6 +294,8 @@ public class ShopGridUI : MonoBehaviour
             ShopSlotUI slot = Instantiate(slotPrefab, contentRoot); // 新生成的商品格子。
             slot.SetData(product, tradeController);
             slot.OnPurchaseRequested += HandlePurchaseRequested;
+            slot.OnDetailsRequested += HandleDetailsRequested;
+            slot.OnDetailsHidden += HandleDetailsHidden;
             generatedSlots.Add(slot);
         }
 
@@ -301,6 +307,18 @@ public class ShopGridUI : MonoBehaviour
     /// 处理商品格子发出的购买请求。
     /// </summary>
     /// <param name="slot">请求购买的商品格子。</param>
+    private void HandleDetailsRequested(ShopSlotUI slot, bool pin)
+    {
+        if (detailsView != null && generatedSlots.Contains(slot))
+            detailsView.Show(slot, tradeController, pin);
+    }
+
+    private void HandleDetailsHidden(ShopSlotUI slot)
+    {
+        if (detailsView != null)
+            detailsView.EndHover(slot);
+    }
+
     private void HandlePurchaseRequested(ShopSlotUI slot)
     {
         TryPurchase(slot);
@@ -312,6 +330,8 @@ public class ShopGridUI : MonoBehaviour
     private void HandleTradeStateChanged()
     {
         RefreshGeneratedSlotStockStates();
+        if (detailsView != null)
+            detailsView.Refresh();
     }
 
     /// <summary>
@@ -334,6 +354,8 @@ public class ShopGridUI : MonoBehaviour
     /// </summary>
     public void ResetGridInteractionState()
     {
+        if (detailsView != null)
+            detailsView.Clear();
         for (int i = 0; i < generatedSlots.Count; i++)
         {
             ShopSlotUI slot = generatedSlots[i]; // 当前要重置的商品格子。
@@ -394,10 +416,10 @@ public class ShopGridUI : MonoBehaviour
     private void RefreshHeaderTexts()
     {
         if (shopNameText != null)
-            shopNameText.text = shopCatalog == null ? "Shop" : shopCatalog.ShopDisplayName;
+            shopNameText.text = ShopUiText.ShopName(shopCatalog);
 
         if (categoryNameText != null)
-            categoryNameText.text = shopCatalog == null ? currentCategory.ToString() : shopCatalog.GetCategoryDisplayName(currentCategory);
+            categoryNameText.text = ShopUiText.Category(currentCategory);
     }
 
     /// <summary>
@@ -418,7 +440,7 @@ public class ShopGridUI : MonoBehaviour
         if (warningText == null || warningRoot == null)
             return;
 
-        warningText.text = message;
+        warningText.text = ShopUiText.ChineseOr(message, "交易未完成，请重试");
         warningText.gameObject.SetActive(true);
         warningRoot.SetActive(true);
         hideWarningCoroutine = StartCoroutine(HideWarningAfterDelay());
@@ -500,6 +522,8 @@ public class ShopGridUI : MonoBehaviour
     /// </summary>
     private void ClearSlots()
     {
+        if (detailsView != null)
+            detailsView.Clear();
         for (int i = generatedSlots.Count - 1; i >= 0; i--)
         {
             ShopSlotUI slot = generatedSlots[i]; // 当前要清理的商品格子。
@@ -508,6 +532,9 @@ public class ShopGridUI : MonoBehaviour
                 continue;
 
             slot.OnPurchaseRequested -= HandlePurchaseRequested;
+            slot.OnDetailsRequested -= HandleDetailsRequested;
+            slot.OnDetailsHidden -= HandleDetailsHidden;
+            slot.gameObject.SetActive(false);
             Destroy(slot.gameObject);
         }
 

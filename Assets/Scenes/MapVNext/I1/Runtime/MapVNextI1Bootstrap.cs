@@ -10,6 +10,7 @@ public sealed class MapVNextI1Bootstrap : MonoBehaviour
     public const string I1ScenePath = "Assets/Scenes/MapVNext/I1/I1Game.unity";
     public EcologyRecipeDefinition VNextRecipe;
     public EcologyRecipeDefinition MainV1Recipe;
+    public EcologyRecipeDefinition LegacyVNextRecipe;
     public MapGenerationController Controller;
     public string RuntimeRoot { get; private set; }
     public static bool StartupRejected { get; private set; }
@@ -89,12 +90,12 @@ public sealed class MapVNextI1Bootstrap : MonoBehaviour
         RuntimeRoot = Path.GetFullPath(Path.GetDirectoryName(TowerRunRuntimeEnvironment.SlotRoot));
         RequirePrivateRoot(RuntimeRoot);
         var coordinator = GameSession.Instance == null ? null : GameSession.Instance.TowerRun;
-        if (VNextRecipe == null || MainV1Recipe == null || Controller == null || coordinator == null ||
-            VNextRecipe.DeclaredProfileId != EcologyRecipeDefinition.VNextI1ProfileId || MainV1Recipe.DeclaredProfileId != EcologyRecipeDefinition.MainV1ProfileId)
+        if (VNextRecipe == null || LegacyVNextRecipe == null || MainV1Recipe == null || Controller == null || coordinator == null ||
+            VNextRecipe.DeclaredProfileId != EcologyRecipeDefinition.VNextI1ProfileId || LegacyVNextRecipe.DeclaredProfileId != EcologyRecipeDefinition.VNextI1ProfileId || MainV1Recipe.DeclaredProfileId != EcologyRecipeDefinition.MainV1ProfileId)
             throw new InvalidOperationException("I1ExplicitContentInputsMissing");
         if (!MapHostBuildStamp.IsReviewedCompatibleHost) throw new InvalidOperationException("I1HostMustBeExplicitlySealed");
         if (GetComponent<MapVNextI1Panel>() == null) gameObject.AddComponent<MapVNextI1Panel>();
-        Controller.ConfigureRetainedEcologyRecipes(new[] { VNextRecipe, MainV1Recipe });
+        Controller.ConfigureRetainedEcologyRecipes(new[] { VNextRecipe, LegacyVNextRecipe, MainV1Recipe });
         coordinator.ConfigureNewRunProfile(EcologyRecipeDefinition.VNextI1ProfileId);
         Debug.Log("I1_ISOLATION slots=" + TowerRunRuntimeEnvironment.SlotRoot + " prefs=memory host=" + MapHostBuildStamp.BuildId);
     }

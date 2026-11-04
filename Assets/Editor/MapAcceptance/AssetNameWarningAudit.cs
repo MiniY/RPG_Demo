@@ -9,6 +9,52 @@ using UnityEngine;
 /// <summary>Opt-in importer regression probe. It never saves, renames or edits an asset.</summary>
 public static class AssetNameWarningAudit
 {
+    [Serializable] private sealed class MainFontProbe
+    {
+        public string project, persistent, slots, legacy, company, product, unity, fontGuid, fontSha256, exception;
+        public int characters, glyphs, atlasTextures, missingOldCharacters;
+        public bool noStorageOverride, staticAtlas, materialAndAtlasPresent;
+    }
+    public static void ProbeMainFontAndStorage()
+    {
+        string output = Environment.GetEnvironmentVariable("RPG_MAIN_FONT_OUT");
+        if (string.IsNullOrWhiteSpace(output)) throw new InvalidOperationException("ExplicitProbeOutputRequired");
+        var row = new MainFontProbe(); int exit = 0;
+        try
+        {
+            row.project = Path.GetFullPath(Path.Combine(Application.dataPath, ".."));
+            if (!string.Equals(row.project, @"D:\UnityProjects\RPG_Demo", StringComparison.OrdinalIgnoreCase) || EditorApplication.isPlaying)
+                throw new InvalidOperationException("MainIdleEditorRequired");
+            row.persistent = Application.persistentDataPath; row.slots = TowerRunRuntimeEnvironment.SlotRoot;
+            row.legacy = TowerRunRuntimeEnvironment.LegacySavePath; row.company = Application.companyName;
+            row.product = Application.productName; row.unity = Application.unityVersion;
+            row.noStorageOverride = Path.GetFullPath(row.slots) == Path.GetFullPath(Path.Combine(row.persistent, "tower-run-slots"));
+            const string fontPath = "Assets/Font/MyTMP.asset";
+            row.fontGuid = AssetDatabase.AssetPathToGUID(fontPath);
+            row.fontSha256 = MapHostCompatibility.Sha(File.ReadAllBytes(fontPath));
+            var font = AssetDatabase.LoadMainAssetAtPath(fontPath);
+            if (font == null || font.GetType().FullName != "TMPro.TMP_FontAsset") throw new InvalidOperationException("BusinessTMPFontMissing");
+            var so = new SerializedObject(font); var characters = so.FindProperty("m_CharacterTable");
+            row.characters = characters.arraySize; row.glyphs = so.FindProperty("m_GlyphTable").arraySize;
+            row.atlasTextures = so.FindProperty("m_AtlasTextures").arraySize;
+            row.staticAtlas = so.FindProperty("m_AtlasPopulationMode").intValue == 0;
+            row.materialAndAtlasPresent = row.atlasTextures > 0 && so.FindProperty("m_AtlasTextures").GetArrayElementAtIndex(0).objectReferenceValue != null &&
+                so.FindProperty("material").objectReferenceValue != null;
+            var codes = new HashSet<int>();
+            for (int i=0;i<characters.arraySize;i++) codes.Add(characters.GetArrayElementAtIndex(i).FindPropertyRelative("m_Unicode").intValue);
+            string expected = Environment.GetEnvironmentVariable("RPG_MAIN_FONT_OLD_CODES");
+            foreach (string code in File.ReadAllText(expected).Split(',')) if (!codes.Contains(int.Parse(code))) row.missingOldCharacters++;
+            if (!row.noStorageOverride || row.company != "DefaultCompany" || row.product != "RPG_Demo" || row.fontGuid != "18feaf95d90fd2545a36fb4b573dbe0a" ||
+                row.fontSha256 != "d369760a46cfd85e4af65dac61fec167bc7548dadbcb3ece7363b09b12ef7503" ||
+                row.characters != 388 || row.missingOldCharacters != 0 || !row.staticAtlas || !row.materialAndAtlasPresent)
+                throw new InvalidOperationException("MainFontOrStorageProbeFailed");
+            var current=AssetDatabase.LoadAssetAtPath<EcologyRecipeDefinition>("Assets/MapGeneration/MapVNext/I1/Recipe_MyTMPV1.asset");
+            current.ResolveTypes(); current.VerifyRetainedSourceFiles(true);
+        }
+        catch (Exception error) {row.exception=error.ToString();exit=2;}
+        Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(output)));
+        File.WriteAllText(output, JsonUtility.ToJson(row,true)); EditorApplication.Exit(exit);
+    }
     private const string Target = "Assets/Resources/Ecology/RemediationV3/Recipe.asset";
     private static readonly string[] Paths =
     {

@@ -16,3 +16,15 @@ python Tools/ShopUI/private_assets.py check
 正式入口仍为 `Assets/Scenes/SampleScene.unity`，真实靠近商人按 F 打开；WASD 移动，Esc/关闭按钮关店，Tab 背包。普通验收 Player 不带商店自动测试编译开关。独立的 `RPG_SHOP_INTEGRATION_TESTS` 变体只用于自动输入、截图与四种商人测试摆位，不能作为实体键盘人工通过。
 
 架构扫描对这17个资源以精确元数据与清单表示为 opaque（不读取像素内容的私有资产）节点；它不替代恢复器完整 SHA 检查或 Unity 字体／渲染验证。
+
+## 本轮中文离线验收报告入口
+
+按项目验收规范，此任务使用以下可重复生成/检查入口，不启动Unity、不操作Git：
+
+```powershell
+python Tools/ShopUI/deliver.py generate <含manifest.json和完整Player的本地验收包目录>
+python Tools/ShopUI/deliver.py check <同一目录>
+python -m unittest discover -s Tools/ShopUI -p test_delivery.py
+```
+
+生成器复用既有 `deliver_readable.py` 的中文用途/看点/操作/正常异常/证据字段、链接解析与完整文件树校验。输入manifest是实际Build/Run证据索引，不能凭空补人工结论。HTML检查通过还需浏览器预览并留独立回执；采样GIF与裁切图必须注明原件和派生关系，完整原PNG保留。本轮所有最终人工项目为PENDING_USER。

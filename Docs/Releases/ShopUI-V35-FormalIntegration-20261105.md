@@ -55,3 +55,13 @@
 Git通用空白检查原始返回2：314处均为Unity序列化空标量的标准 `key: ` 行，逐行限定扩展名与空标量正则后无其他项，保留原验证字节；没有豁免C#/Python/文档空白问题。原始检查及精确资格记录见本机 `whitespace-qualification.json`。此为序列化格式判断，不影响内容、字体或Host断言。
 
 最终普通Windows构建、真实主目录复验、源码提交/远端HEAD/CI及交付入口由本机任务最终回执记录；以上各行只陈述已经完成的候选证据，不能凭它们宣称整个dirty目录或人工验收全部通过。
+
+## 正式主目录及真实冷克隆补验
+
+main真实SampleScene商店Play为1/1，Run `d3021506a89f4814a02db2622b723c08`，自然0/unforced/残留0/双锁释放；测试前后正式存储文件及18项Player/5项Editor偏好原值一致，临时设置精确恢复。
+
+源码普通提交 `7621439fe6f14698171ec518f006281106494848` 后建立真实干净Git冷克隆，无Library，先恢复17私有资源后Git仍clean、845源组原SHA一致。冷导入普通Windows Build Run `1bb112c5b9984784869062092bca54f5` 成功，0 errors，`extraScriptingDefines=[]`、`shopIntegrationTests=false`，源输入/输出树资格及自然收尾通过。
+
+普通二进制的两个真实进程 Run `6906bb39973d4243b9352473233d057d`、`853710a72cb14713b81dc5975d9b5917` 从本轮实际新档副本出发，真实保存后第二新进程恢复、再次保存重开；四份完整World均与前述新冒险原件bfd9…b8f0a一致。正常入口仍使用baked影子company/product与原选择器，未调用I1私有启动能力或商店测试宏。最终可玩包是普通二进制，截图来自同一g04源组的显式Review变体，两者分别标识。最终main若仅追加文档/便携GUID映射/生成图谱，产品输入继续逐SHA匹配，无须据文档提交再伪称新构建。
+
+架构表补齐本次实际 `com.unity.ugui@1.0.0` 的LayoutElement与HorizontalLayoutGroup两条原包GUID；以原.meta和脚本校验值登记来源，解决新增布局组件在便携扫描中的8条重复未解析记录，不过滤未知项或更改运行时组件。正式图谱从包含该映射的干净已提交源码重新生成；主目录其他dirty与人工PENDING_USER边界保持。

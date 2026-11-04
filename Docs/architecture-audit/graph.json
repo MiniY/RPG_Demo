@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
-  "generatedAtUtc": "2026-11-04T05:48:17.352474+00:00",
+  "generatedAtUtc": "2026-11-04T11:46:32.607294+00:00",
   "root": ".",
-  "head": "bb47a3bbe771fb6f76c8070d820032d51370ae68",
+  "head": "e103470ffc4ab748460d7f6304539ac4cf709813",
   "sourceBranch": "main",
   "snapshotMode": "repository",
   "sourceDirty": false,
-  "sourceSha256": "43f6566b0048cddf3c219eb663096f475b0478e9d28a7b04b231f38e6886484b",
+  "sourceSha256": "462d9143c862f5a4695f5091a8f38c75916f67f94b7e376ab545fda3e474ef1b",
   "nodes": [
     {
       "id": "asset:Assets/Animations/HappySheep/HappySheep.controller",
@@ -104988,7 +104988,7 @@
       "target": "asset:Assets/Scripts/MapGeneration/MapRuntimeBootstrap.cs",
       "evidence": {
         "path": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
-        "line": 53
+        "line": 55
       },
       "evidenceType": "C# text match",
       "relationType": "dependency",
@@ -105004,7 +105004,7 @@
       "target": "asset:Assets/Scripts/MapGeneration/MapGenerationLifecycle.cs",
       "evidence": {
         "path": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
-        "line": 72
+        "line": 74
       },
       "evidenceType": "C# text match",
       "relationType": "dependency",
@@ -105020,7 +105020,7 @@
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyMapRuntime.cs",
       "evidence": {
         "path": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
-        "line": 219
+        "line": 223
       },
       "evidenceType": "C# text match",
       "relationType": "dependency",
@@ -105036,7 +105036,7 @@
       "target": "asset:Assets/Scripts/MapGeneration/MapRuntimeFoundation.cs",
       "evidence": {
         "path": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
-        "line": 422
+        "line": 426
       },
       "evidenceType": "C# text match",
       "relationType": "dependency",
@@ -105052,7 +105052,7 @@
       "target": "asset:Assets/Scripts/MapGeneration/MapIntegrationOrchestrator.cs",
       "evidence": {
         "path": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
-        "line": 540
+        "line": 552
       },
       "evidenceType": "C# text match",
       "relationType": "dependency",
@@ -105070,7 +105070,7 @@
       "target": "asset:Assets/Scripts/MapGeneration/MapPlacementPlanning.cs",
       "evidence": {
         "path": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
-        "line": 595
+        "line": 607
       },
       "evidenceType": "C# text match",
       "relationType": "dependency",
@@ -105086,7 +105086,7 @@
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyEntryIdentity.cs",
       "evidence": {
         "path": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
-        "line": 641
+        "line": 653
       },
       "evidenceType": "C# text match",
       "relationType": "dependency",
@@ -105102,7 +105102,7 @@
       "target": "asset:Assets/Scripts/MapGeneration/Ecology/EcologyRecipeDefinition.cs",
       "evidence": {
         "path": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
-        "line": 652
+        "line": 664
       },
       "evidenceType": "C# text match",
       "relationType": "dependency",
@@ -105118,7 +105118,7 @@
       "target": "asset:Assets/Scripts/MapGeneration/MapSurfaceV4Visuals.cs",
       "evidence": {
         "path": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
-        "line": 725
+        "line": 737
       },
       "evidenceType": "C# text match",
       "relationType": "dependency",
@@ -106766,7 +106766,7 @@
       "target": "asset:Assets/Scripts/Player/PlayerAction.cs",
       "evidence": {
         "path": "Assets/Scripts/TowerRunCoordinator.cs",
-        "line": 558
+        "line": 570
       },
       "evidenceType": "C# text match",
       "relationType": "dependency",
@@ -106782,7 +106782,7 @@
       "target": "asset:Assets/Scripts/MapGeneration/MapGenerationLifecycle.cs",
       "evidence": {
         "path": "Assets/Scripts/TowerRunCoordinator.cs",
-        "line": 634
+        "line": 646
       },
       "evidenceType": "C# text match",
       "relationType": "dependency",
@@ -110238,7 +110238,7 @@
       "target": "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
       "evidence": {
         "path": "Assets/Tests/MapVNext/PlayMode/MapVNextFormalDefaultTests.cs",
-        "line": 95
+        "line": 90
       },
       "evidenceType": "C# text match",
       "relationType": "dependency",
@@ -110797,7 +110797,7 @@
       "target": "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
       "evidence": {
         "path": "Assets/Scripts/TowerRunCoordinator.cs",
-        "line": 459
+        "line": 471
       },
       "evidenceType": "reviewed source line",
       "relationType": "call",
@@ -110820,7 +110820,7 @@
       "target": "asset:Assets/Scripts/MapGeneration/MapIntegrationOrchestrator.cs",
       "evidence": {
         "path": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
-        "line": 196
+        "line": 198
       },
       "evidenceType": "reviewed source line",
       "relationType": "call",
@@ -110845,7 +110845,7 @@
       "target": "asset:Assets/Scripts/MapGeneration/RandomMapGenerator.cs",
       "evidence": {
         "path": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
-        "line": 561
+        "line": 573
       },
       "evidenceType": "reviewed source line",
       "relationType": "generation",
@@ -110868,7 +110868,7 @@
       "target": "asset:Assets/Scripts/MapGeneration/MonsterPlacementService.cs",
       "evidence": {
         "path": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
-        "line": 625
+        "line": 637
       },
       "evidenceType": "reviewed source line",
       "relationType": "call",
@@ -110891,7 +110891,7 @@
       "target": "asset:Assets/Scripts/MapGeneration/MonsterPlacementService.cs",
       "evidence": {
         "path": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
-        "line": 281
+        "line": 285
       },
       "evidenceType": "reviewed source line",
       "relationType": "generation",
@@ -110914,7 +110914,7 @@
       "target": "asset:Assets/Scripts/MapGeneration/DestructiblePlacementService.cs",
       "evidence": {
         "path": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
-        "line": 289
+        "line": 293
       },
       "evidenceType": "reviewed source line",
       "relationType": "generation",
@@ -110937,7 +110937,7 @@
       "target": "asset:Assets/Scripts/MapGeneration/PlayerSpawnService.cs",
       "evidence": {
         "path": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
-        "line": 316
+        "line": 320
       },
       "evidenceType": "reviewed source line",
       "relationType": "generation",
@@ -110960,7 +110960,7 @@
       "target": "asset:Assets/Scripts/MapGeneration/CameraBindingService.cs",
       "evidence": {
         "path": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
-        "line": 375
+        "line": 379
       },
       "evidenceType": "reviewed source line",
       "relationType": "call",
@@ -111090,7 +111090,7 @@
       "target": "asset:Assets/Scripts/TowerRunRuntimeStateBridge.cs",
       "evidence": {
         "path": "Assets/Scripts/TowerRunCoordinator.cs",
-        "line": 386
+        "line": 392
       },
       "evidenceType": "reviewed source line",
       "relationType": "call",
@@ -111403,7 +111403,7 @@
       "target": "asset:Assets/Scripts/MapGeneration/DestructiblePlacementService.cs",
       "evidence": {
         "path": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
-        "line": 626
+        "line": 638
       },
       "evidenceType": "reviewed source line",
       "relationType": "call",

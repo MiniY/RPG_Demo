@@ -285,6 +285,11 @@ public sealed class TowerRunCoordinator : MonoBehaviour, IEcologyMapSession, IEc
 
     public void RetryFailedOperation()
     {
+        RetryFailedOperationCore(false);
+    }
+
+    private void RetryFailedOperationCore(bool deferRetryableRejections)
+    {
         if (!CanRetryFailedOperation)
             return;
 
@@ -301,7 +306,8 @@ public sealed class TowerRunCoordinator : MonoBehaviour, IEcologyMapSession, IEc
             retry.schemaVersion = TowerRunCheckpointRecord.CurrentSchemaVersion;
         }
 
-        BeginOperation(operationKind, retry, preserveExistingGates: true);
+        BeginOperation(operationKind, retry, preserveExistingGates: true,
+            deferRetryableRejections: deferRetryableRejections);
     }
 
     public void ReturnToStartupChoice()
@@ -404,28 +410,34 @@ public sealed class TowerRunCoordinator : MonoBehaviour, IEcologyMapSession, IEc
     private void BeginRandomOperation(TowerRunOperationKind kind, TowerRunCheckpointRecord record)
     {
         var previousFailure = mapController == null ? null : mapController.Orchestrator.Context.Failure;
-        BeginOperation(kind, record);
+        BeginOperation(kind, record, deferRetryableRejections: true);
         for (int attempt = 1; attempt < 12 && CanRetryRejectedRandomMap(previousFailure); attempt++)
         {
             previousFailure = mapController.Orchestrator.Context.Failure;
             Debug.Log("VNEXT_RANDOM_RETRY operation=" + kind + " rejectedSeed=" + stagedRecord.generation.requestedSeed +
                 " retry=" + attempt + " code=" + mapController.Orchestrator.Context.Failure.Code, this);
-            RetryFailedOperation();
+            RetryFailedOperationCore(true);
+        }
+
+        if (CanRetryRejectedRandomMap(previousFailure))
+        {
+            var failure = mapController.Orchestrator.Context.Failure;
+            Debug.LogError($"Random map generation failed after 12 candidate inputs [{failure.Code}]: {failure.Reason}", this);
         }
     }
 
     private bool CanRetryRejectedRandomMap(MapFailureDiagnostic previousFailure)
     {
         var failure = mapController == null ? null : mapController.Orchestrator.Context.Failure;
-        return CanRetryFailedOperation && stagedRecord.generation.profileId == EcologyRecipeDefinition.VNextI1ProfileId &&
-            failure != null && !ReferenceEquals(failure, previousFailure) &&
-            (failure.Code == "VNextFormalLayoutRejected" || failure.Code == "EcologyBudgetExhaustedOnFixedTerrain");
+        return CanRetryFailedOperation && !ReferenceEquals(failure, previousFailure) &&
+            MapGenerationController.IsRetryableRandomRejection(stagedRecord.generation.profileId, failure);
     }
 
     private void BeginOperation(
         TowerRunOperationKind kind,
         TowerRunCheckpointRecord record,
-        bool preserveExistingGates = false)
+        bool preserveExistingGates = false,
+        bool deferRetryableRejections = false)
     {
         if (mapController == null || record == null)
         {
@@ -456,7 +468,7 @@ public sealed class TowerRunCoordinator : MonoBehaviour, IEcologyMapSession, IEc
 
         try
         {
-            generated = mapController.TryGenerateMap(request);
+            generated = mapController.TryGenerateMap(request, deferRetryableRejections);
         }
         catch (Exception exception)
         {

@@ -141,6 +141,9 @@
 
 # RPG_Demo 随机地图现行规则与局部记忆
 
+<!-- PLAY-ERROR-REPORTING-FIX-20261104 -->
+> **2026-11-04 Play 重试报错与 Player 标签修复**：原始日志前四个地图候选拒绝、第五个 Seed `666268681` 成功；仅调整自动重试过程的错误报告时机，保留原 12 输入预算、地图拒绝条件及终末失败报告。显式 Seed、固定队列、手动 Retry、Restore 与配置异常继续即时报告。另移除自定义标签中重复的内置 `Player` 条目，保留对象标签与其他配置。R01–R18、生成算法/参数/资源/配方及存档无变化。实现、复用、回归与真实退出证据见 [本次修复记录](Docs/MapGeneration/MapVNext-PlayErrorFix-20261104.md)；按内部诊断/配置修复简化分支验证，无新 Windows MVP 或人工验收结论。此次发布只采用已完成修复，其余本地工作不纳入。以下历史原文保留。
+
 > **最新方案 A 诊断（2026-10-17）**：按用户明确授权测试 W+D/S+A 和斜边；原版可斜向往返但D仍水平直通，按黑线建立的局部候选净宽不足完整正式Capsule，真实上行失败。当前 `DESIGN_DECISION_REQUIRED`，已停止正式实现，等待是否允许只拓宽可见坡面。原Side02人工PASS及Final02证据原样保留；本轮新图与Final02全像素相同、运行代码未改。见第13节及[本轮失败/裁决页](Artifacts/MapAcceptance/StandardStairDiagonal-20261017/Report/index.html)。不进入Stage2。
 
 > **最新后续补丁（2026-10-17）**：Side02历史单梯人工PASS保留；入口排序过渡与西南角两项新缺陷已完成Final02联测及独立Windows Player往返，新视觉为 `PATCH_VISUAL_REVIEW_PENDING`，见第12节及[新版审核页](Artifacts/MapAcceptance/StandardStairPatch-20261017/Report/index.html)。等待新的人工确认，不进入Stage2。

@@ -48,7 +48,9 @@ public class MapGenerationController : MonoBehaviour
             ConfigureRetainedEcologyRecipes(retainedEcologyRecipes);
     }
 
-    public void GenerateMap()
+    public void GenerateMap() => GenerateMapCore(false);
+
+    private void GenerateMapCore(bool deferRetryableRejections)
     {
         MapRuntimeBootstrap bootstrap = GetComponentInParent<MapRuntimeBootstrap>();
         if (bootstrap != null && !bootstrap.CanRunRandomGeneration)
@@ -210,7 +212,9 @@ public class MapGenerationController : MonoBehaviour
 
         if (!result.Succeeded)
         {
-            Debug.LogError($"Map generation failed [{result.Failure.Code}]: {result.Failure.Reason}", this);
+            // The random-operation owner reports a terminal error after its bounded retry loop.
+            if (!deferRetryableRejections || !IsRetryableRandomRejection(request.ProfileId, result.Failure))
+                Debug.LogError($"Map generation failed [{result.Failure.Code}]: {result.Failure.Reason}", this);
             return;
         }
 
@@ -476,7 +480,9 @@ public class MapGenerationController : MonoBehaviour
     public void RegenerateMap() => GenerateMap();
 
     /// <summary>Runs one explicit generation request without mutating the settings asset.</summary>
-    public bool TryGenerateMap(MapGenerationRequest request)
+    public bool TryGenerateMap(MapGenerationRequest request) => TryGenerateMap(request, false);
+
+    public bool TryGenerateMap(MapGenerationRequest request, bool deferRetryableRejections)
     {
         if (request == null)
             return false;
@@ -485,7 +491,7 @@ public class MapGenerationController : MonoBehaviour
 
         try
         {
-            GenerateMap();
+            GenerateMapCore(deferRetryableRejections);
             return orchestrator != null && orchestrator.Context.IsReady;
         }
         catch (Exception exception)
@@ -506,6 +512,12 @@ public class MapGenerationController : MonoBehaviour
         {
             requestedGeneration = null;
         }
+    }
+
+    public static bool IsRetryableRandomRejection(string profileId, MapFailureDiagnostic failure)
+    {
+        return profileId == EcologyRecipeDefinition.VNextI1ProfileId && failure != null &&
+            (failure.Code == "VNextFormalLayoutRejected" || failure.Code == "EcologyBudgetExhaustedOnFixedTerrain");
     }
 
     public void RandomizeSeed()

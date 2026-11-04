@@ -4,13 +4,13 @@
     "DEFAULT",
     "I1_PRIVATE"
   ],
-  "buildId": "map-formal-default-20261104-d03",
-  "implementationDigest": "45f461e9f9301ba60747fd7d6aa502585312d1022447343395ffc170422a2dd1",
+  "buildId": "map-play-error-fix-20261104-e02",
+  "implementationDigest": "1fd96fc163f4d6b2466985ea3234a1a16a8ed082ad28f398a4eaeeaf83462b97",
   "oldContentVersion": "content-r1:c55fb3b4b0362e8bb59e84f4624fbb22c2f9ef96f3dcd5f61481a92dab9c9802",
   "newContentVersion": "content-r1:c1b30f168534f17598f385ad32ab67078f9fb28b5f8cb6f346dcb6b800249ec9",
-  "closureSha256": "a79b7efd82c0328cab2f10dae8dd52c989056d95e74490e6bc4044ea56fb6b18",
-  "reviewEvidenceSha256": "09f693dcb37b13a798e213ea2ba32870792030fd9d285ec1de7de41fb5ddd1a1",
-  "stampSha256": "bac5a4443b68f5d0dea26a5ab5f9f2a9e6ba5f3bc52acfb7ddc564a96b6736aa",
+  "closureSha256": "420dd226ed63a8d8c8084a898ef10eb2797ab461e969c27e13aac2182e7522d6",
+  "reviewEvidenceSha256": "f940314d9097107a0c803608a46ff24ed224c57320065f0b304cdf19490e0f7c",
+  "stampSha256": "4b618db54c376b923db290139d7a75ebe01fce77f7d2678f53012a17fa0ebbbd",
   "files": [
     {
       "path": "Assets/Editor/MapAcceptance/AssetNameWarningAudit.cs",
@@ -1074,7 +1074,7 @@
     },
     {
       "path": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
-      "sha256": "3224294ae4f6b443cd505006e1b1aa9d121ff83694deefafa8a35275d69b3e67"
+      "sha256": "eb10c361840c223c776cf056924a65043ced8a9c5841604559fc62bbbebb9bce"
     },
     {
       "path": "Assets/Scripts/MapGeneration/MapGenerationController.cs.meta",
@@ -1958,7 +1958,7 @@
     },
     {
       "path": "Assets/Scripts/TowerRunCoordinator.cs",
-      "sha256": "2ef9cbe3367cd4d033d3c30037286d9a57e4ff0c515e9e7f3016df77f293d3b1"
+      "sha256": "23246c39fc528f9258dddc7733b5ef14cd397b8e5dc64a3d4b473e075a8695a3"
     },
     {
       "path": "Assets/Scripts/TowerRunCoordinator.cs.meta",
@@ -2582,7 +2582,7 @@
     },
     {
       "path": "Assets/Tests/MapVNext/PlayMode/MapVNextFormalDefaultTests.cs",
-      "sha256": "abe3e1593ae131b3925416ea4c154ea0603d0ea539a7a0c24582562ce616cb10"
+      "sha256": "ff463f46cff5fb8a91cafed9f3ce815c48e3557ce4c858be3578c9f05b93d9d9"
     },
     {
       "path": "Assets/Tests/MapVNext/PlayMode/MapVNextFormalDefaultTests.cs.meta",
@@ -2833,7 +2833,7 @@
     {
       "path": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
       "originalSha256": "7bb7c227706e3e7ea7354ff7ef7915eec337f2fb5dce4983881d3a12120a19ba",
-      "currentSha256": "3224294ae4f6b443cd505006e1b1aa9d121ff83694deefafa8a35275d69b3e67"
+      "currentSha256": "eb10c361840c223c776cf056924a65043ced8a9c5841604559fc62bbbebb9bce"
     },
     {
       "path": "Assets/Scripts/MapGeneration/MapIntegrationOrchestrator.cs",
@@ -2868,7 +2868,7 @@
     {
       "path": "Assets/Scripts/TowerRunCoordinator.cs",
       "originalSha256": "d36753c417109928686b874a9937eb082e4d3b1f0c6db8c6f2fd24357b8413ca",
-      "currentSha256": "2ef9cbe3367cd4d033d3c30037286d9a57e4ff0c515e9e7f3016df77f293d3b1"
+      "currentSha256": "23246c39fc528f9258dddc7733b5ef14cd397b8e5dc64a3d4b473e075a8695a3"
     }
   ]
 }

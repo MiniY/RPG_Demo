@@ -1,173 +1,1282 @@
 {
   "schemaVersion": 1,
-  "fromSourceSha256": "12763a76d74c8719139e8109c59953a95bb9d40819e93f64dcccea4f5c123ef8",
-  "toSourceSha256": "8db3767f2850f8ff27968a26f2eee7ebff0167c396fa6478ad2e75aaff39395f",
-  "generatedAtUtc": "2026-11-02T05:48:40.047023+00:00",
+  "fromSourceSha256": "8db3767f2850f8ff27968a26f2eee7ebff0167c396fa6478ad2e75aaff39395f",
+  "toSourceSha256": "43f6566b0048cddf3c219eb663096f475b0478e9d28a7b04b231f38e6886484b",
+  "generatedAtUtc": "2026-11-04T05:48:17.352474+00:00",
   "sourceBranch": "main",
-  "sourceCommitAtGeneration": "f23c16e95347494577c5362dbdbbe3bb19628ed0",
-  "oldNodeCount": 2448,
-  "newNodeCount": 2452,
-  "oldEdgeCount": 5563,
-  "newEdgeCount": 5570,
+  "sourceCommitAtGeneration": "bb47a3bbe771fb6f76c8070d820032d51370ae68",
+  "oldNodeCount": 2452,
+  "newNodeCount": 2454,
+  "oldEdgeCount": 5570,
+  "newEdgeCount": 5576,
   "unresolvedGuidCount": 0,
   "duplicateGuidCount": 0,
   "addedNodes": [
-    "asset:Assets/Editor/MapAcceptance/AssetNameWarningAudit.cs",
-    "asset:Assets/Editor/TinySwordsEnemyPack/TinySwordsEnemyPackAuthoring.cs",
-    "asset:Assets/Editor/TinySwordsEnemyPack/TinySwordsEnemyPackBuild.cs",
-    "asset:Assets/Tests/PrefabPreview/TinySwordsEnemyPackPreview.cs"
+    "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Formal.cs",
+    "asset:Assets/Tests/MapVNext/PlayMode/MapVNextFormalDefaultTests.cs"
   ],
   "removedNodes": [],
-  "changedNodes": [],
+  "changedNodes": [
+    "component:Assets/Scenes/SampleScene.unity#2049315206",
+    "component:Assets/Scenes/SampleScene.unity#2049315207",
+    "component:Assets/Scenes/SampleScene.unity#2050721541",
+    "component:Assets/Scenes/SampleScene.unity#2050721542",
+    "component:Assets/Scenes/SampleScene.unity#2060943885",
+    "component:Assets/Scenes/SampleScene.unity#2060943886",
+    "component:Assets/Scenes/SampleScene.unity#2090919177",
+    "component:Assets/Scenes/SampleScene.unity#2113168878",
+    "component:Assets/Scenes/SampleScene.unity#2113168879",
+    "component:Assets/Scenes/SampleScene.unity#2115257970",
+    "component:Assets/Scenes/SampleScene.unity#2115257971",
+    "component:Assets/Scenes/SampleScene.unity#2115257972",
+    "component:Assets/Scenes/SampleScene.unity#2115257973",
+    "component:Assets/Scenes/SampleScene.unity#2115257974",
+    "component:Assets/Scenes/SampleScene.unity#2133880717",
+    "component:Assets/Scenes/SampleScene.unity#2133880718",
+    "component:Assets/Scenes/SampleScene.unity#4100000003",
+    "go:Assets/Scenes/SampleScene.unity#2049315204",
+    "go:Assets/Scenes/SampleScene.unity#2050721539",
+    "go:Assets/Scenes/SampleScene.unity#2060943883",
+    "go:Assets/Scenes/SampleScene.unity#2090919176",
+    "go:Assets/Scenes/SampleScene.unity#2113168876",
+    "go:Assets/Scenes/SampleScene.unity#2115257968",
+    "go:Assets/Scenes/SampleScene.unity#2133880715",
+    "go:Assets/Scenes/SampleScene.unity#4100000001"
+  ],
   "addedEdges": [
     [
-      "asset:Assets/Editor/TinySwordsEnemyPack/TinySwordsEnemyPackAuthoring.cs",
+      "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Formal.cs",
       "code type reference",
-      "asset:Assets/Tests/PrefabPreview/TinySwordsEnemyPackPreview.cs",
-      "Assets/Editor/TinySwordsEnemyPack/TinySwordsEnemyPackAuthoring.cs",
-      383
-    ],
-    [
-      "asset:Assets/Editor/TinySwordsEnemyPack/TinySwordsEnemyPackBuild.cs",
-      "code type reference",
-      "asset:Assets/Editor/MapVNext/MapVNextI1Authoring.cs",
-      "Assets/Editor/TinySwordsEnemyPack/TinySwordsEnemyPackBuild.cs",
-      31
-    ],
-    [
-      "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Consumers.cs",
-      "code type reference",
-      "asset:Assets/Editor/TinySwordsEnemyPack/TinySwordsEnemyPackAuthoring.cs",
-      "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Consumers.cs",
-      103
-    ],
-    [
-      "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Defense.cs",
-      "code type reference",
-      "asset:Assets/Editor/TinySwordsEnemyPack/TinySwordsEnemyPackAuthoring.cs",
-      "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Defense.cs",
-      100
-    ],
-    [
-      "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Diagnostics.cs",
-      "code type reference",
-      "asset:Assets/Editor/TinySwordsEnemyPack/TinySwordsEnemyPackAuthoring.cs",
-      "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Diagnostics.cs",
-      54
-    ],
-    [
-      "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Input.cs",
-      "code type reference",
-      "asset:Assets/Editor/TinySwordsEnemyPack/TinySwordsEnemyPackAuthoring.cs",
-      "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Input.cs",
-      231
-    ],
-    [
       "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.cs",
-      "code type reference",
-      "asset:Assets/Editor/TinySwordsEnemyPack/TinySwordsEnemyPackAuthoring.cs",
-      "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.cs",
-      57
-    ],
-    [
-      "asset:Assets/Scripts/PlayerInventory.cs",
-      "OnInventoryChanged event subscriber",
-      "asset:Assets/Scripts/UI/PackageGridUI.cs",
-      "Assets/Scripts/UI/PackageGridUI.cs",
-      68
-    ],
-    [
-      "asset:Assets/Scripts/UI/PackageGridUI.cs",
-      "passes stack data to visible slot",
-      "asset:Assets/Scripts/UI/PackageSlotUI.cs",
-      "Assets/Scripts/UI/PackageGridUI.cs",
-      156
-    ],
-    [
-      "asset:Assets/Tests/MapGeneration/PlayMode/SurfaceV4FloorPopulationPlayModeTests.cs",
-      "code type reference",
-      "asset:Assets/Editor/MapAcceptance/AssetNameWarningAudit.cs",
-      "Assets/Tests/MapGeneration/PlayMode/SurfaceV4FloorPopulationPlayModeTests.cs",
+      "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Formal.cs",
       36
     ],
     [
-      "asset:Assets/Tests/MapVNext/EditMode/MapVNextI1LandAuditTests.cs",
+      "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Formal.cs",
       "code type reference",
-      "asset:Assets/Editor/MapAcceptance/AssetNameWarningAudit.cs",
-      "Assets/Tests/MapVNext/EditMode/MapVNextI1LandAuditTests.cs",
-      22
+      "asset:Assets/Scripts/UI/TowerRunUiController.cs",
+      "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Formal.cs",
+      32
     ],
     [
-      "asset:Assets/Tests/MapVNext/EditMode/MapVNextI1LandAuditTests.cs",
-      "code type reference",
-      "asset:Assets/Tests/MapGeneration/PlayMode/SurfaceV4FloorPopulationPlayModeTests.cs",
-      "Assets/Tests/MapVNext/EditMode/MapVNextI1LandAuditTests.cs",
-      29
+      "asset:Assets/Scenes/SampleScene.unity",
+      "contains GameObject",
+      "go:Assets/Scenes/SampleScene.unity#2049315204",
+      "Assets/Scenes/SampleScene.unity",
+      49982
     ],
     [
-      "asset:Assets/Tests/PrefabPreview/TinySwordsEnemyPackPreview.cs",
-      "code type reference",
-      "asset:Assets/Editor/MapAcceptance/AssetNameWarningAudit.cs",
-      "Assets/Tests/PrefabPreview/TinySwordsEnemyPackPreview.cs",
-      245
+      "asset:Assets/Scenes/SampleScene.unity",
+      "contains GameObject",
+      "go:Assets/Scenes/SampleScene.unity#2050721539",
+      "Assets/Scenes/SampleScene.unity",
+      50057
     ],
     [
-      "asset:Assets/Tests/PrefabPreview/TinySwordsEnemyPackPreview.cs",
+      "asset:Assets/Scenes/SampleScene.unity",
+      "contains GameObject",
+      "go:Assets/Scenes/SampleScene.unity#2060943883",
+      "Assets/Scenes/SampleScene.unity",
+      50132
+    ],
+    [
+      "asset:Assets/Scenes/SampleScene.unity",
+      "contains GameObject",
+      "go:Assets/Scenes/SampleScene.unity#2090919176",
+      "Assets/Scenes/SampleScene.unity",
+      50266
+    ],
+    [
+      "asset:Assets/Scenes/SampleScene.unity",
+      "contains GameObject",
+      "go:Assets/Scenes/SampleScene.unity#2113168876",
+      "Assets/Scenes/SampleScene.unity",
+      50347
+    ],
+    [
+      "asset:Assets/Scenes/SampleScene.unity",
+      "contains GameObject",
+      "go:Assets/Scenes/SampleScene.unity#2115257968",
+      "Assets/Scenes/SampleScene.unity",
+      50422
+    ],
+    [
+      "asset:Assets/Scenes/SampleScene.unity",
+      "contains GameObject",
+      "go:Assets/Scenes/SampleScene.unity#2133880715",
+      "Assets/Scenes/SampleScene.unity",
+      52895
+    ],
+    [
+      "asset:Assets/Scenes/SampleScene.unity",
+      "contains GameObject",
+      "go:Assets/Scenes/SampleScene.unity#4100000001",
+      "Assets/Scenes/SampleScene.unity",
+      52971
+    ],
+    [
+      "asset:Assets/Scenes/SampleScene.unity",
+      "prefab source",
+      "asset:Assets/Prefabs/MapGeneration/RandomMapRuntime.prefab",
+      "Assets/Scenes/SampleScene.unity",
+      49914
+    ],
+    [
+      "asset:Assets/Scenes/SampleScene.unity",
+      "prefab source",
+      "asset:Assets/Prefabs/Monsters/Torch/Torch_Blue.prefab",
+      "Assets/Scenes/SampleScene.unity",
+      53075
+    ],
+    [
+      "asset:Assets/Scenes/SampleScene.unity",
+      "prefab source",
+      "asset:Assets/Prefabs/NPC/Merchant_Pawn.prefab",
+      "Assets/Scenes/SampleScene.unity",
+      53151
+    ],
+    [
+      "asset:Assets/Scenes/SampleScene.unity",
+      "serialized GUID reference",
+      "asset:Assets/MapGeneration/MapVNext/I1/ExitPortal_Inactive.prefab",
+      "Assets/Scenes/SampleScene.unity",
+      49581
+    ],
+    [
+      "asset:Assets/Scenes/SampleScene.unity",
+      "serialized GUID reference",
+      "asset:Assets/MapGeneration/MapVNext/I1/Recipe.asset",
+      "Assets/Scenes/SampleScene.unity",
+      49589
+    ],
+    [
+      "asset:Assets/Scenes/SampleScene.unity",
+      "serialized GUID reference",
+      "asset:Assets/Prefabs/Monsters/Torch/Torch_Blue.prefab",
+      "Assets/Scenes/SampleScene.unity",
+      49917
+    ],
+    [
+      "asset:Assets/Scenes/SampleScene.unity",
+      "serialized GUID reference",
+      "asset:Assets/Resources/Ecology/SurfaceV4MainV1/Recipe.asset",
+      "Assets/Scenes/SampleScene.unity",
+      49593
+    ],
+    [
+      "asset:Assets/Scenes/SampleScene.unity",
+      "serialized script",
+      "asset:Assets/Scripts/Damageable/Monster/MonsterAIController.cs",
+      "Assets/Scenes/SampleScene.unity",
+      53084
+    ],
+    [
+      "asset:Assets/Scenes/SampleScene.unity",
+      "serialized script",
+      "asset:Assets/Scripts/NPC/MerchantInteractionController.cs",
+      "Assets/Scenes/SampleScene.unity",
+      53160
+    ],
+    [
+      "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "binds camera after spawn",
+      "asset:Assets/Scripts/MapGeneration/CameraBindingService.cs",
+      "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      375
+    ],
+    [
+      "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
       "code type reference",
-      "asset:Assets/Scripts/MapGeneration/VNext/MapVNextDemo.cs",
-      "Assets/Tests/PrefabPreview/TinySwordsEnemyPackPreview.cs",
-      283
+      "asset:Assets/Scripts/MapGeneration/Ecology/EcologyEntryIdentity.cs",
+      "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      641
+    ],
+    [
+      "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "code type reference",
+      "asset:Assets/Scripts/MapGeneration/Ecology/EcologyMapRuntime.cs",
+      "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      219
+    ],
+    [
+      "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "code type reference",
+      "asset:Assets/Scripts/MapGeneration/Ecology/EcologyRecipeDefinition.cs",
+      "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      652
+    ],
+    [
+      "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "code type reference",
+      "asset:Assets/Scripts/MapGeneration/MapGenerationLifecycle.cs",
+      "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      72
+    ],
+    [
+      "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "code type reference",
+      "asset:Assets/Scripts/MapGeneration/MapIntegrationOrchestrator.cs",
+      "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      540
+    ],
+    [
+      "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "code type reference",
+      "asset:Assets/Scripts/MapGeneration/MapPlacementPlanning.cs",
+      "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      595
+    ],
+    [
+      "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "code type reference",
+      "asset:Assets/Scripts/MapGeneration/MapRuntimeBootstrap.cs",
+      "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      53
+    ],
+    [
+      "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "code type reference",
+      "asset:Assets/Scripts/MapGeneration/MapRuntimeFoundation.cs",
+      "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      422
+    ],
+    [
+      "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "code type reference",
+      "asset:Assets/Scripts/MapGeneration/MapSurfaceV4Visuals.cs",
+      "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      725
+    ],
+    [
+      "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "executes generation transaction",
+      "asset:Assets/Scripts/MapGeneration/MapIntegrationOrchestrator.cs",
+      "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      196
+    ],
+    [
+      "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "generates MapData",
+      "asset:Assets/Scripts/MapGeneration/RandomMapGenerator.cs",
+      "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      561
+    ],
+    [
+      "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "materializes generation-scoped destructibles",
+      "asset:Assets/Scripts/MapGeneration/DestructiblePlacementService.cs",
+      "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      289
+    ],
+    [
+      "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "materializes scene-bound monster",
+      "asset:Assets/Scripts/MapGeneration/MonsterPlacementService.cs",
+      "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      281
+    ],
+    [
+      "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "plans generation-scoped destructibles",
+      "asset:Assets/Scripts/MapGeneration/DestructiblePlacementService.cs",
+      "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      626
+    ],
+    [
+      "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "plans scene-bound monster placement",
+      "asset:Assets/Scripts/MapGeneration/MonsterPlacementService.cs",
+      "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      625
+    ],
+    [
+      "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "spawns or relocates canonical player",
+      "asset:Assets/Scripts/MapGeneration/PlayerSpawnService.cs",
+      "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      316
+    ],
+    [
+      "asset:Assets/Scripts/TowerFloorRuntimeController.cs",
+      "ExitUseRequested event subscriber",
+      "asset:Assets/Scripts/TowerRunCoordinator.cs",
+      "Assets/Scripts/TowerRunCoordinator.cs",
+      183
+    ],
+    [
+      "asset:Assets/Scripts/TowerRunCoordinator.cs",
+      "applies staged runtime state",
+      "asset:Assets/Scripts/TowerRunRuntimeStateBridge.cs",
+      "Assets/Scripts/TowerRunCoordinator.cs",
+      386
+    ],
+    [
+      "asset:Assets/Scripts/TowerRunCoordinator.cs",
+      "code type reference",
+      "asset:Assets/Scripts/EcologyRegionDebugOverlay.cs",
+      "Assets/Scripts/TowerRunCoordinator.cs",
+      169
+    ],
+    [
+      "asset:Assets/Scripts/TowerRunCoordinator.cs",
+      "code type reference",
+      "asset:Assets/Scripts/GameSession.cs",
+      "Assets/Scripts/TowerRunCoordinator.cs",
+      173
+    ],
+    [
+      "asset:Assets/Scripts/TowerRunCoordinator.cs",
+      "code type reference",
+      "asset:Assets/Scripts/MapGeneration/Ecology/EcologyCombatBinding.cs",
+      "Assets/Scripts/TowerRunCoordinator.cs",
+      105
+    ],
+    [
+      "asset:Assets/Scripts/TowerRunCoordinator.cs",
+      "code type reference",
+      "asset:Assets/Scripts/MapGeneration/Ecology/EcologyMotionBody.cs",
+      "Assets/Scripts/TowerRunCoordinator.cs",
+      106
+    ],
+    [
+      "asset:Assets/Scripts/TowerRunCoordinator.cs",
+      "code type reference",
+      "asset:Assets/Scripts/MapGeneration/MapGenerationLifecycle.cs",
+      "Assets/Scripts/TowerRunCoordinator.cs",
+      634
+    ],
+    [
+      "asset:Assets/Scripts/TowerRunCoordinator.cs",
+      "code type reference",
+      "asset:Assets/Scripts/Player/PlayerAction.cs",
+      "Assets/Scripts/TowerRunCoordinator.cs",
+      558
+    ],
+    [
+      "asset:Assets/Scripts/TowerRunCoordinator.cs",
+      "code type reference",
+      "asset:Assets/Scripts/Player/PlayerColliderRoles.cs",
+      "Assets/Scripts/TowerRunCoordinator.cs",
+      99
+    ],
+    [
+      "asset:Assets/Scripts/TowerRunCoordinator.cs",
+      "code type reference",
+      "asset:Assets/Scripts/Player/PlayerHurtController.cs",
+      "Assets/Scripts/TowerRunCoordinator.cs",
+      104
+    ],
+    [
+      "asset:Assets/Scripts/TowerRunCoordinator.cs",
+      "code type reference",
+      "asset:Assets/Scripts/TowerRun/TowerRunCheckpointRecord.cs",
+      "Assets/Scripts/TowerRunCoordinator.cs",
+      214
+    ],
+    [
+      "asset:Assets/Scripts/TowerRunCoordinator.cs",
+      "code type reference",
+      "asset:Assets/Scripts/TowerRun/TowerRunSlotStore.cs",
+      "Assets/Scripts/TowerRunCoordinator.cs",
+      147
+    ],
+    [
+      "asset:Assets/Scripts/TowerRunCoordinator.cs",
+      "commits entrance checkpoint slot",
+      "asset:Assets/Scripts/TowerRun/TowerRunSlotStore.cs",
+      "Assets/Scripts/TowerRunCoordinator.cs",
+      279
+    ],
+    [
+      "asset:Assets/Scripts/TowerRunCoordinator.cs",
+      "requests map generation",
+      "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "Assets/Scripts/TowerRunCoordinator.cs",
+      459
+    ],
+    [
+      "asset:Assets/Tests/MapVNext/PlayMode/MapVNextFormalDefaultTests.cs",
+      "code type reference",
+      "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "Assets/Tests/MapVNext/PlayMode/MapVNextFormalDefaultTests.cs",
+      95
+    ],
+    [
+      "component:Assets/Scenes/SampleScene.unity#2049315206",
+      "package GUID reference",
+      "package:Library/PackageCache/com.unity.ugui@1.0.0/Runtime/UI/Core/Image.cs",
+      "Assets/Scenes/SampleScene.unity",
+      50028
+    ],
+    [
+      "component:Assets/Scenes/SampleScene.unity#2049315206",
+      "serialized GUID reference",
+      "asset:Assets/_Resources/TinySwords/UI/BlackIcons/BackPack.png",
+      "Assets/Scenes/SampleScene.unity",
+      50039
+    ],
+    [
+      "component:Assets/Scenes/SampleScene.unity#2049315206",
+      "uses package script",
+      "package:Library/PackageCache/com.unity.ugui@1.0.0/Runtime/UI/Core/Image.cs",
+      "Assets/Scenes/SampleScene.unity",
+      50019
+    ],
+    [
+      "component:Assets/Scenes/SampleScene.unity#2050721541",
+      "package GUID reference",
+      "package:Library/PackageCache/com.unity.ugui@1.0.0/Runtime/UI/Core/Image.cs",
+      "Assets/Scenes/SampleScene.unity",
+      50103
+    ],
+    [
+      "component:Assets/Scenes/SampleScene.unity#2050721541",
+      "serialized GUID reference",
+      "asset:Assets/_Resources/TinySwordsFreePack/UI Elements/UI Elements/Bars/StaminaBar.png",
+      "Assets/Scenes/SampleScene.unity",
+      50114
+    ],
+    [
+      "component:Assets/Scenes/SampleScene.unity#2050721541",
+      "uses package script",
+      "package:Library/PackageCache/com.unity.ugui@1.0.0/Runtime/UI/Core/Image.cs",
+      "Assets/Scenes/SampleScene.unity",
+      50094
+    ],
+    [
+      "component:Assets/Scenes/SampleScene.unity#2060943885",
+      "package GUID reference",
+      "package:Library/PackageCache/com.unity.textmeshpro@3.0.7/Scripts/Runtime/TextMeshProUGUI.cs",
+      "Assets/Scenes/SampleScene.unity",
+      50178
+    ],
+    [
+      "component:Assets/Scenes/SampleScene.unity#2060943885",
+      "serialized GUID reference",
+      "asset:Assets/Font/MyTMP.asset",
+      "Assets/Scenes/SampleScene.unity",
+      50191
+    ],
+    [
+      "component:Assets/Scenes/SampleScene.unity#2060943885",
+      "uses package script",
+      "package:Library/PackageCache/com.unity.textmeshpro@3.0.7/Scripts/Runtime/TextMeshProUGUI.cs",
+      "Assets/Scenes/SampleScene.unity",
+      50169
+    ],
+    [
+      "component:Assets/Scenes/SampleScene.unity#2113168878",
+      "package GUID reference",
+      "package:Library/PackageCache/com.unity.ugui@1.0.0/Runtime/UI/Core/Image.cs",
+      "Assets/Scenes/SampleScene.unity",
+      50393
+    ],
+    [
+      "component:Assets/Scenes/SampleScene.unity#2113168878",
+      "uses package script",
+      "package:Library/PackageCache/com.unity.ugui@1.0.0/Runtime/UI/Core/Image.cs",
+      "Assets/Scenes/SampleScene.unity",
+      50384
+    ],
+    [
+      "component:Assets/Scenes/SampleScene.unity#2115257971",
+      "serialized GUID reference",
+      "asset:Assets/Sprites/GrassTiles/03_0.asset",
+      "Assets/Scenes/SampleScene.unity",
+      52739
+    ],
+    [
+      "component:Assets/Scenes/SampleScene.unity#2115257971",
+      "serialized GUID reference",
+      "asset:Assets/_Resources/TinySwords/Deco/03.png",
+      "Assets/Scenes/SampleScene.unity",
+      52742
+    ],
+    [
+      "component:Assets/Scenes/SampleScene.unity#2133880717",
+      "package GUID reference",
+      "package:Library/PackageCache/com.unity.ugui@1.0.0/Runtime/UI/Core/Image.cs",
+      "Assets/Scenes/SampleScene.unity",
+      52942
+    ],
+    [
+      "component:Assets/Scenes/SampleScene.unity#2133880717",
+      "uses package script",
+      "package:Library/PackageCache/com.unity.ugui@1.0.0/Runtime/UI/Core/Image.cs",
+      "Assets/Scenes/SampleScene.unity",
+      52933
+    ],
+    [
+      "component:Assets/Scenes/SampleScene.unity#4100000003",
+      "serialized script",
+      "asset:Assets/Scripts/GameInput.cs",
+      "Assets/Scenes/SampleScene.unity",
+      53012
+    ],
+    [
+      "component:Assets/Scenes/SampleScene.unity#4100000003",
+      "uses script",
+      "asset:Assets/Scripts/GameInput.cs",
+      "Assets/Scenes/SampleScene.unity",
+      53003
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#1047394623",
+      "contains child",
+      "go:Assets/Scenes/SampleScene.unity#2133880715",
+      "Assets/Scenes/SampleScene.unity",
+      52913
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#1587367857",
+      "contains child",
+      "go:Assets/Scenes/SampleScene.unity#2049315204",
+      "Assets/Scenes/SampleScene.unity",
+      50000
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#1694634629",
+      "contains child",
+      "go:Assets/Scenes/SampleScene.unity#2115257968",
+      "Assets/Scenes/SampleScene.unity",
+      50443
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#2049315204",
+      "has Component",
+      "component:Assets/Scenes/SampleScene.unity#2049315206",
+      "Assets/Scenes/SampleScene.unity",
+      50019
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#2049315204",
+      "has Component",
+      "component:Assets/Scenes/SampleScene.unity#2049315207",
+      "Assets/Scenes/SampleScene.unity",
+      50049
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#2050721539",
+      "has Component",
+      "component:Assets/Scenes/SampleScene.unity#2050721541",
+      "Assets/Scenes/SampleScene.unity",
+      50094
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#2050721539",
+      "has Component",
+      "component:Assets/Scenes/SampleScene.unity#2050721542",
+      "Assets/Scenes/SampleScene.unity",
+      50124
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#2060943883",
+      "has Component",
+      "component:Assets/Scenes/SampleScene.unity#2060943885",
+      "Assets/Scenes/SampleScene.unity",
+      50169
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#2060943883",
+      "has Component",
+      "component:Assets/Scenes/SampleScene.unity#2060943886",
+      "Assets/Scenes/SampleScene.unity",
+      50258
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#2090919176",
+      "has Component",
+      "component:Assets/Scenes/SampleScene.unity#2090919177",
+      "Assets/Scenes/SampleScene.unity",
+      50283
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#2113168876",
+      "has Component",
+      "component:Assets/Scenes/SampleScene.unity#2113168878",
+      "Assets/Scenes/SampleScene.unity",
+      50384
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#2113168876",
+      "has Component",
+      "component:Assets/Scenes/SampleScene.unity#2113168879",
+      "Assets/Scenes/SampleScene.unity",
+      50414
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#2115257968",
+      "has Component",
+      "component:Assets/Scenes/SampleScene.unity#2115257970",
+      "Assets/Scenes/SampleScene.unity",
+      50458
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#2115257968",
+      "has Component",
+      "component:Assets/Scenes/SampleScene.unity#2115257971",
+      "Assets/Scenes/SampleScene.unity",
+      50507
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#2115257968",
+      "has Component",
+      "component:Assets/Scenes/SampleScene.unity#2115257972",
+      "Assets/Scenes/SampleScene.unity",
+      52789
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#2115257968",
+      "has Component",
+      "component:Assets/Scenes/SampleScene.unity#2115257973",
+      "Assets/Scenes/SampleScene.unity",
+      52832
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#2115257968",
+      "has Component",
+      "component:Assets/Scenes/SampleScene.unity#2115257974",
+      "Assets/Scenes/SampleScene.unity",
+      52868
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#2133880715",
+      "has Component",
+      "component:Assets/Scenes/SampleScene.unity#2133880717",
+      "Assets/Scenes/SampleScene.unity",
+      52933
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#2133880715",
+      "has Component",
+      "component:Assets/Scenes/SampleScene.unity#2133880718",
+      "Assets/Scenes/SampleScene.unity",
+      52963
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#222238726",
+      "contains child",
+      "go:Assets/Scenes/SampleScene.unity#2050721539",
+      "Assets/Scenes/SampleScene.unity",
+      50075
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#4100000001",
+      "has Component",
+      "component:Assets/Scenes/SampleScene.unity#4100000003",
+      "Assets/Scenes/SampleScene.unity",
+      53003
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#635256760",
+      "contains child",
+      "go:Assets/Scenes/SampleScene.unity#2113168876",
+      "Assets/Scenes/SampleScene.unity",
+      50365
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#857393644",
+      "contains child",
+      "go:Assets/Scenes/SampleScene.unity#2060943883",
+      "Assets/Scenes/SampleScene.unity",
+      50150
     ]
   ],
   "removedEdges": [
     [
-      "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Consumers.cs",
+      "asset:Assets/Scenes/SampleScene.unity",
+      "contains GameObject",
+      "go:Assets/Scenes/SampleScene.unity#2049315204",
+      "Assets/Scenes/SampleScene.unity",
+      49966
+    ],
+    [
+      "asset:Assets/Scenes/SampleScene.unity",
+      "contains GameObject",
+      "go:Assets/Scenes/SampleScene.unity#2050721539",
+      "Assets/Scenes/SampleScene.unity",
+      50041
+    ],
+    [
+      "asset:Assets/Scenes/SampleScene.unity",
+      "contains GameObject",
+      "go:Assets/Scenes/SampleScene.unity#2060943883",
+      "Assets/Scenes/SampleScene.unity",
+      50116
+    ],
+    [
+      "asset:Assets/Scenes/SampleScene.unity",
+      "contains GameObject",
+      "go:Assets/Scenes/SampleScene.unity#2090919176",
+      "Assets/Scenes/SampleScene.unity",
+      50250
+    ],
+    [
+      "asset:Assets/Scenes/SampleScene.unity",
+      "contains GameObject",
+      "go:Assets/Scenes/SampleScene.unity#2113168876",
+      "Assets/Scenes/SampleScene.unity",
+      50331
+    ],
+    [
+      "asset:Assets/Scenes/SampleScene.unity",
+      "contains GameObject",
+      "go:Assets/Scenes/SampleScene.unity#2115257968",
+      "Assets/Scenes/SampleScene.unity",
+      50406
+    ],
+    [
+      "asset:Assets/Scenes/SampleScene.unity",
+      "contains GameObject",
+      "go:Assets/Scenes/SampleScene.unity#2133880715",
+      "Assets/Scenes/SampleScene.unity",
+      52879
+    ],
+    [
+      "asset:Assets/Scenes/SampleScene.unity",
+      "contains GameObject",
+      "go:Assets/Scenes/SampleScene.unity#4100000001",
+      "Assets/Scenes/SampleScene.unity",
+      52955
+    ],
+    [
+      "asset:Assets/Scenes/SampleScene.unity",
+      "prefab source",
+      "asset:Assets/Prefabs/MapGeneration/RandomMapRuntime.prefab",
+      "Assets/Scenes/SampleScene.unity",
+      49898
+    ],
+    [
+      "asset:Assets/Scenes/SampleScene.unity",
+      "prefab source",
+      "asset:Assets/Prefabs/Monsters/Torch/Torch_Blue.prefab",
+      "Assets/Scenes/SampleScene.unity",
+      53059
+    ],
+    [
+      "asset:Assets/Scenes/SampleScene.unity",
+      "prefab source",
+      "asset:Assets/Prefabs/NPC/Merchant_Pawn.prefab",
+      "Assets/Scenes/SampleScene.unity",
+      53135
+    ],
+    [
+      "asset:Assets/Scenes/SampleScene.unity",
+      "serialized GUID reference",
+      "asset:Assets/Prefabs/Monsters/Torch/Torch_Blue.prefab",
+      "Assets/Scenes/SampleScene.unity",
+      49901
+    ],
+    [
+      "asset:Assets/Scenes/SampleScene.unity",
+      "serialized script",
+      "asset:Assets/Scripts/Damageable/Monster/MonsterAIController.cs",
+      "Assets/Scenes/SampleScene.unity",
+      53068
+    ],
+    [
+      "asset:Assets/Scenes/SampleScene.unity",
+      "serialized script",
+      "asset:Assets/Scripts/NPC/MerchantInteractionController.cs",
+      "Assets/Scenes/SampleScene.unity",
+      53144
+    ],
+    [
+      "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "binds camera after spawn",
+      "asset:Assets/Scripts/MapGeneration/CameraBindingService.cs",
+      "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      368
+    ],
+    [
+      "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
       "code type reference",
-      "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.cs",
-      "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Consumers.cs",
+      "asset:Assets/Scripts/MapGeneration/Ecology/EcologyEntryIdentity.cs",
+      "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      634
+    ],
+    [
+      "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "code type reference",
+      "asset:Assets/Scripts/MapGeneration/Ecology/EcologyMapRuntime.cs",
+      "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      212
+    ],
+    [
+      "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "code type reference",
+      "asset:Assets/Scripts/MapGeneration/Ecology/EcologyRecipeDefinition.cs",
+      "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      645
+    ],
+    [
+      "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "code type reference",
+      "asset:Assets/Scripts/MapGeneration/MapGenerationLifecycle.cs",
+      "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      65
+    ],
+    [
+      "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "code type reference",
+      "asset:Assets/Scripts/MapGeneration/MapIntegrationOrchestrator.cs",
+      "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      533
+    ],
+    [
+      "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "code type reference",
+      "asset:Assets/Scripts/MapGeneration/MapPlacementPlanning.cs",
+      "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      588
+    ],
+    [
+      "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "code type reference",
+      "asset:Assets/Scripts/MapGeneration/MapRuntimeBootstrap.cs",
+      "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      46
+    ],
+    [
+      "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "code type reference",
+      "asset:Assets/Scripts/MapGeneration/MapRuntimeFoundation.cs",
+      "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      415
+    ],
+    [
+      "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "code type reference",
+      "asset:Assets/Scripts/MapGeneration/MapSurfaceV4Visuals.cs",
+      "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      718
+    ],
+    [
+      "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "executes generation transaction",
+      "asset:Assets/Scripts/MapGeneration/MapIntegrationOrchestrator.cs",
+      "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      189
+    ],
+    [
+      "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "generates MapData",
+      "asset:Assets/Scripts/MapGeneration/RandomMapGenerator.cs",
+      "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      554
+    ],
+    [
+      "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "materializes generation-scoped destructibles",
+      "asset:Assets/Scripts/MapGeneration/DestructiblePlacementService.cs",
+      "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      282
+    ],
+    [
+      "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "materializes scene-bound monster",
+      "asset:Assets/Scripts/MapGeneration/MonsterPlacementService.cs",
+      "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      274
+    ],
+    [
+      "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "plans generation-scoped destructibles",
+      "asset:Assets/Scripts/MapGeneration/DestructiblePlacementService.cs",
+      "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      619
+    ],
+    [
+      "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "plans scene-bound monster placement",
+      "asset:Assets/Scripts/MapGeneration/MonsterPlacementService.cs",
+      "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      618
+    ],
+    [
+      "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "spawns or relocates canonical player",
+      "asset:Assets/Scripts/MapGeneration/PlayerSpawnService.cs",
+      "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      309
+    ],
+    [
+      "asset:Assets/Scripts/TowerFloorRuntimeController.cs",
+      "ExitUseRequested event subscriber",
+      "asset:Assets/Scripts/TowerRunCoordinator.cs",
+      "Assets/Scripts/TowerRunCoordinator.cs",
+      180
+    ],
+    [
+      "asset:Assets/Scripts/TowerRunCoordinator.cs",
+      "applies staged runtime state",
+      "asset:Assets/Scripts/TowerRunRuntimeStateBridge.cs",
+      "Assets/Scripts/TowerRunCoordinator.cs",
+      378
+    ],
+    [
+      "asset:Assets/Scripts/TowerRunCoordinator.cs",
+      "code type reference",
+      "asset:Assets/Scripts/EcologyRegionDebugOverlay.cs",
+      "Assets/Scripts/TowerRunCoordinator.cs",
+      166
+    ],
+    [
+      "asset:Assets/Scripts/TowerRunCoordinator.cs",
+      "code type reference",
+      "asset:Assets/Scripts/GameSession.cs",
+      "Assets/Scripts/TowerRunCoordinator.cs",
+      170
+    ],
+    [
+      "asset:Assets/Scripts/TowerRunCoordinator.cs",
+      "code type reference",
+      "asset:Assets/Scripts/MapGeneration/Ecology/EcologyCombatBinding.cs",
+      "Assets/Scripts/TowerRunCoordinator.cs",
+      102
+    ],
+    [
+      "asset:Assets/Scripts/TowerRunCoordinator.cs",
+      "code type reference",
+      "asset:Assets/Scripts/MapGeneration/Ecology/EcologyMotionBody.cs",
+      "Assets/Scripts/TowerRunCoordinator.cs",
       103
     ],
     [
-      "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Defense.cs",
+      "asset:Assets/Scripts/TowerRunCoordinator.cs",
       "code type reference",
-      "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.cs",
-      "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Defense.cs",
-      100
+      "asset:Assets/Scripts/MapGeneration/MapGenerationLifecycle.cs",
+      "Assets/Scripts/TowerRunCoordinator.cs",
+      600
     ],
     [
-      "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Diagnostics.cs",
+      "asset:Assets/Scripts/TowerRunCoordinator.cs",
       "code type reference",
-      "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.cs",
-      "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Diagnostics.cs",
-      54
+      "asset:Assets/Scripts/Player/PlayerAction.cs",
+      "Assets/Scripts/TowerRunCoordinator.cs",
+      526
     ],
     [
-      "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Input.cs",
+      "asset:Assets/Scripts/TowerRunCoordinator.cs",
       "code type reference",
-      "asset:Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.cs",
-      "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Input.cs",
-      231
+      "asset:Assets/Scripts/Player/PlayerColliderRoles.cs",
+      "Assets/Scripts/TowerRunCoordinator.cs",
+      96
     ],
     [
-      "asset:Assets/Scripts/PlayerInventory.cs",
-      "OnInventoryChanged event subscriber",
-      "asset:Assets/Scripts/UI/PackageGridUI.cs",
-      "Assets/Scripts/UI/PackageGridUI.cs",
-      61
-    ],
-    [
-      "asset:Assets/Scripts/UI/PackageGridUI.cs",
-      "passes stack data to visible slot",
-      "asset:Assets/Scripts/UI/PackageSlotUI.cs",
-      "Assets/Scripts/UI/PackageGridUI.cs",
-      99
-    ],
-    [
-      "asset:Assets/Tests/MapVNext/EditMode/MapVNextI1LandAuditTests.cs",
+      "asset:Assets/Scripts/TowerRunCoordinator.cs",
       "code type reference",
-      "asset:Assets/Tests/MapGeneration/PlayMode/SurfaceV4FloorPopulationPlayModeTests.cs",
-      "Assets/Tests/MapVNext/EditMode/MapVNextI1LandAuditTests.cs",
-      22
+      "asset:Assets/Scripts/Player/PlayerHurtController.cs",
+      "Assets/Scripts/TowerRunCoordinator.cs",
+      101
+    ],
+    [
+      "asset:Assets/Scripts/TowerRunCoordinator.cs",
+      "code type reference",
+      "asset:Assets/Scripts/TowerRun/TowerRunCheckpointRecord.cs",
+      "Assets/Scripts/TowerRunCoordinator.cs",
+      211
+    ],
+    [
+      "asset:Assets/Scripts/TowerRunCoordinator.cs",
+      "code type reference",
+      "asset:Assets/Scripts/TowerRun/TowerRunSlotStore.cs",
+      "Assets/Scripts/TowerRunCoordinator.cs",
+      144
+    ],
+    [
+      "asset:Assets/Scripts/TowerRunCoordinator.cs",
+      "commits entrance checkpoint slot",
+      "asset:Assets/Scripts/TowerRun/TowerRunSlotStore.cs",
+      "Assets/Scripts/TowerRunCoordinator.cs",
+      273
+    ],
+    [
+      "asset:Assets/Scripts/TowerRunCoordinator.cs",
+      "requests map generation",
+      "asset:Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "Assets/Scripts/TowerRunCoordinator.cs",
+      430
+    ],
+    [
+      "component:Assets/Scenes/SampleScene.unity#2049315206",
+      "package GUID reference",
+      "package:Library/PackageCache/com.unity.ugui@1.0.0/Runtime/UI/Core/Image.cs",
+      "Assets/Scenes/SampleScene.unity",
+      50012
+    ],
+    [
+      "component:Assets/Scenes/SampleScene.unity#2049315206",
+      "serialized GUID reference",
+      "asset:Assets/_Resources/TinySwords/UI/BlackIcons/BackPack.png",
+      "Assets/Scenes/SampleScene.unity",
+      50023
+    ],
+    [
+      "component:Assets/Scenes/SampleScene.unity#2049315206",
+      "uses package script",
+      "package:Library/PackageCache/com.unity.ugui@1.0.0/Runtime/UI/Core/Image.cs",
+      "Assets/Scenes/SampleScene.unity",
+      50003
+    ],
+    [
+      "component:Assets/Scenes/SampleScene.unity#2050721541",
+      "package GUID reference",
+      "package:Library/PackageCache/com.unity.ugui@1.0.0/Runtime/UI/Core/Image.cs",
+      "Assets/Scenes/SampleScene.unity",
+      50087
+    ],
+    [
+      "component:Assets/Scenes/SampleScene.unity#2050721541",
+      "serialized GUID reference",
+      "asset:Assets/_Resources/TinySwordsFreePack/UI Elements/UI Elements/Bars/StaminaBar.png",
+      "Assets/Scenes/SampleScene.unity",
+      50098
+    ],
+    [
+      "component:Assets/Scenes/SampleScene.unity#2050721541",
+      "uses package script",
+      "package:Library/PackageCache/com.unity.ugui@1.0.0/Runtime/UI/Core/Image.cs",
+      "Assets/Scenes/SampleScene.unity",
+      50078
+    ],
+    [
+      "component:Assets/Scenes/SampleScene.unity#2060943885",
+      "package GUID reference",
+      "package:Library/PackageCache/com.unity.textmeshpro@3.0.7/Scripts/Runtime/TextMeshProUGUI.cs",
+      "Assets/Scenes/SampleScene.unity",
+      50162
+    ],
+    [
+      "component:Assets/Scenes/SampleScene.unity#2060943885",
+      "serialized GUID reference",
+      "asset:Assets/Font/MyTMP.asset",
+      "Assets/Scenes/SampleScene.unity",
+      50175
+    ],
+    [
+      "component:Assets/Scenes/SampleScene.unity#2060943885",
+      "uses package script",
+      "package:Library/PackageCache/com.unity.textmeshpro@3.0.7/Scripts/Runtime/TextMeshProUGUI.cs",
+      "Assets/Scenes/SampleScene.unity",
+      50153
+    ],
+    [
+      "component:Assets/Scenes/SampleScene.unity#2113168878",
+      "package GUID reference",
+      "package:Library/PackageCache/com.unity.ugui@1.0.0/Runtime/UI/Core/Image.cs",
+      "Assets/Scenes/SampleScene.unity",
+      50377
+    ],
+    [
+      "component:Assets/Scenes/SampleScene.unity#2113168878",
+      "uses package script",
+      "package:Library/PackageCache/com.unity.ugui@1.0.0/Runtime/UI/Core/Image.cs",
+      "Assets/Scenes/SampleScene.unity",
+      50368
+    ],
+    [
+      "component:Assets/Scenes/SampleScene.unity#2115257971",
+      "serialized GUID reference",
+      "asset:Assets/Sprites/GrassTiles/03_0.asset",
+      "Assets/Scenes/SampleScene.unity",
+      52723
+    ],
+    [
+      "component:Assets/Scenes/SampleScene.unity#2115257971",
+      "serialized GUID reference",
+      "asset:Assets/_Resources/TinySwords/Deco/03.png",
+      "Assets/Scenes/SampleScene.unity",
+      52726
+    ],
+    [
+      "component:Assets/Scenes/SampleScene.unity#2133880717",
+      "package GUID reference",
+      "package:Library/PackageCache/com.unity.ugui@1.0.0/Runtime/UI/Core/Image.cs",
+      "Assets/Scenes/SampleScene.unity",
+      52926
+    ],
+    [
+      "component:Assets/Scenes/SampleScene.unity#2133880717",
+      "uses package script",
+      "package:Library/PackageCache/com.unity.ugui@1.0.0/Runtime/UI/Core/Image.cs",
+      "Assets/Scenes/SampleScene.unity",
+      52917
+    ],
+    [
+      "component:Assets/Scenes/SampleScene.unity#4100000003",
+      "serialized script",
+      "asset:Assets/Scripts/GameInput.cs",
+      "Assets/Scenes/SampleScene.unity",
+      52996
+    ],
+    [
+      "component:Assets/Scenes/SampleScene.unity#4100000003",
+      "uses script",
+      "asset:Assets/Scripts/GameInput.cs",
+      "Assets/Scenes/SampleScene.unity",
+      52987
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#1047394623",
+      "contains child",
+      "go:Assets/Scenes/SampleScene.unity#2133880715",
+      "Assets/Scenes/SampleScene.unity",
+      52897
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#1587367857",
+      "contains child",
+      "go:Assets/Scenes/SampleScene.unity#2049315204",
+      "Assets/Scenes/SampleScene.unity",
+      49984
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#1694634629",
+      "contains child",
+      "go:Assets/Scenes/SampleScene.unity#2115257968",
+      "Assets/Scenes/SampleScene.unity",
+      50427
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#2049315204",
+      "has Component",
+      "component:Assets/Scenes/SampleScene.unity#2049315206",
+      "Assets/Scenes/SampleScene.unity",
+      50003
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#2049315204",
+      "has Component",
+      "component:Assets/Scenes/SampleScene.unity#2049315207",
+      "Assets/Scenes/SampleScene.unity",
+      50033
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#2050721539",
+      "has Component",
+      "component:Assets/Scenes/SampleScene.unity#2050721541",
+      "Assets/Scenes/SampleScene.unity",
+      50078
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#2050721539",
+      "has Component",
+      "component:Assets/Scenes/SampleScene.unity#2050721542",
+      "Assets/Scenes/SampleScene.unity",
+      50108
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#2060943883",
+      "has Component",
+      "component:Assets/Scenes/SampleScene.unity#2060943885",
+      "Assets/Scenes/SampleScene.unity",
+      50153
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#2060943883",
+      "has Component",
+      "component:Assets/Scenes/SampleScene.unity#2060943886",
+      "Assets/Scenes/SampleScene.unity",
+      50242
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#2090919176",
+      "has Component",
+      "component:Assets/Scenes/SampleScene.unity#2090919177",
+      "Assets/Scenes/SampleScene.unity",
+      50267
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#2113168876",
+      "has Component",
+      "component:Assets/Scenes/SampleScene.unity#2113168878",
+      "Assets/Scenes/SampleScene.unity",
+      50368
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#2113168876",
+      "has Component",
+      "component:Assets/Scenes/SampleScene.unity#2113168879",
+      "Assets/Scenes/SampleScene.unity",
+      50398
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#2115257968",
+      "has Component",
+      "component:Assets/Scenes/SampleScene.unity#2115257970",
+      "Assets/Scenes/SampleScene.unity",
+      50442
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#2115257968",
+      "has Component",
+      "component:Assets/Scenes/SampleScene.unity#2115257971",
+      "Assets/Scenes/SampleScene.unity",
+      50491
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#2115257968",
+      "has Component",
+      "component:Assets/Scenes/SampleScene.unity#2115257972",
+      "Assets/Scenes/SampleScene.unity",
+      52773
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#2115257968",
+      "has Component",
+      "component:Assets/Scenes/SampleScene.unity#2115257973",
+      "Assets/Scenes/SampleScene.unity",
+      52816
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#2115257968",
+      "has Component",
+      "component:Assets/Scenes/SampleScene.unity#2115257974",
+      "Assets/Scenes/SampleScene.unity",
+      52852
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#2133880715",
+      "has Component",
+      "component:Assets/Scenes/SampleScene.unity#2133880717",
+      "Assets/Scenes/SampleScene.unity",
+      52917
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#2133880715",
+      "has Component",
+      "component:Assets/Scenes/SampleScene.unity#2133880718",
+      "Assets/Scenes/SampleScene.unity",
+      52947
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#222238726",
+      "contains child",
+      "go:Assets/Scenes/SampleScene.unity#2050721539",
+      "Assets/Scenes/SampleScene.unity",
+      50059
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#4100000001",
+      "has Component",
+      "component:Assets/Scenes/SampleScene.unity#4100000003",
+      "Assets/Scenes/SampleScene.unity",
+      52987
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#635256760",
+      "contains child",
+      "go:Assets/Scenes/SampleScene.unity#2113168876",
+      "Assets/Scenes/SampleScene.unity",
+      50349
+    ],
+    [
+      "go:Assets/Scenes/SampleScene.unity#857393644",
+      "contains child",
+      "go:Assets/Scenes/SampleScene.unity#2060943883",
+      "Assets/Scenes/SampleScene.unity",
+      50134
     ]
   ],
   "manualReview": [

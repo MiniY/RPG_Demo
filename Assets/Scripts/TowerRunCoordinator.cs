@@ -29,16 +29,19 @@ public sealed class TowerRunCoordinator : MonoBehaviour, IEcologyMapSession, IEc
     public const int GeneratorVersion = 2;
     public const string ConfigurationIdentity = "random-map-terrain-v2";
     public const string DefaultProfileId = EcologyRecipeDefinition.UnitsStableCandidateProfileId;
+    private const string LegacyDefaultProfileId = DefaultProfileId;
 #elif RPG_DEMO_MONSTER_ECOLOGY_MVP
     // The isolated Monster acceptance Player replays the production ecology-v1 recipe.
     public const int GeneratorVersion = 1;
     public const string ConfigurationIdentity = "random-map-default-v1";
     public const string DefaultProfileId = "ecology-v1";
+    private const string LegacyDefaultProfileId = DefaultProfileId;
 #else
     public const int GeneratorVersion = 2;
     public const string ConfigurationIdentity = "random-map-terrain-v2";
-    // Authorized local remediation default. This independent identity never impersonates the retired profile.
-    public const string DefaultProfileId = EcologyRecipeDefinition.MainV1ProfileId;
+    // New adventures use the accepted map. Restored runs retain their recorded profile.
+    public const string DefaultProfileId = EcologyRecipeDefinition.VNextI1ProfileId;
+    private const string LegacyDefaultProfileId = EcologyRecipeDefinition.MainV1ProfileId;
 #endif
 
     private string configuredNewRunProfile;
@@ -211,7 +214,10 @@ public sealed class TowerRunCoordinator : MonoBehaviour, IEcologyMapSession, IEc
         record.floor = new TowerRunFloorRecord { floorNumber = 0, displayName = "新手关卡" };
         record.generation = CreateFreshGenerationRecord();
         if (requestedSeed.HasValue) record.generation.requestedSeed = requestedSeed.Value;
-        BeginOperation(TowerRunOperationKind.NewRun, record);
+        if (requestedSeed.HasValue)
+            BeginOperation(TowerRunOperationKind.NewRun, record);
+        else
+            BeginRandomOperation(TowerRunOperationKind.NewRun, record);
     }
 
     public void BeginRestoreSlot(int slotNumber, string expectedConfirmationToken)
@@ -290,6 +296,8 @@ public sealed class TowerRunCoordinator : MonoBehaviour, IEcologyMapSession, IEc
             retry.generation = CreateFreshGenerationRecord(operationKind == TowerRunOperationKind.FloorTransition);
             if (EcologyRecipeDefinition.ResourcePathFor(requestedProfile) != null)
                 retry.generation.profileId = requestedProfile;
+            else if (retry.schemaVersion != TowerRunCheckpointRecord.EcologySchemaVersion)
+                retry.generation.profileId = LegacyDefaultProfileId;
             retry.schemaVersion = TowerRunCheckpointRecord.CurrentSchemaVersion;
         }
 
@@ -391,6 +399,27 @@ public sealed class TowerRunCoordinator : MonoBehaviour, IEcologyMapSession, IEc
         finalizedGenerationId = generationId;
         reason = string.Empty;
         return true;
+    }
+
+    private void BeginRandomOperation(TowerRunOperationKind kind, TowerRunCheckpointRecord record)
+    {
+        var previousFailure = mapController == null ? null : mapController.Orchestrator.Context.Failure;
+        BeginOperation(kind, record);
+        for (int attempt = 1; attempt < 12 && CanRetryRejectedRandomMap(previousFailure); attempt++)
+        {
+            previousFailure = mapController.Orchestrator.Context.Failure;
+            Debug.Log("VNEXT_RANDOM_RETRY operation=" + kind + " rejectedSeed=" + stagedRecord.generation.requestedSeed +
+                " retry=" + attempt + " code=" + mapController.Orchestrator.Context.Failure.Code, this);
+            RetryFailedOperation();
+        }
+    }
+
+    private bool CanRetryRejectedRandomMap(MapFailureDiagnostic previousFailure)
+    {
+        var failure = mapController == null ? null : mapController.Orchestrator.Context.Failure;
+        return CanRetryFailedOperation && stagedRecord.generation.profileId == EcologyRecipeDefinition.VNextI1ProfileId &&
+            failure != null && !ReferenceEquals(failure, previousFailure) &&
+            (failure.Code == "VNextFormalLayoutRejected" || failure.Code == "EcologyBudgetExhaustedOnFixedTerrain");
     }
 
     private void BeginOperation(
@@ -515,7 +544,10 @@ public sealed class TowerRunCoordinator : MonoBehaviour, IEcologyMapSession, IEc
         if (floorRuntime == null || !floorRuntime.TryAcceptExitTransition(sourceGenerationId))
             return;
 
-        BeginOperation(TowerRunOperationKind.FloorTransition, carry);
+        if (nextFloorInputs == null)
+            BeginRandomOperation(TowerRunOperationKind.FloorTransition, carry);
+        else
+            BeginOperation(TowerRunOperationKind.FloorTransition, carry);
     }
 
     private void HandlePlayerDefeated(PlayerDamageController defeatedPlayer)
@@ -583,6 +615,8 @@ public sealed class TowerRunCoordinator : MonoBehaviour, IEcologyMapSession, IEc
     private TowerRunGenerationRecord CreateNextFloorGenerationRecord()
     {
         TowerRunGenerationRecord generation = CreateFreshGenerationRecord(true);
+        if (currentRecord != null && currentRecord.schemaVersion != TowerRunCheckpointRecord.EcologySchemaVersion)
+            generation.profileId = LegacyDefaultProfileId;
         // A versioned, explicitly selected session keeps its content profile on a new floor.
         // The new entry resolves the current retained version; it never carries the old layout tuple.
         if (currentRecord != null && currentRecord.schemaVersion == TowerRunCheckpointRecord.EcologySchemaVersion &&

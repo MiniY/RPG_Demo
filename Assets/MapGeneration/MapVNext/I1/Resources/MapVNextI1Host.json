@@ -4,13 +4,13 @@
     "DEFAULT",
     "I1_PRIVATE"
   ],
-  "buildId": "map-main-host-c01",
-  "implementationDigest": "20bf8438a5eda76c13d8c1a65c76244fe075594f4d2f771b34e08d141dfd96a1",
+  "buildId": "map-formal-default-20261104-d03",
+  "implementationDigest": "45f461e9f9301ba60747fd7d6aa502585312d1022447343395ffc170422a2dd1",
   "oldContentVersion": "content-r1:c55fb3b4b0362e8bb59e84f4624fbb22c2f9ef96f3dcd5f61481a92dab9c9802",
   "newContentVersion": "content-r1:c1b30f168534f17598f385ad32ab67078f9fb28b5f8cb6f346dcb6b800249ec9",
-  "closureSha256": "5b870712b2a1583a5c2ae2053be3a54c142d9c9c0f8f39a0f0c21af1e5db2a34",
-  "reviewEvidenceSha256": "826f7d38cf841da140a8fe2005b254d7aa9d24a6c0b61c3492297e52f18b937f",
-  "stampSha256": "a535327817e84564263be5761dc98c8ee8a4cee29ff67da7fb57961a8f979577",
+  "closureSha256": "a79b7efd82c0328cab2f10dae8dd52c989056d95e74490e6bc4044ea56fb6b18",
+  "reviewEvidenceSha256": "09f693dcb37b13a798e213ea2ba32870792030fd9d285ec1de7de41fb5ddd1a1",
+  "stampSha256": "bac5a4443b68f5d0dea26a5ab5f9f2a9e6ba5f3bc52acfb7ddc564a96b6736aa",
   "files": [
     {
       "path": "Assets/Editor/MapAcceptance/AssetNameWarningAudit.cs",
@@ -269,6 +269,14 @@
       "sha256": "3160ec2d63c9ad8d6dda7c17b6541c29e85fcc8cca07433840c35619ece79b56"
     },
     {
+      "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Formal.cs",
+      "sha256": "98205d28ff34c7c13e2ae1232c624601700fcc5bed1824f4f42cb5db87f35cd8"
+    },
+    {
+      "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Formal.cs.meta",
+      "sha256": "7ced7a0c6dd2aa24fed9b9a2efa12b64773660786b2b45a5cbc02daf8c7e4597"
+    },
+    {
       "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Input.cs",
       "sha256": "8e34178cc186a35118af83e4a34350fcad41bb58e3f07e3c90e26b46987808b5"
     },
@@ -286,7 +294,7 @@
     },
     {
       "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Startup.cs",
-      "sha256": "e5b5835bc266afb7f173d16b82001868f82cb37ad1019f3be6405d7b56c38323"
+      "sha256": "4830407359b76e7cfa8207a12ad6dc1de8482109ecad95997a34f7530b9b429c"
     },
     {
       "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Startup.cs.meta",
@@ -294,7 +302,7 @@
     },
     {
       "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.cs",
-      "sha256": "96ee14ccd2f1f6a474e16f1779b539f6eccd7ba7403f2fb0d451ab0e7a5590ae"
+      "sha256": "9965245ce36f581d712d7cb97336c3265c72a3b878dfd70538cb635dbfcc7f8f"
     },
     {
       "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.cs.meta",
@@ -339,6 +347,10 @@
     {
       "path": "Assets/Scenes/MapVNext/MapVNextStairs.unity.meta",
       "sha256": "4231a11e4e7a64ee8e19cb0d96fcd4fedee7ab9b6339b84a2a2b7002166f11f6"
+    },
+    {
+      "path": "Assets/Scenes/SampleScene.unity",
+      "sha256": "a0744d426f11252646c7bb17487fe4f3fe650f6d28ae47628b1a92a6b60fff31"
     },
     {
       "path": "Assets/Scripts/Damageable/Animal/Animal.cs",
@@ -1062,7 +1074,7 @@
     },
     {
       "path": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
-      "sha256": "7a75a89d57b6d7d01e275e8c3d663129d96d77f2884e205e142b349b94500b79"
+      "sha256": "3224294ae4f6b443cd505006e1b1aa9d121ff83694deefafa8a35275d69b3e67"
     },
     {
       "path": "Assets/Scripts/MapGeneration/MapGenerationController.cs.meta",
@@ -1946,7 +1958,7 @@
     },
     {
       "path": "Assets/Scripts/TowerRunCoordinator.cs",
-      "sha256": "df844c804e335f22aaf059afda931914996439a55ec873c1ccfb5715a3bfe8f9"
+      "sha256": "2ef9cbe3367cd4d033d3c30037286d9a57e4ff0c515e9e7f3016df77f293d3b1"
     },
     {
       "path": "Assets/Scripts/TowerRunCoordinator.cs.meta",
@@ -2569,6 +2581,14 @@
       "sha256": "f35aa242003c3f38fc758c2dc4d52914418b110d0e77e424ea4b75a4d8948ccf"
     },
     {
+      "path": "Assets/Tests/MapVNext/PlayMode/MapVNextFormalDefaultTests.cs",
+      "sha256": "abe3e1593ae131b3925416ea4c154ea0603d0ea539a7a0c24582562ce616cb10"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/PlayMode/MapVNextFormalDefaultTests.cs.meta",
+      "sha256": "9ac80df4da8f34d69cf5f7d275d3a8c7f449025824dc1a7bc2b4da0ea274a163"
+    },
+    {
       "path": "Assets/Tests/MapVNext/PlayMode/MapVNextI1IntegrationTests.Acceptance.cs",
       "sha256": "af0ffb0629eb0859ce3047d8eb3c70e6225a0272717747f88c83596de84f99f5"
     },
@@ -2731,6 +2751,11 @@
   ],
   "approvedDifferences": [
     {
+      "path": "Assets/Scenes/SampleScene.unity",
+      "originalSha256": "d5357b094cdbc2ad53b5e781b42d8fa5e5591566d3e0d3f4c2a01a236ca99fc6",
+      "currentSha256": "a0744d426f11252646c7bb17487fe4f3fe650f6d28ae47628b1a92a6b60fff31"
+    },
+    {
       "path": "Assets/Scripts/MapGeneration/AnimalPlacementService.cs",
       "originalSha256": "f5d2478d9bf1848c34cbc3a349e23a2a821356d059591f198109d745aaf4ef44",
       "currentSha256": "0b21cf5341a81989ad945663c859e1b1e8b6dbc13ccfd8d59bf23d90f73c86f1"
@@ -2808,7 +2833,7 @@
     {
       "path": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
       "originalSha256": "7bb7c227706e3e7ea7354ff7ef7915eec337f2fb5dce4983881d3a12120a19ba",
-      "currentSha256": "7a75a89d57b6d7d01e275e8c3d663129d96d77f2884e205e142b349b94500b79"
+      "currentSha256": "3224294ae4f6b443cd505006e1b1aa9d121ff83694deefafa8a35275d69b3e67"
     },
     {
       "path": "Assets/Scripts/MapGeneration/MapIntegrationOrchestrator.cs",
@@ -2843,7 +2868,7 @@
     {
       "path": "Assets/Scripts/TowerRunCoordinator.cs",
       "originalSha256": "d36753c417109928686b874a9937eb082e4d3b1f0c6db8c6f2fd24357b8413ca",
-      "currentSha256": "df844c804e335f22aaf059afda931914996439a55ec873c1ccfb5715a3bfe8f9"
+      "currentSha256": "2ef9cbe3367cd4d033d3c30037286d9a57e4ff0c515e9e7f3016df77f293d3b1"
     }
   ]
 }

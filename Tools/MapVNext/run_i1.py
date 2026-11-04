@@ -135,7 +135,7 @@ def recover_known_font_cache(font,before,out,result,native,before_inputs,build):
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('phase',choices=['edit','play','prepare','build','player']);p.add_argument('--id',required=True);p.add_argument('--filter',default='MapVNextI1SeamTests');p.add_argument('--timeout',type=int,default=900)
-    p.add_argument('--player-phase',choices=['pilot','full','restore','startup'],default='pilot');p.add_argument('--build-dir',type=Path);p.add_argument('--restore-copy',type=Path)
+    p.add_argument('--player-phase',choices=['pilot','full','restore','startup','formal'],default='pilot');p.add_argument('--build-dir',type=Path);p.add_argument('--restore-copy',type=Path)
     p.add_argument('--startup-target',choices=['normal','i1']);p.add_argument('--startup-request',choices=['normal','i1']);p.add_argument('--expect-startup-rejection',action='store_true')
     p.add_argument('--unity',type=Path,help='Installed Editor matching ProjectVersion.txt; defaults to RPG_I1_UNITY or the standard Unity Hub directory')
     a=p.parse_args()
@@ -165,9 +165,11 @@ def main():
             os.environ['RPG_I1_RESTORE_COPY']=str(a.restore_copy.resolve());save(out/'restore-input.json',{'path':str(a.restore_copy.resolve()),'sha256':sha(a.restore_copy),'originalFormalDataUsed':False})
         if variant is not None:
             if report.get('startupTarget')!=variant or report.get('extraScriptingDefines')!=(['RPG_I1_ISOLATED_STARTUP'] if variant=='I1_PRIVATE' else []) or report.get('companyName')!='CodexMapAcceptance' or report.get('productName')!='RPG_M0_'+current_id()+'_'+variant:raise RuntimeError('ExactSealedStartupBuildMetadataRequired')
-            command=[str(exe),'-screen-width','1920','-screen-height','1080','-screen-fullscreen','0','-logFile',str(out/'player.log'),'--m0-startup-proof',str(out/'Player'),'--i1-phase','startup']
+            proof_phase='formal' if a.player_phase=='formal' else 'startup'
+            if proof_phase=='formal' and variant!='DEFAULT':raise RuntimeError('FormalNewGameRequiresOrdinaryDefaultBuild')
+            command=[str(exe),'-screen-width','1920','-screen-height','1080','-screen-fullscreen','0','-logFile',str(out/'player.log'),'--m0-startup-proof',str(out/'Player'),'--i1-phase',proof_phase]
             if a.startup_request is not None:command+=['--m0-startup-request',a.startup_request]
-            if not a.expect_startup_rejection:
+            if not a.expect_startup_rejection and a.player_phase!='formal':
                 if a.restore_copy is None or not a.restore_copy.resolve().is_relative_to(ROOT.resolve()) or not a.restore_copy.is_file():raise RuntimeError('OwnedActualSavedCopyRequired')
                 os.environ['RPG_I1_RESTORE_COPY']=str(a.restore_copy.resolve())
                 runtime=Path(os.environ['RPG_I1_RUNTIME_ROOT']) if variant=='I1_PRIVATE' else Path(os.environ['USERPROFILE'])/'AppData/LocalLow'/report['companyName']/report['productName']

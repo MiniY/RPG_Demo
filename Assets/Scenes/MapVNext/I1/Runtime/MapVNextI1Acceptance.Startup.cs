@@ -74,8 +74,9 @@ public sealed partial class MapVNextI1Acceptance
         byte[] original=File.ReadAllBytes(source);var expected=JsonUtility.FromJson<TowerRunCheckpointRecord>(System.Text.Encoding.UTF8.GetString(original));
         string input=Path.Combine(TowerRunRuntimeEnvironment.SlotRoot,"tower-run-slot-1.json");
         Require(File.Exists(input)&&MapHostCompatibility.Sha(File.ReadAllBytes(input))==MapHostCompatibility.Sha(original),"EarliestBoundStoreMustContainExactPreparedCopy");
-        bool versioned=MapHostBuildStamp.HasExplicitI1StartupCapability;
-        Require(expected.generation.profileId==(versioned?EcologyRecipeDefinition.VNextI1ProfileId:EcologyRecipeDefinition.MainV1ProfileId),"RestoreContentMustMatchExplicitTarget");
+        bool versioned=expected.generation.profileId==EcologyRecipeDefinition.VNextI1ProfileId;
+        Require(versioned||expected.generation.profileId==EcologyRecipeDefinition.MainV1ProfileId,"UnknownRestoreProfile");
+        Require(!MapHostBuildStamp.HasExplicitI1StartupCapability||versioned,"PrivateI1RestoreMustUseVNext");
         var read=session.ReadSlot(1);Require(read.state==TowerRunSlotState.Valid,"CopiedSlotInvalid:"+read.message);
         session.BeginRestoreSlot(1,read.confirmationToken);
         Require(session.State==TowerRunFlowState.Playing&&Context.IsReady&&(Context.ActiveSpatialContext!=null)==versioned,"CopiedRestoreDidNotReachCorrectGameplayReady:"+session.FailureMessage);

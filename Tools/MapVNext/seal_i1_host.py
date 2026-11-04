@@ -45,6 +45,7 @@ def main():
         if meta.is_file():files.add(meta)
     for root in ['Assets/MapGeneration/MapVNext','Assets/Scenes/MapVNext']:
         files.update(p for p in (C/root).rglob('*') if p.is_file())
+    files.add(C/'Assets/Scenes/SampleScene.unity')
     target=C/'Assets/MapGeneration/MapVNext/I1/Resources/MapVNextI1Host.json'
     # This one generated stamp is cross-bound by its exact SHA and the external complete Build input manifest.
     files.discard(stamp);files.discard(target);files.discard(Path(str(target)+'.meta'))

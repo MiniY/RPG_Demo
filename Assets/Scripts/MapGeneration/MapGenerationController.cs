@@ -12,6 +12,7 @@ public class MapGenerationController : MonoBehaviour
     [SerializeField] private Transform player;
     [SerializeField] private bool generateOnPlay;
     [SerializeField] private bool logGenerationSummary = true;
+    [SerializeField] private EcologyRecipeDefinition[] retainedEcologyRecipes;
 
     private MapData lastGeneratedMap;
     private MapSimpleDecorationData lastGeneratedSimpleDecorations;
@@ -39,6 +40,12 @@ public class MapGenerationController : MonoBehaviour
     public MapIntegrationOrchestrator Orchestrator
     {
         get { EnsureOrchestrator(); return orchestrator; }
+    }
+
+    private void Awake()
+    {
+        if (retainedEcologyRecipes != null && retainedEcologyRecipes.Length > 0)
+            ConfigureRetainedEcologyRecipes(retainedEcologyRecipes);
     }
 
     public void GenerateMap()

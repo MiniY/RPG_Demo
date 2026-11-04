@@ -49575,6 +49575,22 @@ PrefabInstance:
       propertyPath: destructiblePrefab
       value: 
       objectReference: {fileID: 351051980577646650, guid: 32a13702d1192114e95eb89b2617f74e, type: 3}
+    - target: {fileID: 420000000000000011, guid: 5c3a7704cf4bc9547bc54b3e1f658207, type: 3}
+      propertyPath: exitPortalPrefab
+      value: 
+      objectReference: {fileID: 8498891017036989656, guid: 0ba497618f967bc4b8b099a69057e02c, type: 3}
+    - target: {fileID: 2798388526612952683, guid: 5c3a7704cf4bc9547bc54b3e1f658207, type: 3}
+      propertyPath: retainedEcologyRecipes.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2798388526612952683, guid: 5c3a7704cf4bc9547bc54b3e1f658207, type: 3}
+      propertyPath: retainedEcologyRecipes.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: f137f7eb6caefc14f89f2256c982b2e2, type: 2}
+    - target: {fileID: 2798388526612952683, guid: 5c3a7704cf4bc9547bc54b3e1f658207, type: 3}
+      propertyPath: retainedEcologyRecipes.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: 2ff1c1e075c94f8bbdc49497ea78d2d7, type: 2}
     - target: {fileID: 1481300874745678524, guid: 5c3a7704cf4bc9547bc54b3e1f658207, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

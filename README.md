@@ -1,6 +1,6 @@
 # RPG_Demo
 
-Unity 像素 ARPG 项目。本次成品范围包含已人工验收的地图 I1 与背包 UI；新版地图保留独立入口，旧 MainV1 与旧档路由继续存在。
+Unity 像素 ARPG 项目。正式新冒险默认使用已验收的 VNext 地图与背包 UI。旧地图版本可在 GitHub 提交历史中查看。
 
 ## 拉取与环境
 
@@ -14,12 +14,22 @@ cd RPG_Demo
 - 保留 `Packages/manifest.json` 与 `Packages/packages-lock.json`。首次通过下方构建入口运行时，由 Unity Package Manager 恢复依赖；不要复制别人的 Library。包下载需要可用网络。
 - 原内容校验涉及 Cinemachine 2.10.7、TMP 3.0.7、uGUI 1.0.0 的 21 个包内 `.meta`；首次恢复后必须满足原 SHA，不能删除 pins 或略过缺项。
 
-## 构建并试玩已验收的新版地图
+## 从 Unity Hub 打开正式主项目
+
+1. 打开拉取后的项目根目录，使用锁定的 Unity 版本完成依赖恢复。
+2. 打开 `Assets/Scenes/SampleScene.unity` 并点 Play。
+3. 点击“开始新冒险”，进入新版随机地图。普通随机开局和后续层最多使用 12 个输入，自动复用原重试流程筛选合法地图，耗尽后显示原失败与重试界面。
+
+WASD 移动。东西楼梯沿相应斜向上下，单独 A/D 应阻止完整跨层。新版包含五色高程、南侧岩壁禁入，以及已接入的怪物、掉落、出口和保存重开流程。
+
+正式构建的首场景同样为 `SampleScene`。在 Unity Build Settings 中使用此场景即可沿用普通正式入口。
+
+## 生成隔离数据的 Windows 验收包
 
 在仓库根目录运行，`--unity` 换成你实际安装的相同版本 Editor 路径：
 
 ```powershell
-python Tools/MapVNext/run_i1.py build --id first-i1-build --startup-target i1 --timeout 1800 --unity "C:\Program Files\Unity\Hub\Editor\2022.3.62f3c1\Editor\Unity.exe"
+python Tools/MapVNext/run_i1.py build --id first-formal-build --startup-target normal --timeout 1800 --unity "C:\Program Files\Unity\Hub\Editor\2022.3.62f3c1\Editor\Unity.exe"
 ```
 
 也可在当前 PowerShell 会话设置 `$env:RPG_I1_UNITY` 后省略 `--unity`。脚本只读取 exe 的版本资源确认版本，所有 Unity 执行仍经已有 Guard → Supervisor。若其他任务占用或状态未知，等待持有者正常收尾，不删除锁或结束其他进程。
@@ -27,27 +37,27 @@ python Tools/MapVNext/run_i1.py build --id first-i1-build --startup-target i1 --
 成功后双击：
 
 ```text
-Artifacts/MapAcceptance/MapVNext-Integration-I1-20261029/Build-map-main-host-c01/I1_PRIVATE/MVP_Windows_x64/RPG_Demo_MapVNext_I1.exe
+Artifacts/MapAcceptance/MapVNext-Integration-I1-20261029/Build-map-formal-default-20261104-d03/DEFAULT/MVP_Windows_x64/RPG_Demo_MapVNext_I1.exe
 ```
 
-进入后按界面进行新开局或恢复，WASD 移动；东西楼梯按相应斜向上下，单独 A/D 不应完整跨层。可检查五色高程、南侧岩壁禁入、怪物/掉落/出口以及保存、退出、重开。
+此包从普通 `SampleScene` 启动，携带正常 DEFAULT 能力，使用独立的验收 company/product 数据空间。它运行与主项目相同的新游戏流程。
 
-本入口使用独立 I1 存档目录（默认 `%LOCALAPPDATA%/RPG_Demo-I1/map-main-host-c01`）与隔离偏好设置，不访问原正式进度。不迁移或改写旧档。第一次构建成功后，通常直接运行 exe 即可；同一构建目录禁止覆盖，源码变化后先核对新身份和构建范围。
+第一次构建成功后，直接运行 exe。同一构建目录只绑定一组受审源码，源码变化后需要新的身份与输出目录。
 
-## 默认入口与 Editor 的区别
+## 存档与历史
 
-`SampleScene` 仍是正式默认，使用 MainV1。把 I1 源码合入仓库并不代表默认已切成新版。
+普通新冒险统一选择 VNext。恢复已有存档时读取该存档记录的版本，已有 MainV1 兼容解码继续保护原进度。新冒险默认切换不会替旧档改身份。
 
-当前 I1 是专用 Windows 构建入口：构建时仅该变体携带 `RPG_I1_ISOLATED_STARTUP`，不能设置成全局编译开关，也不能只把 `I1Game.unity` 换成默认场景。Editor 中直接打开 I1Game 点 Play 会按现有合同被拒绝。请使用上面的构建入口；Editor 直接试玩新版和正式默认推广是后续独立工作。
+GitHub 历史提交 `998c337433c968d6db0abde2557c02cb2649edb7` 保存了推广前的 MainV1 默认和专用 I1 入口。历史专项验证仍使用其明确的构建能力及版本身份。
 
 ## 完成范围与历史边界
 
-- 已采纳：a41/r3 人工验收地图及后续 b01 启动修正；已人工验收的背包列表/选中/提示 UI；c01 整组宿主兼容。
+- 已采纳的地形、空间与实体规则来自 a41/r3 人工验收地图，后续完成普通正式入口接入；背包列表、选中与提示 UI 沿用已验收成果。
 - 随宿主保留必要审计/制作/预览源码及 `.meta`，仅保持受审输入闭包，不自动激活怪物库。
 - 本轮不采用：尚未完成的 23 个储备怪物素材/预制体、商店 V3.5、统一字体升级、来源未明的字符表改动。
-- 旧内容清单保留。严格原始完整性为 **1197 原字节一致 + 23 受审源码差异**，整组兼容资格另验，不宣称 1220 项全原字节一致。
+- 旧内容清单保留。原始完整性实查为 **1196 项原字节一致 + 24 项受控差异**，其中包含正式主场景；整组兼容资格绑定本轮 684 项输入与构建身份。
 - 旧导航首因 UNKNOWN、历史 NUnit 退出超时及其他失败回执保留。功能验收、自动化测试和自然退出各自有范围，不互相替代。
 
 已知 TMP 构建缓存变化只复用既有精确字节对和三份回调源码 pin。随工具提供的两个原始资格 JSON 是历史证据，不是新运行 PASS；未知差异继续阻断，不能动态添加可信哈希。
 
-[本次发布范围、依赖和验证记录](Docs/Releases/Accepted-Map-I1-and-Inventory-20261102.md)
+[正式新版入口与验证记录](Docs/Releases/MapVNext-FormalDefault-20261104.md) · [2026-11-02 发布历史](Docs/Releases/Accepted-Map-I1-and-Inventory-20261102.md)

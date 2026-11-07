@@ -1,21 +1,492 @@
 {
   "schemaVersion": 1,
-  "fromSourceSha256": "f1aeaee73f6fbbbfbb4b1fffe60a41fbf69d48018bbc01e0d1dacb5ca1b0ab50",
-  "toSourceSha256": "1c92fd5b3cb6fd1bde578aea3f2eaffcb67febceee74b79fb425b097371f36b8",
-  "generatedAtUtc": "2026-11-07T15:13:16.324988+00:00",
+  "fromSourceSha256": "1c92fd5b3cb6fd1bde578aea3f2eaffcb67febceee74b79fb425b097371f36b8",
+  "toSourceSha256": "1c21301ac937fe28c1c7912a3c35d267c6a4c854a53e70dafec5c262919c9853",
+  "generatedAtUtc": "2026-11-07T17:06:28.158281+00:00",
   "sourceBranch": "main",
-  "sourceCommitAtGeneration": "642fb0a5df15bb72713e29fe43c2e12baba54558",
+  "sourceCommitAtGeneration": "69f59e4458f5bb13de76ab815b1b2ce749109c07",
   "oldNodeCount": 2699,
-  "newNodeCount": 2699,
+  "newNodeCount": 2707,
   "oldEdgeCount": 6118,
-  "newEdgeCount": 6118,
+  "newEdgeCount": 6137,
   "unresolvedGuidCount": 0,
   "duplicateGuidCount": 0,
-  "addedNodes": [],
+  "addedNodes": [
+    "asset:Assets/Scripts/PlayerRewardService.cs",
+    "asset:Assets/Scripts/RewardPickupResult.cs",
+    "asset:Assets/Tests/MapVNext/PlayMode/ConsumablesIntegrationPlayTests.cs",
+    "asset:Assets/Tests/MapVNext/PlayMode/ConsumablesPlayTests.cs",
+    "component:Assets/Prefabs/Rewards/PlantCream_Big.prefab#867901200000003",
+    "component:Assets/Prefabs/Rewards/PlantCream_Small.prefab#867901200000003",
+    "go:Assets/Prefabs/Rewards/PlantCream_Big.prefab#867901200000001",
+    "go:Assets/Prefabs/Rewards/PlantCream_Small.prefab#867901200000001"
+  ],
   "removedNodes": [],
-  "changedNodes": [],
-  "addedEdges": [],
-  "removedEdges": [],
+  "changedNodes": [
+    "component:Assets/Prefabs/Rewards/PlantCream_Big.prefab#2356299511427578098",
+    "component:Assets/Prefabs/Rewards/PlantCream_Small.prefab#6155522089033496992",
+    "component:Assets/Prefabs/Rewards/PlantCream_Small.prefab#8605024066089061874",
+    "go:Assets/Prefabs/Rewards/PlantCream_Small.prefab#5600115772746417007"
+  ],
+  "addedEdges": [
+    [
+      "asset:Assets/Prefabs/Rewards/PlantCream_Big.prefab",
+      "contains GameObject",
+      "go:Assets/Prefabs/Rewards/PlantCream_Big.prefab#867901200000001",
+      "Assets/Prefabs/Rewards/PlantCream_Big.prefab",
+      87
+    ],
+    [
+      "asset:Assets/Prefabs/Rewards/PlantCream_Small.prefab",
+      "contains GameObject",
+      "go:Assets/Prefabs/Rewards/PlantCream_Small.prefab#5600115772746417007",
+      "Assets/Prefabs/Rewards/PlantCream_Small.prefab",
+      87
+    ],
+    [
+      "asset:Assets/Prefabs/Rewards/PlantCream_Small.prefab",
+      "contains GameObject",
+      "go:Assets/Prefabs/Rewards/PlantCream_Small.prefab#867901200000001",
+      "Assets/Prefabs/Rewards/PlantCream_Small.prefab",
+      171
+    ],
+    [
+      "asset:Assets/ScriptObjects/RewardSOs/PlantCream_Big.asset",
+      "serialized GUID reference",
+      "asset:Assets/Prefabs/Rewards/PlantCream_Big.prefab",
+      "Assets/ScriptObjects/RewardSOs/PlantCream_Big.asset",
+      19
+    ],
+    [
+      "asset:Assets/Scripts/GameSession.cs",
+      "code type reference",
+      "asset:Assets/Scripts/Player/PlayerAction.cs",
+      "Assets/Scripts/GameSession.cs",
+      167
+    ],
+    [
+      "asset:Assets/Scripts/GameSession.cs",
+      "code type reference",
+      "asset:Assets/Scripts/PlayerProgressionService.cs",
+      "Assets/Scripts/GameSession.cs",
+      65
+    ],
+    [
+      "asset:Assets/Scripts/GameSession.cs",
+      "code type reference",
+      "asset:Assets/Scripts/PlayerRewardService.cs",
+      "Assets/Scripts/GameSession.cs",
+      195
+    ],
+    [
+      "asset:Assets/Scripts/GameSession.cs",
+      "code type reference",
+      "asset:Assets/Scripts/PlayerStaminaController.cs",
+      "Assets/Scripts/GameSession.cs",
+      169
+    ],
+    [
+      "asset:Assets/Scripts/GameSession.cs",
+      "code type reference",
+      "asset:Assets/Scripts/PlayerStatsRuntime.cs",
+      "Assets/Scripts/GameSession.cs",
+      60
+    ],
+    [
+      "asset:Assets/Scripts/GameSession.cs",
+      "code type reference",
+      "asset:Assets/Scripts/TowerRunCoordinator.cs",
+      "Assets/Scripts/GameSession.cs",
+      72
+    ],
+    [
+      "asset:Assets/Scripts/GameSession.cs",
+      "code type reference",
+      "asset:Assets/Scripts/UI/PlayerStatsUpgradeUI.cs",
+      "Assets/Scripts/GameSession.cs",
+      174
+    ],
+    [
+      "asset:Assets/Scripts/GameSession.cs",
+      "writes current runtime state",
+      "asset:Assets/Scripts/GameSaveService.cs",
+      "Assets/Scripts/GameSession.cs",
+      138
+    ],
+    [
+      "asset:Assets/Scripts/MapGeneration/SpatialVersion/MapCandidateCollisionGeometry.Rewards.cs",
+      "code type reference",
+      "asset:Assets/Scripts/MapGeneration/Ecology/MapPlannedSolidGeometry.cs",
+      "Assets/Scripts/MapGeneration/SpatialVersion/MapCandidateCollisionGeometry.Rewards.cs",
+      39
+    ],
+    [
+      "asset:Assets/Scripts/PlayerInventory.cs",
+      "code type reference",
+      "asset:Assets/Scripts/GameSaveService.cs",
+      "Assets/Scripts/PlayerInventory.cs",
+      497
+    ],
+    [
+      "asset:Assets/Scripts/PlayerInventory.cs",
+      "code type reference",
+      "asset:Assets/Scripts/TowerRun/TowerRunCheckpointRecord.cs",
+      "Assets/Scripts/PlayerInventory.cs",
+      575
+    ],
+    [
+      "asset:Assets/Scripts/PlayerInventory.cs",
+      "saves inventory via GameSaveService",
+      "asset:Assets/Scripts/GameSaveService.cs",
+      "Assets/Scripts/PlayerInventory.cs",
+      809
+    ],
+    [
+      "asset:Assets/Scripts/PlayerRewardService.cs",
+      "code type reference",
+      "asset:Assets/Scripts/MapGeneration/GenerationScopedRewardLifetime.cs",
+      "Assets/Scripts/PlayerRewardService.cs",
+      128
+    ],
+    [
+      "asset:Assets/Scripts/PlayerRewardService.cs",
+      "code type reference",
+      "asset:Assets/Scripts/Player/PlayerAction.cs",
+      "Assets/Scripts/PlayerRewardService.cs",
+      25
+    ],
+    [
+      "asset:Assets/Scripts/PlayerRewardService.cs",
+      "code type reference",
+      "asset:Assets/Scripts/RewardPickup.cs",
+      "Assets/Scripts/PlayerRewardService.cs",
+      126
+    ],
+    [
+      "asset:Assets/Scripts/PlayerStatsRuntime.cs",
+      "code type reference",
+      "asset:Assets/Scripts/GameSaveService.cs",
+      "Assets/Scripts/PlayerStatsRuntime.cs",
+      349
+    ],
+    [
+      "asset:Assets/Scripts/RewardPickup.cs",
+      "code type reference",
+      "asset:Assets/Scripts/PlayerInventory.cs",
+      "Assets/Scripts/RewardPickup.cs",
+      67
+    ],
+    [
+      "asset:Assets/Scripts/RewardPickup.cs",
+      "code type reference",
+      "asset:Assets/Scripts/RewardVisualController.cs",
+      "Assets/Scripts/RewardPickup.cs",
+      53
+    ],
+    [
+      "asset:Assets/Scripts/RewardPickup.cs",
+      "computes reward pickup amount",
+      "asset:Assets/Scripts/ScriptableObject/RewardSO.cs",
+      "Assets/Scripts/RewardPickup.cs",
+      73
+    ],
+    [
+      "asset:Assets/Scripts/UI/PackageGridUI.cs",
+      "code type reference",
+      "asset:Assets/Scripts/GameSession.cs",
+      "Assets/Scripts/UI/PackageGridUI.cs",
+      301
+    ],
+    [
+      "asset:Assets/Scripts/UI/PackageGridUI.cs",
+      "code type reference",
+      "asset:Assets/Scripts/UI/PackagePanelController.cs",
+      "Assets/Scripts/UI/PackageGridUI.cs",
+      240
+    ],
+    [
+      "asset:Assets/Scripts/UI/PackageGridUI.cs",
+      "passes stack data to visible slot",
+      "asset:Assets/Scripts/UI/PackageSlotUI.cs",
+      "Assets/Scripts/UI/PackageGridUI.cs",
+      157
+    ],
+    [
+      "asset:Assets/Scripts/UI/PackagePanelController.cs",
+      "code type reference",
+      "asset:Assets/Scripts/GameInput.cs",
+      "Assets/Scripts/UI/PackagePanelController.cs",
+      79
+    ],
+    [
+      "asset:Assets/Tests/MapGeneration/PlayMode/DamageableRewardLoopPlayModeTests.cs",
+      "code type reference",
+      "asset:Assets/Scripts/MapGeneration/GenerationScopedRewardLifetime.cs",
+      "Assets/Tests/MapGeneration/PlayMode/DamageableRewardLoopPlayModeTests.cs",
+      408
+    ],
+    [
+      "asset:Assets/Tests/MapVNext/PlayMode/ConsumablesIntegrationPlayTests.cs",
+      "code type reference",
+      "asset:Assets/Scripts/MapGeneration/GenerationScopedRewardLifetime.cs",
+      "Assets/Tests/MapVNext/PlayMode/ConsumablesIntegrationPlayTests.cs",
+      145
+    ],
+    [
+      "component:Assets/Prefabs/Rewards/PlantCream_Big.prefab#867901200000003",
+      "serialized script",
+      "asset:Assets/Scripts/RewardVisualController.cs",
+      "Assets/Prefabs/Rewards/PlantCream_Big.prefab",
+      129
+    ],
+    [
+      "component:Assets/Prefabs/Rewards/PlantCream_Big.prefab#867901200000003",
+      "uses script",
+      "asset:Assets/Scripts/RewardVisualController.cs",
+      "Assets/Prefabs/Rewards/PlantCream_Big.prefab",
+      120
+    ],
+    [
+      "component:Assets/Prefabs/Rewards/PlantCream_Small.prefab#6155522089033496992",
+      "serialized GUID reference",
+      "asset:Assets/_Resources/TinySwords/Deco/10.png",
+      "Assets/Prefabs/Rewards/PlantCream_Small.prefab",
+      76
+    ],
+    [
+      "component:Assets/Prefabs/Rewards/PlantCream_Small.prefab#867901200000003",
+      "serialized script",
+      "asset:Assets/Scripts/RewardVisualController.cs",
+      "Assets/Prefabs/Rewards/PlantCream_Small.prefab",
+      214
+    ],
+    [
+      "component:Assets/Prefabs/Rewards/PlantCream_Small.prefab#867901200000003",
+      "uses script",
+      "asset:Assets/Scripts/RewardVisualController.cs",
+      "Assets/Prefabs/Rewards/PlantCream_Small.prefab",
+      205
+    ],
+    [
+      "go:Assets/Prefabs/Rewards/PlantCream_Big.prefab#867901200000001",
+      "has Component",
+      "component:Assets/Prefabs/Rewards/PlantCream_Big.prefab#2356299511427578098",
+      "Assets/Prefabs/Rewards/PlantCream_Big.prefab",
+      35
+    ],
+    [
+      "go:Assets/Prefabs/Rewards/PlantCream_Big.prefab#867901200000001",
+      "has Component",
+      "component:Assets/Prefabs/Rewards/PlantCream_Big.prefab#867901200000003",
+      "Assets/Prefabs/Rewards/PlantCream_Big.prefab",
+      120
+    ],
+    [
+      "go:Assets/Prefabs/Rewards/PlantCream_Big.prefab#996929769067086867",
+      "contains child",
+      "go:Assets/Prefabs/Rewards/PlantCream_Big.prefab#867901200000001",
+      "Assets/Prefabs/Rewards/PlantCream_Big.prefab",
+      105
+    ],
+    [
+      "go:Assets/Prefabs/Rewards/PlantCream_Small.prefab#3557243616481097289",
+      "contains child",
+      "go:Assets/Prefabs/Rewards/PlantCream_Small.prefab#867901200000001",
+      "Assets/Prefabs/Rewards/PlantCream_Small.prefab",
+      189
+    ],
+    [
+      "go:Assets/Prefabs/Rewards/PlantCream_Small.prefab#5600115772746417007",
+      "has Component",
+      "component:Assets/Prefabs/Rewards/PlantCream_Small.prefab#8605024066089061874",
+      "Assets/Prefabs/Rewards/PlantCream_Small.prefab",
+      119
+    ],
+    [
+      "go:Assets/Prefabs/Rewards/PlantCream_Small.prefab#867901200000001",
+      "contains child",
+      "go:Assets/Prefabs/Rewards/PlantCream_Small.prefab#5600115772746417007",
+      "Assets/Prefabs/Rewards/PlantCream_Small.prefab",
+      104
+    ],
+    [
+      "go:Assets/Prefabs/Rewards/PlantCream_Small.prefab#867901200000001",
+      "has Component",
+      "component:Assets/Prefabs/Rewards/PlantCream_Small.prefab#6155522089033496992",
+      "Assets/Prefabs/Rewards/PlantCream_Small.prefab",
+      35
+    ],
+    [
+      "go:Assets/Prefabs/Rewards/PlantCream_Small.prefab#867901200000001",
+      "has Component",
+      "component:Assets/Prefabs/Rewards/PlantCream_Small.prefab#867901200000003",
+      "Assets/Prefabs/Rewards/PlantCream_Small.prefab",
+      205
+    ]
+  ],
+  "removedEdges": [
+    [
+      "asset:Assets/Prefabs/Rewards/PlantCream_Small.prefab",
+      "contains GameObject",
+      "go:Assets/Prefabs/Rewards/PlantCream_Small.prefab#5600115772746417007",
+      "Assets/Prefabs/Rewards/PlantCream_Small.prefab",
+      88
+    ],
+    [
+      "asset:Assets/ScriptObjects/RewardSOs/PlantCream_Big.asset",
+      "serialized GUID reference",
+      "asset:Assets/Prefabs/Plants/SweetPotato_Big.prefab",
+      "Assets/ScriptObjects/RewardSOs/PlantCream_Big.asset",
+      19
+    ],
+    [
+      "asset:Assets/Scripts/GameSession.cs",
+      "code type reference",
+      "asset:Assets/Scripts/PlayerProgressionService.cs",
+      "Assets/Scripts/GameSession.cs",
+      62
+    ],
+    [
+      "asset:Assets/Scripts/GameSession.cs",
+      "code type reference",
+      "asset:Assets/Scripts/PlayerStaminaController.cs",
+      "Assets/Scripts/GameSession.cs",
+      163
+    ],
+    [
+      "asset:Assets/Scripts/GameSession.cs",
+      "code type reference",
+      "asset:Assets/Scripts/PlayerStatsRuntime.cs",
+      "Assets/Scripts/GameSession.cs",
+      57
+    ],
+    [
+      "asset:Assets/Scripts/GameSession.cs",
+      "code type reference",
+      "asset:Assets/Scripts/TowerRunCoordinator.cs",
+      "Assets/Scripts/GameSession.cs",
+      69
+    ],
+    [
+      "asset:Assets/Scripts/GameSession.cs",
+      "code type reference",
+      "asset:Assets/Scripts/UI/PlayerStatsUpgradeUI.cs",
+      "Assets/Scripts/GameSession.cs",
+      168
+    ],
+    [
+      "asset:Assets/Scripts/GameSession.cs",
+      "writes current runtime state",
+      "asset:Assets/Scripts/GameSaveService.cs",
+      "Assets/Scripts/GameSession.cs",
+      135
+    ],
+    [
+      "asset:Assets/Scripts/MapGeneration/SpatialVersion/MapCandidateCollisionGeometry.Rewards.cs",
+      "code type reference",
+      "asset:Assets/Scripts/MapGeneration/Ecology/MapPlannedSolidGeometry.cs",
+      "Assets/Scripts/MapGeneration/SpatialVersion/MapCandidateCollisionGeometry.Rewards.cs",
+      16
+    ],
+    [
+      "asset:Assets/Scripts/PlayerInventory.cs",
+      "code type reference",
+      "asset:Assets/Scripts/GameSaveService.cs",
+      "Assets/Scripts/PlayerInventory.cs",
+      455
+    ],
+    [
+      "asset:Assets/Scripts/PlayerInventory.cs",
+      "code type reference",
+      "asset:Assets/Scripts/TowerRun/TowerRunCheckpointRecord.cs",
+      "Assets/Scripts/PlayerInventory.cs",
+      533
+    ],
+    [
+      "asset:Assets/Scripts/PlayerInventory.cs",
+      "saves inventory via GameSaveService",
+      "asset:Assets/Scripts/GameSaveService.cs",
+      "Assets/Scripts/PlayerInventory.cs",
+      767
+    ],
+    [
+      "asset:Assets/Scripts/PlayerStatsRuntime.cs",
+      "code type reference",
+      "asset:Assets/Scripts/GameSaveService.cs",
+      "Assets/Scripts/PlayerStatsRuntime.cs",
+      327
+    ],
+    [
+      "asset:Assets/Scripts/RewardPickup.cs",
+      "code type reference",
+      "asset:Assets/Scripts/RewardVisualController.cs",
+      "Assets/Scripts/RewardPickup.cs",
+      40
+    ],
+    [
+      "asset:Assets/Scripts/RewardPickup.cs",
+      "computes reward pickup amount",
+      "asset:Assets/Scripts/ScriptableObject/RewardSO.cs",
+      "Assets/Scripts/RewardPickup.cs",
+      55
+    ],
+    [
+      "asset:Assets/Scripts/UI/PackageGridUI.cs",
+      "passes stack data to visible slot",
+      "asset:Assets/Scripts/UI/PackageSlotUI.cs",
+      "Assets/Scripts/UI/PackageGridUI.cs",
+      156
+    ],
+    [
+      "asset:Assets/Scripts/UI/PackagePanelController.cs",
+      "code type reference",
+      "asset:Assets/Scripts/GameInput.cs",
+      "Assets/Scripts/UI/PackagePanelController.cs",
+      74
+    ],
+    [
+      "asset:Assets/Tests/MapGeneration/PlayMode/DamageableRewardLoopPlayModeTests.cs",
+      "code type reference",
+      "asset:Assets/Scripts/MapGeneration/GenerationScopedRewardLifetime.cs",
+      "Assets/Tests/MapGeneration/PlayMode/DamageableRewardLoopPlayModeTests.cs",
+      403
+    ],
+    [
+      "component:Assets/Prefabs/Rewards/PlantCream_Small.prefab#6155522089033496992",
+      "serialized GUID reference",
+      "asset:Assets/_Resources/TinySwords/Deco/10.png",
+      "Assets/Prefabs/Rewards/PlantCream_Small.prefab",
+      77
+    ],
+    [
+      "go:Assets/Prefabs/Rewards/PlantCream_Big.prefab#996929769067086867",
+      "has Component",
+      "component:Assets/Prefabs/Rewards/PlantCream_Big.prefab#2356299511427578098",
+      "Assets/Prefabs/Rewards/PlantCream_Big.prefab",
+      35
+    ],
+    [
+      "go:Assets/Prefabs/Rewards/PlantCream_Small.prefab#3557243616481097289",
+      "contains child",
+      "go:Assets/Prefabs/Rewards/PlantCream_Small.prefab#5600115772746417007",
+      "Assets/Prefabs/Rewards/PlantCream_Small.prefab",
+      105
+    ],
+    [
+      "go:Assets/Prefabs/Rewards/PlantCream_Small.prefab#3557243616481097289",
+      "has Component",
+      "component:Assets/Prefabs/Rewards/PlantCream_Small.prefab#6155522089033496992",
+      "Assets/Prefabs/Rewards/PlantCream_Small.prefab",
+      36
+    ],
+    [
+      "go:Assets/Prefabs/Rewards/PlantCream_Small.prefab#5600115772746417007",
+      "has Component",
+      "component:Assets/Prefabs/Rewards/PlantCream_Small.prefab#8605024066089061874",
+      "Assets/Prefabs/Rewards/PlantCream_Small.prefab",
+      120
+    ]
+  ],
   "manualReview": [
     "Review ISSUES.md, SYSTEM-OVERVIEW.md, ARCHITECTURE-DIAGRAMS.md and teaching examples when related nodes or edges changed.",
     "Static regeneration does not renew Unity compile, Editor, Play Mode, visual or runtime evidence."

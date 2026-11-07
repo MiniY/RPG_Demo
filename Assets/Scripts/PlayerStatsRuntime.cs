@@ -312,6 +312,28 @@ public class PlayerStatsRuntime : MonoBehaviour
         OnStatsChanged?.Invoke();
     }
 
+    internal bool TryRestoreCurrent(PlayerStatType statType, float amount, out float restored)
+    {
+        restored = 0f;
+        if ((statType != PlayerStatType.Health && statType != PlayerStatType.Mana) ||
+            amount <= 0f || float.IsNaN(amount) || float.IsInfinity(amount)) return false;
+        EnsureInitializedForRuntime();
+        float before = GetCurrent(statType);
+        if (before >= GetMaximum(statType)) return false;
+        SetCurrentValue(statType, Mathf.Min(GetMaximum(statType), before + amount), false);
+        restored = GetCurrent(statType) - before;
+        return restored > 0f;
+    }
+
+    internal void NotifyCommittedStatsChanged()
+    {
+        Action observers = OnStatsChanged;
+        if (observers == null) return;
+        foreach (Action observer in observers.GetInvocationList())
+            try { observer.Invoke(); }
+            catch (Exception error) { Debug.LogError($"[Consumables] Stats committed; observer {observer.Method.Name} failed: {error}", this); }
+    }
+
     /// <summary>
     /// 写入候选存档，供 PlayerProgressionService（玩家成长服务）执行原子保存。
     /// </summary>

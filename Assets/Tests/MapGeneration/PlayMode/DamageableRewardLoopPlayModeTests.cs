@@ -306,8 +306,13 @@ public sealed class DamageableRewardLoopPlayModeTests
         yield return new WaitForFixedUpdate();
         yield return new WaitForFixedUpdate();
 
+        // The inventory commit precedes a bounded Visual-only hop; retirement is asynchronous.
+        float deadline = Time.realtimeSinceStartup + 1f;
+        while (rewardPickup.gameObject.activeSelf && Time.realtimeSinceStartup < deadline)
+            yield return null;
+
         Assert.That(rewardPickup.gameObject.activeSelf, Is.False,
-            "奖励与玩家触发器接触后应通过 RewardPickup 完成拾取。");
+            "奖励应在真实触发拾取及有界入包表现完成后回收。");
     }
 
     private static IEnumerator WaitForActiveRewardCount(int expectedCount)
@@ -436,7 +441,7 @@ public sealed class DamageableRewardLoopPlayModeTests
         Assert.That(state, Is.Not.Null);
         returnToStartup.Invoke(coordinator, null);
         // These regressions exercise the retained SceneBound Torch/destructible recipe.
-        // New adventures now use MainV1, whose pooled actors intentionally replace those targets.
+        // The formal default uses pooled ecology actors; this fixture explicitly retains SceneBound targets.
         FieldInfo baselineField = coordinator.GetType().GetField(
             "newRunBaseline", BindingFlags.Instance | BindingFlags.NonPublic);
         Assert.That(baselineField, Is.Not.Null);
@@ -447,7 +452,7 @@ public sealed class DamageableRewardLoopPlayModeTests
         record.generation.attemptIndex = 0;
         record.generation.staticBaselineSignature = string.Empty;
         beginOperation.Invoke(coordinator, new object[] {
-            System.Enum.Parse(beginOperation.GetParameters()[0].ParameterType, "NewRun"), record, false });
+            System.Enum.Parse(beginOperation.GetParameters()[0].ParameterType, "NewRun"), record, false, false });
         yield return null;
         Assert.That(state.GetValue(coordinator).ToString(), Is.EqualTo("Playing"));
 

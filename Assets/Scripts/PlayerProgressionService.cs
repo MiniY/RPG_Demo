@@ -42,10 +42,10 @@ public class PlayerProgressionService : MonoBehaviour
         if (playerInventory != null && playerInventory.gameObject.scene.IsValid())
             return;
 
-#pragma warning disable CS0618
-        playerInventory = FindObjectOfType<PlayerInventory>();
-#pragma warning restore CS0618
+        playerInventory = GameSession.Instance != null ? GameSession.Instance.Inventory : null;
     }
+
+    internal void BindInventory(PlayerInventory inventory) => playerInventory = inventory;
 
     /// <summary>
     /// 尝试增加一个最大属性点，并扣除十枚金币。
@@ -158,7 +158,7 @@ public class PlayerProgressionService : MonoBehaviour
         playerInventory.WriteToSaveData(candidate);
         playerStats.WriteToSaveData(candidate);
 
-        if (!GameSaveService.TrySave(candidate))
+        if (!GameSaveService.TryCommitRuntimeData(candidate))
         {
             playerInventory.RestoreSnapshot(inventorySnapshot, false);
             playerStats.RestoreSnapshot(statsSnapshot, false);

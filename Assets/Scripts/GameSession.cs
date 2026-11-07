@@ -16,6 +16,9 @@ public class GameSession : MonoBehaviour
     /// 当前会话中的玩家属性数据。
     /// </summary>
     public PlayerStatsRuntime PlayerStats { get; private set; }
+    public PlayerInventory Inventory { get; private set; }
+    public PlayerRewardService Rewards { get; private set; }
+    public string PlayerBindingFailure { get; private set; } = string.Empty;
 
     /// <summary>
     /// 当前会话中的玩家成长服务。
@@ -113,7 +116,7 @@ public class GameSession : MonoBehaviour
     }
 
     /// <summary>
-    /// 将当前属性和背包数据写入本地存档。
+    /// 将当前属性和背包数据提交到本局内存；正式槽位由 TowerRunSlotStore 保存。
     /// </summary>
     /// <returns>保存成功返回 true。</returns>
     public bool SaveRuntimeState()
@@ -122,9 +125,9 @@ public class GameSession : MonoBehaviour
             return false;
 
         PlayerStats.EnsureInitializedForRuntime();
-        PlayerInventory playerInventory = FindSceneObject<PlayerInventory>();
+        PlayerInventory playerInventory = Inventory;
 
-        if (playerInventory == null)
+        if (playerInventory == null || !playerInventory.gameObject.scene.IsValid() || !playerInventory.gameObject.scene.isLoaded)
             return false;
 
         playerInventory.EnsureInitializedForRuntime();
@@ -132,7 +135,7 @@ public class GameSession : MonoBehaviour
         GameSaveData candidate = GameSaveService.Clone(GameSaveService.GetOrCreateData());
         playerInventory.WriteToSaveData(candidate);
         PlayerStats.WriteToSaveData(candidate);
-        return GameSaveService.TrySave(candidate);
+        return GameSaveService.TryCommitRuntimeData(candidate);
     }
 
     /// <summary>
@@ -142,23 +145,26 @@ public class GameSession : MonoBehaviour
     /// <param name="mode">场景加载模式。</param>
     private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        BindSceneObjects();
+        BindSceneObjectsForScene(scene);
     }
 
     /// <summary>
     /// 将属性数据绑定到当前场景的 HUD、背包和玩家行为。
     /// </summary>
-    private void BindSceneObjects()
+    private void BindSceneObjects() => BindSceneObjectsForScene(SceneManager.GetActiveScene());
+
+    private void BindSceneObjectsForScene(Scene scene)
     {
         PlayerStats.EnsureInitializedForRuntime();
-        ProgressionService.ResolveDependencies();
+        BindPlayerRewards(scene);
+        ProgressionService.BindInventory(Inventory);
 
         PlayerStatusPanelUI statusPanel = FindSceneObject<PlayerStatusPanelUI>();
 
         if (statusPanel != null)
             statusPanel.SetStatsRuntime(PlayerStats);
 
-        PlayerAction playerAction = FindSceneObject<PlayerAction>();
+        PlayerAction playerAction = Inventory != null ? Inventory.GetComponent<PlayerAction>() : null;
 
         if (playerAction != null && playerAction.GetComponent<PlayerStaminaController>() == null)
             playerAction.gameObject.AddComponent<PlayerStaminaController>();
@@ -169,6 +175,47 @@ public class GameSession : MonoBehaviour
             characterPanel.AddComponent<PlayerStatsUpgradeUI>();
 
         TowerRun?.BindScene();
+    }
+
+    private void BindPlayerRewards(Scene scene)
+    {
+        PlayerInventory selected = FindUniqueSceneObject<PlayerInventory>(scene, out string inventoryFailure);
+        // Loading a presentation-only additive scene does not displace a live player binding.
+        if (selected == null && string.IsNullOrEmpty(inventoryFailure) && Inventory != null && Inventory.gameObject.scene.isLoaded) return;
+        if (Inventory != null) Inventory.BindRewardService(null);
+        Inventory = null;
+        Rewards = null;
+        MapGenerationController map = FindUniqueSceneObject<MapGenerationController>(scene, out string mapFailure);
+        PlayerBindingFailure = inventoryFailure + mapFailure;
+        if (selected == null || !string.IsNullOrEmpty(PlayerBindingFailure)) return;
+        if (!selected.CompareTag("Player") || selected.GetComponent<PlayerAction>() == null)
+        { PlayerBindingFailure = "背包必须属于当前场景的玩家。"; Debug.LogWarning(PlayerBindingFailure, this); return; }
+        selected.EnsureInitializedForRuntime();
+        Inventory = selected;
+        Rewards = new PlayerRewardService(Inventory, PlayerStats, map,
+            () => TowerRun != null && TowerRun.State == TowerRunFlowState.Playing &&
+                  !TowerRunGateHub.IsGameplayBlockedByOtherThan(PackagePanelController.GameplayGateOwner));
+        Inventory.BindRewardService(Rewards);
+        foreach (PackageGridUI grid in Resources.FindObjectsOfTypeAll<PackageGridUI>())
+            if (grid != null && grid.gameObject.scene == scene) grid.BindInventory(Inventory);
+    }
+
+    private static T FindUniqueSceneObject<T>(Scene scene, out string failure) where T : Component
+    {
+        T result = null;
+        failure = string.Empty;
+        foreach (T candidate in Resources.FindObjectsOfTypeAll<T>())
+        {
+            if (candidate == null || candidate.gameObject.scene != scene || !scene.isLoaded) continue;
+            if (result != null)
+            {
+                failure = $"当前场景存在多个 {typeof(T).Name}，未绑定奖励交互。";
+                Debug.LogWarning(failure);
+                return null;
+            }
+            result = candidate;
+        }
+        return result;
     }
 
     /// <summary>

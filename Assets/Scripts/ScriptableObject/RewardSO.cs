@@ -1,6 +1,8 @@
 using System;
 using UnityEngine;
 
+public enum RewardRecoveryKind { None, Health, Mana }
+
 /// <summary>
 /// 保存一种奖励的静态资料，不保存玩家当前拥有的数量。
 /// </summary>
@@ -48,6 +50,20 @@ public class RewardSO : ScriptableObject
     /// 对外提供奖励稳定唯一 ID，只允许读取。
     /// </summary>
     public string RewardId => rewardId;
+
+    [SerializeField] private RewardRecoveryKind recoveryKind;
+    [SerializeField, Min(0f)] private float recoveryAmount;
+    public RewardRecoveryKind RecoveryKind => recoveryKind;
+    public bool IsRecoveryConsumable => recoveryKind != RewardRecoveryKind.None;
+
+    public bool TryGetRecovery(out PlayerStatType stat, out float amount)
+    {
+        stat = recoveryKind == RewardRecoveryKind.Health ? PlayerStatType.Health : PlayerStatType.Mana;
+        amount = recoveryAmount;
+        return (recoveryKind == RewardRecoveryKind.Health || recoveryKind == RewardRecoveryKind.Mana) &&
+            !string.IsNullOrWhiteSpace(rewardId) && amount > 0f && !float.IsNaN(amount) && !float.IsInfinity(amount);
+    }
+
 
     /// <summary>
     /// 确保奖励数据资产拥有稳定 ID。

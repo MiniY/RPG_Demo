@@ -148,6 +148,7 @@ public class PackageGridUI : MonoBehaviour
             {
                 slot = Instantiate(slotPrefab, contentRoot);
                 slot.OnSlotSelected += HandleSlotSelected;
+                slot.OnDropRequested += HandleDropRequested;
                 slot.OnTooltipRequested += HandleTooltipRequested;
                 slot.OnTooltipHidden += HandleTooltipHidden;
             }
@@ -218,6 +219,30 @@ public class PackageGridUI : MonoBehaviour
             HideTooltip();
     }
 
+    public bool BindInventory(PlayerInventory inventory)
+    {
+        if (playerInventory != null && playerInventory != inventory && playerInventory.gameObject.scene.IsValid())
+        { Debug.LogWarning("背包视图与当前玩家引用冲突，未覆盖原绑定。", this); return false; }
+        UnsubscribeInventory();
+        playerInventory = inventory;
+        if (isActiveAndEnabled && playerInventory != null)
+        {
+            subscribedInventory = playerInventory;
+            subscribedInventory.OnInventoryChanged += Refresh;
+            Refresh();
+        }
+        return true;
+    }
+
+    private void HandleDropRequested(PackageSlotUI slot)
+    {
+        if (!isActiveAndEnabled || slot == null || !generatedSlots.Contains(slot) || playerInventory == null) return;
+        PackagePanelController panel = GetComponentInParent<PackagePanelController>();
+        if (panel == null || !panel.OwnsOpenPanel(transform)) return;
+        if (!playerInventory.TryDropOne(slot.CurrentReward, out string message))
+            Debug.LogWarning(message, this);
+    }
+
     private void HideTooltip()
     {
         currentTooltipSlot = null;
@@ -236,6 +261,7 @@ public class PackageGridUI : MonoBehaviour
         else if (slot == currentTooltipSlot)
             HideTooltip();
         slot.OnSlotSelected -= HandleSlotSelected;
+        slot.OnDropRequested -= HandleDropRequested;
         slot.OnTooltipRequested -= HandleTooltipRequested;
         slot.OnTooltipHidden -= HandleTooltipHidden;
         // 停用旧行后再延迟销毁，避免旧格子继续布局或触发 Hover。
@@ -272,9 +298,7 @@ public class PackageGridUI : MonoBehaviour
         if (playerInventory != null && playerInventory.gameObject.scene.IsValid())
             return;
 
-#pragma warning disable CS0618
-        playerInventory = FindObjectOfType<PlayerInventory>();
-#pragma warning restore CS0618
+        playerInventory = GameSession.Instance != null ? GameSession.Instance.Inventory : null;
     }
 
     /// <summary>

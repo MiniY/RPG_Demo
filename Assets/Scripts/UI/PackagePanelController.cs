@@ -6,7 +6,7 @@ using UnityEngine;
 /// </summary>
 public class PackagePanelController : MonoBehaviour
 {
-    private const string GameplayGateOwner = "ui.package";
+    internal const string GameplayGateOwner = "ui.package";
     /// <summary>
     /// 背包面板打开或关闭时发出的事件。
     /// </summary>
@@ -32,6 +32,11 @@ public class PackagePanelController : MonoBehaviour
     /// 背包面板当前是否正在显示。
     /// </summary>
     public bool IsPackagePanelVisible => IsPackagePanelOpen();
+
+    internal bool OwnsOpenPanel(Transform content)
+    {
+        return isActiveAndEnabled && IsPackagePanelOpen() && content.IsChildOf(packagePanel.transform);
+    }
 
     /// <summary>
     /// 初始化背包面板的初始显示状态。

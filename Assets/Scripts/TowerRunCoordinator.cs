@@ -171,7 +171,7 @@ public sealed class TowerRunCoordinator : MonoBehaviour, IEcologyMapSession, IEc
 #endif
         floorRuntime = FindSceneObject<TowerFloorRuntimeController>();
         stats = GameSession.Instance == null ? null : GameSession.Instance.PlayerStats;
-        inventory = FindSceneObject<PlayerInventory>();
+        inventory = GameSession.Instance == null ? null : GameSession.Instance.Inventory;
         shops.Clear();
         shops.AddRange(FindSceneObjects<ShopTradeController>());
         playerDamage = FindSceneObject<PlayerDamageController>();

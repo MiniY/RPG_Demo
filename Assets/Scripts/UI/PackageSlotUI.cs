@@ -14,6 +14,7 @@ public class PackageSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterH
     /// 当前格子被点击选中时发出的通知。
     /// </summary>
     public event Action<PackageSlotUI> OnSlotSelected;
+    public event Action<PackageSlotUI> OnDropRequested;
 
     /// <summary>
     /// 当前格子请求显示奖励说明时发出的通知。
@@ -140,6 +141,12 @@ public class PackageSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterH
         if (currentReward == null)
             return;
 
+        if (eventData != null && eventData.button == PointerEventData.InputButton.Right)
+        {
+            if (currentReward.IsRecoveryConsumable) OnDropRequested?.Invoke(this);
+            return;
+        }
+        if (eventData != null && eventData.button != PointerEventData.InputButton.Left) return;
         SetSelected(true);
         OnSlotSelected?.Invoke(this);
         OnTooltipRequested?.Invoke(this);

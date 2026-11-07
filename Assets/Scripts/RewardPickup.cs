@@ -1,105 +1,171 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
-// 控制地面奖励的拾取逻辑，不负责显示动画。
+// 控制地面奖励的拾取与余量，不负责背包、属性或存档权威。
 public class RewardPickup : MonoBehaviour
 {
-    [SerializeField] private RewardSO reward; // 被拾取的奖励数据。
-    [SerializeField, Min(1)] private int amount = 1; // 被拾取的奖励数量。
+    [SerializeField] private RewardSO reward;
+    [SerializeField, Min(1)] private int amount = 1;
+    private bool amountIsOwnedUnits;
+    private bool hasBeenPickedUp;
+    private int lease;
+    private RewardVisualController rewardVisualController;
 
-    private bool hasBeenPickedUp; // 是否已经被玩家拾取。
-    private RewardVisualController rewardVisualController; // 奖励视觉控制器。
+    public static event Action<RewardSO, int> OnRewardPickedUp;
+    public static event Action<RewardSO, RewardPickupResult> OnRewardProcessed;
+    public static event Func<RewardSO, int, RewardPickupResult> OnRewardPickupRequested;
 
-    /// <summary>
-    /// 背包系统确认奖励已经成功写入后发出的通知。
-    /// </summary>
-    public static event Action<RewardSO, int> OnRewardPickedUp; // 奖励成功拾取通知。
+    public int RemainingAmount => amount;
 
-    /// <summary>
-    /// 背包系统尝试接收奖励的验证事件；返回 false 时保留地面奖励。
-    /// </summary>
-    public static event Func<RewardSO, int, bool> OnRewardPickupRequested; // 奖励接收验证事件。
-
-    // 奖励启用或从对象池取出时，重置拾取状态。
     private void OnEnable()
     {
+        lease++;
         hasBeenPickedUp = false;
     }
 
-    // 初始化奖励数据和数量。
-    public void Initialize(RewardSO rewardData, int rewardAmount)
+    private void OnDisable()
     {
-        reward = rewardData;
-        amount = Mathf.Max(1, rewardAmount);
+        lease++;
+        StopAllCoroutines();
+        if (rewardVisualController != null) rewardVisualController.CancelPresentation();
+        if (amount == 0 && gameObject.activeSelf) ObjectPoolManager.ReturnOrDeactivate(gameObject);
     }
 
-    // 初始化拾取碰撞体和视觉控制器引用。
+    public void Initialize(RewardSO rewardData, int rewardAmount) => Initialize(rewardData, rewardAmount, false);
+    public void InitializeOwnedUnits(RewardSO rewardData, int rewardAmount) => Initialize(rewardData, rewardAmount, true);
+
+    private void Initialize(RewardSO rewardData, int rewardAmount, bool ownedUnits)
+    {
+        lease++;
+        StopAllCoroutines();
+        reward = rewardData;
+        amount = Mathf.Max(1, rewardAmount);
+        amountIsOwnedUnits = ownedUnits;
+        hasBeenPickedUp = false;
+        enabled = true;
+        if (rewardVisualController != null) rewardVisualController.ResetForSpawn();
+    }
+
     private void Awake()
     {
         Collider2D pickupCollider = GetComponent<Collider2D>();
-        rewardVisualController = GetComponentInChildren<RewardVisualController>();
-
-        if (pickupCollider == null)
-            pickupCollider = gameObject.AddComponent<CircleCollider2D>();
-
+        rewardVisualController = GetComponentInChildren<RewardVisualController>(true);
+        if (pickupCollider == null) pickupCollider = gameObject.AddComponent<CircleCollider2D>();
         pickupCollider.isTrigger = true;
     }
 
-    // 玩家进入拾取范围时收取奖励。
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (hasBeenPickedUp || !IsPlayer(other))
+        if (hasBeenPickedUp || !isActiveAndEnabled || other == null || !IsPlayer(other)) return;
+        if (reward == null)
+        {
+            Debug.LogWarning("[Consumables] Pickup definition is missing; ground quantity retained.", this);
             return;
-
+        }
         hasBeenPickedUp = true;
-        int finalAmount = reward == null ? amount : reward.GetPickupAmount(amount); // 最终加入背包的数量。
-        if (!TryAcceptReward(finalAmount))
+        StartCoroutine(Settle(other.GetComponentInParent<PlayerInventory>(), lease));
+    }
+
+    private IEnumerator Settle(PlayerInventory expectedInventory, int currentLease)
+    {
+        RewardSO definition = reward;
+        int remaining = definition == null || amountIsOwnedUnits ? amount : definition.GetPickupAmount(amount);
+        bool perUnit = definition != null && definition.IsRecoveryConsumable;
+        bool inventoryPresentation = false;
+        int unitsThisFrame = 0;
+        while (remaining > 0 && IsCurrentLease(currentLease))
         {
+            int requested = perUnit ? 1 : remaining;
+            RewardPickupResult result = TryAcceptReward(definition, requested, expectedInventory, out PlayerInventory receiver);
+            if (!result.Accepted) break;
+            if (!IsCurrentLease(currentLease)) yield break;
+
+            // No observers run between the business commit and this ground quantity update.
+            remaining -= result.AcceptedAmount;
+            amount = remaining;
+            amountIsOwnedUnits = true;
+            inventoryPresentation |= result.Kind == RewardSettlementKind.Inventory;
+            receiver.NotifyCommittedGroundSettlement(result);
+            NotifyCommittedOutcome(definition, result);
+            if (!IsCurrentLease(currentLease)) yield break;
+            if (!perUnit) break;
+            if (++unitsThisFrame == 32 && remaining > 0)
+            {
+                unitsThisFrame = 0;
+                yield return null;
+            }
+        }
+
+        if (!IsCurrentLease(currentLease)) yield break;
+        if (inventoryPresentation && rewardVisualController != null)
+        {
+            IEnumerator visual = rewardVisualController.PlayInventoryHop();
+            float started = Time.realtimeSinceStartup;
+            while (IsCurrentLease(currentLease) && Time.realtimeSinceStartup - started < .5f)
+            {
+                bool next;
+                try { next = visual.MoveNext(); }
+                catch (Exception error)
+                {
+                    Debug.LogError($"[Consumables] Committed pickup presentation failed: {error}", this);
+                    break;
+                }
+                if (!next) break;
+                yield return null;
+            }
+            if (IsCurrentLease(currentLease) && rewardVisualController != null) rewardVisualController.CancelPresentation();
+        }
+        if (!IsCurrentLease(currentLease)) yield break;
+        if (remaining == 0) ObjectPoolManager.ReturnOrDeactivate(gameObject);
+        else
+        {
+            if (inventoryPresentation && rewardVisualController != null) rewardVisualController.ResetForSpawn();
             hasBeenPickedUp = false;
-            return;
         }
-
-        OnRewardPickedUp?.Invoke(reward, finalAmount);
-
-        if (rewardVisualController != null)
-            rewardVisualController.MarkCollected();
-
-        ObjectPoolManager.ReturnOrDeactivate(gameObject);
     }
 
-    // 判断进入触发器的对象是否是玩家。
-    private bool IsPlayer(Collider2D other)
-    {
-        if (other.CompareTag("Player"))
-            return true;
+    private bool IsCurrentLease(int value) => value == lease && isActiveAndEnabled;
+    private bool IsPlayer(Collider2D other) => other.CompareTag("Player") || other.transform.root.CompareTag("Player");
 
-        return other.transform.root.CompareTag("Player");
+    private void NotifyCommittedOutcome(RewardSO definition, RewardPickupResult result)
+    {
+        if (result.Kind == RewardSettlementKind.Inventory)
+        {
+            Action<RewardSO, int> observers = OnRewardPickedUp;
+            if (observers != null)
+                foreach (Action<RewardSO, int> observer in observers.GetInvocationList())
+                    try { observer.Invoke(definition, result.AcceptedAmount); }
+                    catch (Exception error) { Debug.LogError($"[ADR02] Pickup committed; observer {observer.Method.Name} failed: {error}", this); }
+        }
+        Action<RewardSO, RewardPickupResult> processed = OnRewardProcessed;
+        if (processed != null)
+            foreach (Action<RewardSO, RewardPickupResult> observer in processed.GetInvocationList())
+                try { observer.Invoke(definition, result); }
+                catch (Exception error) { Debug.LogError($"[Consumables] Settlement committed; observer {observer.Method.Name} failed: {error}", this); }
     }
 
-    /// <summary>
-    /// 请求背包确认奖励已经成功接收。
-    /// </summary>
-    /// <param name="finalAmount">最终加入背包的数量。</param>
-    /// <returns>至少一个背包系统确认成功时返回 true。</returns>
-    private bool TryAcceptReward(int finalAmount)
+    private RewardPickupResult TryAcceptReward(RewardSO definition, int requested, PlayerInventory expectedInventory, out PlayerInventory receiver)
     {
-        if (OnRewardPickupRequested == null)
+        receiver = null;
+        Func<RewardSO, int, RewardPickupResult> request = OnRewardPickupRequested;
+        Delegate[] handlers = request?.GetInvocationList();
+        int receiverCount = handlers == null ? 0 : handlers.Length;
+        if (receiverCount != 1)
         {
-            Debug.LogWarning("场景中没有可用的 PlayerInventory（玩家背包），地面奖励不会被回收。", this);
-            return false;
+            Debug.LogWarning($"[ADR02] Pickup rejected before mutation: expected one receiver, found {receiverCount}; reward={definition?.RewardId}, amount={requested}.", this);
+            return default;
         }
-
-        Delegate[] handlers = OnRewardPickupRequested.GetInvocationList(); // 所有奖励接收者。
-
-        for (int i = 0; i < handlers.Length; i++)
+        var handler = (Func<RewardSO, int, RewardPickupResult>)handlers[0];
+        PlayerInventory inventory = handler.Target as PlayerInventory;
+        if (inventory == null || inventory != expectedInventory || !inventory.isActiveAndEnabled ||
+            !inventory.gameObject.scene.IsValid() || !inventory.gameObject.scene.isLoaded ||
+            !inventory.IsInitialized || !inventory.IsPickupRequestReceiver(handler))
         {
-            Func<RewardSO, int, bool> handler =
-                handlers[i] as Func<RewardSO, int, bool>;
-
-            if (handler == null || !handler.Invoke(reward, finalAmount))
-                return false;
+            Debug.LogWarning($"[ADR02] Pickup rejected before mutation: stale, unknown or mismatched receiver {handler.Method.DeclaringType?.Name}.{handler.Method.Name}.", this);
+            return default;
         }
-
-        return true;
+        receiver = inventory;
+        return handler.Invoke(definition, requested);
     }
 }

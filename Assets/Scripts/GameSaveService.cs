@@ -191,7 +191,7 @@ public static class GameSaveService
     }
 
     /// <summary>
-    /// 将候选数据提交到内存后端。
+    /// 兼容旧调用的内存提交入口；新业务使用 TryCommitRuntimeData。
     /// </summary>
     /// <param name="data">准备写入的完整存档数据。</param>
     /// <returns>内存事务提交成功返回 true；该结果不代表正式槽位已写盘。</returns>
@@ -208,7 +208,8 @@ public static class GameSaveService
         return TryCommitRuntimeData(data);
     }
 
-    private static bool TryCommitRuntimeData(GameSaveData data)
+    /// <summary>提交完整候选到本局内存，规范化并深复制；不写正式槽位或磁盘。</summary>
+    public static bool TryCommitRuntimeData(GameSaveData data)
     {
         if (data == null)
             return false;

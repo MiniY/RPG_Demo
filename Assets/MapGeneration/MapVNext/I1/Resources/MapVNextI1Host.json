@@ -4,13 +4,13 @@
     "DEFAULT",
     "I1_PRIVATE"
   ],
-  "buildId": "map-shop-ui-v35-20261105-g04",
-  "implementationDigest": "420e3f3cda380800c25ae249100845ccebf69d355dfbf9a504c44bc644efc1ea",
+  "buildId": "reward-pickup-standalone-20261108-rpd1",
+  "implementationDigest": "aa632904f7416aa8ff4e9a3a59d2ec843748ca3159ec2c7e249914f175641acb",
   "oldContentVersion": "content-r1:c55fb3b4b0362e8bb59e84f4624fbb22c2f9ef96f3dcd5f61481a92dab9c9802",
   "newContentVersion": "content-r1:a4d222a9bf0aa3952ea231ed097e746a6348ff2e571a7a193ea7a61a55f4daac",
-  "closureSha256": "22ecfdbeccea9a22d391f6c2ef54dabd99d2d8aa313609d5dfe41a5354c2f307",
-  "reviewEvidenceSha256": "ab7db70d85c24dcc2fd78410fba9af5fceb40c1c716dde6f077a3cd56e0c9c86",
-  "stampSha256": "c73592487e0892131228aa0402a4868ea1d6472dff05962a4ffaaaca5e1e543f",
+  "closureSha256": "363384b8e6cb9aa2b0764ca28b4f9c8b7bbfdbdc900b1b86b811bbe71a526115",
+  "reviewEvidenceSha256": "b5d622093f9470c6cadf4c8a3f17bb11898eeb6c0a9fa3f02fc9b916ad580cf6",
+  "stampSha256": "75702c549d80a553ba516e9c2d591e3046c343fc8fd01ddca8cc2a16973476b9",
   "files": [
     {
       "path": "Assets/Animations/MerchantSign/MerchanSignFloating.anim",
@@ -418,11 +418,19 @@
     },
     {
       "path": "Assets/Prefabs/Rewards/Meat.prefab",
-      "sha256": "2c0938412ff3c5671c32ba70e40d432f34f61692688d5547efae074ee2e9336f"
+      "sha256": "d101a171e133d4400c6ef5e2d6203120d231514099cb4bf492e56c375d741d5a"
     },
     {
       "path": "Assets/Prefabs/Rewards/Meat.prefab.meta",
       "sha256": "02c4c050f965d6fb7299d3924e568756b51482d9c2fd2323640a510da6efb690"
+    },
+    {
+      "path": "Assets/Prefabs/Rewards/PlantCream_Big.prefab",
+      "sha256": "95b63515c5144b9357228ad97ace89b2b10b87e727bd49af19ea560f3560b4de"
+    },
+    {
+      "path": "Assets/Prefabs/Rewards/PlantCream_Small.prefab",
+      "sha256": "9f70a0372096d3bd2661f2f3ff5547d24761988c36c04114e176bbbae7ca3e08"
     },
     {
       "path": "Assets/Prefabs/UI/ShopSlot.prefab",
@@ -614,11 +622,19 @@
     },
     {
       "path": "Assets/ScriptObjects/RewardSOs/Meat.asset",
-      "sha256": "2d41a73a0895f37a59162a2d50becb047ab25ff108bfced98867038f789e84c2"
+      "sha256": "7a275c8cce6a6e4bef8c64505f5a190b37125418dd5aecb3553e1460c28d3f46"
     },
     {
       "path": "Assets/ScriptObjects/RewardSOs/Meat.asset.meta",
       "sha256": "8b0f50f00c49c62541c8070446fe459dc2e7d78e18c43845ca7abbbd65a015e1"
+    },
+    {
+      "path": "Assets/ScriptObjects/RewardSOs/PlantCream_Big.asset",
+      "sha256": "b1554682d773f1fda40dfd188f90bbbfd9a33643b736265f80a3546ac072c817"
+    },
+    {
+      "path": "Assets/ScriptObjects/RewardSOs/PlantCream_Small.asset",
+      "sha256": "56d5776bcdbbbbcb292824fd9467c7f4b023fffc090e7ab1d247a1e0f4433990"
     },
     {
       "path": "Assets/ScriptObjects/Shop/ShopCatalog_Merchant.asset",
@@ -846,7 +862,7 @@
     },
     {
       "path": "Assets/Scripts/GameSaveService.cs",
-      "sha256": "1454ddb799965f9efa671daa6f2080f39bf851f3fe9dd8b4e5a36236f3cc8295"
+      "sha256": "104615f24271f1538e9a383317790b53613de61d72367050e1c0536232b38c03"
     },
     {
       "path": "Assets/Scripts/GameSaveService.cs.meta",
@@ -854,7 +870,7 @@
     },
     {
       "path": "Assets/Scripts/GameSession.cs",
-      "sha256": "5d3267bfb143ee04e20128304e79ded50a5c4141e1a82beb02d43f351177d688"
+      "sha256": "6e25cdaa88de415d7b3143d6f9c60ed8eed3a6bf0fd791e1a244e8c5946127d7"
     },
     {
       "path": "Assets/Scripts/GameSession.cs.meta",
@@ -1750,7 +1766,7 @@
     },
     {
       "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapCandidateCollisionGeometry.Rewards.cs",
-      "sha256": "bff43a8a3fabf1ffe61c02c1c6b1e8af3828d099e33d8130f03d81eb4aeb21c8"
+      "sha256": "3d988d3f1fbbd252f58cf3da63146886645bb2f056416fe984b606abb2da3547"
     },
     {
       "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapCandidateCollisionGeometry.Rewards.cs.meta",
@@ -1834,7 +1850,7 @@
     },
     {
       "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapSpatialRewardPlacement.cs",
-      "sha256": "c809c3511fb3276830a13e59709fa41f51a65a2def2e165a2f9203ecba619b72"
+      "sha256": "6ade9879d4f56143a8f7146e967a26b561229cd5a4e6c550ef49134eed6d5506"
     },
     {
       "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapSpatialRewardPlacement.cs.meta",
@@ -2066,7 +2082,7 @@
     },
     {
       "path": "Assets/Scripts/PlayerInventory.cs",
-      "sha256": "128cfcce07b9d5fda762b7975849b6a1f71e6078649e7925a62a4cc36fe675aa"
+      "sha256": "e41cd003593c2cec29f03cbf000f67cfcc8f32cb1a313b2ae5a7aae53b1e2fd7"
     },
     {
       "path": "Assets/Scripts/PlayerInventory.cs.meta",
@@ -2074,11 +2090,19 @@
     },
     {
       "path": "Assets/Scripts/PlayerProgressionService.cs",
-      "sha256": "3a2d998279456692a6f433726a13e706887bb794ae8cd5dfc5d3217ee2355460"
+      "sha256": "f478055d830a6d48fc307cce3c5f20bd5bd3ffb6376c7967271e70e8e03991f3"
     },
     {
       "path": "Assets/Scripts/PlayerProgressionService.cs.meta",
       "sha256": "ccb93448194b3ac917fcdc44db2860a411d926db693df335ad77e2f1195b6180"
+    },
+    {
+      "path": "Assets/Scripts/PlayerRewardService.cs",
+      "sha256": "12b49d9267a72995e8a49d9ab5bee4bd24e9ac413819c6e0c20bc5d94ee67319"
+    },
+    {
+      "path": "Assets/Scripts/PlayerRewardService.cs.meta",
+      "sha256": "01e0b31ce1595981df1ac1cc04cd13a222e45d0629170fd1d24ce1847c5865b7"
     },
     {
       "path": "Assets/Scripts/PlayerStaminaController.cs",
@@ -2090,7 +2114,7 @@
     },
     {
       "path": "Assets/Scripts/PlayerStatsRuntime.cs",
-      "sha256": "7cb0472d4ca11bd311dba50825d1b709a85ef15e46e9a2905cb086daf035f85d"
+      "sha256": "7a9717e4475df6ffd65462561fa6d93dee9a5158d914b3a25f946a79c9e280b8"
     },
     {
       "path": "Assets/Scripts/PlayerStatsRuntime.cs.meta",
@@ -2106,15 +2130,23 @@
     },
     {
       "path": "Assets/Scripts/RewardPickup.cs",
-      "sha256": "9a896315d2778a22cc923a250315bb95bdb633ce73ab115d285f7ef865dd6f3b"
+      "sha256": "e00f33508304f35450953b8ba73fde53f72d753fa4a285ec73295f2bfa073cf3"
     },
     {
       "path": "Assets/Scripts/RewardPickup.cs.meta",
       "sha256": "c1f6654af2cfd33ce2db14dff164985c4b7b4bf8ed33550d1e1cb18b97478f80"
     },
     {
+      "path": "Assets/Scripts/RewardPickupResult.cs",
+      "sha256": "f35d41e8f54cc561d26c0543ee18512609d9fd16623e42e16f81e83d90629528"
+    },
+    {
+      "path": "Assets/Scripts/RewardPickupResult.cs.meta",
+      "sha256": "7a7d1fa30b9c2a8251bfacb5f8af49c9b4d7146a515df045996417c69d8a6c83"
+    },
+    {
       "path": "Assets/Scripts/RewardVisualController.cs",
-      "sha256": "1336c671106d73ab925c65359fba01a42cd3971b6bc55d874d00418cf92b6284"
+      "sha256": "76b5ca26d62522b593bdbd9be49cfe4ee2f853c7b9d202401e0621ea2c96da54"
     },
     {
       "path": "Assets/Scripts/RewardVisualController.cs.meta",
@@ -2146,7 +2178,7 @@
     },
     {
       "path": "Assets/Scripts/ScriptableObject/RewardSO.cs",
-      "sha256": "4bb6d0ee0e4b50e487bd060fe25b5ab435ee5fc2edc45747769d200172884679"
+      "sha256": "b1539278ba9cd746d5260ade43c94937dd735b9f0d1076aa9d8bd937b34328f3"
     },
     {
       "path": "Assets/Scripts/ScriptableObject/RewardSO.cs.meta",
@@ -2234,7 +2266,7 @@
     },
     {
       "path": "Assets/Scripts/TowerRunCoordinator.cs",
-      "sha256": "23246c39fc528f9258dddc7733b5ef14cd397b8e5dc64a3d4b473e075a8695a3"
+      "sha256": "8de3a3bae3ed6cdb3742a3bd9c36f7faf130d9863df26ec23c20f8ba2cd7f1a6"
     },
     {
       "path": "Assets/Scripts/TowerRunCoordinator.cs.meta",
@@ -2282,7 +2314,7 @@
     },
     {
       "path": "Assets/Scripts/UI/PackageGridUI.cs",
-      "sha256": "c9bc0f26f4bce3736d67e54acb015a4d8151948ad1f50d80adfe5c9d8d6bb72c"
+      "sha256": "4a40ae512da2e8a5679aa2b7bfd640a41f5cd39b8f2064822c466cdcd30542db"
     },
     {
       "path": "Assets/Scripts/UI/PackageGridUI.cs.meta",
@@ -2298,7 +2330,7 @@
     },
     {
       "path": "Assets/Scripts/UI/PackagePanelController.cs",
-      "sha256": "9885dbe5b4b92c0ec025e7a8b352888918488cafb9145630a55849859f77534f"
+      "sha256": "a7824d988b2667b64b973b73a0e580ca27d250ff836b9749286cb0e29f75f482"
     },
     {
       "path": "Assets/Scripts/UI/PackagePanelController.cs.meta",
@@ -2314,7 +2346,7 @@
     },
     {
       "path": "Assets/Scripts/UI/PackageSlotUI.cs",
-      "sha256": "cce6da4ecaa247194f5ca066f01e86ed41ae6677e32bfd3efc002f099f56bbff"
+      "sha256": "4542cc6668ca088429ffc2cc1538f52d1a0fe82df5f2834dac6265c08e451212"
     },
     {
       "path": "Assets/Scripts/UI/PackageSlotUI.cs.meta",
@@ -2762,7 +2794,7 @@
     },
     {
       "path": "Assets/Tests/MapGeneration/PlayMode/DamageableRewardLoopPlayModeTests.cs",
-      "sha256": "b31f264b2da4caa84aaf47a595c2a2ca1ed01f05ed2a5bd01207db0d2c0f0aad"
+      "sha256": "42a83a75ba540cc6c3f2950b3dae7e6f0f6a2427c6cf2b089d8892e5d809d541"
     },
     {
       "path": "Assets/Tests/MapGeneration/PlayMode/DamageableRewardLoopPlayModeTests.cs.meta",
@@ -3031,6 +3063,22 @@
     {
       "path": "Assets/Tests/MapVNext/EditMode/RPG_Demo.MapVNext.EditTests.asmdef.meta",
       "sha256": "d811e41daf68dbc41700a717d087f5ddb97b23e18ab1cd9175133c87a0ae495d"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/PlayMode/ConsumablesIntegrationPlayTests.cs",
+      "sha256": "d5565aaa22d2ac6be578ef4eac26a83dae3541fd243a5ed363f45ae3c3bf1b2b"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/PlayMode/ConsumablesIntegrationPlayTests.cs.meta",
+      "sha256": "18430d26c920063b4a6903f7dfd606312d2517b67c9347d5087c954f1d5a35c1"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/PlayMode/ConsumablesPlayTests.cs",
+      "sha256": "b36441b26c3ebc0b18a727e70134f27485bed2d3ab297604919c9b9f023eb34a"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/PlayMode/ConsumablesPlayTests.cs.meta",
+      "sha256": "859b68db52abddce9794a6629df9ed72b9c2acf66dfe1cc1d1ea0c6452c1a660"
     },
     {
       "path": "Assets/Tests/MapVNext/PlayMode/MapVNextCliffTests.cs",
@@ -3400,9 +3448,34 @@
       "currentSha256": "d369760a46cfd85e4af65dac61fec167bc7548dadbcb3ece7363b09b12ef7503"
     },
     {
+      "path": "Assets/Prefabs/Rewards/Meat.prefab",
+      "originalSha256": "2c0938412ff3c5671c32ba70e40d432f34f61692688d5547efae074ee2e9336f",
+      "currentSha256": "d101a171e133d4400c6ef5e2d6203120d231514099cb4bf492e56c375d741d5a"
+    },
+    {
+      "path": "Assets/Prefabs/Rewards/PlantCream_Small.prefab",
+      "originalSha256": "405ba0fefa8a091c75f620c3b7270c146f17efc7531dc66c594025b3632b556c",
+      "currentSha256": "9f70a0372096d3bd2661f2f3ff5547d24761988c36c04114e176bbbae7ca3e08"
+    },
+    {
       "path": "Assets/Scenes/SampleScene.unity",
       "originalSha256": "d5357b094cdbc2ad53b5e781b42d8fa5e5591566d3e0d3f4c2a01a236ca99fc6",
       "currentSha256": "9007a06addd28a20880037ecdb6a89924e7d377e57dcc5435f87ccc8a9cbfa41"
+    },
+    {
+      "path": "Assets/ScriptObjects/RewardSOs/Meat.asset",
+      "originalSha256": "2d41a73a0895f37a59162a2d50becb047ab25ff108bfced98867038f789e84c2",
+      "currentSha256": "7a275c8cce6a6e4bef8c64505f5a190b37125418dd5aecb3553e1460c28d3f46"
+    },
+    {
+      "path": "Assets/ScriptObjects/RewardSOs/PlantCream_Big.asset",
+      "originalSha256": "eb02686518a8427fef7ebb07145dae5571d7d10497cae08f3a5684993f55199e",
+      "currentSha256": "b1554682d773f1fda40dfd188f90bbbfd9a33643b736265f80a3546ac072c817"
+    },
+    {
+      "path": "Assets/ScriptObjects/RewardSOs/PlantCream_Small.asset",
+      "originalSha256": "18a87e7540b172b32db7c4bf0588144123dd0875be746477d3df954a999a88af",
+      "currentSha256": "56d5776bcdbbbbcb292824fd9467c7f4b023fffc090e7ab1d247a1e0f4433990"
     },
     {
       "path": "Assets/Scripts/MapGeneration/AnimalPlacementService.cs",
@@ -3517,15 +3590,40 @@
     {
       "path": "Assets/Scripts/TowerRunCoordinator.cs",
       "originalSha256": "d36753c417109928686b874a9937eb082e4d3b1f0c6db8c6f2fd24357b8413ca",
-      "currentSha256": "23246c39fc528f9258dddc7733b5ef14cd397b8e5dc64a3d4b473e075a8695a3"
+      "currentSha256": "8de3a3bae3ed6cdb3742a3bd9c36f7faf130d9863df26ec23c20f8ba2cd7f1a6"
     }
   ],
   "retainedContentVersion": "content-r1:c1b30f168534f17598f385ad32ab67078f9fb28b5f8cb6f346dcb6b800249ec9",
   "currentContentDifferences": [
     {
+      "path": "Assets/Prefabs/Rewards/Meat.prefab",
+      "originalSha256": "2c0938412ff3c5671c32ba70e40d432f34f61692688d5547efae074ee2e9336f",
+      "currentSha256": "d101a171e133d4400c6ef5e2d6203120d231514099cb4bf492e56c375d741d5a"
+    },
+    {
+      "path": "Assets/Prefabs/Rewards/PlantCream_Small.prefab",
+      "originalSha256": "405ba0fefa8a091c75f620c3b7270c146f17efc7531dc66c594025b3632b556c",
+      "currentSha256": "9f70a0372096d3bd2661f2f3ff5547d24761988c36c04114e176bbbae7ca3e08"
+    },
+    {
       "path": "Assets/Scenes/SampleScene.unity",
       "originalSha256": "d5357b094cdbc2ad53b5e781b42d8fa5e5591566d3e0d3f4c2a01a236ca99fc6",
       "currentSha256": "9007a06addd28a20880037ecdb6a89924e7d377e57dcc5435f87ccc8a9cbfa41"
+    },
+    {
+      "path": "Assets/ScriptObjects/RewardSOs/Meat.asset",
+      "originalSha256": "2d41a73a0895f37a59162a2d50becb047ab25ff108bfced98867038f789e84c2",
+      "currentSha256": "7a275c8cce6a6e4bef8c64505f5a190b37125418dd5aecb3553e1460c28d3f46"
+    },
+    {
+      "path": "Assets/ScriptObjects/RewardSOs/PlantCream_Big.asset",
+      "originalSha256": "eb02686518a8427fef7ebb07145dae5571d7d10497cae08f3a5684993f55199e",
+      "currentSha256": "b1554682d773f1fda40dfd188f90bbbfd9a33643b736265f80a3546ac072c817"
+    },
+    {
+      "path": "Assets/ScriptObjects/RewardSOs/PlantCream_Small.asset",
+      "originalSha256": "18a87e7540b172b32db7c4bf0588144123dd0875be746477d3df954a999a88af",
+      "currentSha256": "56d5776bcdbbbbcb292824fd9467c7f4b023fffc090e7ab1d247a1e0f4433990"
     },
     {
       "path": "Assets/Scripts/MapGeneration/AnimalPlacementService.cs",
@@ -3640,7 +3738,7 @@
     {
       "path": "Assets/Scripts/TowerRunCoordinator.cs",
       "originalSha256": "d36753c417109928686b874a9937eb082e4d3b1f0c6db8c6f2fd24357b8413ca",
-      "currentSha256": "23246c39fc528f9258dddc7733b5ef14cd397b8e5dc64a3d4b473e075a8695a3"
+      "currentSha256": "8de3a3bae3ed6cdb3742a3bd9c36f7faf130d9863df26ec23c20f8ba2cd7f1a6"
     }
   ]
 }

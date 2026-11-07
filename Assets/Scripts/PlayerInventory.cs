@@ -172,15 +172,48 @@ public class PlayerInventory : MonoBehaviour
         SaveCurrentState();
     }
 
-    /// <summary>
-    /// 处理地面奖励拾取请求，只有保存成功才确认接收。
-    /// </summary>
-    /// <param name="reward">被拾取的奖励数据。</param>
-    /// <param name="amount">被拾取的奖励数量。</param>
-    /// <returns>奖励成功加入并保存返回 true。</returns>
-    private bool HandleRewardPickupRequested(RewardSO reward, int amount)
+    private PlayerRewardService rewardService;
+
+    internal void BindRewardService(PlayerRewardService service)
     {
-        return TryAddItem(reward, amount);
+        if (service != null && service.Inventory != this) throw new InvalidOperationException("Reward service inventory mismatch.");
+        rewardService = service;
+    }
+
+    public bool TryDropOne(RewardSO reward, out string message)
+    {
+        if (rewardService != null) return rewardService.TryDropOne(reward, out message);
+        message = "奖励交互尚未绑定到当前玩家。";
+        return false;
+    }
+
+    /// <summary>唯一接收命令提交本局内存；地面余量更新后再发观察通知。</summary>
+    private RewardPickupResult HandleRewardPickupRequested(RewardSO reward, int amount)
+    {
+        if (reward != null && reward.IsRecoveryConsumable)
+            return rewardService != null ? rewardService.TrySettleConsumable(reward, amount) : default;
+        return TryAddItemAndSave(reward, amount) ? RewardPickupResult.IntoInventory(amount) : default;
+    }
+
+    internal void NotifyCommittedGroundSettlement(RewardPickupResult result)
+    {
+        if (result.Kind == RewardSettlementKind.Inventory) NotifyCommittedInventoryChanged();
+        else if (result.Accepted) rewardService?.NotifyRecovered();
+    }
+
+    internal void NotifyCommittedInventoryChanged()
+    {
+        Action observers = OnInventoryChanged;
+        if (observers == null) return;
+        foreach (Action observer in observers.GetInvocationList())
+            try { observer.Invoke(); }
+            catch (Exception error) { Debug.LogError($"[ADR02] Inventory committed; observer {observer.Method.Name} failed: {error}", this); }
+    }
+
+    // 只承认现有生产绑定；观察通知不参与接收判定。
+    internal bool IsPickupRequestReceiver(Func<RewardSO, int, RewardPickupResult> handler)
+    {
+        return handler == HandleRewardPickupRequested;
     }
 
     /// <summary>
@@ -201,6 +234,16 @@ public class PlayerInventory : MonoBehaviour
     /// <returns>增加并保存成功返回 true，否则返回 false。</returns>
     public bool TryAddItem(RewardSO reward, long amount)
     {
+        if (!TryAddItemAndSave(reward, amount))
+            return false;
+
+        OnInventoryChanged?.Invoke();
+        return true;
+    }
+
+    // 复用原数量、快照与内存提交步骤，通知由对应入口在提交后派发。
+    private bool TryAddItemAndSave(RewardSO reward, long amount)
+    {
         EnsureInitialized();
 
         PlayerInventorySnapshot snapshot = CaptureSnapshot(); // 修改前快照。
@@ -214,7 +257,6 @@ public class PlayerInventory : MonoBehaviour
             return false;
         }
 
-        OnInventoryChanged?.Invoke();
         return true;
     }
 
@@ -673,7 +715,7 @@ public class PlayerInventory : MonoBehaviour
             GameSaveData newCandidate = GameSaveService.Clone(loadedData);
             WriteToSaveData(newCandidate);
 
-            if (!hasRuntimeData && !GameSaveService.TrySave(newCandidate))
+            if (!hasRuntimeData && !GameSaveService.TryCommitRuntimeData(newCandidate))
                 Debug.LogWarning("新游戏初始数据无法提交到内存后端。", this);
         }
 
@@ -764,7 +806,7 @@ public class PlayerInventory : MonoBehaviour
         GameSaveData candidate = GameSaveService.Clone(GameSaveService.GetOrCreateData()); // 候选存档。
         WriteToSaveData(candidate);
 
-        if (GameSaveService.TrySave(candidate))
+        if (GameSaveService.TryCommitRuntimeData(candidate))
             return true;
 
         Debug.LogWarning("玩家背包保存失败，已由调用方恢复内存快照。", this);

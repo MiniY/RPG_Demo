@@ -5,7 +5,13 @@ using UnityEngine;
 
 public static partial class MapSpatialPlacement
 {
-    private static bool HasPhysicalDeclaration(Transform actor) => actor.GetComponentsInChildren<Collider2D>(true).Length != 0 || actor.GetComponent<MapGroundFootprint>() != null;
+    private static bool HasPhysicalDeclaration(Transform actor)
+    {
+        if (actor.GetComponentsInChildren<Collider2D>(true).Length != 0) return true;
+        var declaration = actor.GetComponent<MapGroundFootprint>();
+        // A previous generation's derived rectangle must not become authored geometry.
+        return declaration != null && !declaration.IsReservationDerived;
+    }
     private static void DeclareReservationFootprint(MapRuntimeContext context, GameObject actor, string logicalId, Vector2 destination)
     {
         if (HasPhysicalDeclaration(actor.transform)) return;
@@ -13,7 +19,7 @@ public static partial class MapSpatialPlacement
         Vector2[] vertices = reservation.Role == "ExitClearanceReservation" ? CellRectangle(reservation.AnchorCell, context.ActiveSpatialContext.Coordinates) : ReservedRectangle(reservation, context.ActiveSpatialContext.Coordinates);
         var declaration = actor.GetComponent<MapGroundFootprint>() ?? actor.AddComponent<MapGroundFootprint>();
         Matrix4x4 pose = Matrix4x4.TRS(destination, actor.transform.rotation, actor.transform.lossyScale);
-        declaration.Configure(vertices.Select(p => (Vector2)pose.inverse.MultiplyPoint3x4(p)).ToArray());
+        declaration.ConfigureReservation(vertices.Select(p => (Vector2)pose.inverse.MultiplyPoint3x4(p)).ToArray());
     }
     // The retained Portal has no collider. Its ground contact is the ExitCell;
     // the larger ExitClearanceReservation remains spacing for interaction.

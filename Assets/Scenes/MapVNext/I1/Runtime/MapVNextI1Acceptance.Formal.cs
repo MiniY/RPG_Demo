@@ -44,7 +44,7 @@ public sealed partial class MapVNextI1Acceptance
         Persist();
 
         int accepted = 0;
-        foreach (int seed in new[] { 21193, 8675309, 7727 })
+        foreach (int seed in new[] { -1577089866, 21193, 8675309, 7727 })
         {
             session.ReturnToStartupChoice();
             var row = new InputRow { requestedSeed = seed };
@@ -52,6 +52,7 @@ public sealed partial class MapVNextI1Acceptance
             session.BeginNewRunWithSeed(seed);
             if (session.State == TowerRunFlowState.Failure)
             {
+                Require(seed != -1577089866, "RecordedMerchantSeedMustReachReadyInOrdinaryPlayer");
                 RequireFormalRejection(row);
                 Persist();
                 continue;
@@ -83,6 +84,14 @@ public sealed partial class MapVNextI1Acceptance
         Ready();
         BindPlayer();
         var snapshot = Context.CreateDiagnosticSnapshot();
+        foreach (var entry in Context.ActiveRegistry.Entries)
+        {
+            var actor = entry.Instance as Component;
+            if (actor != null)
+                Require(MapSpatialPlacement.CanPlace(Context, Context.ActiveGenerationId.Value,
+                    actor.transform, actor.transform.position, out string reason),
+                    "FormalMaterializedFootprint:" + entry.LogicalObjectId + ":" + reason);
+        }
         var success = snapshot.AttemptChain.Last(a => a.Outcome == MapAttemptOutcome.Succeeded);
         row.actualSeed = success.Attempt.AttemptSeed;
         row.attempt = success.Attempt.AttemptIndex;

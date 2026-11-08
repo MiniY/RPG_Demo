@@ -278,11 +278,11 @@ public sealed partial class MapVNextI1IntegrationTests
         yield return LoadFormalScene("FormalRetryLogs");
         Call("BeginNewRunWithSeed", 21193);
         Ready(true);
-        // Replay the user's four rejected inputs and successful fifth input through the real retry loop.
-        BeginRecordedRandomCandidates(-367763121, -1644553391, -93201598, 887863686, 666268681);
+        // V4 uses this run's actual ecology rejection followed by its verified current successful input.
+        BeginRecordedRandomCandidates(7727, 21193);
         Ready(true);
         Assert.That(controller.Orchestrator.Context.CreateDiagnosticSnapshot().ActiveRequest.RequestedSeed,
-            Is.EqualTo(666268681));
+            Is.EqualTo(21193));
         SaveAndReopen(true, "FormalRetryLogs");
     }
 
@@ -335,6 +335,16 @@ public sealed partial class MapVNextI1IntegrationTests
 /// <summary>Explicit integration test in the ordinary scene; the runner uses a private baked Editor namespace.</summary>
 public sealed class ShopIntegrationPlayTests
 {
+    private Component probe;
+    [UnityTearDown] public IEnumerator FinishShopFixture()
+    {
+        if (probe != null)
+        {
+            try { probe.GetType().GetMethod("CleanupShopEditorTest").Invoke(probe, null); }
+            finally { UnityEngine.Object.Destroy(probe.gameObject); probe = null; }
+        }
+        yield return null;
+    }
     [UnityTest] public IEnumerator FormalSceneMerchantTradeAndPresentation()
     {
         string root=Environment.GetEnvironmentVariable("RPG_I1_RUNTIME_ROOT");Assert.That(root,Is.Not.Null.And.Not.Empty);
@@ -345,12 +355,8 @@ public sealed class ShopIntegrationPlayTests
 #endif
         yield return null;
         Type type=AppDomain.CurrentDomain.GetAssemblies().Select(a=>a.GetType("MapVNextI1Acceptance")).First(t=>t!=null);
-        var actor=new GameObject("ExplicitShopIntegrationTest");var probe=actor.AddComponent(type);
-        try
-        {
-            var sequence=(IEnumerator)type.GetMethod("RunShopEditorTest").Invoke(probe,new object[]{Environment.GetEnvironmentVariable("RPG_I1_EVIDENCE")});
-            yield return sequence;
-        }
-        finally {UnityEngine.Object.Destroy(actor);}
+        var actor=new GameObject("ExplicitShopIntegrationTest");probe=actor.AddComponent(type);
+        var sequence=(IEnumerator)type.GetMethod("RunShopEditorTest").Invoke(probe,new object[]{Environment.GetEnvironmentVariable("RPG_I1_EVIDENCE")});
+        yield return sequence;
     }
 }

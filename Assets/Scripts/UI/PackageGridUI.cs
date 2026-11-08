@@ -237,11 +237,15 @@ public class PackageGridUI : MonoBehaviour
     private void HandleDropRequested(PackageSlotUI slot)
     {
         if (!isActiveAndEnabled || slot == null || !generatedSlots.Contains(slot) || playerInventory == null) return;
-        PackagePanelController panel = GetComponentInParent<PackagePanelController>();
-        if (panel == null || !panel.OwnsOpenPanel(transform)) return;
+        PackageUIPage page = GetComponentInParent<PackageUIPage>();
+        UIRoot root = page != null ? page.OwningRoot : null;
+        if (root == null || !root.CanUseWorkspace(UIRoutes.Package.Id) ||
+            !root.Manager.TryFind(UIRoutes.Package, root.Scope, out _)) return;
         if (!playerInventory.TryDropOne(slot.CurrentReward, out string message))
             Debug.LogWarning(message, this);
     }
+
+    public void SuspendHover() => HideTooltip();
 
     private void HideTooltip()
     {

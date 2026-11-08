@@ -1,8 +1,23 @@
 using System;
+using TMPro;
+using UnityEngine;
 
 /// <summary>商店专用中文表现适配，不改变 RewardId、目录、价格或存档。</summary>
 public static class ShopUiText
 {
+    public static void SetFittedName(TMP_Text text, string value)
+    {
+        if (text == null) return;
+        if (!text.enableAutoSizing)
+        {
+            // Keep short names at their authored size; shrink only when necessary.
+            text.fontSizeMax = text.fontSize;
+            text.fontSizeMin = Mathf.Min(text.fontSizeMin, text.fontSizeMax);
+            text.enableAutoSizing = true;
+        }
+        text.enableWordWrapping = false;
+        text.text = value;
+    }
     public static string Category(ShopProductCategoryType category)
     {
         switch (category)

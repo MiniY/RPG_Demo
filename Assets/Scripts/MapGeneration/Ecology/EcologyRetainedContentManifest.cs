@@ -44,6 +44,7 @@ public sealed class EcologyRetainedContentManifest
     {
 #if UNITY_EDITOR
         var differences = new List<MapHostCompatibility.Difference>();
+        bool verifySources = MapHostCompatibility.RequiresSourceVerification(force);
         string root = Path.GetFullPath(Path.Combine(Application.dataPath, ".."));
         string prefix = root.TrimEnd(Path.DirectorySeparatorChar) + Path.DirectorySeparatorChar;
         foreach (Entry entry in document.files)
@@ -54,6 +55,7 @@ public sealed class EcologyRetainedContentManifest
             if (!path.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)) throw new InvalidOperationException("RetainedDependencyPathInvalid");
             var info = new FileInfo(path);
             if (!info.Exists) throw new InvalidOperationException("RetainedDependencyMissing: " + entry.path);
+            if (!verifySources) continue;
             if (force || !sourceCache.TryGetValue(path, out var cached) || cached.bytes != info.Length || cached.ticks != info.LastWriteTimeUtc.Ticks)
             {
                 string digest;
@@ -64,7 +66,7 @@ public sealed class EcologyRetainedContentManifest
             if (!string.Equals(cached.digest, entry.sha256, StringComparison.Ordinal))
                 differences.Add(new MapHostCompatibility.Difference { path = entry.path, originalSha256 = entry.sha256, currentSha256 = cached.digest });
         }
-        MapHostCompatibility.Verify(document.profile, Identity, differences);
+        MapHostCompatibility.Verify(document.profile, Identity, differences, force);
 #else
         MapHostCompatibility.Verify(document.profile, Identity, Array.Empty<MapHostCompatibility.Difference>());
 #endif

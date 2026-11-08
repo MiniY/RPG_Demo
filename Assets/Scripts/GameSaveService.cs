@@ -43,6 +43,7 @@ public sealed class GameSaveShopStockEntry
 [Serializable]
 public sealed class GameSaveShopData
 {
+    public int stockVersion;
     /// <summary>
     /// 商店目录的稳定 ID。
     /// </summary>
@@ -294,7 +295,8 @@ public static class GameSaveService
 
                 GameSaveShopData shopClone = new GameSaveShopData
                 {
-                    catalogId = shop.catalogId
+                    catalogId = shop.catalogId,
+                    stockVersion = shop.stockVersion
                 };
 
                 if (shop.productStocks != null)

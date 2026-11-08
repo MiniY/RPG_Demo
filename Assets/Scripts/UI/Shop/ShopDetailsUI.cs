@@ -39,6 +39,8 @@ public sealed class ShopDetailsUI : MonoBehaviour
         Refresh();
     }
 
+    public void SuspendHover() { hoveredSlot = null; Refresh(); }
+
     public void Clear()
     {
         if (pinnedSlot != null) pinnedSlot.SetSelected(false);
@@ -59,7 +61,7 @@ public sealed class ShopDetailsUI : MonoBehaviour
             descriptionScroll.verticalNormalizedPosition = 1f;
         }
         renderedProduct = product;
-        if (titleText != null) titleText.text = product == null ? "物品详情" : ShopUiText.Name(product);
+        ShopUiText.SetFittedName(titleText, product == null ? "物品详情" : ShopUiText.Name(product));
         if (descriptionText != null) descriptionText.text = product == null
             ? "悬停查看说明，点击商品购买。" : ShopUiText.Description(product);
         if (factsText != null) factsText.text = product == null ? string.Empty :

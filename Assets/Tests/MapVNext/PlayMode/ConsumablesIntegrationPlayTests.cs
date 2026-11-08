@@ -1,13 +1,18 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using NUnit.Framework;
+using Unity.Profiling;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Profiling;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 
@@ -233,5 +238,122 @@ public sealed class ConsumablesIntegrationPlayTests
         Assert.That(ConsumableReflection.Read(ConsumableReflection.Call(flow, "ReadSlot", 1), "record"), Is.Not.Null);
     }
 
+    [UnityTest]
+    public IEnumerator PostCommitFinalizerFailureStaysFailedAndNeverPublishesGameplayReady()
+    {
+        yield return Begin(763125071);
+        Guid prior = map.Orchestrator.Context.ActiveGenerationId.Value;
+        int ready = 0;
+        Action<Guid> observer = _ => ready++;
+        map.Orchestrator.GameplayReady += observer;
+        var fault = map.GetComponentInParent<MapRuntimeBootstrap>().gameObject.AddComponent<ConsumablesFailReadyFinalizer>();
+        try
+        {
+            LogAssert.Expect(LogType.Error, new Regex("Runtime ready finalization failed: CONSUMABLES_POST_COMMIT_INJECTED"));
+            ConsumableReflection.Call(flow, "ReturnToStartupChoice");
+            ConsumableReflection.Call(flow, "BeginNewRunWithSeed", 1344701872);
+            Assert.That(map.Orchestrator.Context.IsFailed, Is.True);
+            Assert.That(map.Orchestrator.Context.IsReady, Is.False);
+            Assert.That(map.Orchestrator.Context.ActiveGenerationId.Value, Is.Not.EqualTo(prior));
+            Assert.That(map.Orchestrator.Context.Failure.Code, Is.EqualTo("RuntimeReadyFinalizationFailed"));
+            Assert.That(ConsumableReflection.Read(flow, "State").ToString(), Is.EqualTo("Failure"));
+            Assert.That(ready, Is.Zero);
+            File.WriteAllText(Path.Combine(Environment.GetEnvironmentVariable("ADR03_EVIDENCE") ?? saves, "aa05-post-commit.json"),
+                JsonUtility.ToJson(new PostCommitReport { beforeGeneration = prior.ToString("N"), afterGeneration = map.Orchestrator.Context.ActiveGenerationId.Value.ToString("N"),
+                    failure = map.Orchestrator.Context.Failure.Code, phase = map.Orchestrator.Context.Phase.ToString(), readyEvents = ready, flow = ConsumableReflection.Read(flow, "State").ToString(),
+                    result = "EXPECTED_FAILURE_CONFIRMED_NO_READY_NO_ROLLBACK", rule = "Existing R14 fail-closed behavior; transaction redesign not performed" }, true));
+        }
+        finally { map.Orchestrator.GameplayReady -= observer; UnityEngine.Object.DestroyImmediate(fault); }
+        yield return null;
+    }
+
+    [UnityTest]
+    public IEnumerator MeasureTheUnchangedCombatQueryAtNaturalAndSyntheticTargetCounts()
+    {
+        yield return Begin(763125071);
+        Component action = inventory.GetComponent(ConsumableReflection.Type("PlayerAction"));
+        MethodInfo method = action.GetType().GetMethod("FindNearestDamageableInRange", ConsumableReflection.All);
+        var query = (Func<UnityEngine.Object>)Delegate.CreateDelegate(typeof(Func<UnityEngine.Object>), action, method);
+        MethodInfo counterMethod = typeof(GC).GetMethod("GetAllocatedBytesForCurrentThread", BindingFlags.Public | BindingFlags.Static);
+        Func<long> counter = counterMethod == null ? null : (Func<long>)Delegate.CreateDelegate(typeof(Func<long>), counterMethod);
+        long controlDelta;
+        int controlEvents;
+        using (var recorder = BeginQueryAllocationRecorder(128))
+        {
+            long controlBefore = counter != null ? counter() : -1;
+            var control = new byte[1024 * 1024]; control[0] = 11; control[control.Length - 1] = 13;
+            GC.KeepAlive(control);
+            controlDelta = counter != null ? counter() - controlBefore : -1;
+            recorder.Stop(); controlEvents = CountQueryAllocationEvents(recorder);
+        }
+        Assert.That(controlEvents, Is.GreaterThan(0), "The native recorder must observe the known 1 MB allocation.");
+        bool byteCounterQualified = controlDelta >= 1024 * 1024;
+        string evidence = Environment.GetEnvironmentVariable("ADR03_EVIDENCE") ?? saves;
+        File.WriteAllText(Path.Combine(evidence, "aa04-allocation-control.txt"),
+            $"payload_bytes=1048576 raw_thread_counter_delta={controlDelta} native_events={controlEvents} " +
+            $"byte_counter_qualified={byteCounterQualified} native_unit=TimeNanoseconds; event values are not byte counts");
+        float scale = Time.timeScale; Time.timeScale = 0f;
+        var lines = new List<string> { "label,targets,median_ms,p95_ms,thread_bytes_per_call,native_allocation_events,native_events_per_call,iterations" };
+        try
+        {
+            int made = 0;
+            foreach (int extra in new[] { 0, 256, 1024 })
+            {
+                while (made < extra)
+                {
+                    var go = new GameObject("CombatQuerySynthetic" + made); owned.Add(go); go.SetActive(false);
+                    go.transform.position = inventory.transform.position + Vector3.right * (5f + made * .01f);
+                    var collider = go.AddComponent<BoxCollider2D>(); collider.enabled = false;
+                    var plant = (Behaviour)go.AddComponent(ConsumableReflection.Type("Plant")); plant.enabled = false;
+                    go.SetActive(true); made++;
+                }
+                for (int i = 0; i < 16; i++) query();
+                int targets = UnityEngine.Object.FindObjectsOfType(ConsumableReflection.Type("BaseDamageable")).Length;
+                const int iterations = 128;
+                var times = new double[iterations];
+                using (var recorder = BeginQueryAllocationRecorder(4096))
+                {
+                    Profiler.BeginSample("ADR02.AA04.UnchangedQuery");
+                    long before = byteCounterQualified ? counter() : -1;
+                    for (int i = 0; i < iterations; i++)
+                    {
+                        long start = Stopwatch.GetTimestamp(); query();
+                        times[i] = (Stopwatch.GetTimestamp() - start) * 1000d / Stopwatch.Frequency;
+                    }
+                    long bytes = byteCounterQualified ? counter() - before : -1;
+                    Profiler.EndSample(); recorder.Stop();
+                    int events = CountQueryAllocationEvents(recorder);
+                    Assert.That(events, Is.GreaterThan(0), "The native recorder must observe the actual allocating query.");
+                    if (byteCounterQualified) Assert.That(bytes, Is.GreaterThanOrEqualTo(0));
+                    Array.Sort(times);
+                    lines.Add(string.Join(",", extra == 0 ? "natural" : "synthetic_plus_" + extra, targets,
+                        times[iterations / 2].ToString("F6", CultureInfo.InvariantCulture), times[(int)(iterations * .95)].ToString("F6", CultureInfo.InvariantCulture),
+                        byteCounterQualified ? (bytes / (double)iterations).ToString("F3", CultureInfo.InvariantCulture) : "NOT_AVAILABLE",
+                        events, (events / (double)iterations).ToString("F3", CultureInfo.InvariantCulture), iterations));
+                }
+            }
+            File.WriteAllLines(Path.Combine(Environment.GetEnvironmentVariable("ADR03_EVIDENCE") ?? saves, "aa04-query.csv"), lines);
+        }
+        finally { Time.timeScale = scale; }
+        yield return null;
+    }
+
+    private static ProfilerRecorder BeginQueryAllocationRecorder(int capacity) => ProfilerRecorder.StartNew(
+        ProfilerCategory.Internal, "GC.Alloc", capacity,
+        ProfilerRecorderOptions.CollectOnlyOnCurrentThread | ProfilerRecorderOptions.StartImmediately);
+
+    private static int CountQueryAllocationEvents(ProfilerRecorder recorder)
+    {
+        Assert.That(recorder.Valid, Is.True, "A missing recorder is unavailable measurement, not zero allocations.");
+        Assert.That(recorder.Count, Is.LessThan(recorder.Capacity), "A saturated trace cannot report complete event counts.");
+        Assert.That(recorder.UnitType.ToString(), Is.EqualTo("TimeNanoseconds"));
+        return recorder.Count;
+    }
+
     private float Current(string stat) => Convert.ToSingle(ConsumableReflection.Call(stats, "GetCurrent", Enum.Parse(ConsumableReflection.Type("PlayerStatType"), stat)));
+    [Serializable] private sealed class PostCommitReport
+    {
+        public string beforeGeneration, afterGeneration, failure, phase, flow, result, rule;
+        public int readyEvents;
+    }
 }

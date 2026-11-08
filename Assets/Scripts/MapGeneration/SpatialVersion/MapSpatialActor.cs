@@ -19,6 +19,8 @@ public sealed class MapSpatialActor : MonoBehaviour
             throw new InvalidOperationException("InvalidLegacyActorLease");
         context = owner; generation = expected; legacyRoute = true;
     }
+    internal void ClearBinding()
+    { context = null; generation = Guid.Empty; legacyRoute = false; }
     public bool CanMove(Vector2 from, Vector2 to)
     {
         if (context == null || context.ActiveGenerationId != generation || context.IsFailed) return false;

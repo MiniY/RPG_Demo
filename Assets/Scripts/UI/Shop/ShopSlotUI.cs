@@ -76,6 +76,8 @@ public class ShopSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
     /// 当前格子使用的商店交易控制器。
     /// </summary>
     private ShopTradeController tradeController; // 商店交易控制器。
+    private bool iconLayoutCached;
+    private Vector2 authoredIconSize, authoredIconPosition;
 
     /// <summary>
     /// 覆盖层当前展开进度，范围 0 到 1。
@@ -235,12 +237,20 @@ public class ShopSlotUI : MonoBehaviour, IPointerClickHandler, IPointerEnterHand
     {
         if (itemIcon != null)
         {
+            if (!iconLayoutCached)
+            {
+                authoredIconSize = itemIcon.rectTransform.sizeDelta;
+                authoredIconPosition = itemIcon.rectTransform.anchoredPosition;
+                iconLayoutCached = true;
+            }
+            bool customSize = currentProduct != null && currentProduct.CardIconSize > 0;
+            itemIcon.rectTransform.sizeDelta = customSize ? Vector2.one * currentProduct.CardIconSize : authoredIconSize;
+            itemIcon.rectTransform.anchoredPosition = customSize ? currentProduct.CardIconOffset : authoredIconPosition;
             itemIcon.sprite = currentProduct == null ? null : currentProduct.Icon;
             itemIcon.enabled = itemIcon.sprite != null;
         }
 
-        if (itemNameText != null)
-            itemNameText.text = ShopUiText.Name(currentProduct);
+        ShopUiText.SetFittedName(itemNameText, ShopUiText.Name(currentProduct));
 
         if (priceText != null)
             priceText.text = ShopUiText.Price(currentProduct);

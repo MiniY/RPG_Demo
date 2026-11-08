@@ -19,6 +19,33 @@ public static class MapVNextI1Build
         public ulong bytes;
         public string[] packedSourceAssets;
     }
+    private sealed class SourceEvidence
+    {
+        public int oldDifferences,retainedDifferences,differences;
+        public string strict,compatible;
+    }
+    public static void VerifySourceInputsForBuild() { VerifySourceInputs(); }
+    private static SourceEvidence VerifySourceInputs()
+    {
+        using (MapHostCompatibility.RequireStrictSourceVerification())
+        {
+            var old=Resources.Load<EcologyRecipeDefinition>(EcologyRecipeDefinition.ResourcePathFor(EcologyRecipeDefinition.MainV1ProfileId));
+            var next=AssetDatabase.LoadAssetAtPath<EcologyRecipeDefinition>(MapVNextI1Authoring.AssetRoot+"/Recipe_GroundConnectivityV1.asset");
+            var previous=AssetDatabase.LoadAssetAtPath<EcologyRecipeDefinition>(MapVNextI1Authoring.AssetRoot+"/Recipe_MyTMPV1.asset");
+            var retained=AssetDatabase.LoadAssetAtPath<EcologyRecipeDefinition>(MapVNextI1Authoring.AssetRoot+"/Recipe.asset");
+            if(old==null || next==null || previous==null || retained==null || next.DeclaredProfileId!=EcologyRecipeDefinition.VNextI1ProfileId) throw new InvalidOperationException("BuildRecipesMissing");
+            old.ResolveTypes();old.VerifyRetainedSourceFiles(true);
+            int oldDifferences=MapHostCompatibility.LastStrictDifferenceCount;
+            retained.ResolveTypes();retained.VerifyRetainedSourceFiles(true);
+            int retainedDifferences=MapHostCompatibility.LastStrictDifferenceCount;
+            previous.ResolveTypes();previous.VerifyRetainedSourceFiles(true);
+            next.ResolveTypes();next.VerifyRetainedSourceFiles(true);
+            string strict=MapHostCompatibility.LastStrictSourceResult,compatible=MapHostCompatibility.LastCompatibilityResult;
+            int differences=MapHostCompatibility.LastStrictDifferenceCount;
+            return new SourceEvidence { oldDifferences=oldDifferences,retainedDifferences=retainedDifferences,
+                differences=differences,strict=strict,compatible=compatible };
+        }
+    }
     public static void Build()
     {
         try
@@ -37,17 +64,9 @@ public static class MapVNextI1Build
             if(!string.Equals(root,expected,StringComparison.OrdinalIgnoreCase)) throw new InvalidOperationException("BuildIdentityOutputMismatch");
             string player=Path.Combine(root,"MVP_Windows_x64");
             if(Directory.Exists(player)) throw new InvalidOperationException("I1BuildIdentityAlreadyHasPlayer");
-            var old=Resources.Load<EcologyRecipeDefinition>(EcologyRecipeDefinition.ResourcePathFor(EcologyRecipeDefinition.MainV1ProfileId));
-            var next=AssetDatabase.LoadAssetAtPath<EcologyRecipeDefinition>(MapVNextI1Authoring.AssetRoot+"/Recipe_MyTMPV1.asset");
-            var retained=AssetDatabase.LoadAssetAtPath<EcologyRecipeDefinition>(MapVNextI1Authoring.AssetRoot+"/Recipe.asset");
-            if(old==null || next==null || next.DeclaredProfileId!=EcologyRecipeDefinition.VNextI1ProfileId) throw new InvalidOperationException("BuildRecipesMissing");
-            old.ResolveTypes();old.VerifyRetainedSourceFiles(true);
-            int oldDifferences=MapHostCompatibility.LastStrictDifferenceCount;
-            retained.ResolveTypes();retained.VerifyRetainedSourceFiles(true);
-            int retainedDifferences=MapHostCompatibility.LastStrictDifferenceCount;
-            next.ResolveTypes();next.VerifyRetainedSourceFiles(true);
-            string strict=MapHostCompatibility.LastStrictSourceResult,compatible=MapHostCompatibility.LastCompatibilityResult;
-            int differences=MapHostCompatibility.LastStrictDifferenceCount;
+            var sources=VerifySourceInputs();
+            int oldDifferences=sources.oldDifferences,retainedDifferences=sources.retainedDifferences,differences=sources.differences;
+            string strict=sources.strict,compatible=sources.compatible;
             Directory.CreateDirectory(player);
             string executable=Path.Combine(player,"RPG_Demo_MapVNext_I1.exe");
             string originalCompany=PlayerSettings.companyName,originalProduct=PlayerSettings.productName;

@@ -2,12 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// 商店网格 UI，负责按商品分类生成商品格子，并协调购买结果、警告和购买飞行动画。
 /// </summary>
 public class ShopGridUI : MonoBehaviour
 {
+    private ShopPresenter presenter;
+    private ShopTradeController presenterTrade;
     [SerializeField] private ShopDetailsUI detailsView;
     /// <summary>
     /// 当前商店使用的商品目录数据。
@@ -78,6 +81,10 @@ public class ShopGridUI : MonoBehaviour
     /// 当前已经生成的商品格子列表。
     /// </summary>
     private readonly List<ShopSlotUI> generatedSlots = new List<ShopSlotUI>(); // 已生成商品格子。
+    private GridLayoutGroup productLayout;
+    private RectTransform productLayoutRoot;
+    private int maximumColumns;
+    private readonly Vector3[] detailsCorners = new Vector3[4];
 
     /// <summary>
     /// 当前是否已经订阅交易控制器状态变化事件。
@@ -102,11 +109,39 @@ public class ShopGridUI : MonoBehaviour
         if (contentRoot == null)
             contentRoot = transform;
 
+        productLayout = contentRoot.GetComponent<GridLayoutGroup>();
+        productLayoutRoot = contentRoot as RectTransform;
+        if (productLayout != null) maximumColumns = productLayout.constraintCount;
+
         ResolveWarningReferences();
         HideWarningImmediate();
         ResolveTradeController();
         ResolveShopPanelController();
         ApplyCatalogToTradeController();
+    }
+
+    private void LateUpdate()
+    {
+        if (productLayout == null || productLayoutRoot == null ||
+            productLayout.constraint != GridLayoutGroup.Constraint.FixedColumnCount) return;
+        float step = productLayout.cellSize.x + productLayout.spacing.x;
+        if (step <= 0 || productLayoutRoot.rect.width <= 0) return;
+        // Preserve the authored cards and spacing, wrapping overflow within the list.
+        float right = productLayoutRoot.rect.xMax;
+        var detailsRect = detailsView == null ? null : detailsView.transform as RectTransform;
+        if (detailsRect != null)
+        {
+            detailsRect.GetWorldCorners(detailsCorners);
+            float detailsLeft = float.PositiveInfinity;
+            foreach (Vector3 corner in detailsCorners)
+                detailsLeft = Mathf.Min(detailsLeft, productLayoutRoot.InverseTransformPoint(corner).x);
+            // The authored viewport spans behind the right-hand detail dock.
+            // Reserve that dock even while its selected-product content is hidden.
+            if (detailsLeft > productLayoutRoot.rect.xMin && detailsLeft < right) right = detailsLeft;
+        }
+        float usable = right - productLayoutRoot.rect.xMin - productLayout.padding.horizontal;
+        int columns = Mathf.Clamp(Mathf.FloorToInt((usable + productLayout.spacing.x + .01f) / step), 1, maximumColumns);
+        if (productLayout.constraintCount != columns) productLayout.constraintCount = columns;
     }
 
     /// <summary>
@@ -354,6 +389,7 @@ public class ShopGridUI : MonoBehaviour
     /// </summary>
     public void ResetGridInteractionState()
     {
+        if (purchaseFlyEffect != null) purchaseFlyEffect.Clear();
         if (detailsView != null)
             detailsView.Clear();
         for (int i = 0; i < generatedSlots.Count; i++)
@@ -384,7 +420,24 @@ public class ShopGridUI : MonoBehaviour
             return;
         }
 
-        ShopPurchaseResult result = tradeController.TryPurchase(slot.CurrentProduct); // 本次购买结果。
+        if (presenter == null || presenterTrade != tradeController)
+        {
+            presenterTrade = tradeController;
+            presenter = new ShopPresenter(tradeController, RenderPurchaseResult);
+        }
+        presenter.Purchase(slot);
+    }
+
+    public void SuspendInteraction()
+    {
+        foreach (ShopSlotUI slot in generatedSlots) if (slot != null) slot.OnPointerExit(null);
+        if (detailsView != null) detailsView.SuspendHover();
+        if (purchaseFlyEffect != null) purchaseFlyEffect.Clear();
+        HideWarningImmediate();
+    }
+
+    private void RenderPurchaseResult(ShopSlotUI slot, ShopPurchaseResult result)
+    {
 
         if (!result.succeeded)
         {

@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8aef42a3729d1342b9c66dc5aa57dbb, type: 3}
+  m_Name: UIPageCatalog_Default
+  m_EditorClassIdentifier: 
+  pages:
+  - Id: ui.package
+    DisplayName: "\u80CC\u5305"
+    Layer: 200
+    Workspace: PrimaryWorkspace
+    BackPolicy: 0
+    BlockGameplay: 1
+    PauseWorld: 0
+    Cache: 1
+    DimAlpha: 0.35
+    TemplateOnly: 0
+  - Id: ui.shop
+    DisplayName: "\u5546\u5E97"
+    Layer: 200
+    Workspace: PrimaryWorkspace
+    BackPolicy: 0
+    BlockGameplay: 1
+    PauseWorld: 0
+    Cache: 1
+    DimAlpha: 0.35
+    TemplateOnly: 0
+  - Id: ui.settings
+    DisplayName: "\u8BBE\u7F6E"
+    Layer: 400
+    Workspace: 
+    BackPolicy: 0
+    BlockGameplay: 1
+    PauseWorld: 1
+    Cache: 1
+    DimAlpha: 0.5
+    TemplateOnly: 0
+  - Id: ui.flow
+    DisplayName: "\u5192\u9669\u6D41\u7A0B"
+    Layer: 400
+    Workspace: 
+    BackPolicy: 1
+    BlockGameplay: 0
+    PauseWorld: 0
+    Cache: 1
+    DimAlpha: 0.82
+    TemplateOnly: 0
+  - Id: ui.confirmation
+    DisplayName: "\u786E\u8BA4\u5F39\u7A97\u6A21\u677F"
+    Layer: 600
+    Workspace: 
+    BackPolicy: 0
+    BlockGameplay: 0
+    PauseWorld: 0
+    Cache: 0
+    DimAlpha: 0.55
+    TemplateOnly: 1

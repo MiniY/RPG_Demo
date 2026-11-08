@@ -31,6 +31,14 @@ public sealed class ShopMerchantPresentationUI : MonoBehaviour
     public MerchantStyle CurrentStyle {get;private set;}
     public MerchantInteractionController SourceMerchant=>sourceMerchant;
     public bool IsVisible=>portrait!=null&&portrait.isActiveAndEnabled&&visual!=null&&visual.activeSelf;
+    public bool CanPresent(MerchantInteractionController merchant)
+    {
+        var source = merchant == null ? null : merchant.transform.Find("Visual");
+        var animator = source == null ? null : source.GetComponent<Animator>();
+        var renderer = source == null ? null : source.GetComponent<SpriteRenderer>();
+        return portrait != null && titleBanner != null && animator != null && renderer != null && renderer.sprite != null &&
+            renderer.sprite.texture != null && styles.Exists(style => style.controller == animator.runtimeAnimatorController && style.titleBanner != null);
+    }
     private void OnEnable()
     {
         if(shopPanel!=null)shopPanel.OnShopPanelVisibilityChanged+=OnVisibility;
@@ -43,9 +51,6 @@ public sealed class ShopMerchantPresentationUI : MonoBehaviour
     private void OnVisibility(bool visible)
     {
         if(!visible){Hide();return;}
-        // The saved inactive nested Canvas reported overrideSorting=false; apply the modal layer after activation.
-        var modal=portrait.GetComponentInParent<Canvas>();
-        modal.overrideSorting=true;modal.sortingOrder=120;
         Bind(shopPanel.CurrentMerchant);
     }
     private void LateUpdate()
@@ -109,6 +114,7 @@ public sealed class ShopMerchantPresentationUI : MonoBehaviour
     }
     private void Hide()
     {
+        sourceMerchant=null;
         if(visual!=null)visual.SetActive(false);
         if(previewCamera!=null)previewCamera.enabled=false;
         if(portrait!=null)portrait.enabled=false;

@@ -12,6 +12,8 @@ public static class TowerRunGateHub
 
     public static bool IsGameplayBlocked => gameplay.IsBlocked;
     public static bool IsWorldPaused => worldPause.IsBlocked;
+    public static System.Collections.Generic.IReadOnlyDictionary<string, int> CaptureGameplayOwners() => gameplay.CaptureOwners();
+    public static System.Collections.Generic.IReadOnlyDictionary<string, int> CaptureWorldPauseOwners() => worldPause.CaptureOwners();
 
     static TowerRunGateHub()
     {

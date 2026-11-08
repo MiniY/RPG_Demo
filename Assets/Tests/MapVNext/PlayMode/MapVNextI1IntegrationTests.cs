@@ -62,10 +62,11 @@ public sealed partial class MapVNextI1IntegrationTests
         Assert.That(read.state, Is.EqualTo(TowerRunSlotState.Valid), read.message);
         Call("BeginRestoreSlot", slot, read.confirmationToken);
     }
-    private void SaveAndReopen(bool versioned, string name, int slot = 2)
+    private void SaveAndReopen(bool versioned, string name, int slot = 2, bool overwrite = false)
     {
         var first = Entrance(); string before = Snapshot();
-        var write = (TowerRunSlotWriteResult)Call("TrySaveEntranceCandidate", slot, first, false, null);
+        var existing = overwrite ? (TowerRunSlotReadResult)Call("ReadSlot", slot) : null;
+        var write = (TowerRunSlotWriteResult)Call("TrySaveEntranceCandidate", slot, first, overwrite, existing?.confirmationToken);
         Assert.That(write.succeeded, Is.True, write.message);
         Restore(slot); Ready(versioned); var reopened = Entrance();
         Assert.That(JsonUtility.ToJson(reopened.generation), Is.EqualTo(JsonUtility.ToJson(first.generation)), "All generation and ecology fields must remain exact.");

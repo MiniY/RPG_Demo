@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,6 +8,15 @@ using UnityEngine.UI;
 /// </summary>
 public class ShopPurchaseFlyEffect : MonoBehaviour
 {
+    private readonly List<GameObject> ownedIcons = new List<GameObject>();
+    public int ActiveIconCount => ownedIcons.Count;
+    public void Clear()
+    {
+        StopAllCoroutines();
+        foreach (GameObject icon in ownedIcons) if (icon != null) Destroy(icon);
+        ownedIcons.Clear();
+    }
+    private void OnDisable() => Clear();
     /// <summary>
     /// 当前 UI 所在的 Canvas（画布）。
     /// </summary>
@@ -81,6 +91,7 @@ public class ShopPurchaseFlyEffect : MonoBehaviour
     private IEnumerator PlayRoutine(Sprite sprite, RectTransform startTransform)
     {
         GameObject iconObject = new GameObject("ShopPurchaseFlyIcon", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(CanvasGroup)); // 临时飞行图标对象。
+        ownedIcons.Add(iconObject);
         RectTransform iconTransform = iconObject.GetComponent<RectTransform>(); // 临时图标矩形变换。
         Image iconImage = iconObject.GetComponent<Image>(); // 临时图标图片。
         CanvasGroup canvasGroup = iconObject.GetComponent<CanvasGroup>(); // 临时图标画布组。
@@ -113,6 +124,7 @@ public class ShopPurchaseFlyEffect : MonoBehaviour
             yield return null;
         }
 
+        ownedIcons.Remove(iconObject);
         Destroy(iconObject);
     }
 }

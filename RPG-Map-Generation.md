@@ -751,3 +751,11 @@ Probe04、实际新冒险、独立batch恢复、EditMode4/4均自然0/unforced/J
 ## 2026-11-05 商店正式场景接入与统一字体发布
 
 仅商店 UI 表现与正式 SampleScene 挂接、现有 Host/封存工具必要适配和针对性验证；地图R01–R18、生成/配方数值、四个地图辅助场景及存档格式不改。73项商店增量语义合并，415个非UI块保持；真实商人F链及原交易/库存/背包权威继续复用。前序已落地统一MyTMP内容身份与原GUID保持，旧manifest/配方和严格校验保留，不重复清档或字体生成。私有像素本地保留、公开代码/meta/hash/恢复入口，当前新槽1与Prefs受保护。详细变更、复用、测试及人工验收范围见[商店正式集成记录](Docs/Releases/ShopUI-V35-FormalIntegration-20261105.md)，最终成品人工PENDING_USER。此段只记录本次，不采纳其他dirty或新怪物。
+
+## 2026-11-09 · R1 FV3 试玩版发布记录
+
+FV3 的正式 Windows x64 构建采用 MS1 配对 `reward-main-sync-20261108-ms1`。R01–R18 保持已确认规则。普通新游戏走显式 `vnext-i1-floor-budget-v1` 修订，历史 MainV1 和前一 VNext 内容按原身份恢复。候选仍用 12 个输入、12 次布局和128 次高地根试放预算，并保留最终全可达校验。商人占地与版本库存由现有地图和库存所有者处理。
+
+FV3 的 PlayMode Run `4b455f38bcc04e998e6fb97da9cfb685` 为 65/65，退出收尾原件保留 `FAILED / DESCENDANTS_OUTLIVED_ROOT / forced=true`，按用户已授权例外继续。UI24 Run `53d23022908d49f0a496bd19b0a3b218` 为 24/24。Build Run `b408faded6a5482391b1ad9af8358d43` 和普通、诊断 Player 运行通过。用户已确认同一 Windows 试玩包。原始测试 XML、运行日志、实机截图与试玩包留在 FV3 本地验收目录。本次按对应源码发布，使用的证据均绑定原 FV3 运行。
+
+本次复核覆盖公开源码、Schema 3 Host／Stamp 及本地许可素材恢复。独立怪物增量继续保留在本地。旧失败及历史配方保留原记录。正式源码范围以本次 Git 差异和 FV3 封存对照清单为准。

@@ -93,7 +93,9 @@ public class MapGenerationController : MonoBehaviour
                 if (zoningRecipe == null)
                 { FailPreGenerationConfiguration("ExactRetainedEcologyRecipeUnavailable", "The exact requested content is absent from the finite retained catalog."); return; }
                 zoningTypes = zoningRecipe.ResolveTypes();
-                if (request.EcologyEntry != null) zoningRecipe.VerifyRetainedSourceFiles(true);
+                // Automatic restores use the same authoring policy; entry version/config/content checks below remain mandatory.
+                if (request.EcologyEntry != null && (!Application.isEditor || MapHostCompatibility.RequiresSourceVerification()))
+                    zoningRecipe.VerifyRetainedSourceFiles(true);
                 if (request.EcologyEntry != null && (request.EcologyEntry.RecipeVersion != zoningRecipe.RecipeVersion ||
                     request.EcologyEntry.ConfigDigest != zoningRecipe.ConfigurationDigest || request.EcologyEntry.ContentVersion != zoningRecipe.ContentVersion))
                     throw new InvalidOperationException("ExactEcologyRecipeUnavailable");

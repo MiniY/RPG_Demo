@@ -234,7 +234,7 @@ public class PlayerAction : MonoBehaviour, IMapTransitionResettable
         if (attackStaminaCost > 0f && !playerStatsRuntime.TryConsumeStamina(attackStaminaCost))
             return;
 
-        // 攻击消耗的当前体力在成功发起攻击后立即写入本地存档。
+        // 攻击消耗的当前体力在成功发起攻击后提交到本局内存；正式槽位另行保存。
         GameSession.Instance?.SaveRuntimeState();
 
         int preparedDirectionIndex = PrepareAttackDirection();

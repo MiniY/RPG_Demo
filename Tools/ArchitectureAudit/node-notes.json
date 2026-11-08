@@ -1,23 +1,197 @@
 [
-  {"path":"Assets/Scripts/GameInput.cs","responsibility":"将 Battle、Interact 等输入映射为玩法事件，先检查输入门禁。","line":204},
-  {"path":"Assets/Scripts/Player/PlayerAction.cs","responsibility":"处理攻击体力、目标选择、动画通知与延迟伤害结算。","line":214},
-  {"path":"Assets/Scripts/Damageable/BaseDamageable.cs","responsibility":"统一维护可受击对象的生命、受击/死亡事件、奖励与回收。","line":78},
-  {"path":"Assets/Scripts/Damageable/Monster/MonsterAIController.cs","responsibility":"装配并切换怪物 Patrol/Search/Chase/Attack/Return 行为状态。","line":67},
-  {"path":"Assets/Scripts/MapGeneration/MonsterPlacementService.cs","responsibility":"规划 Monster 位置，物化时搬移并重绑定场景内目标。","line":150},
-  {"path":"Assets/Scripts/MapGeneration/DestructiblePlacementService.cs","responsibility":"规划代际可摧毁物，并从 Prefab 取得实例、绑定清理。","line":233},
-  {"path":"Assets/Scripts/MapGeneration/MapRuntimeBootstrap.cs","responsibility":"依据显式模式和权威根对象选择正式地图运行入口。","line":125},
-  {"path":"Assets/Scripts/MapGeneration/MapIntegrationOrchestrator.cs","responsibility":"协调地图生成、放置计划校验、Commit、旧代退休与地形投影。","line":55},
-  {"path":"Assets/Scripts/MapGeneration/MapGenerationController.cs","responsibility":"统筹地图物化、玩家定位、相机与 finalizer，最终发布 GameplayReady。","line":122},
-  {"path":"Assets/Scripts/RewardPickup.cs","responsibility":"地面奖励在触发器中请求背包接收，成功后播放拾取并回收。","line":49},
-  {"path":"Assets/Scripts/PlayerInventory.cs","responsibility":"拥有当前物品栈数量，接收拾取/交易并在成功后发布变化。","line":181},
-  {"path":"Assets/Scripts/UI/PackageGridUI.cs","responsibility":"监听背包变化，读取当前 ItemStacks 并重建可见格子。","line":53},
-  {"path":"Assets/Scripts/Shop/ShopTradeController.cs","responsibility":"验证并提交购买时的 Gold、商品与背包状态变化。","line":320},
-  {"path":"Assets/Scripts/GameSaveService.cs","responsibility":"维护会话运行数据的内存快照；此处 TrySave 不写正式槽位。","line":193},
-  {"path":"Assets/Scripts/TowerRun/TowerRunSlotStore.cs","responsibility":"提交与读取 Tower Run 正式槽位记录及覆盖保护。","line":696},
-  {"path":"Assets/Scripts/TowerRunCoordinator.cs","responsibility":"协调新 Run、恢复、换层、楼层入口保存及 staged 状态应用。","line":167},
-  {"path":"Assets/Scripts/TowerFloorRuntimeController.cs","responsibility":"追踪本代 Required 目标死亡，控制黑洞开放和出口交互门禁。","line":116},
-  {"path":"Assets/Scripts/MapGeneration/MapMinimapController.cs","responsibility":"根据地图代际数据生成小地图图像、迷雾与出口显示。","line":307},
-  {"path":"Assets/Scripts/MapGeneration/CameraBindingService.cs","responsibility":"地图生成后把相机绑定到已定位的玩家目标。","line":1},
-  {"path":"Assets/Scripts/UI/TowerRunUiController.cs","responsibility":"展示 Run/三槽状态并处理设置页的保存、恢复与音量交互。","line":148},
-  {"path":"Assets/Prefabs/Monsters/Torch/Torch_Blue.prefab","responsibility":"当前 Torch_Blue 主 Prefab；父对象含怪物行为，Visual 子对象承载 Animator。","line":1}
+  {
+    "path": "Assets/Scripts/GameInput.cs",
+    "responsibility": "将 Battle、Interact 等输入映射为玩法事件，先检查输入门禁。",
+    "line": 204
+  },
+  {
+    "path": "Assets/Scripts/Player/PlayerAction.cs",
+    "responsibility": "处理攻击体力、目标选择、动画通知与延迟伤害结算。",
+    "line": 214
+  },
+  {
+    "path": "Assets/Scripts/Damageable/BaseDamageable.cs",
+    "responsibility": "统一维护可受击对象的生命、受击/死亡事件、奖励与回收。",
+    "line": 78
+  },
+  {
+    "path": "Assets/Scripts/Damageable/Monster/MonsterAIController.cs",
+    "responsibility": "装配并切换怪物 Patrol/Search/Chase/Attack/Return 行为状态。",
+    "line": 67
+  },
+  {
+    "path": "Assets/Scripts/MapGeneration/MonsterPlacementService.cs",
+    "responsibility": "规划 Monster 位置，物化时搬移并重绑定场景内目标。",
+    "line": 150
+  },
+  {
+    "path": "Assets/Scripts/MapGeneration/DestructiblePlacementService.cs",
+    "responsibility": "规划代际可摧毁物，并从 Prefab 取得实例、绑定清理。",
+    "line": 233
+  },
+  {
+    "path": "Assets/Scripts/MapGeneration/MapRuntimeBootstrap.cs",
+    "responsibility": "依据显式模式和权威根对象选择正式地图运行入口。",
+    "line": 125
+  },
+  {
+    "path": "Assets/Scripts/MapGeneration/MapIntegrationOrchestrator.cs",
+    "responsibility": "协调地图生成、放置计划校验、Commit、旧代退休与地形投影。",
+    "line": 55
+  },
+  {
+    "path": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+    "responsibility": "统筹地图物化、玩家定位、相机与 finalizer，最终发布 GameplayReady。",
+    "line": 122
+  },
+  {
+    "path": "Assets/Scripts/RewardPickup.cs",
+    "responsibility": "持有地面余量与租约；逐份请求唯一接收者，提交后更新余量再通知并呈现。",
+    "line": 49
+  },
+  {
+    "path": "Assets/Scripts/PlayerInventory.cs",
+    "responsibility": "唯一背包数量权威与地面接收入口；委托恢复/丢出协调，提交后发布库存事实。",
+    "line": 181
+  },
+  {
+    "path": "Assets/Scripts/UI/PackageGridUI.cs",
+    "responsibility": "监听背包变化，读取当前 ItemStacks 并重建可见格子。",
+    "line": 53
+  },
+  {
+    "path": "Assets/Scripts/Shop/ShopTradeController.cs",
+    "responsibility": "验证并提交购买与版本化库存；旧版只补后引入商品，共用无写入预校验，库存仍由原运行字典拥有。",
+    "line": 324
+  },
+  {
+    "path": "Assets/Scripts/GameSaveService.cs",
+    "responsibility": "规范化和深复制本局内存快照；TrySave为兼容委托，正式槽位仍由TowerRunSlotStore写盘。",
+    "line": 193
+  },
+  {
+    "path": "Assets/Scripts/TowerRun/TowerRunSlotStore.cs",
+    "responsibility": "提交与读取 Tower Run 正式槽位记录及覆盖保护。",
+    "line": 696
+  },
+  {
+    "path": "Assets/Scripts/TowerRunCoordinator.cs",
+    "responsibility": "协调新 Run、恢复、换层、楼层入口保存及 staged 状态应用。",
+    "line": 167
+  },
+  {
+    "path": "Assets/Scripts/TowerFloorRuntimeController.cs",
+    "responsibility": "追踪本代 Required 目标死亡，控制黑洞开放和出口交互门禁。",
+    "line": 116
+  },
+  {
+    "path": "Assets/Scripts/MapGeneration/MapMinimapController.cs",
+    "responsibility": "根据地图代际数据生成小地图图像、迷雾与出口显示。",
+    "line": 307
+  },
+  {
+    "path": "Assets/Scripts/MapGeneration/CameraBindingService.cs",
+    "responsibility": "地图生成后把相机绑定到已定位的玩家目标。",
+    "line": 1
+  },
+  {
+    "path": "Assets/Prefabs/Monsters/Torch/Torch_Blue.prefab",
+    "responsibility": "当前 Torch_Blue 主 Prefab；父对象含怪物行为，Visual 子对象承载 Animator。",
+    "line": 1
+  },
+  {
+    "path": "Assets/Scripts/UI/TowerRunUiController.cs",
+    "responsibility": "兼容原入口并装配View与Flow、Settings、SaveSlots Presenter，不拥有跨页显隐与暂停状态。",
+    "line": 5
+  },
+  {
+    "path": "Assets/Scripts/UI/UIManager.cs",
+    "responsibility": "拥有页面登记、事务、handle、scope、owner、生命周期与确认等待；业务权威保持原系统。",
+    "line": 9
+  },
+  {
+    "path": "Assets/Scripts/UI/UILayerController.cs",
+    "responsibility": "唯一管理跨层排序、单层压暗、实际射线阻挡和来源窗口覆盖区。",
+    "line": 7
+  },
+  {
+    "path": "Assets/Scripts/UI/UIInputRouter.cs",
+    "responsibility": "唯一分发Esc，保存并验证焦点，通过实际handle generation恢复合法选中项。",
+    "line": 7
+  },
+  {
+    "path": "Assets/Scripts/UI/Shop/ShopPresenter.cs",
+    "responsibility": "把一次购买意图交给原交易权威一次，再把结果交回视图。",
+    "line": 4
+  },
+  {
+    "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapHostCompatibility.cs",
+    "responsibility": "按运行上下文核对来源：普通Editor Play保留包内身份检查并标未核证，正式测试/构建/显式请求执行精确源码检查；Player保持嵌入身份核验。",
+    "line": 10
+  },
+  {
+    "path": "Assets/Scripts/MapGeneration/Ecology/EcologyRetainedContentManifest.cs",
+    "responsibility": "持有内容目录身份，保留必要依赖存在与配方映射验证；按上下文计算依赖源码Hash，不自动重写封存。",
+    "line": 10
+  },
+  {
+    "path": "Assets/Editor/MapVNext/MapHostSourceVerificationEditor.cs",
+    "responsibility": "通过公开Test Runner回调和Editor临时SessionState保持测试严格，标准BuildPipeline预处理调用统一严格输入校验。",
+    "line": 10
+  },
+  {
+    "path": "Assets/Editor/MapVNext/MapHostDevelopmentProbe.cs",
+    "responsibility": "仅显式启动的非batch Editor验收：临时候选布局漂移下新开/保存恢复可用，正式测试和标准构建拒绝同一漂移。",
+    "line": 12
+  },
+  {
+    "path": "Assets/Scripts/UI/UIPage.cs",
+    "responsibility": "可挂载页面的统一身份与类型化生命周期；运行状态由UIManager持有。",
+    "line": 4
+  },
+  {
+    "path": "Assets/Scripts/UI/UIPageCatalog.cs",
+    "responsibility": "集中维护已保存场景页面的规则，生成独立运行定义，不保存场景对象引用。",
+    "line": 27
+  },
+  {
+    "path": "Assets/Scripts/UI/UILayerBindings.cs",
+    "responsibility": "显式绑定已保存层容器和遮罩，校验完整性与父子关系。",
+    "line": 5
+  },
+  {
+    "path": "Assets/Scripts/UI/UIRoot.cs",
+    "responsibility": "连接集中目录、场景页面与已保存层容器，统一校验并构造实际UIManager。",
+    "line": 6
+  },
+  {
+    "path": "Assets/Scripts/UI/TowerRunUiViews.cs",
+    "responsibility": "保留系统页面布局和序列化控件引用；运行时绑定行为，几何仅由显式编辑器迁移创建。",
+    "line": 7
+  },
+  {
+    "path": "Assets/Editor/UIArchitecture/UIManagementWindow.cs",
+    "responsibility": "编辑器UI总览，复用真实Root Inspector，不建立平行页面状态。",
+    "line": 5
+  },
+  {
+    "path": "Assets/Scripts/GameSession.cs",
+    "responsibility": "场景组合根；缓存唯一当前背包并绑定属性、奖励协调、成长与视图。",
+    "line": 1
+  },
+  {
+    "path": "Assets/Scripts/PlayerRewardService.cs",
+    "responsibility": "协调恢复、入包与一份丢出的本局内存事务；保留原背包、属性、地图及对象池权威。",
+    "line": 1
+  },
+  {
+    "path": "Assets/Scripts/RewardPickupResult.cs",
+    "responsibility": "不可变已提交结果：拒绝、入包、回血或回蓝；表现只消费事实。",
+    "line": 1
+  },
+  {
+    "path": "Assets/Scripts/TowerRunRuntimeStateBridge.cs",
+    "responsibility": "连接正式检查点与本局运行状态；保留库存版本并在捕获/恢复边界验证当前商店，内存替换仍走原所有者。",
+    "line": 77
+  }
 ]

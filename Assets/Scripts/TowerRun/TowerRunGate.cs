@@ -9,6 +9,9 @@ public sealed class TowerRunGate
     public event Action<bool> Changed;
     public bool IsBlocked => owners.Count > 0;
 
+    public IReadOnlyDictionary<string, int> CaptureOwners()
+        => new Dictionary<string, int>(owners, StringComparer.Ordinal);
+
     public TowerRunGateLease Acquire(string owner)
     {
         if (string.IsNullOrWhiteSpace(owner))

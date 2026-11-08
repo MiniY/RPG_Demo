@@ -7,6 +7,9 @@ public sealed class EcologyRecipeDefinition : ScriptableObject
 {
     public const string VNextI1ProfileId = "ecology-vnext-i1-20261030";
     public const string VNextI1ImplementationId = "terrain-vnext-i1-native-r7-v3";
+    public const string VNextI1GroundConnectivityImplementationId = "terrain-vnext-i1-native-r7-v4-ground-connectivity";
+    public const string VNextI1LegacyConfigurationDigest = "0ec17b25c91242a95a0b75da039e2668474644da3bf28f012e94bf5375538fa1";
+    public const string VNextI1GroundConnectivityConfigurationDigest = "024cc3e2f38c6925eccf0da2900d1276ddc9bb0be7521929e1701bb71784a621";
     public const string ProfileId = "ecology-zoning-v1";
     public const string UnitsCandidateProfileId = "ecology-zoning-units-candidate-v1";
     public const string UnitsStableCandidateProfileId = "ecology-zoning-units-float32-candidate-v2";
@@ -66,8 +69,11 @@ public sealed class EcologyRecipeDefinition : ScriptableObject
     public const string RetiredContentMessage = "此存档的原配方或冻结内容清单依赖已退役的四购买怪物，无法在此版本精确恢复。原始存档未修改，请用私有归档中的旧版程序在独立目录体验。";
     public void VerifyRetainedSourceFiles(bool force)
     {
-        if (resolvedContent == null) ResolveTypes();
-        resolvedContent.VerifySourceFiles(force);
+        using (MapHostCompatibility.RequireStrictSourceVerification())
+        {
+            if (resolvedContent == null) ResolveTypes();
+            resolvedContent.VerifySourceFiles(force);
+        }
     }
     public string DeclaredProfileId => string.IsNullOrEmpty(candidateProfileId) ? ProfileId : candidateProfileId;
     public static string ResourcePathFor(string profileId)
@@ -103,7 +109,7 @@ public sealed class EcologyRecipeDefinition : ScriptableObject
             .OrderBy(t => t.TypeId, StringComparer.Ordinal).ToArray();
         bool stableCandidate = string.Equals(DeclaredProfileId, UnitsStableCandidateProfileId, StringComparison.Ordinal) ||
             IsRemediationProfile(DeclaredProfileId);
-        if (stableCandidate ? retainedTerrain == null || retainedTerrain.ImplementationId != (DeclaredProfileId == VNextI1ProfileId ? VNextI1ImplementationId : "terrain-float32-retained-v1") : retainedTerrain != null)
+        if (stableCandidate ? retainedTerrain == null || retainedTerrain.ImplementationId != (DeclaredProfileId == VNextI1ProfileId ? ExpectedVNextImplementationId() : "terrain-float32-retained-v1") : retainedTerrain != null)
             throw new InvalidOperationException("RetainedTerrainImplementationMismatch");
         if (retainedTerrain != null && retainedTerrain.HasVersionedSpace != (DeclaredProfileId == VNextI1ProfileId))
             throw new InvalidOperationException("MixedRetainedSpatialImplementation");
@@ -116,12 +122,18 @@ public sealed class EcologyRecipeDefinition : ScriptableObject
         resolvedContent.VerifySourceFiles(false);
         return types;
     }
+    private string ExpectedVNextImplementationId()
+    {
+        if (configurationDigest == VNextI1LegacyConfigurationDigest) return VNextI1ImplementationId;
+        if (configurationDigest == VNextI1GroundConnectivityConfigurationDigest) return VNextI1GroundConnectivityImplementationId;
+        throw new InvalidOperationException("UnknownVNextConfigurationRevision");
+    }
 #if UNITY_EDITOR
     private static void RequireCleanRetainedAsset(UnityEngine.Object asset)
     {
         // Unsaved Inspector/native-object changes are absent from the source-file hash.
         // A retained version must be explicitly authored and frozen before it is eligible.
-        if (UnityEditor.EditorUtility.IsDirty(asset))
+        if (MapHostCompatibility.RequiresSourceVerification() && UnityEditor.EditorUtility.IsDirty(asset))
             throw new InvalidOperationException("RetainedAssetDirty: " + UnityEditor.AssetDatabase.GetAssetPath(asset));
     }
 #endif

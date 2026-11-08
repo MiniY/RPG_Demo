@@ -16,11 +16,45 @@ public static class MapHostCompatibility
         public int schema;
         public string buildId, implementationDigest, oldContentVersion, newContentVersion, closureSha256, reviewEvidenceSha256, stampSha256;
         public FileEntry[] files; public Difference[] approvedDifferences; public string[] startupTargets;
-        public string retainedContentVersion; public Difference[] currentContentDifferences;
+        public string retainedContentVersion, previousCurrentContentVersion; public Difference[] currentContentDifferences;
     }
     public static string LastStrictSourceResult { get; private set; }
     public static int LastStrictDifferenceCount { get; private set; }
     public static string LastCompatibilityResult { get; private set; }
+#if UNITY_EDITOR
+    // The Editor bridge supplies Test Runner state across domain reloads.
+    public static Func<bool> EditorTestRunActive { get; set; }
+    private static int strictSourceScopes;
+    private static bool developmentNoticeShown;
+#endif
+    public static bool RequiresSourceVerification(bool force = false)
+    {
+#if UNITY_EDITOR
+        return force || strictSourceScopes > 0 || !Application.isPlaying || Application.isBatchMode ||
+            UnityEditor.BuildPipeline.isBuildingPlayer || (EditorTestRunActive?.Invoke() ?? false);
+#else
+        return false;
+#endif
+    }
+    public static IDisposable RequireStrictSourceVerification() => new StrictSourceScope();
+    private sealed class StrictSourceScope : IDisposable
+    {
+        private bool disposed;
+        public StrictSourceScope()
+        {
+#if UNITY_EDITOR
+            strictSourceScopes++;
+#endif
+        }
+        public void Dispose()
+        {
+            if (disposed) return;
+            disposed = true;
+#if UNITY_EDITOR
+            strictSourceScopes--;
+#endif
+        }
+    }
     public static string Sha(byte[] bytes)
     { using (var sha = SHA256.Create()) return BitConverter.ToString(sha.ComputeHash(bytes)).Replace("-", "").ToLowerInvariant(); }
     public static string GroupDigest(FileEntry[] files) => Sha(Encoding.UTF8.GetBytes(string.Join("\n", files.OrderBy(p => p.path, StringComparer.Ordinal).Select(p => p.path + "\t" + p.sha256)) + "\n"));
@@ -72,7 +106,10 @@ public static class MapHostCompatibility
     }
     public static Difference[] DifferencesFor(Host host, string profile, string contentVersion)
     {
-        if (profile == EcologyRecipeDefinition.VNextI1ProfileId && contentVersion == host.newContentVersion)
+        if (string.IsNullOrEmpty(profile) || string.IsNullOrEmpty(contentVersion))
+            throw new InvalidOperationException("UnknownOrMixedHostContentVersion");
+        if (profile == EcologyRecipeDefinition.VNextI1ProfileId &&
+            (contentVersion == host.newContentVersion || contentVersion == host.previousCurrentContentVersion))
             return host.currentContentDifferences;
         if (profile == EcologyRecipeDefinition.MainV1ProfileId && contentVersion == host.oldContentVersion ||
             profile == EcologyRecipeDefinition.VNextI1ProfileId && contentVersion == host.retainedContentVersion)
@@ -83,7 +120,8 @@ public static class MapHostCompatibility
     {
         Host host = JsonUtility.FromJson<Host>(json);
         if (host != null && host.approvedDifferences != null) ValidateDifferences(host.approvedDifferences);
-        if (host == null || host.schema != 2 || host.files == null || host.approvedDifferences == null || host.currentContentDifferences == null ||
+        if (host == null || host.schema != 3 || MapHostBuildStamp.HostSchemaVersion != 3 ||
+            host.files == null || host.approvedDifferences == null || host.currentContentDifferences == null ||
             host.files.Length == 0 || host.files.Any(p => p == null || !IsPath(p.path) || !IsSha(p.sha256)) ||
             host.files.Select(p => p.path).Distinct(StringComparer.Ordinal).Count() != host.files.Length ||
             !MapHostBuildStamp.IsReviewedCompatibleHost ||
@@ -92,6 +130,10 @@ public static class MapHostCompatibility
             DifferenceDigest(host.approvedDifferences) != MapHostBuildStamp.ApprovedDifferencesDigest ||
             DifferenceDigest(host.currentContentDifferences) != MapHostBuildStamp.CurrentContentDifferencesDigest ||
             host.retainedContentVersion != MapHostBuildStamp.RetainedContentVersion ||
+            host.previousCurrentContentVersion != MapHostBuildStamp.PreviousCurrentContentVersion ||
+            new[] { host.oldContentVersion, host.retainedContentVersion, host.previousCurrentContentVersion, host.newContentVersion }
+                .Any(value => value == null || !value.StartsWith("content-r1:", StringComparison.Ordinal) || !IsSha(value.Substring(11))) ||
+            new[] { host.oldContentVersion, host.retainedContentVersion, host.previousCurrentContentVersion, host.newContentVersion }.Distinct(StringComparer.Ordinal).Count() != 4 ||
             host.buildId != MapHostBuildStamp.BuildId || host.implementationDigest != MapHostBuildStamp.ImplementationDigest ||
             GroupDigest(host.files) != MapHostBuildStamp.ImplementationDigest ||
             host.oldContentVersion != MapHostBuildStamp.OldContentVersion || host.newContentVersion != MapHostBuildStamp.NewContentVersion ||
@@ -104,11 +146,13 @@ public static class MapHostCompatibility
         DifferencesFor(host, profile, contentVersion);
         return host;
     }
-    public static void Verify(string profile, string contentVersion, IReadOnlyList<Difference> strictDifferences)
+    public static void Verify(string profile, string contentVersion, IReadOnlyList<Difference> strictDifferences, bool forceSourceCheck = false)
     {
 #if UNITY_EDITOR
-        LastStrictDifferenceCount = strictDifferences.Count;
-        LastStrictSourceResult = strictDifferences.Count == 0 ? "ORIGINAL_BYTES_MATCH" : "ORIGINAL_BYTES_DIFFER_" + strictDifferences.Count;
+        bool verifySources = RequiresSourceVerification(forceSourceCheck);
+        LastStrictDifferenceCount = verifySources ? strictDifferences.Count : -1;
+        LastStrictSourceResult = !verifySources ? "NOT_EXECUTED_EDITOR_DEVELOPMENT" :
+            strictDifferences.Count == 0 ? "ORIGINAL_BYTES_MATCH" : "ORIGINAL_BYTES_DIFFER_" + strictDifferences.Count;
 #else
         LastStrictDifferenceCount = -1; LastStrictSourceResult = "NOT_EXECUTED_IN_PLAYER";
 #endif
@@ -121,9 +165,21 @@ public static class MapHostCompatibility
         }
         Host host = ValidateDocument(source.text, profile, contentVersion);
 #if UNITY_EDITOR
-        ValidateDifferenceSet(DifferencesFor(host, profile, contentVersion), strictDifferences);
-        ValidateSourceGroup(host, Path.GetFullPath(Path.Combine(Application.dataPath, "..")));
-        LastCompatibilityResult = "REVIEWED_GROUP_MATCH_EDITOR_SOURCE_CHECKED";
+        if (verifySources)
+        {
+            ValidateDifferenceSet(DifferencesFor(host, profile, contentVersion), strictDifferences);
+            ValidateSourceGroup(host, Path.GetFullPath(Path.Combine(Application.dataPath, "..")));
+            LastCompatibilityResult = "REVIEWED_GROUP_MATCH_EDITOR_SOURCE_CHECKED";
+        }
+        else
+        {
+            LastCompatibilityResult = "EDITOR_DEVELOPMENT_EMBEDDED_IDENTITY_ONLY";
+            if (!developmentNoticeShown)
+            {
+                developmentNoticeShown = true;
+                Debug.LogWarning("开发模式：未执行源码/场景指纹封存校验；构建与测试仍使用严格校验。");
+            }
+        }
 #else
         // Player has compiled code, not the Editor source tree. Verify the embedded group against the compiled stamp.
         LastCompatibilityResult = "REVIEWED_GROUP_MATCH_PLAYER_EMBEDDED_IDENTITY_ONLY";

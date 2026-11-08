@@ -194,7 +194,7 @@ public class GameSession : MonoBehaviour
         Inventory = selected;
         Rewards = new PlayerRewardService(Inventory, PlayerStats, map,
             () => TowerRun != null && TowerRun.State == TowerRunFlowState.Playing &&
-                  !TowerRunGateHub.IsGameplayBlockedByOtherThan(PackagePanelController.GameplayGateOwner));
+                  !TowerRunGateHub.IsGameplayBlockedByOtherThan(UIRoutes.Package.Id));
         Inventory.BindRewardService(Rewards);
         foreach (PackageGridUI grid in Resources.FindObjectsOfTypeAll<PackageGridUI>())
             if (grid != null && grid.gameObject.scene == scene) grid.BindInventory(Inventory);

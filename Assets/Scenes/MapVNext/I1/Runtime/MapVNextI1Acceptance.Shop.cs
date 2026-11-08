@@ -33,10 +33,22 @@ public sealed partial class MapVNextI1Acceptance
         Feed(key);yield return new WaitForSecondsRealtime(.08f);Feed();yield return null;yield return null;
     }
     public IEnumerator RunShopEditorTest(string directory)
+        => RunShopEditorTestCore(directory, false);
+    public void CleanupShopEditorTest()
+    {
+        try { session?.ReturnToStartupChoice(); }
+        finally { if (keyboard != null) CleanupInput(); }
+    }
+    private IEnumerator RunShopEditorTestCore(string directory, bool leavePlaying)
     {
         output=directory;Directory.CreateDirectory(output);session=GameSession.Instance.TowerRun;map=FindObjectOfType<MapGenerationController>(true);shopFrames=false;
-        try {yield return ProveShopIntegration();}
-        finally {if(keyboard!=null)CleanupInput();}
+        bool completed=false;
+        try {yield return ProveShopIntegration();completed=true;}
+        finally
+        {
+            try {if(!completed||!leavePlaying)session?.ReturnToStartupChoice();}
+            finally {if(keyboard!=null)CleanupInput();}
+        }
     }
     private IEnumerator ShopPicture(string label)
     {
@@ -54,7 +66,7 @@ public sealed partial class MapVNextI1Acceptance
         }
         Require(count>0,"ShopNoUnifiedFontVisible");
     }
-    private static ShopSlotUI OnlyFoodSlot() => FindObjectsOfType<ShopSlotUI>().Single(s=>s.CurrentProduct!=null);
+    private static ShopSlotUI MeatSlot() => FindObjectsOfType<ShopSlotUI>().Single(s=>s.CurrentProduct!=null && s.CurrentProduct.Reward.RewardId=="meat");
     private ShopAmounts ShopCount(ShopSlotUI slot,ShopTradeController trade,PlayerInventory inventory)
         => new ShopAmounts{gold=inventory.GetItemAmount(inventory.GoldReward),meat=inventory.GetItemAmount(slot.CurrentProduct.Reward),stock=trade.GetCurrentStock(slot.CurrentProduct)};
     private void RequireAmounts(ShopAmounts row,int gold,int meat,int stock)
@@ -65,14 +77,14 @@ public sealed partial class MapVNextI1Acceptance
         string protectedRoot=Path.GetFullPath(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),"AppData/LocalLow/DefaultCompany/RPG_Demo"));
         Require(!Path.GetFullPath(TowerRunRuntimeEnvironment.SlotRoot).StartsWith(protectedRoot,StringComparison.OrdinalIgnoreCase),"ShopTestCannotUseProductionSave");
         shopFrames=!Application.isBatchMode;shopEvidence=new ShopRow{buildId=MapHostBuildStamp.BuildId,scene=UnityEngine.SceneManagement.SceneManager.GetActiveScene().path,
-            slotRoot=TowerRunRuntimeEnvironment.SlotRoot,inputScope="Automated InputSystem keyboard -> existing GameInput -> real merchant range/event; EventSystem raycast -> existing slot click/trade. Player proximity is explicit fixture placement, not a human WASD claim."};ShopPersist();
+            slotRoot=TowerRunRuntimeEnvironment.SlotRoot,inputScope="Explicit diagnostic pointer isolation: enabled physical Mouse devices temporarily disabled inside this process, owned Mouse stays outside canvas, cleanup restores devices. Automated InputSystem keyboard -> existing GameInput -> real merchant range/event; EventSystem raycast -> existing slot click/trade. Player proximity is explicit fixture placement, not a human WASD claim."};ShopPersist();
         Require(session.State==TowerRunFlowState.StartupChoice,"ShopStartupChoiceMissing");
         var panel=FindObjectOfType<ShopPanelController>(true);var grid=FindObjectOfType<ShopGridUI>(true);
         Require(panel!=null&&grid!=null&&!panel.IsShopPanelVisible,"ShopInitiallyClosed");
         var startup=FindObjectOfType<TowerRunUiController>(true);
         PrivateField<UnityEngine.UI.Button>(startup,"primaryButton").onClick.Invoke();
         Require(session.State==TowerRunFlowState.Playing&&Context.IsReady,"ShopOrdinaryNewGameFailed:"+session.FailureMessage);
-        Ready();BindPlayer();autoDefense=false;BindInput();
+        Ready();BindPlayer();autoDefense=false;BindInput();BindShopPointer();
         var entry=Entrance();shopEvidence.content=entry.generation.ecology.contentVersion;shopEvidence.runId=entry.runId;
         string world=MapHostStateSnapshot.Capture(map);File.WriteAllText(Path.Combine(output,"Shop-entrance-world.txt"),world);shopEvidence.worldSha=MapHostCompatibility.Sha(System.Text.Encoding.UTF8.GetBytes(world));
         var initial=session.ReadSlot(1);Require(initial.state==TowerRunSlotState.Empty,"ShopFixtureMustHaveEmptySlot");
@@ -95,21 +107,18 @@ public sealed partial class MapVNextI1Acceptance
         Require(panel.IsShopPanelVisible&&panel.CurrentMerchant==merchant,"ShopRealMerchantFChainFailed");
         var presenter=FindObjectOfType<ShopMerchantPresentationUI>(true);var details=FindObjectOfType<ShopDetailsUI>(true);var trade=FindObjectOfType<ShopTradeController>(true);var inventory=FindObjectOfType<PlayerInventory>();
         Require(presenter.SourceMerchant==merchant&&presenter.IsVisible,"ShopPortraitNotFromActualMerchant");
-        var slot=OnlyFoodSlot();var meatReward=slot.CurrentProduct.Reward;RequireAmounts(ShopCount(slot,trade,inventory),100,0,3);
+        var slot=MeatSlot();var meatReward=slot.CurrentProduct.Reward;RequireAmounts(ShopCount(slot,trade,inventory),100,0,3);
         var pointer=new PointerEventData(EventSystem.current){button=PointerEventData.InputButton.Left};slot.OnPointerEnter(pointer);yield return null;
         Require(details.CurrentProduct==slot.CurrentProduct,"ShopHoverDetailsMissing");CheckShopFonts();yield return ShopPicture("01-Blue-Food-Details");slot.OnPointerExit(pointer);yield return null;Require(details.CurrentProduct==null,"ShopHoverDetailsNotCleared");
         foreach(string tab in new[]{"WeaponTab","SkillTab","FoodTab"})
         {
             var toggle=FindObjectsOfType<UnityEngine.UI.Toggle>().Single(t=>t.name==tab);toggle.isOn=true;yield return null;
-            int expected=tab=="FoodTab"?1:0;Require(FindObjectsOfType<ShopSlotUI>().Count(s=>s.CurrentProduct!=null)==expected,"ShopCategoryWrong:"+tab);Require(details.CurrentProduct==null,"ShopCategoryDetailsResidual");
+            int expected=tab=="FoodTab"?merchant.ShopCatalog.GetProducts(ShopProductCategoryType.Food).Count:0;Require(FindObjectsOfType<ShopSlotUI>().Count(s=>s.CurrentProduct!=null)==expected,"ShopCategoryWrong:"+tab);Require(details.CurrentProduct==null,"ShopCategoryDetailsResidual");
         }
-        slot=OnlyFoodSlot();
+        slot=MeatSlot();
         for(int i=1;i<=4;i++)
         {
-            Vector2 centre=RectTransformUtility.WorldToScreenPoint(null,slot.RectTransform.TransformPoint(slot.RectTransform.rect.center));
-            pointer.position=centre;var hits=new List<RaycastResult>();EventSystem.current.RaycastAll(pointer,hits);Require(hits.Count>0,"ShopNoHitAtCard");
-            var clicked=ExecuteEvents.ExecuteHierarchy(hits[0].gameObject,pointer,ExecuteEvents.pointerClickHandler);Require(clicked!=null&&(clicked==slot.gameObject||clicked.transform.IsChildOf(slot.transform)),"ShopCardBlockedByOtherUI");
-            yield return null;int bought=Mathf.Min(i,3);RequireAmounts(ShopCount(slot,trade,inventory),100-5*bought,bought,3-bought);
+            yield return ClickShopProduct(slot);int bought=Mathf.Min(i,3);RequireAmounts(ShopCount(slot,trade,inventory),100-5*bought,bought,3-bought);
         }
         CheckShopFonts();yield return ShopPicture("02-SoldOut-ThreeSinglePurchases");
         yield return ShopKey(Key.Escape);Require(!panel.IsShopPanelVisible&&!TowerRunGateHub.IsGameplayBlocked,"ShopEscDidNotReleaseInput");
@@ -141,7 +150,7 @@ public sealed partial class MapVNextI1Acceptance
                     if(shopFrames&&style.sourcePrefab.name.Contains("Purple"))yield return ShopPicture("Idle/Purple-"+frame.ToString("D2"));
                 }
                 Require(row.spriteChanges>=2,"ShopMerchantIdleDidNotAdvance:"+row.name);shopEvidence.merchants.Add(row);ShopPersist();
-                slot=OnlyFoodSlot();slot.OnPointerEnter(pointer);yield return null;CheckShopFonts();yield return ShopPicture("Merchant-"+style.sourcePrefab.name);
+                slot=MeatSlot();slot.OnPointerEnter(pointer);yield return null;CheckShopFonts();yield return ShopPicture("Merchant-"+style.sourcePrefab.name);
                 var close=FindObjectsOfType<UnityEngine.UI.Button>().Single(b=>b.name=="CloseButton");close.onClick.Invoke();yield return null;yield return null;
                 Require(!panel.IsShopPanelVisible&&!presenter.IsVisible&&!TowerRunGateHub.IsGameplayBlocked&&details.CurrentProduct==null,"ShopCloseButtonResidual");
                 Require(FindObjectsOfType<Camera>(true).Length==cameras,"ShopPreviewCameraLeak");
@@ -156,6 +165,8 @@ public sealed partial class MapVNextI1Acceptance
         Require(MapHostCompatibility.Sha(File.ReadAllBytes(path))==shopEvidence.slotSha,"ShopTradeMustNotRewriteEntranceSave");
         shopEvidence.checks.Add("Normal SampleScene new-game button; generated merchant F path; categories/hover; EventSystem card hit and exact three purchases; sold-out unchanged; Esc/close cleanup; movement/Tab; four prefab-driven Idle/banner styles; private entrance disk save unchanged by purchases.");
         shopEvidence.checks.Add("Spawned style actors and player proximity placement are isolated test fixtures, never serialized into SampleScene or claimed as human movement.");
+        yield return ProveFoodProducts();
+        Require(MapHostCompatibility.Sha(File.ReadAllBytes(path))==shopEvidence.slotSha,"FoodTradeMustNotRewriteEntranceSave");
         shopEvidence.status="AUTOMATED_SHOP_FLOW_VERIFIED_HUMAN_PENDING";ShopPersist();
     }
 }

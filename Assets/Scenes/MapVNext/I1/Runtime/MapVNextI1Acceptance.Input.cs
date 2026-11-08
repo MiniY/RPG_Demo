@@ -28,6 +28,9 @@ public sealed partial class MapVNextI1Acceptance
     }
     private void CleanupInput()
     {
+#if UNITY_EDITOR || RPG_SHOP_INTEGRATION_TESTS
+        CleanupShopPointer();
+#endif
         StopDefenseObservation();
         if(defenseMouse!=null&&defenseMouse.added) {InputSystem.QueueStateEvent(defenseMouse,new MouseState());InputSystem.RemoveDevice(defenseMouse);}defenseMouse=null;
         if(keyboard!=null&&keyboard.added) {InputSystem.QueueStateEvent(keyboard,new KeyboardState());InputSystem.RemoveDevice(keyboard);}keyboard=null;

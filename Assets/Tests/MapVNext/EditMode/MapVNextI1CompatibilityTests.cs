@@ -53,10 +53,11 @@ public sealed class MapVNextI1CompatibilityTests
     [Test] public void RetainedAndCurrentIdentitySetsCannotBeMixed()
     {
         var old = new[] { Difference() }; var current = Array.Empty<MapHostCompatibility.Difference>();
-        var host = new MapHostCompatibility.Host {oldContentVersion="old", retainedContentVersion="retained", newContentVersion="current", approvedDifferences=old, currentContentDifferences=current};
+        var host = new MapHostCompatibility.Host {oldContentVersion="old", retainedContentVersion="retained", previousCurrentContentVersion="previous", newContentVersion="current", approvedDifferences=old, currentContentDifferences=current};
         Assert.AreSame(old,MapHostCompatibility.DifferencesFor(host,EcologyRecipeDefinition.MainV1ProfileId,"old"));
         Assert.AreSame(old,MapHostCompatibility.DifferencesFor(host,EcologyRecipeDefinition.VNextI1ProfileId,"retained"));
         Assert.AreSame(current,MapHostCompatibility.DifferencesFor(host,EcologyRecipeDefinition.VNextI1ProfileId,"current"));
+        Assert.AreSame(current,MapHostCompatibility.DifferencesFor(host,EcologyRecipeDefinition.VNextI1ProfileId,"previous"));
         Assert.Throws<InvalidOperationException>(()=>MapHostCompatibility.DifferencesFor(host,EcologyRecipeDefinition.MainV1ProfileId,"current"));
     }
 }

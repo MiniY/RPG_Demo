@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UnityEngine;
 
 /// <summary>Narrow seam implemented by the existing main Merchant gameplay component.</summary>
@@ -197,26 +198,57 @@ public sealed class MerchantPlacementService : MonoBehaviour
         }
 
         destination.z = target.PlacementTransform.position.z;
-        if (!MapSpatialPlacement.Prepare(context, generationId, target.PlacementTransform.gameObject, destination, out reason, MainMerchantLogicalObjectId))
-            return Fail(context, generationId, MapFailureCategory.Planning, "MerchantSpatialOccupancyRejected", reason, out reason);
-        target.PlacementTransform.position = destination;
-        Physics2D.SyncTransforms();
-        if (!context.ActiveRegistry.TryBindInstance(
+        Transform placement = target.PlacementTransform;
+        Vector3 previousLocalPosition = placement.localPosition;
+        var previousGround = placement.GetComponent<MapGroundFootprint>();
+        Vector2[] previousVertices = previousGround == null ? null : previousGround.Vertices.ToArray();
+        bool previousDerived = previousGround != null && previousGround.IsReservationDerived;
+        bool completed = false;
+        try
+        {
+            placement.position = destination;
+            Physics2D.SyncTransforms();
+            // Parenting can round the assigned world position. Derive ground vertices
+            // from the pose Unity retained, before binding the role or publishing Ready.
+            if (!MapSpatialPlacement.Prepare(context, generationId, placement.gameObject, placement.position, out reason, MainMerchantLogicalObjectId))
+                return Fail(context, generationId, MapFailureCategory.Planning, "MerchantSpatialOccupancyRejected", reason, out reason);
+            if (!context.ActiveRegistry.TryBindInstance(
                 generationId,
                 MainMerchantLogicalObjectId,
                 MerchantRole,
                 merchantTarget,
                 out string registryReason))
-        {
-            return Fail(context, generationId, MapFailureCategory.Registry,
-                "MerchantRegistryBindingFailed", registryReason, out reason);
-        }
+            {
+                return Fail(context, generationId, MapFailureCategory.Registry,
+                    "MerchantRegistryBindingFailed", registryReason, out reason);
+            }
 
-        ReadyGenerationId = generationId;
-        PlacementCell = merchantReservation.AnchorCell;
-        InteractionApproachCell = approachReservation.AnchorCell;
-        MaterializationCount++;
-        return true;
+            ReadyGenerationId = generationId;
+            PlacementCell = merchantReservation.AnchorCell;
+            InteractionApproachCell = approachReservation.AnchorCell;
+            MaterializationCount++;
+            completed = true;
+            return true;
+        }
+        finally
+        {
+            if (!completed && placement != null)
+            {
+                // Restore local coordinates exactly; another world-position assignment
+                // would repeat the parent-space rounding that caused the original fault.
+                placement.localPosition = previousLocalPosition;
+                if (previousGround != null)
+                {
+                    if (previousDerived) previousGround.ConfigureReservation(previousVertices);
+                    else previousGround.Configure(previousVertices);
+                }
+                var currentLease = placement.GetComponent<MapSpatialActor>();
+                if (currentLease != null) currentLease.ClearBinding();
+                // New declarations remain a single derived cache, never authored input.
+                // The next Prepare recomputes them; no delayed destruction can race a retry.
+                Physics2D.SyncTransforms();
+            }
+        }
     }
 
     private bool TryGetTarget(out IMerchantPlacementTarget target, out string reason)

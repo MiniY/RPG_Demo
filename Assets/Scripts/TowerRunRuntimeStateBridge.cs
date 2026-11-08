@@ -70,11 +70,17 @@ public static class TowerRunRuntimeStateBridge
                 if (!shop.TryCaptureCheckpointShop(current, out message))
                     return false;
 
-                if (shopsByCatalog.TryGetValue(current.catalogId, out TowerRunShopRecord cached) &&
-                    ContainsUnknownCachedProduct(cached, current))
+                if (shopsByCatalog.TryGetValue(current.catalogId, out TowerRunShopRecord cached))
                 {
-                    message = $"商店 {current.catalogId} 的旧库存包含当前目录无法解析的 ProductId。";
-                    return false;
+                    if (current.stockVersion > 0 || cached.stockVersion != 0)
+                    {
+                        if (!shop.TryValidateCheckpointShop(cached, out message)) return false;
+                    }
+                    else if (ContainsUnknownCachedProduct(cached, current))
+                    {
+                        message = $"商店 {current.catalogId} 的旧库存包含当前目录无法解析的 ProductId。";
+                        return false;
+                    }
                 }
 
                 shopsByCatalog[current.catalogId] = current;
@@ -188,7 +194,12 @@ public static class TowerRunRuntimeStateBridge
                     return false;
                 }
 
-                TowerRunShopRecord captured = new TowerRunShopRecord { catalogId = shop.catalogId };
+                if (shop.stockVersion < 0)
+                {
+                    message = "商店库存版本不能为负数。";
+                    return false;
+                }
+                TowerRunShopRecord captured = new TowerRunShopRecord { catalogId = shop.catalogId, stockVersion = shop.stockVersion };
                 HashSet<string> productIds = new HashSet<string>(StringComparer.Ordinal);
 
                 if (shop.productStocks != null)
@@ -252,7 +263,7 @@ public static class TowerRunRuntimeStateBridge
                 TowerRunShopRecord shop = shops[i];
 
                 if (shop == null || string.IsNullOrWhiteSpace(shop.catalogId) ||
-                    result.ContainsKey(shop.catalogId))
+                    result.ContainsKey(shop.catalogId) || shop.stockVersion < 0)
                 {
                     message = "恢复记录包含缺失或重复的 CatalogId。";
                     return null;
@@ -332,7 +343,7 @@ public static class TowerRunRuntimeStateBridge
         for (int i = 0; i < record.player.shops.Count; i++)
         {
             TowerRunShopRecord source = record.player.shops[i];
-            GameSaveShopData shop = new GameSaveShopData { catalogId = source.catalogId };
+            GameSaveShopData shop = new GameSaveShopData { catalogId = source.catalogId, stockVersion = source.stockVersion };
 
             for (int j = 0; j < source.productStocks.Count; j++)
             {

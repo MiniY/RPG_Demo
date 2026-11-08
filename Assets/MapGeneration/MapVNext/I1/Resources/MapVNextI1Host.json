@@ -1,16 +1,17 @@
 {
-  "schema": 2,
+  "schema": 3,
+  "previousCurrentContentVersion": "content-r1:a4d222a9bf0aa3952ea231ed097e746a6348ff2e571a7a193ea7a61a55f4daac",
   "startupTargets": [
     "DEFAULT",
     "I1_PRIVATE"
   ],
-  "buildId": "reward-pickup-standalone-20261108-rpd1",
-  "implementationDigest": "aa632904f7416aa8ff4e9a3a59d2ec843748ca3159ec2c7e249914f175641acb",
+  "buildId": "reward-main-sync-20261108-ms1",
+  "implementationDigest": "f3c6b42714e5d48814662f2d6f3301e0dd7769c6e3b920753d038ea9a76c759f",
   "oldContentVersion": "content-r1:c55fb3b4b0362e8bb59e84f4624fbb22c2f9ef96f3dcd5f61481a92dab9c9802",
-  "newContentVersion": "content-r1:a4d222a9bf0aa3952ea231ed097e746a6348ff2e571a7a193ea7a61a55f4daac",
-  "closureSha256": "363384b8e6cb9aa2b0764ca28b4f9c8b7bbfdbdc900b1b86b811bbe71a526115",
-  "reviewEvidenceSha256": "b5d622093f9470c6cadf4c8a3f17bb11898eeb6c0a9fa3f02fc9b916ad580cf6",
-  "stampSha256": "75702c549d80a553ba516e9c2d591e3046c343fc8fd01ddca8cc2a16973476b9",
+  "newContentVersion": "content-r1:40e66c55cdbcb0505de387e5c495f7472a5d12f23f855b41fa5c41c34d8fcdc2",
+  "closureSha256": "4421f98999529dc9f830693c4ab82a3c56815bcda75a8e5339548fec956eb1bb",
+  "reviewEvidenceSha256": "15e0d685d083a62ef1fcf9bc0036047106efb15dec6a2bf1cc3e1c221b475754",
+  "stampSha256": "9c89042ec4168200207d06b292a47fdadac4c298e14c1329a8f16298a58466c4",
   "files": [
     {
       "path": "Assets/Animations/MerchantSign/MerchanSignFloating.anim",
@@ -193,6 +194,22 @@
       "sha256": "bc3120953732fbd2548c81e7178bfa3468b9e6dada2491d2cd005179e89035fe"
     },
     {
+      "path": "Assets/Editor/MapVNext/MapHostDevelopmentProbe.cs",
+      "sha256": "954a12dc1d47c261cdd6b5cfb80e664ad2a39f52fa533ed8b4033aee8846fa74"
+    },
+    {
+      "path": "Assets/Editor/MapVNext/MapHostDevelopmentProbe.cs.meta",
+      "sha256": "da63eb0a628fb9077785c5958503ec0bc3d8ba11b1931e7fefd9916daeac2204"
+    },
+    {
+      "path": "Assets/Editor/MapVNext/MapHostSourceVerificationEditor.cs",
+      "sha256": "eb3070ac89456756bc2eb656c2ec45691593c8369885cdeba1e98e9a906c6dc6"
+    },
+    {
+      "path": "Assets/Editor/MapVNext/MapHostSourceVerificationEditor.cs.meta",
+      "sha256": "425b0bde5335a4098c979bbc8403010d110bb2f467c22aa21cf2fabc48bf3412"
+    },
+    {
       "path": "Assets/Editor/MapVNext/MapVNextBuild.cs",
       "sha256": "b03016b696fb4a459aa6ee141eb2388a779e0459d441d8ca44da5f828c4b2f9e"
     },
@@ -210,7 +227,7 @@
     },
     {
       "path": "Assets/Editor/MapVNext/MapVNextI1Build.cs",
-      "sha256": "985690236584df70a5d37385f6b90e2f8b8fe5afacabad7bab45342f5c02bab8"
+      "sha256": "54f51d5df11b905d1d125576722a9f995cd159d5c14ceb444aa6f86c72661518"
     },
     {
       "path": "Assets/Editor/MapVNext/MapVNextI1Build.cs.meta",
@@ -247,6 +264,46 @@
     {
       "path": "Assets/Editor/TinySwordsEnemyPack/TinySwordsEnemyPackBuild.cs.meta",
       "sha256": "d43068ded9d52412ca14f3b975e94d4a066586f033c4b54ee1965aa7a80b152e"
+    },
+    {
+      "path": "Assets/Editor/UIArchitecture/UIArchitectureChecks.cs",
+      "sha256": "50c84c58beaa9fe0c0413b9b521a0e4c73f741a8df38194590976af7dcdb9987"
+    },
+    {
+      "path": "Assets/Editor/UIArchitecture/UIArchitectureChecks.cs.meta",
+      "sha256": "f88ec69b29192d367495942796f1fb5ad1e70078e097c23a00e1ad10fdade8eb"
+    },
+    {
+      "path": "Assets/Editor/UIArchitecture/UIEditorAuthoringMigration.cs",
+      "sha256": "77ee560fd38e0705875344f56ce14de6c3bca38aa412aeeea9ce10b96aef7762"
+    },
+    {
+      "path": "Assets/Editor/UIArchitecture/UIEditorAuthoringMigration.cs.meta",
+      "sha256": "315b48f4297af4a59856c7f9e95628de2ad376a1270b7f2622c3bb4963910a38"
+    },
+    {
+      "path": "Assets/Editor/UIArchitecture/UIManagementWindow.cs",
+      "sha256": "8f6beeef205b0fa4a7387efe88669950dda4d21fd26c75edb90d215e222ba2bf"
+    },
+    {
+      "path": "Assets/Editor/UIArchitecture/UIManagementWindow.cs.meta",
+      "sha256": "56e358734eeb85ea014c5d27f34865502ab30b1bc0060da6a0f8b697163d8649"
+    },
+    {
+      "path": "Assets/Editor/UIArchitecture/UIPageAuthoringChecks.cs",
+      "sha256": "f024a0c653cdb55a0c94f4757a85a8545fcb8795ff1e4e358024d97e87cabe8d"
+    },
+    {
+      "path": "Assets/Editor/UIArchitecture/UIPageAuthoringChecks.cs.meta",
+      "sha256": "7518894dbe34397129a999b38efa21ca69521dfaef353d7e4c097d2596eda930"
+    },
+    {
+      "path": "Assets/Editor/UIArchitecture/UIRootEditor.cs",
+      "sha256": "5d83c75f7327a4a1741d8f506d1060dfb3f4d1b194252d7f1cd41e2768b4d67e"
+    },
+    {
+      "path": "Assets/Editor/UIArchitecture/UIRootEditor.cs.meta",
+      "sha256": "cce1472d368d0bc2b57a4a6d7fb625b42dc59b1bfa4db312182d285a51681877"
     },
     {
       "path": "Assets/Effects/BlackHolePortal/Editor/BlackHolePortalAssetBuilder.cs",
@@ -325,6 +382,14 @@
       "sha256": "e20bcb79a3a12b93c1f1b14888e680af886d0f78926624623fad180d045a092b"
     },
     {
+      "path": "Assets/MapGeneration/MapVNext/I1/Recipe_GroundConnectivityV1.asset",
+      "sha256": "30714fcc16ad4f0cb062406bcbe640da34167e0ffabb63e2a9f5b8042b0e9cfe"
+    },
+    {
+      "path": "Assets/MapGeneration/MapVNext/I1/Recipe_GroundConnectivityV1.asset.meta",
+      "sha256": "ded7feb03c1f07e545f55b1e7d7b9988c73e5c9202c3241646d4a31253e82d3c"
+    },
+    {
       "path": "Assets/MapGeneration/MapVNext/I1/Recipe_MyTMPV1.asset",
       "sha256": "5ab095f2afda1aeef800ab81da4f6d4b9a006d88c8e906503bd9d1fb312dccbc"
     },
@@ -343,6 +408,14 @@
     {
       "path": "Assets/MapGeneration/MapVNext/I1/Resources/CandidateContent_I1.json.meta",
       "sha256": "f4283f77724b28cbfbbc5c3a67fc7238852eb5087a4a1f959b65b3ceb7e87663"
+    },
+    {
+      "path": "Assets/MapGeneration/MapVNext/I1/Resources/CandidateContent_I1_GroundConnectivityV1.json",
+      "sha256": "40e66c55cdbcb0505de387e5c495f7472a5d12f23f855b41fa5c41c34d8fcdc2"
+    },
+    {
+      "path": "Assets/MapGeneration/MapVNext/I1/Resources/CandidateContent_I1_GroundConnectivityV1.json.meta",
+      "sha256": "52f178f45ba943a0b4a740d73b9976f1de3a90b5793efa36b685d42906739510"
     },
     {
       "path": "Assets/MapGeneration/MapVNext/I1/Resources/CandidateContent_I1_MyTMPV1.json",
@@ -367,6 +440,14 @@
     {
       "path": "Assets/MapGeneration/MapVNext/I1/Terrain.asset.meta",
       "sha256": "10210bde3014ab6cb2ec00fa817b6cf1247a5382cefd408d27761c68dc50b9c5"
+    },
+    {
+      "path": "Assets/MapGeneration/MapVNext/I1/Terrain_GroundConnectivityV1.asset",
+      "sha256": "b813a3cac1f225084dcab07539086ac8c18505d2f74da00250754d17a7e28f50"
+    },
+    {
+      "path": "Assets/MapGeneration/MapVNext/I1/Terrain_GroundConnectivityV1.asset.meta",
+      "sha256": "4e39815d9c9a448074c67c97b050eebb375342de19646f50ff33505a40d482db"
     },
     {
       "path": "Assets/MapGeneration/MapVNext/MapVNextAssets.asset",
@@ -426,11 +507,11 @@
     },
     {
       "path": "Assets/Prefabs/Rewards/PlantCream_Big.prefab",
-      "sha256": "95b63515c5144b9357228ad97ace89b2b10b87e727bd49af19ea560f3560b4de"
+      "sha256": "0e79390096bcdc85d58c3d0e016f57cb76a8ebd163a9d734667c81f591cc49af"
     },
     {
       "path": "Assets/Prefabs/Rewards/PlantCream_Small.prefab",
-      "sha256": "9f70a0372096d3bd2661f2f3ff5547d24761988c36c04114e176bbbae7ca3e08"
+      "sha256": "fac50422b0ddc584f3317563eaff34fe9308e2b036e4370872b9e0f9462bfc67"
     },
     {
       "path": "Assets/Prefabs/UI/ShopSlot.prefab",
@@ -470,7 +551,7 @@
     },
     {
       "path": "Assets/Scenes/MapVNext/I1/I1Game.unity",
-      "sha256": "dcaf32798da15a67d47828627609126cea05a9058c3eb3c9d860739bc303fc08"
+      "sha256": "ade01e9aa75178175e3bb5cbf33608d5ce423f6bf0c6251ff57c0d7c4f40e432"
     },
     {
       "path": "Assets/Scenes/MapVNext/I1/I1Game.unity.meta",
@@ -521,8 +602,16 @@
       "sha256": "3160ec2d63c9ad8d6dda7c17b6541c29e85fcc8cca07433840c35619ece79b56"
     },
     {
+      "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.FoodShop.cs",
+      "sha256": "4b811fbf87ad5eaf8f937dbf03f50382dc9fed00813b9d95393d6210b89ceeb1"
+    },
+    {
+      "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.FoodShop.cs.meta",
+      "sha256": "b84b77404e511f9afabf3d6ff969fcb314208cbaaa3da3fdd37a4beb77be268a"
+    },
+    {
       "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Formal.cs",
-      "sha256": "98205d28ff34c7c13e2ae1232c624601700fcc5bed1824f4f42cb5db87f35cd8"
+      "sha256": "06f3c61db56b683995ea5fd6486e2aa5310853db747ea5601324a873e5d43618"
     },
     {
       "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Formal.cs.meta",
@@ -530,7 +619,7 @@
     },
     {
       "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Input.cs",
-      "sha256": "8e34178cc186a35118af83e4a34350fcad41bb58e3f07e3c90e26b46987808b5"
+      "sha256": "bb3d258102579bc840f42c9aadbe2c2410142bb8438081f321bf405a3c06e584"
     },
     {
       "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Input.cs.meta",
@@ -546,7 +635,7 @@
     },
     {
       "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Shop.cs",
-      "sha256": "794efe7a02fae2325abc9715eb810aac3efcde404f6c2f2fb47ecfb492c10366"
+      "sha256": "4d72725ed33e7b644cda2073de566e6e1d8e695156a42166f4ad06ffd85f9599"
     },
     {
       "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.Shop.cs.meta",
@@ -562,7 +651,7 @@
     },
     {
       "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.cs",
-      "sha256": "ecaaa4d748e3694c3c589c55768e51202c63d516dcbc173962ba685185274f76"
+      "sha256": "c91995a2f35c3a137d93638672b6f476ceaca4a8c918f314e897e2e1b689772c"
     },
     {
       "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Acceptance.cs.meta",
@@ -578,7 +667,7 @@
     },
     {
       "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Bootstrap.cs",
-      "sha256": "edd4fc591df365e2be80ea05dfa0eff441725be847e991399eac5a941a7c7604"
+      "sha256": "45ca12aded73bd66d1db0b0b43232cda24f1187b1e097e42cc60ed7dd49aeb33"
     },
     {
       "path": "Assets/Scenes/MapVNext/I1/Runtime/MapVNextI1Bootstrap.cs.meta",
@@ -610,7 +699,7 @@
     },
     {
       "path": "Assets/Scenes/SampleScene.unity",
-      "sha256": "9007a06addd28a20880037ecdb6a89924e7d377e57dcc5435f87ccc8a9cbfa41"
+      "sha256": "653ce16fb382d92d7c4f3eca885bfcff52d6428a7ef5dbe98403dab6fda1ec59"
     },
     {
       "path": "Assets/ScriptObjects/RewardSOs/Gold.asset",
@@ -622,7 +711,7 @@
     },
     {
       "path": "Assets/ScriptObjects/RewardSOs/Meat.asset",
-      "sha256": "7a275c8cce6a6e4bef8c64505f5a190b37125418dd5aecb3553e1460c28d3f46"
+      "sha256": "5926d3bb01daf97c06d2a109f4dd7f1fedae3b638efc219b2553cc3a9d83c2cc"
     },
     {
       "path": "Assets/ScriptObjects/RewardSOs/Meat.asset.meta",
@@ -630,15 +719,15 @@
     },
     {
       "path": "Assets/ScriptObjects/RewardSOs/PlantCream_Big.asset",
-      "sha256": "b1554682d773f1fda40dfd188f90bbbfd9a33643b736265f80a3546ac072c817"
+      "sha256": "1ed46292e8e2f1d6a1f396b6a9846ddbad57ef59990a2289c99e93a534d65616"
     },
     {
       "path": "Assets/ScriptObjects/RewardSOs/PlantCream_Small.asset",
-      "sha256": "56d5776bcdbbbbcb292824fd9467c7f4b023fffc090e7ab1d247a1e0f4433990"
+      "sha256": "76ed4f82ba727c2958f3a53a75d9c2148dccd77df4d19d963a4d410a3c4aa8f3"
     },
     {
       "path": "Assets/ScriptObjects/Shop/ShopCatalog_Merchant.asset",
-      "sha256": "0c267a3ba8262ffe5e74fc1ee5b6836d0cba46ec92a1e168ce406636c9d0ea9a"
+      "sha256": "3d44b031399112e4862884fc572c3701c12731714503b3fa5e898494baec81ee"
     },
     {
       "path": "Assets/ScriptObjects/Shop/ShopCatalog_Merchant.asset.meta",
@@ -862,7 +951,7 @@
     },
     {
       "path": "Assets/Scripts/GameSaveService.cs",
-      "sha256": "104615f24271f1538e9a383317790b53613de61d72367050e1c0536232b38c03"
+      "sha256": "c861c8795be1f8a44c4fbb372886f3b13ca58e8b0d4b2ed2a1f787acfa4c35e2"
     },
     {
       "path": "Assets/Scripts/GameSaveService.cs.meta",
@@ -870,7 +959,7 @@
     },
     {
       "path": "Assets/Scripts/GameSession.cs",
-      "sha256": "6e25cdaa88de415d7b3143d6f9c60ed8eed3a6bf0fd791e1a244e8c5946127d7"
+      "sha256": "f90000011f1692cbac8ad472366857ae90be11a69bfb825c826e1f1c200ac2cd"
     },
     {
       "path": "Assets/Scripts/GameSession.cs.meta",
@@ -1110,7 +1199,7 @@
     },
     {
       "path": "Assets/Scripts/MapGeneration/Ecology/EcologyRecipeDefinition.cs",
-      "sha256": "6d64a8a9778f61af4c4de1b3ee29978a9453ed0c6f8286b286893a2f657ac076"
+      "sha256": "dab3b011905a080c16f3cd4b1f11557d2f6a6960e9e949aab6a8939686e61470"
     },
     {
       "path": "Assets/Scripts/MapGeneration/Ecology/EcologyRecipeDefinition.cs.meta",
@@ -1126,7 +1215,7 @@
     },
     {
       "path": "Assets/Scripts/MapGeneration/Ecology/EcologyRetainedContentManifest.cs",
-      "sha256": "c6c01b4f799df7feea9555bb312a47f62ed0cd2c9f078a823ff007e4a3171fdd"
+      "sha256": "df5d17555cc8267a4df6095d5ebfbed12573ac69338ff4e836eb8ab71b0ac176"
     },
     {
       "path": "Assets/Scripts/MapGeneration/Ecology/EcologyRetainedContentManifest.cs.meta",
@@ -1366,7 +1455,7 @@
     },
     {
       "path": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
-      "sha256": "eb10c361840c223c776cf056924a65043ced8a9c5841604559fc62bbbebb9bce"
+      "sha256": "8d773535c0225dd929edb8c0f3b7c6be46df5a0e48c26771269038dbdd374d16"
     },
     {
       "path": "Assets/Scripts/MapGeneration/MapGenerationController.cs.meta",
@@ -1614,7 +1703,7 @@
     },
     {
       "path": "Assets/Scripts/MapGeneration/MerchantPlacementService.cs",
-      "sha256": "6d2c55b34fe438d32c5e4c1dfcf6e66cd3fab7fc1d3e7f8927289cd8558d7d93"
+      "sha256": "650dd172ee975d520f6245012581df38a59a048b57828a48646e68fbaa3ba1df"
     },
     {
       "path": "Assets/Scripts/MapGeneration/MerchantPlacementService.cs.meta",
@@ -1766,7 +1855,7 @@
     },
     {
       "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapCandidateCollisionGeometry.Rewards.cs",
-      "sha256": "3d988d3f1fbbd252f58cf3da63146886645bb2f056416fe984b606abb2da3547"
+      "sha256": "bbafc9e3e43931e6352f28f6aaa0561f136c335644a3b67c02c14007c33f9ba4"
     },
     {
       "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapCandidateCollisionGeometry.Rewards.cs.meta",
@@ -1782,7 +1871,7 @@
     },
     {
       "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapGroundFootprint.cs",
-      "sha256": "b10a1bb4b15fd225a5121b825c1a842a8363411399123ac8971684fd3549aeb1"
+      "sha256": "0599ef5cbae7bd4d6314c973b9dd08825c7b7d925c0bde04848a5ee336050111"
     },
     {
       "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapGroundFootprint.cs.meta",
@@ -1794,7 +1883,7 @@
     },
     {
       "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapHostCompatibility.cs",
-      "sha256": "cdb8a9a4223b8d49a2b14da48fc266e197bde72c9b2212ab5dd1dac506c19dea"
+      "sha256": "5f0d20417a2123997b97d5b57137435f6154da7f1b3abddbdf060fdbc637fed8"
     },
     {
       "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapHostCompatibility.cs.meta",
@@ -1810,7 +1899,7 @@
     },
     {
       "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapSpatialActor.cs",
-      "sha256": "28b69d56913ae93075e74022b9ad607a1bcdef2ec90519c054ef214b6734b91d"
+      "sha256": "b8560bc12de655d266f633885ba878a1cff9a83258c093e4ba5016c35a91182e"
     },
     {
       "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapSpatialActor.cs.meta",
@@ -1842,7 +1931,7 @@
     },
     {
       "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapSpatialPlacement.Planning.cs",
-      "sha256": "98c058d890372648d762f7fde23641c4118a1d559b961118f59a1a32a4731395"
+      "sha256": "d59dd8806217774cd447dd8d899d417e48cccc303258db0c2e5d51059fd9fd19"
     },
     {
       "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapSpatialPlacement.Planning.cs.meta",
@@ -1850,7 +1939,7 @@
     },
     {
       "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapSpatialRewardPlacement.cs",
-      "sha256": "6ade9879d4f56143a8f7146e967a26b561229cd5a4e6c550ef49134eed6d5506"
+      "sha256": "ea987c922ba042301c279ea199d828546978eff181109f927d0e9bae8388868e"
     },
     {
       "path": "Assets/Scripts/MapGeneration/SpatialVersion/MapSpatialRewardPlacement.cs.meta",
@@ -1954,7 +2043,7 @@
     },
     {
       "path": "Assets/Scripts/MapGeneration/VNext/MapVNextFormalTerrain.cs",
-      "sha256": "a7bbe59ec19874bb06b2da99f64b6e36efa4ec458316b649c3b7e8bc369d0ba2"
+      "sha256": "4969d9f78ac98327701be0ec51a8c345737568d42f421fa695b44142ada93cd5"
     },
     {
       "path": "Assets/Scripts/MapGeneration/VNext/MapVNextFormalTerrain.cs.meta",
@@ -1970,7 +2059,7 @@
     },
     {
       "path": "Assets/Scripts/MapGeneration/VNext/MapVNextRandomLayout.Formal.cs",
-      "sha256": "377b9c740c1055ebe89be35b4b7f1ad81dc511624c3f3772608eb3bdfab55534"
+      "sha256": "6a3723e8e2fa6f0ab8db134051e22c58322f447630c2cea21007529d2a2efc6f"
     },
     {
       "path": "Assets/Scripts/MapGeneration/VNext/MapVNextRandomLayout.Formal.cs.meta",
@@ -2034,7 +2123,7 @@
     },
     {
       "path": "Assets/Scripts/Player/PlayerAction.cs",
-      "sha256": "03993f114f9883f9054ce14872e9a235ca48abfe4444f5a09638040d368b9599"
+      "sha256": "466c9cf7f6ab016fe001da83fda52a7b7eaafe99d53c9d0a6a5cb2b71ae6d905"
     },
     {
       "path": "Assets/Scripts/Player/PlayerAction.cs.meta",
@@ -2082,7 +2171,7 @@
     },
     {
       "path": "Assets/Scripts/PlayerInventory.cs",
-      "sha256": "e41cd003593c2cec29f03cbf000f67cfcc8f32cb1a313b2ae5a7aae53b1e2fd7"
+      "sha256": "f71828d69af73e39be74fdf35466a872898d9d92dac19c3db93046202c8fc372"
     },
     {
       "path": "Assets/Scripts/PlayerInventory.cs.meta",
@@ -2090,7 +2179,7 @@
     },
     {
       "path": "Assets/Scripts/PlayerProgressionService.cs",
-      "sha256": "f478055d830a6d48fc307cce3c5f20bd5bd3ffb6376c7967271e70e8e03991f3"
+      "sha256": "c469c004e121970b3020c0d8b154cae5bb5f3ba43bcdb3ec2fa3c87a6113e5ab"
     },
     {
       "path": "Assets/Scripts/PlayerProgressionService.cs.meta",
@@ -2102,7 +2191,7 @@
     },
     {
       "path": "Assets/Scripts/PlayerRewardService.cs.meta",
-      "sha256": "01e0b31ce1595981df1ac1cc04cd13a222e45d0629170fd1d24ce1847c5865b7"
+      "sha256": "0ab0deb8f4f556344212e70bab32b3a481165588c0244a7a5960a55928e8a870"
     },
     {
       "path": "Assets/Scripts/PlayerStaminaController.cs",
@@ -2114,7 +2203,7 @@
     },
     {
       "path": "Assets/Scripts/PlayerStatsRuntime.cs",
-      "sha256": "7a9717e4475df6ffd65462561fa6d93dee9a5158d914b3a25f946a79c9e280b8"
+      "sha256": "91b24ec4e2d307af6c2c226ad8c9173a62d4cd14b7ba3f7727c359ad992d2e65"
     },
     {
       "path": "Assets/Scripts/PlayerStatsRuntime.cs.meta",
@@ -2142,7 +2231,7 @@
     },
     {
       "path": "Assets/Scripts/RewardPickupResult.cs.meta",
-      "sha256": "7a7d1fa30b9c2a8251bfacb5f8af49c9b4d7146a515df045996417c69d8a6c83"
+      "sha256": "a0434da938aec77228ea42546b98be50afc1677b33d5808304b727359f107f88"
     },
     {
       "path": "Assets/Scripts/RewardVisualController.cs",
@@ -2178,7 +2267,7 @@
     },
     {
       "path": "Assets/Scripts/ScriptableObject/RewardSO.cs",
-      "sha256": "b1539278ba9cd746d5260ade43c94937dd735b9f0d1076aa9d8bd937b34328f3"
+      "sha256": "ab25c5d847fb5f0927803eb10b3ab068a1b5193f683580eca689dc2a7f9d2c27"
     },
     {
       "path": "Assets/Scripts/ScriptableObject/RewardSO.cs.meta",
@@ -2186,7 +2275,7 @@
     },
     {
       "path": "Assets/Scripts/Shop/ShopCatalogSO.cs",
-      "sha256": "d13b578fe9c226a0492d789a6e4a26e4f03b2af332499042c9e38518f1694bbd"
+      "sha256": "62afcbd1eeffc108b493395b1b84444ebb884533ce759260232208166cb0e287"
     },
     {
       "path": "Assets/Scripts/Shop/ShopCatalogSO.cs.meta",
@@ -2194,7 +2283,7 @@
     },
     {
       "path": "Assets/Scripts/Shop/ShopTradeController.cs",
-      "sha256": "cfbe5788a3aabde01bc7911176d393ca2a2bf58964ad777b3e4aa4813261c8a0"
+      "sha256": "f4def17a5f856975e02f7a30bf8907b5ccf6f9e729f87a9b9377733a03fd0d04"
     },
     {
       "path": "Assets/Scripts/Shop/ShopTradeController.cs.meta",
@@ -2226,7 +2315,7 @@
     },
     {
       "path": "Assets/Scripts/TowerRun/TowerRunCheckpointRecord.cs",
-      "sha256": "3bc8ef1245988d51e3bd44c4e755e9346821d593c5874c99c536b4023a8d504c"
+      "sha256": "d8772e9f74ad46fb3de4b97d3eaa5e91687225ed0e1ff62e0f0e3f024d1015ae"
     },
     {
       "path": "Assets/Scripts/TowerRun/TowerRunCheckpointRecord.cs.meta",
@@ -2234,7 +2323,7 @@
     },
     {
       "path": "Assets/Scripts/TowerRun/TowerRunGate.cs",
-      "sha256": "9a456672e46a31e52db4b21f08fb4545b4f85126e1bbaf5d9fcf7801d010c362"
+      "sha256": "deb4a845db56689fd6fe518a7dce07977061764b2a37d920113a7ffc78a5287f"
     },
     {
       "path": "Assets/Scripts/TowerRun/TowerRunGate.cs.meta",
@@ -2266,7 +2355,7 @@
     },
     {
       "path": "Assets/Scripts/TowerRunCoordinator.cs",
-      "sha256": "8de3a3bae3ed6cdb3742a3bd9c36f7faf130d9863df26ec23c20f8ba2cd7f1a6"
+      "sha256": "e293c88d5e03a1f55543952ab2dd9484008bd23078222b90b37fd759ec47ea61"
     },
     {
       "path": "Assets/Scripts/TowerRunCoordinator.cs.meta",
@@ -2274,7 +2363,7 @@
     },
     {
       "path": "Assets/Scripts/TowerRunGateHub.cs",
-      "sha256": "6162ecdf509c05ecee30c01062d0f775ed44431dbf2dd4fb030f58a18eabef24"
+      "sha256": "b61411c72886d0eb3b9fbab8f91601e1e6d34c5dc7e900688fc7e802def29e67"
     },
     {
       "path": "Assets/Scripts/TowerRunGateHub.cs.meta",
@@ -2290,7 +2379,7 @@
     },
     {
       "path": "Assets/Scripts/TowerRunRuntimeStateBridge.cs",
-      "sha256": "1c07b39d7d9c0b8599bdb2870544378a7317ecfb87282c95c80fedc5d7c327ea"
+      "sha256": "0f8760c512884e64612917f48757b3861a382c8167450577a5894d6fa199e2ef"
     },
     {
       "path": "Assets/Scripts/TowerRunRuntimeStateBridge.cs.meta",
@@ -2313,8 +2402,32 @@
       "sha256": "baf2c3e50932e172ac72495ba11cb32ec9299009e78b317cf33e711674142f57"
     },
     {
+      "path": "Assets/Scripts/UI/Diagnostics/MapVNextI1Acceptance.UIArchitecture.cs",
+      "sha256": "dc6ea6b4c348a219c36299e166ff1b1171c6cbe395aaaa7c34708fcf3373f0fd"
+    },
+    {
+      "path": "Assets/Scripts/UI/Diagnostics/MapVNextI1Acceptance.UIArchitecture.cs.meta",
+      "sha256": "b944bae9b5dbb5d3956091d42ff23b1d7962b217a7a563716309ab39bf8218bd"
+    },
+    {
+      "path": "Assets/Scripts/UI/Diagnostics/MapVNextI1Acceptance.UIPerformance.cs",
+      "sha256": "5019b73d6832efcd1dd11e6b2914861f754d6ddf4938e786a1ff5cff16ab9000"
+    },
+    {
+      "path": "Assets/Scripts/UI/Diagnostics/MapVNextI1Acceptance.UIPerformance.cs.meta",
+      "sha256": "8c52e38c52f43cb93700b6cd0f5d84344262180a2d2f472c935bf7b560b79065"
+    },
+    {
+      "path": "Assets/Scripts/UI/FlowUIPage.cs",
+      "sha256": "24260c940342c1cc54f587d18d43f7612fbc7d200c62810ee95b737c5a1b8782"
+    },
+    {
+      "path": "Assets/Scripts/UI/FlowUIPage.cs.meta",
+      "sha256": "e01cf2aa60567a841c5491234bf0b79f9a612bf57352d7f97ff0d8af16ff1dbc"
+    },
+    {
       "path": "Assets/Scripts/UI/PackageGridUI.cs",
-      "sha256": "4a40ae512da2e8a5679aa2b7bfd640a41f5cd39b8f2064822c466cdcd30542db"
+      "sha256": "d90f8fe8d7d1e3caa576021a782465da4d1dd0019d4de68e8dc53d140ef5aa78"
     },
     {
       "path": "Assets/Scripts/UI/PackageGridUI.cs.meta",
@@ -2330,7 +2443,7 @@
     },
     {
       "path": "Assets/Scripts/UI/PackagePanelController.cs",
-      "sha256": "a7824d988b2667b64b973b73a0e580ca27d250ff836b9749286cb0e29f75f482"
+      "sha256": "f11861c2ba49e186f9573b98701c169b637127289eab14817c975c1b03a31337"
     },
     {
       "path": "Assets/Scripts/UI/PackagePanelController.cs.meta",
@@ -2346,11 +2459,19 @@
     },
     {
       "path": "Assets/Scripts/UI/PackageSlotUI.cs",
-      "sha256": "4542cc6668ca088429ffc2cc1538f52d1a0fe82df5f2834dac6265c08e451212"
+      "sha256": "5db7642a3a18e1375ff5b8c5c1e4eb0a05b9754bda14f257b16ab6c6bc055bf7"
     },
     {
       "path": "Assets/Scripts/UI/PackageSlotUI.cs.meta",
       "sha256": "aea988ccc2d3a80d5e296f0c8950f1b4968a7b2bf12b8204437d086d53e15271"
+    },
+    {
+      "path": "Assets/Scripts/UI/PackageUIPage.cs",
+      "sha256": "eefefe3e0f8a13551e14a1a43bad847665ceeb0d6baab81485cc4538ecdcf884"
+    },
+    {
+      "path": "Assets/Scripts/UI/PackageUIPage.cs.meta",
+      "sha256": "5a18babde834def81615435b191e077f3d61858c374ee41ba40a6494b7f5b240"
     },
     {
       "path": "Assets/Scripts/UI/PlayerStatsUpgradeUI.cs",
@@ -2369,8 +2490,16 @@
       "sha256": "d7d38f424359c75dc5186ef0c30a48714a5009e3ca492ca7e1997bdbdb2ae27c"
     },
     {
+      "path": "Assets/Scripts/UI/SettingsUIPage.cs",
+      "sha256": "0aa39a4ece74b1b04f9260470b143f45b35753865aeb2632d4ce04a4439f534f"
+    },
+    {
+      "path": "Assets/Scripts/UI/SettingsUIPage.cs.meta",
+      "sha256": "16ed123531f00ae87983c047a8fa3c7f903d87c4a37a4e86c0cb39357a4a0d8e"
+    },
+    {
       "path": "Assets/Scripts/UI/Shop/ShopDetailsUI.cs",
-      "sha256": "2f0e430a2860ae4c27bc914a7054bf6d90521eff55fd10e6356752b15e46f999"
+      "sha256": "1f3aca89ef1ecdaac50157d6c9586ecaf675d60e91606771b3b62a33e40f166b"
     },
     {
       "path": "Assets/Scripts/UI/Shop/ShopDetailsUI.cs.meta",
@@ -2378,7 +2507,7 @@
     },
     {
       "path": "Assets/Scripts/UI/Shop/ShopGridUI.cs",
-      "sha256": "651984c687359be4e77ffe42ab0b58194e893297d1425f8ef73bd2648efdc708"
+      "sha256": "d965f8e680b872eb3ac2bd6fcb02ec8826b622e84f1cfc6f5d62e7ff9d7208e8"
     },
     {
       "path": "Assets/Scripts/UI/Shop/ShopGridUI.cs.meta",
@@ -2386,7 +2515,7 @@
     },
     {
       "path": "Assets/Scripts/UI/Shop/ShopMerchantPresentationUI.cs",
-      "sha256": "4bb519253ca5d61286e515d21881dbb913286bdad547d45f3482b7dfd084991b"
+      "sha256": "72b234aa95a015345713c39432119e256415ac6ce382c771f2f52b4d4d8002b4"
     },
     {
       "path": "Assets/Scripts/UI/Shop/ShopMerchantPresentationUI.cs.meta",
@@ -2402,7 +2531,7 @@
     },
     {
       "path": "Assets/Scripts/UI/Shop/ShopPanelController.cs",
-      "sha256": "faeb7507e6a04770f765b6102eb2fbd9076621ff470d73c258e018195e68a027"
+      "sha256": "9d54fceaf1edc1db48e76e5707a773fe556d05ace30f10dbd86eb652d898bb52"
     },
     {
       "path": "Assets/Scripts/UI/Shop/ShopPanelController.cs.meta",
@@ -2417,8 +2546,16 @@
       "sha256": "e60ab0c0a228774b9f88f75d21bb80fd334a6f06b9002ff5315ffd7d91f7b241"
     },
     {
+      "path": "Assets/Scripts/UI/Shop/ShopPresenter.cs",
+      "sha256": "6fb2686d0692ceb31c7e05fc69575726c3443b059d42b9df53fa48801b71c920"
+    },
+    {
+      "path": "Assets/Scripts/UI/Shop/ShopPresenter.cs.meta",
+      "sha256": "0a43a33f8fe56b33cb4f85d28c0f6b5dbc5e8111d1f78a642913afb686b8b86e"
+    },
+    {
       "path": "Assets/Scripts/UI/Shop/ShopPurchaseFlyEffect.cs",
-      "sha256": "782d4d4829e26c90357baf0d8517ec935e3c2debe28e9253668253cc70b97357"
+      "sha256": "7dcf10b5ac541ad84e14fab4ce7c6ef584f382bef9acb82e993463fc9bdcf22a"
     },
     {
       "path": "Assets/Scripts/UI/Shop/ShopPurchaseFlyEffect.cs.meta",
@@ -2426,23 +2563,55 @@
     },
     {
       "path": "Assets/Scripts/UI/Shop/ShopSlotUI.cs",
-      "sha256": "95c719610d87696c1c0e19c4279272713e82f5bd7302a6239fa6ae1914d8af42"
+      "sha256": "f9d1bf2d5408e242af6eab14fb8ab120c944bf967c98deddc416b78f8cdebfc2"
     },
     {
       "path": "Assets/Scripts/UI/Shop/ShopSlotUI.cs.meta",
       "sha256": "61fec1cccb1225c3325d76c309a5478f55bdae653c0e450c7137b3463f8617aa"
     },
     {
+      "path": "Assets/Scripts/UI/Shop/ShopUIPage.cs",
+      "sha256": "03e1d7acaf0ad1bd00e43354ae7fcb23bd7363486d372c34276a824cb6c4b436"
+    },
+    {
+      "path": "Assets/Scripts/UI/Shop/ShopUIPage.cs.meta",
+      "sha256": "f20ba2025332e4a2bcf3b42889af9054ff214e0f79d0cbccd0e1c9e83f195cfb"
+    },
+    {
       "path": "Assets/Scripts/UI/Shop/ShopUiText.cs",
-      "sha256": "fa775f171c099e3706fdb7e6007a32808963d05e76d941e448b211dc00ba519c"
+      "sha256": "afb725f358f6a949100d8c57b6c07b471d3911da9958fc01ca0239d7e31fe630"
     },
     {
       "path": "Assets/Scripts/UI/Shop/ShopUiText.cs.meta",
       "sha256": "c0e121a2900dfc7adeb2402cd8e6f0161f098a3fdca79147c387f1fdce1487c1"
     },
     {
+      "path": "Assets/Scripts/UI/TowerRunFlowPresenter.cs",
+      "sha256": "1727c2d9fd28f737530bab6ab05b795a2a819f7f0f472b01d6b7ca85da71913b"
+    },
+    {
+      "path": "Assets/Scripts/UI/TowerRunFlowPresenter.cs.meta",
+      "sha256": "65aecbdb557ece521d059f418af14226a1da8c67eb73f9357334e27f969993cb"
+    },
+    {
+      "path": "Assets/Scripts/UI/TowerRunSaveSlotsPresenter.cs",
+      "sha256": "653303db581e556da0e004d1c6089a8698a803f3ae4a47d92d10d9c71612a8e3"
+    },
+    {
+      "path": "Assets/Scripts/UI/TowerRunSaveSlotsPresenter.cs.meta",
+      "sha256": "27b54d54684b2d61401a185713b75d83993ca3b69ac862ba24a37082b353c171"
+    },
+    {
+      "path": "Assets/Scripts/UI/TowerRunSettingsPresenter.cs",
+      "sha256": "6683a77ee6ade1742b023e1525bc2f487c840d74e058c95f2bdf7f756425bd38"
+    },
+    {
+      "path": "Assets/Scripts/UI/TowerRunSettingsPresenter.cs.meta",
+      "sha256": "e8feb3c75c9a388f29df56e172fd6602198c125264971857c0bd583feb72f6de"
+    },
+    {
       "path": "Assets/Scripts/UI/TowerRunUiController.cs",
-      "sha256": "29ef8ff7aeda4f02f459cc898b8ee4148ce708b17870a49a1d13df2a408ae19e"
+      "sha256": "df38d05d4dfc27fc9869a1951a545082413a7d9633a86046491c2653d9ec06bc"
     },
     {
       "path": "Assets/Scripts/UI/TowerRunUiController.cs.meta",
@@ -2455,6 +2624,94 @@
     {
       "path": "Assets/Scripts/UI/TowerRunUiSkin.cs.meta",
       "sha256": "5e8d98fe03a65774931cdb7d567edf52e964daa560c5ca7621a568b3c902a93e"
+    },
+    {
+      "path": "Assets/Scripts/UI/TowerRunUiViews.cs",
+      "sha256": "b53f421e9f9029bef39d8dbc407ec5cb338bc76c1906e79b48b52574efc19b36"
+    },
+    {
+      "path": "Assets/Scripts/UI/TowerRunUiViews.cs.meta",
+      "sha256": "53e1d1fc910fbbbe4bc410dd39814445e3f3c71bc263405eddda74ea59571bea"
+    },
+    {
+      "path": "Assets/Scripts/UI/UIConfirmationDialog.cs",
+      "sha256": "1c756e9aabe0018b132f634509f380a0b9e3b136f5f41d255d5250ce95dc48a1"
+    },
+    {
+      "path": "Assets/Scripts/UI/UIConfirmationDialog.cs.meta",
+      "sha256": "00b8d992d5dbf9120b66fe7e0c4b76de1f1e0c72a2c34734e537796ffacf307d"
+    },
+    {
+      "path": "Assets/Scripts/UI/UIContracts.cs",
+      "sha256": "1d4cb0b2dc89ff24924b849f12755ad7785d9cdf3e459dc7c841e7bc33a13f0f"
+    },
+    {
+      "path": "Assets/Scripts/UI/UIContracts.cs.meta",
+      "sha256": "0728988341de9313432109fee82a97f2a200fc3a0ac235372844aeda8bf9c178"
+    },
+    {
+      "path": "Assets/Scripts/UI/UIInputRouter.cs",
+      "sha256": "89c30b43e4e46c52e1186c704a9964bc420b9c438d766d47c92440ee0a9246df"
+    },
+    {
+      "path": "Assets/Scripts/UI/UIInputRouter.cs.meta",
+      "sha256": "ead7938cc47be9fb3e2bf63901a8beb18dbaa309b95cca6da0154e6571fcf94d"
+    },
+    {
+      "path": "Assets/Scripts/UI/UILayerBindings.cs",
+      "sha256": "4baecf8ab810e10fe0a43fc4aae4396b54f565d5d32fa31803d63f72cdaffc6d"
+    },
+    {
+      "path": "Assets/Scripts/UI/UILayerBindings.cs.meta",
+      "sha256": "85ca95ecf9e1bbe71edad7e7168e9c405ae4a67fcdbb66b62aa5a4520bcd22be"
+    },
+    {
+      "path": "Assets/Scripts/UI/UILayerController.cs",
+      "sha256": "bb54dd481a281552ad22d1165c478d6ee6100df970518fe62446c2fd0f45bdb3"
+    },
+    {
+      "path": "Assets/Scripts/UI/UILayerController.cs.meta",
+      "sha256": "9fc6deba82e53c04518b4a39bf9fd5868070a4a062d6b5c770857d654c9cf3d5"
+    },
+    {
+      "path": "Assets/Scripts/UI/UIManager.cs",
+      "sha256": "16323fe875c62ac038d441fc8854e53397351ab49eb3ba62d3d23d26ce715ab6"
+    },
+    {
+      "path": "Assets/Scripts/UI/UIManager.cs.meta",
+      "sha256": "545ee8109e1284e98f958ec3f3cb0c4d4363d6ac6e036492c6c7296d216f66b0"
+    },
+    {
+      "path": "Assets/Scripts/UI/UINavigation.cs",
+      "sha256": "abc1c09f50382ccb074e78889c6933e3085b211d688e91bccddca7e56d587416"
+    },
+    {
+      "path": "Assets/Scripts/UI/UINavigation.cs.meta",
+      "sha256": "de6ddddcaf4faacb6899fd495e04214e0ab583851e9f90db3c1299845f7b83dc"
+    },
+    {
+      "path": "Assets/Scripts/UI/UIPage.cs",
+      "sha256": "13e92192cca3b45c66802ff17ec780ca0c2a7b0a551dea8686b174fe4d594c8a"
+    },
+    {
+      "path": "Assets/Scripts/UI/UIPage.cs.meta",
+      "sha256": "9fef8e659807a76dbfdcda8ad1f68b3edba377a4c5f82f6bd12a906e3db2fc62"
+    },
+    {
+      "path": "Assets/Scripts/UI/UIPageCatalog.cs",
+      "sha256": "a05b4ff54531948321a96481f73ada7f0f6f42a3cdc3fdca47995efc0f0c83ed"
+    },
+    {
+      "path": "Assets/Scripts/UI/UIPageCatalog.cs.meta",
+      "sha256": "216832a79f1b4215bfe03ae949d4f6f034f54d8312db0eab7cdfa832f0ff4d74"
+    },
+    {
+      "path": "Assets/Scripts/UI/UIRoot.cs",
+      "sha256": "19d6b3dc3f5eab3bfa915477fa7c120c5726134bd6599f7f4544572ede032046"
+    },
+    {
+      "path": "Assets/Scripts/UI/UIRoot.cs.meta",
+      "sha256": "20e01c12cb984034ead89ec78be950a15e559fc9a249a06a69bbdb311a0cc22b"
     },
     {
       "path": "Assets/ShopUiNightRun.meta",
@@ -2993,6 +3250,14 @@
       "sha256": "526a67e67e8ffa6b53600e27847a9554c1384a836feaa657d62295e19f6b7dda"
     },
     {
+      "path": "Assets/Tests/MapVNext/EditMode/MapGroundConnectivityTests.cs",
+      "sha256": "1426bc758f6647375844b0a1a285faf775f72bf61063209039fa8a7e70a413f6"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/EditMode/MapGroundConnectivityTests.cs.meta",
+      "sha256": "801f0303020091de462389376847646751dbe7d0ebc8af1720b093b19ac516f2"
+    },
+    {
       "path": "Assets/Tests/MapVNext/EditMode/MapVNextEditTests.cs",
       "sha256": "794c8b1adbd9960171a4531d84e887208eb8b672a2b302543f49df7ccd6bac21"
     },
@@ -3002,7 +3267,7 @@
     },
     {
       "path": "Assets/Tests/MapVNext/EditMode/MapVNextI1CompatibilityTests.cs",
-      "sha256": "ec2262807ccb1b116bf4ed45be1fb99aad371775cdb9c18ff849f0fa6dbee957"
+      "sha256": "5832798de55e03f8a6c73c5fef02fb6a62c14a9613f23dfc3e1b739deed58f19"
     },
     {
       "path": "Assets/Tests/MapVNext/EditMode/MapVNextI1CompatibilityTests.cs.meta",
@@ -3065,12 +3330,20 @@
       "sha256": "d811e41daf68dbc41700a717d087f5ddb97b23e18ab1cd9175133c87a0ae495d"
     },
     {
+      "path": "Assets/Tests/MapVNext/PlayMode/ConsumablesFailReadyFinalizer.cs",
+      "sha256": "8f3b9932462c5ae4485d8e3ae5d0cc4788385a46585a1b16d2d8b7ac22b1aee2"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/PlayMode/ConsumablesFailReadyFinalizer.cs.meta",
+      "sha256": "589dc85b14ddbb8ac47dadac798058d84174891679c5056f3c36c7fcfeaf46e0"
+    },
+    {
       "path": "Assets/Tests/MapVNext/PlayMode/ConsumablesIntegrationPlayTests.cs",
-      "sha256": "d5565aaa22d2ac6be578ef4eac26a83dae3541fd243a5ed363f45ae3c3bf1b2b"
+      "sha256": "55c5666802fdc8bf1e9ce25d8e638fffc1b6ddd14029317029538a87286bfbb6"
     },
     {
       "path": "Assets/Tests/MapVNext/PlayMode/ConsumablesIntegrationPlayTests.cs.meta",
-      "sha256": "18430d26c920063b4a6903f7dfd606312d2517b67c9347d5087c954f1d5a35c1"
+      "sha256": "3478bd3de78e0a16c6ba48eb38db8f94d5420c356dd28c5cf2a1bcbfb7217a8c"
     },
     {
       "path": "Assets/Tests/MapVNext/PlayMode/ConsumablesPlayTests.cs",
@@ -3078,7 +3351,23 @@
     },
     {
       "path": "Assets/Tests/MapVNext/PlayMode/ConsumablesPlayTests.cs.meta",
-      "sha256": "859b68db52abddce9794a6629df9ed72b9c2acf66dfe1cc1d1ea0c6452c1a660"
+      "sha256": "4ed24497541456e428ad751906a7df2463d78f9a806335b47260fdec3db6908b"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/PlayMode/MapGroundConnectivityCompatibilityTests.cs",
+      "sha256": "65971fbf1c581b91d1bf670d5818e14e3f954c7c2100a861bc93bc5a278f1a82"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/PlayMode/MapGroundConnectivityCompatibilityTests.cs.meta",
+      "sha256": "3c9a3fc448d55cfc3cc3f49ad083980d1db0e5b58119bb22ca9d063520b34704"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/PlayMode/MapHostSourcePolicyPlayTests.cs",
+      "sha256": "5daa41b28b691053a434e8ce60b78ba787fd23eb7c8b077a59fe8dee84f42251"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/PlayMode/MapHostSourcePolicyPlayTests.cs.meta",
+      "sha256": "5b770bb4bed53c5d6aab848ee5bff8d51a1ff4381ced42f8ce1977a197aca6d2"
     },
     {
       "path": "Assets/Tests/MapVNext/PlayMode/MapVNextCliffTests.cs",
@@ -3090,7 +3379,7 @@
     },
     {
       "path": "Assets/Tests/MapVNext/PlayMode/MapVNextFormalDefaultTests.cs",
-      "sha256": "cd2bde7223f8a48c792369c7b7696c6032b6230725cf60457fbb5f5beaf53e3a"
+      "sha256": "e72788e03294a253a36bdc29ce89ce3a600c0efd9d13159d0735debd4a124d72"
     },
     {
       "path": "Assets/Tests/MapVNext/PlayMode/MapVNextFormalDefaultTests.cs.meta",
@@ -3103,6 +3392,14 @@
     {
       "path": "Assets/Tests/MapVNext/PlayMode/MapVNextI1IntegrationTests.Acceptance.cs.meta",
       "sha256": "6af20b4c0db8f9e2cf7db78af4426588e31b128d9d85e43e360eaedaca2b5c68"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/PlayMode/MapVNextI1IntegrationTests.FoodStockCompatibility.cs",
+      "sha256": "2135358f35086dbe9343f25e033031ccbdd536252f37447fd60f5698e370ea51"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/PlayMode/MapVNextI1IntegrationTests.FoodStockCompatibility.cs.meta",
+      "sha256": "3fe48c9889b987f4e6dff3814fa3c4f3715cefe2ba32ea4808db231bb4f76ea5"
     },
     {
       "path": "Assets/Tests/MapVNext/PlayMode/MapVNextI1IntegrationTests.HomeBoundary.cs",
@@ -3119,6 +3416,14 @@
     {
       "path": "Assets/Tests/MapVNext/PlayMode/MapVNextI1IntegrationTests.LegacyLifecycle.cs.meta",
       "sha256": "3e7d465f90e5696816f3335b97a37f23ad51fa0e472a59469b3e796387309ebb"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/PlayMode/MapVNextI1IntegrationTests.MerchantFootprint.cs",
+      "sha256": "702d53c31f4ae8f70c5da8d2aa368f8bfbd15932fa912af77d42b70a71a7a51a"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/PlayMode/MapVNextI1IntegrationTests.MerchantFootprint.cs.meta",
+      "sha256": "8447a1b7f26e57e89ee5a72345a353e69e404f7d6050fe74d34e0514eb80e112"
     },
     {
       "path": "Assets/Tests/MapVNext/PlayMode/MapVNextI1IntegrationTests.Motion.cs",
@@ -3146,7 +3451,7 @@
     },
     {
       "path": "Assets/Tests/MapVNext/PlayMode/MapVNextI1IntegrationTests.cs",
-      "sha256": "3f7f803f884695f408c1b6164f15ba51a42ecd34fee869429a8ea506020cf223"
+      "sha256": "2ee5c89e618e9ac503cedd8de9eaaa9a7f93781cd4219b60943696b2553b278e"
     },
     {
       "path": "Assets/Tests/MapVNext/PlayMode/MapVNextI1IntegrationTests.cs.meta",
@@ -3183,6 +3488,14 @@
     {
       "path": "Assets/Tests/MapVNext/PlayMode/RPG_Demo.MapVNext.PlayTests.asmdef.meta",
       "sha256": "7038246e078d44b0058843089091d9b9bc16b9ec9170473583cca451cca86073"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/PlayMode/UIArchitecturePlayTests.cs",
+      "sha256": "795d05e9638b9dcbbd441038586da8c6c4a816e839bfa980c9aaadf396b62126"
+    },
+    {
+      "path": "Assets/Tests/MapVNext/PlayMode/UIArchitecturePlayTests.cs.meta",
+      "sha256": "cc91d3b9093c58322c9d3ba2cebbbd392362a27a053360f0af1762f4e60e0fe5"
     },
     {
       "path": "Assets/Tests/PrefabPreview/TinySwordsEnemyPackPreview.cs",
@@ -3257,12 +3570,76 @@
       "sha256": "4e3e13aaaadebef938a57839263e85af2064db0273ab1da8012cef8bda93c9ad"
     },
     {
+      "path": "Assets/Tests/UIArchitecture/Editor/RPG_Demo.UIArchitecture.Tests.asmdef",
+      "sha256": "0d9184cb1e7328b82983b2190880d18c4abeaee3e0d3b102427701d8554b4fd8"
+    },
+    {
+      "path": "Assets/Tests/UIArchitecture/Editor/RPG_Demo.UIArchitecture.Tests.asmdef.meta",
+      "sha256": "aea151f70d35109e297f2798e2ee28bac08d78e7edb431513098c1b8f4a3bb0e"
+    },
+    {
+      "path": "Assets/Tests/UIArchitecture/Editor/UIArchitectureContractTests.cs",
+      "sha256": "d3afb0ef9aad4c14d122c32a2beabf84541281375b5ec4d6d1fa24439aaa9166"
+    },
+    {
+      "path": "Assets/Tests/UIArchitecture/Editor/UIArchitectureContractTests.cs.meta",
+      "sha256": "229670dc6a6928287a45b5067c6284c4a70f13834f07038274a8f43d430b7e4c"
+    },
+    {
+      "path": "Assets/Tests/UIArchitecture/Editor/UIPageAuthoringTests.cs",
+      "sha256": "5a7a8e37dca83676e6bb4877e47a401b908b6f00b178a145a59e7ef1d2dbf780"
+    },
+    {
+      "path": "Assets/Tests/UIArchitecture/Editor/UIPageAuthoringTests.cs.meta",
+      "sha256": "96f65f8c4c504a937e74ec287ce906c3acc9b0a5dc399fecc5e5b11b5e32ef04"
+    },
+    {
       "path": "Assets/TextMesh Pro/Shaders/TMP_SDF.shader",
       "sha256": "bbae422625f31bfa560ac5ce44c402fafd16dba55d496c6279ca985b652b58bf"
     },
     {
       "path": "Assets/TextMesh Pro/Shaders/TMP_SDF.shader.meta",
       "sha256": "0897fb06d170043fffa2d28783b347bbaee87a3f09f08374ca44b2c3848697d6"
+    },
+    {
+      "path": "Assets/UI.meta",
+      "sha256": "14bb0b0fc4c8124bbf7d5231d5c940d1f347be817452dd1fbb0b11a0bf9896ce"
+    },
+    {
+      "path": "Assets/UI/Configuration.meta",
+      "sha256": "81e33162cd51dfbf385374741f4a691d9ae11d14e8a00a87ed0396cb10c3cfec"
+    },
+    {
+      "path": "Assets/UI/Configuration/UIPageCatalog_Default.asset",
+      "sha256": "31403d316d018d0d162c85c9b610aee41c8fb427dde3b4557eac3ab9a8be46d8"
+    },
+    {
+      "path": "Assets/UI/Configuration/UIPageCatalog_Default.asset.meta",
+      "sha256": "334ed9c9903009cb05fbf897038f74c61224aa7f5d5408d97a0fec0a542130b9"
+    },
+    {
+      "path": "Assets/UI/Icons.meta",
+      "sha256": "42b97949d76c52492a5fbdd4b9351a6e640714b7d62b34e284c76e9c162e87da"
+    },
+    {
+      "path": "Assets/UI/Icons/Food.meta",
+      "sha256": "9ad894804a6249390b2680edf9c47037283bc6452eaedc8cf7b0aee04dce11f1"
+    },
+    {
+      "path": "Assets/UI/Icons/Food/PlantCream_Big.png",
+      "sha256": "26a7592cbc3ac76b63a871cd40261c45728eca9c520a39000f1f2cdc5bfda7fd"
+    },
+    {
+      "path": "Assets/UI/Icons/Food/PlantCream_Big.png.meta",
+      "sha256": "6bd0ba13613b4bc60f9a83ebb7e7f4d9a12cb214e7c90fbb88046868ecdbb8c9"
+    },
+    {
+      "path": "Assets/UI/Icons/Food/PlantCream_Small.png",
+      "sha256": "68f57683bc1f512d34fc0107c6b4fb33904a3298295df09f3a2d4a05e977821b"
+    },
+    {
+      "path": "Assets/UI/Icons/Food/PlantCream_Small.png.meta",
+      "sha256": "5970992c01250771db6a930abfb2f7b41eb6fe76585630f5f5bdcb77aa915c40"
     },
     {
       "path": "Assets/_Resources/TinySwords/Factions/Knights/Troops/Pawn/Blue/Pawn_Blue.png",
@@ -3455,27 +3832,32 @@
     {
       "path": "Assets/Prefabs/Rewards/PlantCream_Small.prefab",
       "originalSha256": "405ba0fefa8a091c75f620c3b7270c146f17efc7531dc66c594025b3632b556c",
-      "currentSha256": "9f70a0372096d3bd2661f2f3ff5547d24761988c36c04114e176bbbae7ca3e08"
+      "currentSha256": "fac50422b0ddc584f3317563eaff34fe9308e2b036e4370872b9e0f9462bfc67"
     },
     {
       "path": "Assets/Scenes/SampleScene.unity",
       "originalSha256": "d5357b094cdbc2ad53b5e781b42d8fa5e5591566d3e0d3f4c2a01a236ca99fc6",
-      "currentSha256": "9007a06addd28a20880037ecdb6a89924e7d377e57dcc5435f87ccc8a9cbfa41"
+      "currentSha256": "653ce16fb382d92d7c4f3eca885bfcff52d6428a7ef5dbe98403dab6fda1ec59"
     },
     {
       "path": "Assets/ScriptObjects/RewardSOs/Meat.asset",
       "originalSha256": "2d41a73a0895f37a59162a2d50becb047ab25ff108bfced98867038f789e84c2",
-      "currentSha256": "7a275c8cce6a6e4bef8c64505f5a190b37125418dd5aecb3553e1460c28d3f46"
+      "currentSha256": "5926d3bb01daf97c06d2a109f4dd7f1fedae3b638efc219b2553cc3a9d83c2cc"
     },
     {
       "path": "Assets/ScriptObjects/RewardSOs/PlantCream_Big.asset",
       "originalSha256": "eb02686518a8427fef7ebb07145dae5571d7d10497cae08f3a5684993f55199e",
-      "currentSha256": "b1554682d773f1fda40dfd188f90bbbfd9a33643b736265f80a3546ac072c817"
+      "currentSha256": "1ed46292e8e2f1d6a1f396b6a9846ddbad57ef59990a2289c99e93a534d65616"
     },
     {
       "path": "Assets/ScriptObjects/RewardSOs/PlantCream_Small.asset",
       "originalSha256": "18a87e7540b172b32db7c4bf0588144123dd0875be746477d3df954a999a88af",
-      "currentSha256": "56d5776bcdbbbbcb292824fd9467c7f4b023fffc090e7ab1d247a1e0f4433990"
+      "currentSha256": "76ed4f82ba727c2958f3a53a75d9c2148dccd77df4d19d963a4d410a3c4aa8f3"
+    },
+    {
+      "path": "Assets/ScriptObjects/Shop/ShopCatalog_Merchant.asset",
+      "originalSha256": "0c267a3ba8262ffe5e74fc1ee5b6836d0cba46ec92a1e168ce406636c9d0ea9a",
+      "currentSha256": "3d44b031399112e4862884fc572c3701c12731714503b3fa5e898494baec81ee"
     },
     {
       "path": "Assets/Scripts/MapGeneration/AnimalPlacementService.cs",
@@ -3510,12 +3892,12 @@
     {
       "path": "Assets/Scripts/MapGeneration/Ecology/EcologyRecipeDefinition.cs",
       "originalSha256": "94e49b54d4bd31b984a548ac03c4a85911479392d4c458d3f3459824a1fb1c3d",
-      "currentSha256": "6d64a8a9778f61af4c4de1b3ee29978a9453ed0c6f8286b286893a2f657ac076"
+      "currentSha256": "dab3b011905a080c16f3cd4b1f11557d2f6a6960e9e949aab6a8939686e61470"
     },
     {
       "path": "Assets/Scripts/MapGeneration/Ecology/EcologyRetainedContentManifest.cs",
       "originalSha256": "a64eaf4efabb563f253ea123e54518a4352f24e52dbcb78ba5eeb52056f92d20",
-      "currentSha256": "c6c01b4f799df7feea9555bb312a47f62ed0cd2c9f078a823ff007e4a3171fdd"
+      "currentSha256": "df5d17555cc8267a4df6095d5ebfbed12573ac69338ff4e836eb8ab71b0ac176"
     },
     {
       "path": "Assets/Scripts/MapGeneration/Ecology/EcologyRetainedTerrainGenerator.cs",
@@ -3555,7 +3937,7 @@
     {
       "path": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
       "originalSha256": "7bb7c227706e3e7ea7354ff7ef7915eec337f2fb5dce4983881d3a12120a19ba",
-      "currentSha256": "eb10c361840c223c776cf056924a65043ced8a9c5841604559fc62bbbebb9bce"
+      "currentSha256": "8d773535c0225dd929edb8c0f3b7c6be46df5a0e48c26771269038dbdd374d16"
     },
     {
       "path": "Assets/Scripts/MapGeneration/MapIntegrationOrchestrator.cs",
@@ -3570,7 +3952,7 @@
     {
       "path": "Assets/Scripts/MapGeneration/MerchantPlacementService.cs",
       "originalSha256": "c78b12cc2e877b8f5e5dea81a0fd29cab885adf717e4a44b6a19c053054371c3",
-      "currentSha256": "6d2c55b34fe438d32c5e4c1dfcf6e66cd3fab7fc1d3e7f8927289cd8558d7d93"
+      "currentSha256": "650dd172ee975d520f6245012581df38a59a048b57828a48646e68fbaa3ba1df"
     },
     {
       "path": "Assets/Scripts/MapGeneration/PlantPlacementService.cs",
@@ -3583,6 +3965,16 @@
       "currentSha256": "edb20a7895c928cbf8a141cac5773215104987b0b77e2968e44b23b25f6f09ad"
     },
     {
+      "path": "Assets/Scripts/TowerRun/TowerRunCheckpointRecord.cs",
+      "originalSha256": "3bc8ef1245988d51e3bd44c4e755e9346821d593c5874c99c536b4023a8d504c",
+      "currentSha256": "d8772e9f74ad46fb3de4b97d3eaa5e91687225ed0e1ff62e0f0e3f024d1015ae"
+    },
+    {
+      "path": "Assets/Scripts/TowerRun/TowerRunGate.cs",
+      "originalSha256": "9a456672e46a31e52db4b21f08fb4545b4f85126e1bbaf5d9fcf7801d010c362",
+      "currentSha256": "deb4a845db56689fd6fe518a7dce07977061764b2a37d920113a7ffc78a5287f"
+    },
+    {
       "path": "Assets/Scripts/TowerRun/TowerRunSlotStore.cs",
       "originalSha256": "36ba6dd975b7c4395871bab048ca14d6b3390aab67149cf7b25ea202b3029409",
       "currentSha256": "2ffb75541ed7e409f010c63e9215a3e57a11e983ad1d489bffa55f311d1a2ce7"
@@ -3590,7 +3982,7 @@
     {
       "path": "Assets/Scripts/TowerRunCoordinator.cs",
       "originalSha256": "d36753c417109928686b874a9937eb082e4d3b1f0c6db8c6f2fd24357b8413ca",
-      "currentSha256": "8de3a3bae3ed6cdb3742a3bd9c36f7faf130d9863df26ec23c20f8ba2cd7f1a6"
+      "currentSha256": "e293c88d5e03a1f55543952ab2dd9484008bd23078222b90b37fd759ec47ea61"
     }
   ],
   "retainedContentVersion": "content-r1:c1b30f168534f17598f385ad32ab67078f9fb28b5f8cb6f346dcb6b800249ec9",
@@ -3603,27 +3995,32 @@
     {
       "path": "Assets/Prefabs/Rewards/PlantCream_Small.prefab",
       "originalSha256": "405ba0fefa8a091c75f620c3b7270c146f17efc7531dc66c594025b3632b556c",
-      "currentSha256": "9f70a0372096d3bd2661f2f3ff5547d24761988c36c04114e176bbbae7ca3e08"
+      "currentSha256": "fac50422b0ddc584f3317563eaff34fe9308e2b036e4370872b9e0f9462bfc67"
     },
     {
       "path": "Assets/Scenes/SampleScene.unity",
       "originalSha256": "d5357b094cdbc2ad53b5e781b42d8fa5e5591566d3e0d3f4c2a01a236ca99fc6",
-      "currentSha256": "9007a06addd28a20880037ecdb6a89924e7d377e57dcc5435f87ccc8a9cbfa41"
+      "currentSha256": "653ce16fb382d92d7c4f3eca885bfcff52d6428a7ef5dbe98403dab6fda1ec59"
     },
     {
       "path": "Assets/ScriptObjects/RewardSOs/Meat.asset",
       "originalSha256": "2d41a73a0895f37a59162a2d50becb047ab25ff108bfced98867038f789e84c2",
-      "currentSha256": "7a275c8cce6a6e4bef8c64505f5a190b37125418dd5aecb3553e1460c28d3f46"
+      "currentSha256": "5926d3bb01daf97c06d2a109f4dd7f1fedae3b638efc219b2553cc3a9d83c2cc"
     },
     {
       "path": "Assets/ScriptObjects/RewardSOs/PlantCream_Big.asset",
       "originalSha256": "eb02686518a8427fef7ebb07145dae5571d7d10497cae08f3a5684993f55199e",
-      "currentSha256": "b1554682d773f1fda40dfd188f90bbbfd9a33643b736265f80a3546ac072c817"
+      "currentSha256": "1ed46292e8e2f1d6a1f396b6a9846ddbad57ef59990a2289c99e93a534d65616"
     },
     {
       "path": "Assets/ScriptObjects/RewardSOs/PlantCream_Small.asset",
       "originalSha256": "18a87e7540b172b32db7c4bf0588144123dd0875be746477d3df954a999a88af",
-      "currentSha256": "56d5776bcdbbbbcb292824fd9467c7f4b023fffc090e7ab1d247a1e0f4433990"
+      "currentSha256": "76ed4f82ba727c2958f3a53a75d9c2148dccd77df4d19d963a4d410a3c4aa8f3"
+    },
+    {
+      "path": "Assets/ScriptObjects/Shop/ShopCatalog_Merchant.asset",
+      "originalSha256": "0c267a3ba8262ffe5e74fc1ee5b6836d0cba46ec92a1e168ce406636c9d0ea9a",
+      "currentSha256": "3d44b031399112e4862884fc572c3701c12731714503b3fa5e898494baec81ee"
     },
     {
       "path": "Assets/Scripts/MapGeneration/AnimalPlacementService.cs",
@@ -3658,12 +4055,12 @@
     {
       "path": "Assets/Scripts/MapGeneration/Ecology/EcologyRecipeDefinition.cs",
       "originalSha256": "94e49b54d4bd31b984a548ac03c4a85911479392d4c458d3f3459824a1fb1c3d",
-      "currentSha256": "6d64a8a9778f61af4c4de1b3ee29978a9453ed0c6f8286b286893a2f657ac076"
+      "currentSha256": "dab3b011905a080c16f3cd4b1f11557d2f6a6960e9e949aab6a8939686e61470"
     },
     {
       "path": "Assets/Scripts/MapGeneration/Ecology/EcologyRetainedContentManifest.cs",
       "originalSha256": "a64eaf4efabb563f253ea123e54518a4352f24e52dbcb78ba5eeb52056f92d20",
-      "currentSha256": "c6c01b4f799df7feea9555bb312a47f62ed0cd2c9f078a823ff007e4a3171fdd"
+      "currentSha256": "df5d17555cc8267a4df6095d5ebfbed12573ac69338ff4e836eb8ab71b0ac176"
     },
     {
       "path": "Assets/Scripts/MapGeneration/Ecology/EcologyRetainedTerrainGenerator.cs",
@@ -3703,7 +4100,7 @@
     {
       "path": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
       "originalSha256": "7bb7c227706e3e7ea7354ff7ef7915eec337f2fb5dce4983881d3a12120a19ba",
-      "currentSha256": "eb10c361840c223c776cf056924a65043ced8a9c5841604559fc62bbbebb9bce"
+      "currentSha256": "8d773535c0225dd929edb8c0f3b7c6be46df5a0e48c26771269038dbdd374d16"
     },
     {
       "path": "Assets/Scripts/MapGeneration/MapIntegrationOrchestrator.cs",
@@ -3718,7 +4115,7 @@
     {
       "path": "Assets/Scripts/MapGeneration/MerchantPlacementService.cs",
       "originalSha256": "c78b12cc2e877b8f5e5dea81a0fd29cab885adf717e4a44b6a19c053054371c3",
-      "currentSha256": "6d2c55b34fe438d32c5e4c1dfcf6e66cd3fab7fc1d3e7f8927289cd8558d7d93"
+      "currentSha256": "650dd172ee975d520f6245012581df38a59a048b57828a48646e68fbaa3ba1df"
     },
     {
       "path": "Assets/Scripts/MapGeneration/PlantPlacementService.cs",
@@ -3731,6 +4128,16 @@
       "currentSha256": "edb20a7895c928cbf8a141cac5773215104987b0b77e2968e44b23b25f6f09ad"
     },
     {
+      "path": "Assets/Scripts/TowerRun/TowerRunCheckpointRecord.cs",
+      "originalSha256": "3bc8ef1245988d51e3bd44c4e755e9346821d593c5874c99c536b4023a8d504c",
+      "currentSha256": "d8772e9f74ad46fb3de4b97d3eaa5e91687225ed0e1ff62e0f0e3f024d1015ae"
+    },
+    {
+      "path": "Assets/Scripts/TowerRun/TowerRunGate.cs",
+      "originalSha256": "9a456672e46a31e52db4b21f08fb4545b4f85126e1bbaf5d9fcf7801d010c362",
+      "currentSha256": "deb4a845db56689fd6fe518a7dce07977061764b2a37d920113a7ffc78a5287f"
+    },
+    {
       "path": "Assets/Scripts/TowerRun/TowerRunSlotStore.cs",
       "originalSha256": "36ba6dd975b7c4395871bab048ca14d6b3390aab67149cf7b25ea202b3029409",
       "currentSha256": "2ffb75541ed7e409f010c63e9215a3e57a11e983ad1d489bffa55f311d1a2ce7"
@@ -3738,7 +4145,7 @@
     {
       "path": "Assets/Scripts/TowerRunCoordinator.cs",
       "originalSha256": "d36753c417109928686b874a9937eb082e4d3b1f0c6db8c6f2fd24357b8413ca",
-      "currentSha256": "8de3a3bae3ed6cdb3742a3bd9c36f7faf130d9863df26ec23c20f8ba2cd7f1a6"
+      "currentSha256": "e293c88d5e03a1f55543952ab2dd9484008bd23078222b90b37fd759ec47ea61"
     }
   ]
 }

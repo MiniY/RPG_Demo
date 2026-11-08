@@ -9,6 +9,12 @@ namespace MapVNext
     {
         /// <summary>Retains every base material, road, water, origin and protected endpoint. Never fills water to fit a plateau.</summary>
         public static MapData GenerateOnTerrain(MapData basis, int seed, int protectedRadius, int maxAttempts = 12)
+            => GenerateOnTerrainCore(basis, seed, protectedRadius, maxAttempts, false);
+
+        public static MapData GenerateOnTerrainPreservingGround(MapData basis, int seed, int protectedRadius, int maxAttempts = 12)
+            => GenerateOnTerrainCore(basis, seed, protectedRadius, maxAttempts, true);
+
+        private static MapData GenerateOnTerrainCore(MapData basis, int seed, int protectedRadius, int maxAttempts, bool preserveGround)
         {
             if (basis == null || basis.Width < 36 || basis.Height < 34 || basis.HasElevation || maxAttempts < 1 || maxAttempts > 32)
                 throw new ArgumentException("UnsupportedFormalVNextBase");
@@ -23,7 +29,7 @@ namespace MapVNext
                     int requestedRoots = rng.Next(1, 3);
                     for (int root = 0; root < requestedRoots; root++)
                     {
-                        HashSet<Vector2Int> chosen = SupportedRoot(map, protectedRadius, allRoots, rng);
+                        HashSet<Vector2Int> chosen = SupportedRoot(map, protectedRadius, allRoots, rng, preserveGround);
                         if (chosen == null) throw new Rejected("FORMAL_ROOT_NO_SUPPORTED_LAND:" + root);
                         allRoots.UnionWith(chosen); regions.Add(chosen); heights.Add(1);
                         foreach (var cell in chosen) map.SetElevation(cell, 1);
@@ -67,7 +73,34 @@ namespace MapVNext
             }
             throw new MapPlanningException("VNextFormalLayoutRejected", string.Join(";", failures), false);
         }
-        private static HashSet<Vector2Int> SupportedRoot(MapData map, int protectedRadius, HashSet<Vector2Int> occupied, System.Random random)
+        private static int GroundComponentCount(MapData map)
+        {
+            HashSet<Vector2Int> remaining = new HashSet<Vector2Int>();
+            for (int y = 0; y < map.Height; y++) for (int x = 0; x < map.Width; x++)
+            {
+                Vector2Int cell = map.Origin + new Vector2Int(x, y);
+                if (map.IsWalkable(cell) && map.GetElevation(cell) == 0) remaining.Add(cell);
+            }
+            int count = 0;
+            Queue<Vector2Int> queue = new Queue<Vector2Int>();
+            while (remaining.Count > 0)
+            {
+                count++;
+                Vector2Int first = remaining.First(); remaining.Remove(first); queue.Enqueue(first);
+                while (queue.Count > 0)
+                {
+                    Vector2Int cell = queue.Dequeue();
+                    foreach (Vector2Int direction in Dirs)
+                    {
+                        Vector2Int next = cell + direction;
+                        if (map.CanTraverse(cell, next) && remaining.Remove(next)) queue.Enqueue(next);
+                    }
+                }
+            }
+            return count;
+        }
+
+        private static HashSet<Vector2Int> SupportedRoot(MapData map, int protectedRadius, HashSet<Vector2Int> occupied, System.Random random, bool preserveGround = false)
         {
             bool Eligible(Vector2Int p) => map.IsInside(p) && !map.IsBorder(p, 2) && map.IsWalkable(p) && map.GetElevation(p) == 0 &&
                 map.GetCell(p).terrainType != MapTerrainType.Path &&
@@ -88,6 +121,7 @@ namespace MapVNext
                 if(clear)anchors.Add(new Port { low=low,high=low+d });
             }
             Shuffle(anchors,random);
+            int groundComponents = preserveGround ? GroundComponentCount(map) : 0;
             for(int trial=0;trial<128&&anchors.Count>0;trial++)
             {
                 var anchor=anchors[trial%anchors.Count];var d=anchor.high-anchor.low;
@@ -112,7 +146,9 @@ namespace MapVNext
                 while(queue.Count>0){var p=queue.Dequeue();foreach(var step in Dirs)if(opened.Contains(p+step)&&connected.Add(p+step))queue.Enqueue(p+step);}
                 if(connected.Count<48||!required.All(connected.Contains))continue;
                 var candidate=map.Copy();foreach(var p in connected)candidate.SetElevation(p,1);
-                if(ClearPort(candidate,anchor.low,d,1))return connected;
+                // One connected H0 footprint is removed; ClearPort retains a low-ground witness in its source component.
+                // Under these premises, unchanged count prevents splitting that remaining component.
+                if(ClearPort(candidate,anchor.low,d,1) && (!preserveGround || GroundComponentCount(candidate) == groundComponents))return connected;
             }
             return null;
         }

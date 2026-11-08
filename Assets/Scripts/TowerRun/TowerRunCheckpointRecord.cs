@@ -37,13 +37,15 @@ public sealed class TowerRunShopStockRecord
 public sealed class TowerRunShopRecord
 {
     public string catalogId;
+    public int stockVersion;
     public List<TowerRunShopStockRecord> productStocks = new List<TowerRunShopStockRecord>();
 
     public TowerRunShopRecord DeepClone()
     {
         TowerRunShopRecord clone = new TowerRunShopRecord
         {
-            catalogId = catalogId
+            catalogId = catalogId,
+            stockVersion = stockVersion
         };
 
         if (productStocks == null)

@@ -1,44 +1,782 @@
 [
-  {"source":"Assets/Scripts/GameInput.cs","relation":"OnBattlePressed event reaches subscriber","target":"Assets/Scripts/Player/PlayerAction.cs","evidence":{"path":"Assets/Scripts/Player/PlayerAction.cs","line":177,"contains":"OnBattlePressed += HandleBattlePressed"}},
-  {"source":"Assets/Scripts/Player/PlayerAction.cs","relation":"TakeDamage call","target":"Assets/Scripts/Damageable/BaseDamageable.cs","evidence":{"path":"Assets/Scripts/Player/PlayerAction.cs","line":311,"contains":"attackTarget.TakeDamage"}},
-  {"source":"Assets/Scripts/Damageable/BaseDamageable.cs","relation":"spawns pooled reward","target":"Assets/Scripts/ObjectPoolManager.cs","evidence":{"path":"Assets/Scripts/Damageable/BaseDamageable.cs","line":172,"contains":"GameObject rewardObject = ObjectPoolManager.Spawn("}},
-  {"source":"Assets/Scripts/Damageable/BaseDamageable.cs","relation":"initializes reward pickup","target":"Assets/Scripts/RewardPickup.cs","evidence":{"path":"Assets/Scripts/Damageable/BaseDamageable.cs","line":156,"contains":"pickup.Initialize"}},
-  {"source":"Assets/Scripts/RewardPickup.cs","relation":"pickup request event subscriber","target":"Assets/Scripts/PlayerInventory.cs","evidence":{"path":"Assets/Scripts/PlayerInventory.cs","line":146,"contains":"OnRewardPickupRequested += HandleRewardPickupRequested"}},
-  {"source":"Assets/Scripts/PlayerInventory.cs","relation":"saves inventory via GameSaveService","target":"Assets/Scripts/GameSaveService.cs","evidence":{"path":"Assets/Scripts/PlayerInventory.cs","line":809,"contains":"if (GameSaveService.TryCommitRuntimeData(candidate))"}},
-  {"source":"Assets/Scripts/PlayerInventory.cs","relation":"OnInventoryChanged event subscriber","target":"Assets/Scripts/UI/PackageGridUI.cs","evidence":{"path":"Assets/Scripts/UI/PackageGridUI.cs","line":68,"contains":"subscribedInventory.OnInventoryChanged += Refresh;"}},
-  {"source":"Assets/Scripts/PlayerInventory.cs","relation":"OnInventoryChanged event subscriber","target":"Assets/Scripts/UI/CurrencyHudUI.cs","evidence":{"path":"Assets/Scripts/UI/CurrencyHudUI.cs","line":41,"contains":"OnInventoryChanged += RefreshGoldAmount"}},
-  {"source":"Assets/Scripts/Player/PlayerAction.cs","relation":"persists stamina after attack start","target":"Assets/Scripts/GameSession.cs","evidence":{"path":"Assets/Scripts/Player/PlayerAction.cs","line":233,"contains":"SaveRuntimeState"}},
-  {"source":"Assets/Scripts/GameSession.cs","relation":"writes current runtime state","target":"Assets/Scripts/GameSaveService.cs","evidence":{"path":"Assets/Scripts/GameSession.cs","line":138,"contains":"return GameSaveService.TryCommitRuntimeData(candidate);"}},
-  {"source":"Assets/Scripts/TowerRunCoordinator.cs","relation":"requests map generation","target":"Assets/Scripts/MapGeneration/MapGenerationController.cs","evidence":{"path":"Assets/Scripts/TowerRunCoordinator.cs","line":343,"contains":"mapController.TryGenerateMap"}},
-  {"source":"Assets/Scripts/MapGeneration/MapGenerationController.cs","relation":"executes generation transaction","target":"Assets/Scripts/MapGeneration/MapIntegrationOrchestrator.cs","evidence":{"path":"Assets/Scripts/MapGeneration/MapGenerationController.cs","line":146,"contains":"orchestrator.Execute"}},
-  {"source":"Assets/Scripts/MapGeneration/MapGenerationController.cs","relation":"generates MapData","target":"Assets/Scripts/MapGeneration/RandomMapGenerator.cs","evidence":{"path":"Assets/Scripts/MapGeneration/MapGenerationController.cs","line":490,"contains":"RandomMapGenerator.Generate"}},
-  {"source":"Assets/Scripts/MapGeneration/MapGenerationController.cs","relation":"plans scene-bound monster placement","target":"Assets/Scripts/MapGeneration/MonsterPlacementService.cs","evidence":{"path":"Assets/Scripts/MapGeneration/MapGenerationController.cs","line":530,"contains":"monsterPlacementService?.Plan"}},
-  {"source":"Assets/Scripts/MapGeneration/MapGenerationController.cs","relation":"materializes scene-bound monster","target":"Assets/Scripts/MapGeneration/MonsterPlacementService.cs","evidence":{"path":"Assets/Scripts/MapGeneration/MapGenerationController.cs","line":225,"contains":"monsterPlacementService.TryMaterialize"}},
-  {"source":"Assets/Scripts/MapGeneration/MapGenerationController.cs","relation":"materializes generation-scoped destructibles","target":"Assets/Scripts/MapGeneration/DestructiblePlacementService.cs","evidence":{"path":"Assets/Scripts/MapGeneration/MapGenerationController.cs","line":233,"contains":"destructiblePlacementService.TryMaterialize"}},
-  {"source":"Assets/Scripts/MapGeneration/MapGenerationController.cs","relation":"spawns or relocates canonical player","target":"Assets/Scripts/MapGeneration/PlayerSpawnService.cs","evidence":{"path":"Assets/Scripts/MapGeneration/MapGenerationController.cs","line":260,"contains":"spawnService.TrySpawn"}},
-  {"source":"Assets/Scripts/MapGeneration/MapGenerationController.cs","relation":"binds camera after spawn","target":"Assets/Scripts/MapGeneration/CameraBindingService.cs","evidence":{"path":"Assets/Scripts/MapGeneration/MapGenerationController.cs","line":319,"contains":"cameraBindingServices[0].TryBind"}},
-  {"source":"Assets/Scripts/MapGeneration/MapGenerationController.cs","relation":"MapGenerated event subscriber","target":"Assets/Scripts/MapGeneration/MapMinimapController.cs","evidence":{"path":"Assets/Scripts/MapGeneration/MapMinimapController.cs","line":308,"contains":"MapGenerated += HandleMapGenerated"}},
-  {"source":"Assets/Scripts/Damageable/BaseDamageable.cs","relation":"OnDefeated event subscriber","target":"Assets/Scripts/TowerFloorRuntimeController.cs","evidence":{"path":"Assets/Scripts/TowerFloorRuntimeController.cs","line":116,"contains":"OnDefeated += HandleTargetDefeated"}},
-  {"source":"Assets/Scripts/TowerFloorRuntimeController.cs","relation":"ExitUseRequested event subscriber","target":"Assets/Scripts/TowerRunCoordinator.cs","evidence":{"path":"Assets/Scripts/TowerRunCoordinator.cs","line":120,"contains":"ExitUseRequested += HandleExitUseRequested"}},
-  {"source":"Assets/Scripts/GameInput.cs","relation":"OnInteractPressed event subscriber","target":"Assets/Scripts/TowerFloorRuntimeController.cs","evidence":{"path":"Assets/Scripts/TowerFloorRuntimeController.cs","line":253,"contains":"OnInteractPressed += HandleInteractPressed"}},
-  {"source":"Assets/Scripts/TowerRunCoordinator.cs","relation":"commits entrance checkpoint slot","target":"Assets/Scripts/TowerRun/TowerRunSlotStore.cs","evidence":{"path":"Assets/Scripts/TowerRunCoordinator.cs","line":207,"contains":"slotStore.TryCommit"}},
-  {"source":"Assets/Scripts/TowerRunCoordinator.cs","relation":"applies staged runtime state","target":"Assets/Scripts/TowerRunRuntimeStateBridge.cs","evidence":{"path":"Assets/Scripts/TowerRunCoordinator.cs","line":292,"contains":"TowerRunRuntimeStateBridge.TryApply"}},
-  {"source":"Assets/Scripts/TowerRunRuntimeStateBridge.cs","relation":"replaces legacy runtime cache","target":"Assets/Scripts/GameSaveService.cs","evidence":{"path":"Assets/Scripts/TowerRunRuntimeStateBridge.cs","line":153,"contains":"GameSaveService.TryReplaceRuntimeData"}},
-  {"source":"Assets/Scripts/Damageable/Monster/BaseMonster.cs","relation":"OnDamaged and OnDefeated subscribers","target":"Assets/Scripts/Damageable/Monster/MonsterAIController.cs","evidence":{"path":"Assets/Scripts/Damageable/Monster/MonsterAIController.cs","line":185,"contains":"OnDamaged += HandleMonsterDamaged"}},
-  {"source":"Assets/Scripts/Damageable/Monster/MonsterAIController.cs","relation":"constructs attack state","target":"Assets/Scripts/Damageable/Monster/MonsterAttackState.cs","evidence":{"path":"Assets/Scripts/Damageable/Monster/MonsterAIController.cs","line":70,"contains":"new MonsterAttackState"}},
-  {"source":"Assets/Scripts/UI/Shop/ShopGridUI.cs","relation":"calls TryPurchase","target":"Assets/Scripts/Shop/ShopTradeController.cs","evidence":{"path":"Assets/Scripts/UI/Shop/ShopGridUI.cs","line":365,"contains":"tradeController.TryPurchase"}},
-  {"source":"Assets/Scripts/Shop/ShopTradeController.cs","relation":"mutates inventory without separate persistence","target":"Assets/Scripts/PlayerInventory.cs","evidence":{"path":"Assets/Scripts/Shop/ShopTradeController.cs","line":342,"contains":"TryRemoveItemWithoutPersistence"}},
-  {"source":"Assets/Scripts/MapGeneration/RandomMapGenerator.cs","relation":"creates terrain-bearing MapData","target":"Assets/Scripts/MapGeneration/MapData.cs","evidence":{"path":"Assets/Scripts/MapGeneration/RandomMapGenerator.cs","line":27,"contains":"new MapData"}},
-  {"source":"Assets/Scripts/MapGeneration/MonsterPlacementService.cs","relation":"selects Required Monster cell","target":"Assets/Scripts/MapGeneration/MonsterPlacementPolicy.cs","evidence":{"path":"Assets/Scripts/MapGeneration/MonsterPlacementService.cs","line":66,"contains":"policy.SelectRequired"}},
-  {"source":"Assets/Scripts/MapGeneration/DestructiblePlacementService.cs","relation":"selects Destructible cells","target":"Assets/Scripts/MapGeneration/DestructiblePlacementPolicy.cs","evidence":{"path":"Assets/Scripts/MapGeneration/DestructiblePlacementService.cs","line":111,"contains":"policy.SelectOptional"}},
-  {"source":"Assets/Scripts/MapGeneration/DestructiblePlacementService.cs","relation":"spawns pooled Destructible via bridge","target":"Assets/Scripts/Damageable/DestructiblePlacementTargetBridge.cs","evidence":{"path":"Assets/Scripts/MapGeneration/DestructiblePlacementService.cs","line":256,"contains":"poolSource.Spawn"}},
-  {"source":"Assets/Scripts/Damageable/Monster/MonsterMovementController.cs","relation":"movement event reaches Visual animator","target":"Assets/Scripts/Damageable/Monster/MonsterAnimationController.cs","evidence":{"path":"Assets/Scripts/Damageable/Monster/MonsterAnimationController.cs","line":77,"contains":"OnMovementChanged += HandleMovementChanged"}},
-  {"source":"Assets/Scripts/Damageable/Monster/MonsterAttackController.cs","relation":"attack event reaches Visual animator","target":"Assets/Scripts/Damageable/Monster/MonsterAnimationController.cs","evidence":{"path":"Assets/Scripts/Damageable/Monster/MonsterAnimationController.cs","line":86,"contains":"OnAttackStarted += HandleAttackStarted"}},
-  {"source":"Assets/Scripts/RewardPickup.cs","relation":"computes reward pickup amount","target":"Assets/Scripts/ScriptableObject/RewardSO.cs","evidence":{"path":"Assets/Scripts/RewardPickup.cs","line":73,"contains":"definition.GetPickupAmount(amount)"}},
-  {"source":"Assets/Scripts/UI/PackageGridUI.cs","relation":"passes stack data to visible slot","target":"Assets/Scripts/UI/PackageSlotUI.cs","evidence":{"path":"Assets/Scripts/UI/PackageGridUI.cs","line":99,"contains":"slot.SetData"}},
-  {"source":"Assets/Scripts/MapGeneration/MapGenerationController.cs","relation":"plans generation-scoped destructibles","target":"Assets/Scripts/MapGeneration/DestructiblePlacementService.cs","evidence":{"path":"Assets/Scripts/MapGeneration/MapGenerationController.cs","line":531,"contains":"destructiblePlacementService?.Plan"}},
-  {"source":"Assets/Scripts/Damageable/DestructiblePlacementTargetBridge.cs","relation":"gets Destructible instance from object pool","target":"Assets/Scripts/ObjectPoolManager.cs","evidence":{"path":"Assets/Scripts/Damageable/DestructiblePlacementTargetBridge.cs","line":20,"contains":"ObjectPoolManager.Spawn"}},
-  {"source":"Assets/Scripts/MapGeneration/DestructiblePlacementService.cs","relation":"returns retired Destructible instance","target":"Assets/Scripts/Damageable/DestructiblePlacementTargetBridge.cs","evidence":{"path":"Assets/Scripts/MapGeneration/DestructiblePlacementService.cs","line":379,"contains":"active.Target.Return"}},
-  {"source":"Assets/Scripts/Damageable/BaseDamageable.cs","relation":"returns defeated Damageable to pool","target":"Assets/Scripts/ObjectPoolManager.cs","evidence":{"path":"Assets/Scripts/Damageable/BaseDamageable.cs","line":264,"contains":"ObjectPoolManager.ReturnOrDeactivate(gameObject);"}},
-  {"source":"Assets/Scripts/Damageable/BaseDamageable.cs","relation":"prepares versioned pooled reward before activation","target":"Assets/Scripts/ObjectPoolManager.cs","evidence":{"path":"Assets/Scripts/Damageable/BaseDamageable.cs","line":155,"contains":"ObjectPoolManager.SpawnPrepared(rewardDefinition.rewardPrefab"}}
+  {
+    "source": "Assets/Scripts/GameInput.cs",
+    "relation": "OnBattlePressed event reaches subscriber",
+    "target": "Assets/Scripts/Player/PlayerAction.cs",
+    "evidence": {
+      "path": "Assets/Scripts/Player/PlayerAction.cs",
+      "line": 182,
+      "contains": "OnBattlePressed += HandleBattlePressed"
+    }
+  },
+  {
+    "source": "Assets/Scripts/Player/PlayerAction.cs",
+    "relation": "TakeDamage call",
+    "target": "Assets/Scripts/Damageable/BaseDamageable.cs",
+    "evidence": {
+      "path": "Assets/Scripts/Player/PlayerAction.cs",
+      "line": 348,
+      "contains": "attackTarget.TakeDamage"
+    }
+  },
+  {
+    "source": "Assets/Scripts/Damageable/BaseDamageable.cs",
+    "relation": "spawns pooled reward",
+    "target": "Assets/Scripts/ObjectPoolManager.cs",
+    "evidence": {
+      "path": "Assets/Scripts/Damageable/BaseDamageable.cs",
+      "line": 172,
+      "contains": "GameObject rewardObject = ObjectPoolManager.Spawn("
+    }
+  },
+  {
+    "source": "Assets/Scripts/Damageable/BaseDamageable.cs",
+    "relation": "initializes reward pickup",
+    "target": "Assets/Scripts/RewardPickup.cs",
+    "evidence": {
+      "path": "Assets/Scripts/Damageable/BaseDamageable.cs",
+      "line": 182,
+      "contains": "pickup.Initialize"
+    }
+  },
+  {
+    "source": "Assets/Scripts/RewardPickup.cs",
+    "relation": "pickup request event subscriber",
+    "target": "Assets/Scripts/PlayerInventory.cs",
+    "evidence": {
+      "path": "Assets/Scripts/PlayerInventory.cs",
+      "line": 146,
+      "contains": "OnRewardPickupRequested += HandleRewardPickupRequested"
+    }
+  },
+  {
+    "source": "Assets/Scripts/PlayerInventory.cs",
+    "relation": "saves inventory via GameSaveService",
+    "target": "Assets/Scripts/GameSaveService.cs",
+    "evidence": {
+      "path": "Assets/Scripts/PlayerInventory.cs",
+      "line": 809,
+      "contains": "if (GameSaveService.TryCommitRuntimeData(candidate))"
+    }
+  },
+  {
+    "source": "Assets/Scripts/PlayerInventory.cs",
+    "relation": "OnInventoryChanged event subscriber",
+    "target": "Assets/Scripts/UI/PackageGridUI.cs",
+    "evidence": {
+      "path": "Assets/Scripts/UI/PackageGridUI.cs",
+      "line": 68,
+      "contains": "subscribedInventory.OnInventoryChanged += Refresh;"
+    }
+  },
+  {
+    "source": "Assets/Scripts/PlayerInventory.cs",
+    "relation": "OnInventoryChanged event subscriber",
+    "target": "Assets/Scripts/UI/CurrencyHudUI.cs",
+    "evidence": {
+      "path": "Assets/Scripts/UI/CurrencyHudUI.cs",
+      "line": 41,
+      "contains": "OnInventoryChanged += RefreshGoldAmount"
+    }
+  },
+  {
+    "source": "Assets/Scripts/Player/PlayerAction.cs",
+    "relation": "persists stamina after attack start",
+    "target": "Assets/Scripts/GameSession.cs",
+    "evidence": {
+      "path": "Assets/Scripts/Player/PlayerAction.cs",
+      "line": 238,
+      "contains": "SaveRuntimeState"
+    }
+  },
+  {
+    "source": "Assets/Scripts/GameSession.cs",
+    "relation": "writes current runtime state",
+    "target": "Assets/Scripts/GameSaveService.cs",
+    "evidence": {
+      "path": "Assets/Scripts/GameSession.cs",
+      "line": 138,
+      "contains": "return GameSaveService.TryCommitRuntimeData(candidate);"
+    }
+  },
+  {
+    "source": "Assets/Scripts/TowerRunCoordinator.cs",
+    "relation": "requests map generation",
+    "target": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+    "evidence": {
+      "path": "Assets/Scripts/TowerRunCoordinator.cs",
+      "line": 471,
+      "contains": "mapController.TryGenerateMap"
+    }
+  },
+  {
+    "source": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+    "relation": "executes generation transaction",
+    "target": "Assets/Scripts/MapGeneration/MapIntegrationOrchestrator.cs",
+    "evidence": {
+      "path": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "line": 200,
+      "contains": "orchestrator.Execute"
+    }
+  },
+  {
+    "source": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+    "relation": "generates MapData",
+    "target": "Assets/Scripts/MapGeneration/RandomMapGenerator.cs",
+    "evidence": {
+      "path": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "line": 575,
+      "contains": "RandomMapGenerator.Generate"
+    }
+  },
+  {
+    "source": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+    "relation": "plans scene-bound monster placement",
+    "target": "Assets/Scripts/MapGeneration/MonsterPlacementService.cs",
+    "evidence": {
+      "path": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "line": 639,
+      "contains": "monsterPlacementService?.Plan"
+    }
+  },
+  {
+    "source": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+    "relation": "materializes scene-bound monster",
+    "target": "Assets/Scripts/MapGeneration/MonsterPlacementService.cs",
+    "evidence": {
+      "path": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "line": 287,
+      "contains": "monsterPlacementService.TryMaterialize"
+    }
+  },
+  {
+    "source": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+    "relation": "materializes generation-scoped destructibles",
+    "target": "Assets/Scripts/MapGeneration/DestructiblePlacementService.cs",
+    "evidence": {
+      "path": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "line": 295,
+      "contains": "destructiblePlacementService.TryMaterialize"
+    }
+  },
+  {
+    "source": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+    "relation": "spawns or relocates canonical player",
+    "target": "Assets/Scripts/MapGeneration/PlayerSpawnService.cs",
+    "evidence": {
+      "path": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "line": 322,
+      "contains": "spawnService.TrySpawn"
+    }
+  },
+  {
+    "source": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+    "relation": "binds camera after spawn",
+    "target": "Assets/Scripts/MapGeneration/CameraBindingService.cs",
+    "evidence": {
+      "path": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "line": 381,
+      "contains": "cameraBindingServices[0].TryBind"
+    }
+  },
+  {
+    "source": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+    "relation": "MapGenerated event subscriber",
+    "target": "Assets/Scripts/MapGeneration/MapMinimapController.cs",
+    "evidence": {
+      "path": "Assets/Scripts/MapGeneration/MapMinimapController.cs",
+      "line": 308,
+      "contains": "MapGenerated += HandleMapGenerated"
+    }
+  },
+  {
+    "source": "Assets/Scripts/Damageable/BaseDamageable.cs",
+    "relation": "OnDefeated event subscriber",
+    "target": "Assets/Scripts/TowerFloorRuntimeController.cs",
+    "evidence": {
+      "path": "Assets/Scripts/TowerFloorRuntimeController.cs",
+      "line": 117,
+      "contains": "OnDefeated += HandleTargetDefeated"
+    }
+  },
+  {
+    "source": "Assets/Scripts/TowerFloorRuntimeController.cs",
+    "relation": "ExitUseRequested event subscriber",
+    "target": "Assets/Scripts/TowerRunCoordinator.cs",
+    "evidence": {
+      "path": "Assets/Scripts/TowerRunCoordinator.cs",
+      "line": 183,
+      "contains": "ExitUseRequested += HandleExitUseRequested"
+    }
+  },
+  {
+    "source": "Assets/Scripts/GameInput.cs",
+    "relation": "OnInteractPressed event subscriber",
+    "target": "Assets/Scripts/TowerFloorRuntimeController.cs",
+    "evidence": {
+      "path": "Assets/Scripts/TowerFloorRuntimeController.cs",
+      "line": 259,
+      "contains": "OnInteractPressed += HandleInteractPressed"
+    }
+  },
+  {
+    "source": "Assets/Scripts/TowerRunCoordinator.cs",
+    "relation": "commits entrance checkpoint slot",
+    "target": "Assets/Scripts/TowerRun/TowerRunSlotStore.cs",
+    "evidence": {
+      "path": "Assets/Scripts/TowerRunCoordinator.cs",
+      "line": 279,
+      "contains": "slotStore.TryCommit"
+    }
+  },
+  {
+    "source": "Assets/Scripts/TowerRunCoordinator.cs",
+    "relation": "applies staged runtime state",
+    "target": "Assets/Scripts/TowerRunRuntimeStateBridge.cs",
+    "evidence": {
+      "path": "Assets/Scripts/TowerRunCoordinator.cs",
+      "line": 392,
+      "contains": "TowerRunRuntimeStateBridge.TryApply"
+    }
+  },
+  {
+    "source": "Assets/Scripts/TowerRunRuntimeStateBridge.cs",
+    "relation": "replaces legacy runtime cache",
+    "target": "Assets/Scripts/GameSaveService.cs",
+    "evidence": {
+      "path": "Assets/Scripts/TowerRunRuntimeStateBridge.cs",
+      "line": 153,
+      "contains": "GameSaveService.TryReplaceRuntimeData"
+    }
+  },
+  {
+    "source": "Assets/Scripts/Damageable/Monster/BaseMonster.cs",
+    "relation": "OnDamaged and OnDefeated subscribers",
+    "target": "Assets/Scripts/Damageable/Monster/MonsterAIController.cs",
+    "evidence": {
+      "path": "Assets/Scripts/Damageable/Monster/MonsterAIController.cs",
+      "line": 236,
+      "contains": "OnDamaged += HandleMonsterDamaged"
+    }
+  },
+  {
+    "source": "Assets/Scripts/Damageable/Monster/MonsterAIController.cs",
+    "relation": "constructs attack state",
+    "target": "Assets/Scripts/Damageable/Monster/MonsterAttackState.cs",
+    "evidence": {
+      "path": "Assets/Scripts/Damageable/Monster/MonsterAIController.cs",
+      "line": 81,
+      "contains": "new MonsterAttackState"
+    }
+  },
+  {
+    "source": "Assets/Scripts/Shop/ShopTradeController.cs",
+    "relation": "mutates inventory without separate persistence",
+    "target": "Assets/Scripts/PlayerInventory.cs",
+    "evidence": {
+      "path": "Assets/Scripts/Shop/ShopTradeController.cs",
+      "line": 342,
+      "contains": "TryRemoveItemWithoutPersistence"
+    }
+  },
+  {
+    "source": "Assets/Scripts/MapGeneration/RandomMapGenerator.cs",
+    "relation": "creates terrain-bearing MapData",
+    "target": "Assets/Scripts/MapGeneration/MapData.cs",
+    "evidence": {
+      "path": "Assets/Scripts/MapGeneration/RandomMapGenerator.cs",
+      "line": 27,
+      "contains": "new MapData"
+    }
+  },
+  {
+    "source": "Assets/Scripts/MapGeneration/MonsterPlacementService.cs",
+    "relation": "selects Required Monster cell",
+    "target": "Assets/Scripts/MapGeneration/MonsterPlacementPolicy.cs",
+    "evidence": {
+      "path": "Assets/Scripts/MapGeneration/MonsterPlacementService.cs",
+      "line": 66,
+      "contains": "policy.SelectRequired"
+    }
+  },
+  {
+    "source": "Assets/Scripts/MapGeneration/DestructiblePlacementService.cs",
+    "relation": "selects Destructible cells",
+    "target": "Assets/Scripts/MapGeneration/DestructiblePlacementPolicy.cs",
+    "evidence": {
+      "path": "Assets/Scripts/MapGeneration/DestructiblePlacementService.cs",
+      "line": 111,
+      "contains": "policy.SelectOptional"
+    }
+  },
+  {
+    "source": "Assets/Scripts/MapGeneration/DestructiblePlacementService.cs",
+    "relation": "spawns pooled Destructible via bridge",
+    "target": "Assets/Scripts/Damageable/DestructiblePlacementTargetBridge.cs",
+    "evidence": {
+      "path": "Assets/Scripts/MapGeneration/DestructiblePlacementService.cs",
+      "line": 258,
+      "contains": "poolSource.Spawn"
+    }
+  },
+  {
+    "source": "Assets/Scripts/Damageable/Monster/MonsterMovementController.cs",
+    "relation": "movement event reaches Visual animator",
+    "target": "Assets/Scripts/Damageable/Monster/MonsterAnimationController.cs",
+    "evidence": {
+      "path": "Assets/Scripts/Damageable/Monster/MonsterAnimationController.cs",
+      "line": 77,
+      "contains": "OnMovementChanged += HandleMovementChanged"
+    }
+  },
+  {
+    "source": "Assets/Scripts/Damageable/Monster/MonsterAttackController.cs",
+    "relation": "attack event reaches Visual animator",
+    "target": "Assets/Scripts/Damageable/Monster/MonsterAnimationController.cs",
+    "evidence": {
+      "path": "Assets/Scripts/Damageable/Monster/MonsterAnimationController.cs",
+      "line": 86,
+      "contains": "OnAttackStarted += HandleAttackStarted"
+    }
+  },
+  {
+    "source": "Assets/Scripts/RewardPickup.cs",
+    "relation": "computes reward pickup amount",
+    "target": "Assets/Scripts/ScriptableObject/RewardSO.cs",
+    "evidence": {
+      "path": "Assets/Scripts/RewardPickup.cs",
+      "line": 73,
+      "contains": "definition.GetPickupAmount(amount)"
+    }
+  },
+  {
+    "source": "Assets/Scripts/UI/PackageGridUI.cs",
+    "relation": "passes stack data to visible slot",
+    "target": "Assets/Scripts/UI/PackageSlotUI.cs",
+    "evidence": {
+      "path": "Assets/Scripts/UI/PackageGridUI.cs",
+      "line": 157,
+      "contains": "slot.SetData"
+    }
+  },
+  {
+    "source": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+    "relation": "plans generation-scoped destructibles",
+    "target": "Assets/Scripts/MapGeneration/DestructiblePlacementService.cs",
+    "evidence": {
+      "path": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "line": 640,
+      "contains": "destructiblePlacementService?.Plan"
+    }
+  },
+  {
+    "source": "Assets/Scripts/Damageable/DestructiblePlacementTargetBridge.cs",
+    "relation": "gets Destructible instance from object pool",
+    "target": "Assets/Scripts/ObjectPoolManager.cs",
+    "evidence": {
+      "path": "Assets/Scripts/Damageable/DestructiblePlacementTargetBridge.cs",
+      "line": 20,
+      "contains": "ObjectPoolManager.Spawn"
+    }
+  },
+  {
+    "source": "Assets/Scripts/MapGeneration/DestructiblePlacementService.cs",
+    "relation": "returns retired Destructible instance",
+    "target": "Assets/Scripts/Damageable/DestructiblePlacementTargetBridge.cs",
+    "evidence": {
+      "path": "Assets/Scripts/MapGeneration/DestructiblePlacementService.cs",
+      "line": 381,
+      "contains": "active.Target.Return"
+    }
+  },
+  {
+    "source": "Assets/Scripts/Damageable/BaseDamageable.cs",
+    "relation": "returns defeated Damageable to pool",
+    "target": "Assets/Scripts/ObjectPoolManager.cs",
+    "evidence": {
+      "path": "Assets/Scripts/Damageable/BaseDamageable.cs",
+      "line": 264,
+      "contains": "ObjectPoolManager.ReturnOrDeactivate(gameObject);"
+    }
+  },
+  {
+    "source": "Assets/Scripts/Damageable/BaseDamageable.cs",
+    "relation": "prepares versioned pooled reward before activation",
+    "target": "Assets/Scripts/ObjectPoolManager.cs",
+    "evidence": {
+      "path": "Assets/Scripts/Damageable/BaseDamageable.cs",
+      "line": 155,
+      "contains": "ObjectPoolManager.SpawnPrepared(rewardDefinition.rewardPrefab"
+    }
+  },
+  {
+    "source": "Assets/Scripts/UI/Shop/ShopGridUI.cs",
+    "relation": "forwards one purchase intent",
+    "target": "Assets/Scripts/UI/Shop/ShopPresenter.cs",
+    "evidence": {
+      "path": "Assets/Scripts/UI/Shop/ShopGridUI.cs",
+      "line": 428,
+      "contains": "presenter.Purchase"
+    }
+  },
+  {
+    "source": "Assets/Scripts/UI/Shop/ShopPresenter.cs",
+    "relation": "calls original transaction once",
+    "target": "Assets/Scripts/Shop/ShopTradeController.cs",
+    "evidence": {
+      "path": "Assets/Scripts/UI/Shop/ShopPresenter.cs",
+      "line": 15,
+      "contains": "trade.TryPurchase"
+    }
+  },
+  {
+    "source": "Assets/Scripts/UI/UIRoot.cs",
+    "relation": "constructs sole page manager",
+    "target": "Assets/Scripts/UI/UIManager.cs",
+    "evidence": {
+      "path": "Assets/Scripts/UI/UIRoot.cs",
+      "line": 36,
+      "contains": "new UIManager"
+    }
+  },
+  {
+    "source": "Assets/Scripts/UI/UIRoot.cs",
+    "relation": "constructs fixed layer controller",
+    "target": "Assets/Scripts/UI/UILayerController.cs",
+    "evidence": {
+      "path": "Assets/Scripts/UI/UIRoot.cs",
+      "line": 34,
+      "contains": "new UILayerController"
+    }
+  },
+  {
+    "source": "Assets/Scripts/UI/UIRoot.cs",
+    "relation": "constructs single Back and focus router",
+    "target": "Assets/Scripts/UI/UIInputRouter.cs",
+    "evidence": {
+      "path": "Assets/Scripts/UI/UIRoot.cs",
+      "line": 35,
+      "contains": "new UIInputRouter"
+    }
+  },
+  {
+    "source": "Assets/Scripts/UI/UIManager.cs",
+    "relation": "acquires original gameplay lease",
+    "target": "Assets/Scripts/TowerRunGateHub.cs",
+    "evidence": {
+      "path": "Assets/Scripts/UI/UIManager.cs",
+      "line": 146,
+      "contains": "TowerRunGateHub.AcquireGameplay"
+    }
+  },
+  {
+    "source": "Assets/Scripts/UI/TowerRunSaveSlotsPresenter.cs",
+    "relation": "submits original save authority",
+    "target": "Assets/Scripts/TowerRunCoordinator.cs",
+    "evidence": {
+      "path": "Assets/Scripts/UI/TowerRunSaveSlotsPresenter.cs",
+      "line": 86,
+      "contains": "coordinator.TrySaveEntranceCandidate"
+    }
+  },
+  {
+    "source": "Assets/Scripts/UI/TowerRunUiController.cs",
+    "relation": "assembles flow presenter",
+    "target": "Assets/Scripts/UI/TowerRunFlowPresenter.cs",
+    "evidence": {
+      "path": "Assets/Scripts/UI/TowerRunUiController.cs",
+      "line": 39,
+      "contains": "new TowerRunFlowPresenter"
+    }
+  },
+  {
+    "source": "Assets/Scripts/UI/TowerRunUiController.cs",
+    "relation": "assembles settings presenter",
+    "target": "Assets/Scripts/UI/TowerRunSettingsPresenter.cs",
+    "evidence": {
+      "path": "Assets/Scripts/UI/TowerRunUiController.cs",
+      "line": 32,
+      "contains": "new TowerRunSettingsPresenter"
+    }
+  },
+  {
+    "source": "Assets/Scripts/UI/TowerRunUiController.cs",
+    "relation": "assembles save presenter",
+    "target": "Assets/Scripts/UI/TowerRunSaveSlotsPresenter.cs",
+    "evidence": {
+      "path": "Assets/Scripts/UI/TowerRunUiController.cs",
+      "line": 31,
+      "contains": "new TowerRunSaveSlotsPresenter"
+    }
+  },
+  {
+    "source": "Assets/Scripts/MapGeneration/Ecology/EcologyRetainedContentManifest.cs",
+    "relation": "selects source hashing by verification context",
+    "target": "Assets/Scripts/MapGeneration/SpatialVersion/MapHostCompatibility.cs",
+    "evidence": {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyRetainedContentManifest.cs",
+      "line": 47,
+      "contains": "bool verifySources = MapHostCompatibility.RequiresSourceVerification"
+    }
+  },
+  {
+    "source": "Assets/Scripts/MapGeneration/Ecology/EcologyRecipeDefinition.cs",
+    "relation": "requires strict source scope for explicit verification",
+    "target": "Assets/Scripts/MapGeneration/SpatialVersion/MapHostCompatibility.cs",
+    "evidence": {
+      "path": "Assets/Scripts/MapGeneration/Ecology/EcologyRecipeDefinition.cs",
+      "line": 69,
+      "contains": "using (MapHostCompatibility.RequireStrictSourceVerification())"
+    }
+  },
+  {
+    "source": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+    "relation": "routes automatic restore source checks by context",
+    "target": "Assets/Scripts/MapGeneration/SpatialVersion/MapHostCompatibility.cs",
+    "evidence": {
+      "path": "Assets/Scripts/MapGeneration/MapGenerationController.cs",
+      "line": 97,
+      "contains": "request.EcologyEntry != null && (!Application.isEditor || MapHostCompatibility.RequiresSourceVerification())"
+    }
+  },
+  {
+    "source": "Assets/Editor/MapVNext/MapHostSourceVerificationEditor.cs",
+    "relation": "forces strict validation for every BuildPipeline entry",
+    "target": "Assets/Editor/MapVNext/MapVNextI1Build.cs",
+    "evidence": {
+      "path": "Assets/Editor/MapVNext/MapHostSourceVerificationEditor.cs",
+      "line": 40,
+      "contains": "try { MapVNextI1Build.VerifySourceInputsForBuild(); }"
+    }
+  },
+  {
+    "source": "Assets/Editor/MapVNext/MapHostSourceVerificationEditor.cs",
+    "relation": "supplies interactive Test Runner state across reloads",
+    "target": "Assets/Scripts/MapGeneration/SpatialVersion/MapHostCompatibility.cs",
+    "evidence": {
+      "path": "Assets/Editor/MapVNext/MapHostSourceVerificationEditor.cs",
+      "line": 17,
+      "contains": "MapHostCompatibility.EditorTestRunActive ="
+    }
+  },
+  {
+    "source": "Assets/Editor/MapVNext/MapVNextI1Build.cs",
+    "relation": "uses strict scope for retained build inputs",
+    "target": "Assets/Scripts/MapGeneration/SpatialVersion/MapHostCompatibility.cs",
+    "evidence": {
+      "path": "Assets/Editor/MapVNext/MapVNextI1Build.cs",
+      "line": 30,
+      "contains": "using (MapHostCompatibility.RequireStrictSourceVerification())"
+    }
+  },
+  {
+    "source": "Assets/Scripts/UI/UIRoot.cs",
+    "relation": "registers authored scene pages",
+    "target": "Assets/Scripts/UI/UIPage.cs",
+    "evidence": {
+      "path": "Assets/Scripts/UI/UIRoot.cs",
+      "line": 52,
+      "contains": "page.Register(Manager, definition)"
+    }
+  },
+  {
+    "source": "Assets/Scripts/UI/UIRoot.cs",
+    "relation": "binds shared page rules",
+    "target": "Assets/Scripts/UI/UIPageCatalog.cs",
+    "evidence": {
+      "path": "Assets/Scripts/UI/UIRoot.cs",
+      "line": 50,
+      "contains": "pageCatalog.CreateDefinition(page)"
+    }
+  },
+  {
+    "source": "Assets/Scripts/UI/UIPage.cs",
+    "relation": "registers typed page lifecycle",
+    "target": "Assets/Scripts/UI/UIManager.cs",
+    "evidence": {
+      "path": "Assets/Scripts/UI/UIPage.cs",
+      "line": 31,
+      "contains": "manager.Register(new UIRoute<TArgs>"
+    }
+  },
+  {
+    "source": "Assets/Scripts/UI/UIPageCatalog.cs",
+    "relation": "creates runtime definition without mutating catalog",
+    "target": "Assets/Scripts/UI/UIContracts.cs",
+    "evidence": {
+      "path": "Assets/Scripts/UI/UIPageCatalog.cs",
+      "line": 22,
+      "contains": "SceneInstance = page.gameObject"
+    }
+  },
+  {
+    "source": "Assets/Scripts/UI/TowerRunUiController.cs",
+    "relation": "binds authored system controls",
+    "target": "Assets/Scripts/UI/TowerRunUiViews.cs",
+    "evidence": {
+      "path": "Assets/Scripts/UI/TowerRunUiController.cs",
+      "line": 36,
+      "contains": "views.BindActions()"
+    }
+  },
+  {
+    "source": "Assets/Editor/UIArchitecture/UIRootEditor.cs",
+    "relation": "opens editor system overview",
+    "target": "Assets/Editor/UIArchitecture/UIManagementWindow.cs",
+    "evidence": {
+      "path": "Assets/Editor/UIArchitecture/UIRootEditor.cs",
+      "line": 16,
+      "contains": "UIManagementWindow.ShowFor(root)"
+    }
+  },
+  {
+    "source": "Assets/Editor/UIArchitecture/UIManagementWindow.cs",
+    "relation": "reuses actual root inspector",
+    "target": "Assets/Editor/UIArchitecture/UIRootEditor.cs",
+    "evidence": {
+      "path": "Assets/Editor/UIArchitecture/UIManagementWindow.cs",
+      "line": 26,
+      "contains": "CreateCachedEditor(root, null, ref inspector)"
+    }
+  },
+  {
+    "source": "Assets/Scripts/UI/UIConfirmationDialog.cs",
+    "relation": "uses centralized template rules",
+    "target": "Assets/Scripts/UI/UIPageCatalog.cs",
+    "evidence": {
+      "path": "Assets/Scripts/UI/UIConfirmationDialog.cs",
+      "line": 31,
+      "contains": "root.PageCatalog.CreateDefinition(source)"
+    }
+  },
+  {
+    "source": "Assets/Scripts/UI/SettingsUIPage.cs",
+    "relation": "delegates settings intent to presenter",
+    "target": "Assets/Scripts/UI/TowerRunSettingsPresenter.cs",
+    "evidence": {
+      "path": "Assets/Scripts/UI/SettingsUIPage.cs",
+      "line": 6,
+      "contains": "presenter.ShowAudioPage()"
+    }
+  },
+  {
+    "source": "Assets/Scripts/UI/PackageUIPage.cs",
+    "relation": "preserves existing visibility event",
+    "target": "Assets/Scripts/UI/PackagePanelController.cs",
+    "evidence": {
+      "path": "Assets/Scripts/UI/PackageUIPage.cs",
+      "line": 11,
+      "contains": "controller.NotifyVisibility(true)"
+    }
+  },
+  {
+    "source": "Assets/Scripts/UI/Shop/ShopUIPage.cs",
+    "relation": "preserves existing shop visibility event",
+    "target": "Assets/Scripts/UI/Shop/ShopPanelController.cs",
+    "evidence": {
+      "path": "Assets/Scripts/UI/Shop/ShopUIPage.cs",
+      "line": 21,
+      "contains": "controller.NotifyVisibility(true)"
+    }
+  },
+  {
+    "source": "Assets/Scripts/GameSession.cs",
+    "relation": "binds current reward dependencies",
+    "target": "Assets/Scripts/PlayerRewardService.cs",
+    "evidence": {
+      "path": "Assets/Scripts/GameSession.cs",
+      "line": 195,
+      "contains": "Rewards = new PlayerRewardService"
+    }
+  },
+  {
+    "source": "Assets/Scripts/PlayerInventory.cs",
+    "relation": "settles one consumable unit",
+    "target": "Assets/Scripts/PlayerRewardService.cs",
+    "evidence": {
+      "path": "Assets/Scripts/PlayerInventory.cs",
+      "line": 194,
+      "contains": "rewardService.TrySettleConsumable"
+    }
+  },
+  {
+    "source": "Assets/Scripts/UI/PackageGridUI.cs",
+    "relation": "requests one owned unit drop",
+    "target": "Assets/Scripts/PlayerInventory.cs",
+    "evidence": {
+      "path": "Assets/Scripts/UI/PackageGridUI.cs",
+      "line": 244,
+      "contains": "if (!playerInventory.TryDropOne(slot.CurrentReward"
+    }
+  },
+  {
+    "source": "Assets/Scripts/PlayerRewardService.cs",
+    "relation": "prepares one owned ground unit",
+    "target": "Assets/Scripts/RewardPickup.cs",
+    "evidence": {
+      "path": "Assets/Scripts/PlayerRewardService.cs",
+      "line": 127,
+      "contains": "pickup.InitializeOwnedUnits(reward, 1)"
+    }
+  },
+  {
+    "source": "Assets/Scripts/PlayerRewardService.cs",
+    "relation": "checks drop terrain and player exclusion",
+    "target": "Assets/Scripts/MapGeneration/SpatialVersion/MapSpatialRewardPlacement.cs",
+    "evidence": {
+      "path": "Assets/Scripts/PlayerRewardService.cs",
+      "line": 100,
+      "contains": "MapSpatialRewardPlacement.TryFindForPlayer(context"
+    }
+  },
+  {
+    "source": "Assets/Scripts/RewardPickup.cs",
+    "relation": "presents committed inventory hop",
+    "target": "Assets/Scripts/RewardVisualController.cs",
+    "evidence": {
+      "path": "Assets/Scripts/RewardPickup.cs",
+      "line": 103,
+      "contains": "IEnumerator visual = rewardVisualController.PlayInventoryHop()"
+    }
+  },
+  {
+    "source": "Assets/Scripts/PlayerRewardService.cs",
+    "relation": "binds runtime memory commit",
+    "target": "Assets/Scripts/GameSaveService.cs",
+    "evidence": {
+      "path": "Assets/Scripts/PlayerRewardService.cs",
+      "line": 24,
+      "contains": "this.commitRuntimeData = commitRuntimeData ?? GameSaveService.TryCommitRuntimeData"
+    }
+  },
+  {
+    "source": "Assets/Scripts/PlayerRewardService.cs",
+    "relation": "stages current stat restoration",
+    "target": "Assets/Scripts/PlayerStatsRuntime.cs",
+    "evidence": {
+      "path": "Assets/Scripts/PlayerRewardService.cs",
+      "line": 52,
+      "contains": "stats.TryRestoreCurrent(stat, value, out float restored)"
+    }
+  },
+  {
+    "source": "Assets/Scripts/TowerRunRuntimeStateBridge.cs",
+    "relation": "validates cached versioned shop stocks",
+    "target": "Assets/Scripts/Shop/ShopTradeController.cs",
+    "evidence": {
+      "path": "Assets/Scripts/TowerRunRuntimeStateBridge.cs",
+      "contains": "if (!shop.TryValidateCheckpointShop(cached, out message)) return false;",
+      "line": 77
+    }
+  },
+  {
+    "source": "Assets/Scripts/Shop/ShopTradeController.cs",
+    "relation": "captures catalog stock version",
+    "target": "Assets/Scripts/TowerRun/TowerRunCheckpointRecord.cs",
+    "evidence": {
+      "path": "Assets/Scripts/Shop/ShopTradeController.cs",
+      "contains": "destination.stockVersion = shopCatalog.StockVersion;",
+      "line": 785
+    }
+  }
 ]

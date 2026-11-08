@@ -106,6 +106,7 @@ public class ShopPurchaseResult
 /// </summary>
 public class ShopTradeController : MonoBehaviour
 {
+    private string runtimeStockFailure;
     /// <summary>
     /// 购买成功时发出的事件。
     /// </summary>
@@ -270,6 +271,9 @@ public class ShopTradeController : MonoBehaviour
         if (product == null)
             return 0;
 
+        InitializeRuntimeStocksIfNeeded();
+        if (!string.IsNullOrEmpty(runtimeStockFailure)) return 0;
+
         if (product.InfiniteStock)
             return int.MaxValue;
 
@@ -369,7 +373,7 @@ public class ShopTradeController : MonoBehaviour
         playerInventory.WriteToSaveData(candidate);
         WriteRuntimeStocksToSaveData(candidate);
 
-        if (!GameSaveService.TrySave(candidate))
+        if (!GameSaveService.TryCommitRuntimeData(candidate))
         {
             playerInventory.RestoreSnapshot(inventorySnapshot, false);
 
@@ -407,8 +411,10 @@ public class ShopTradeController : MonoBehaviour
 
         Dictionary<ShopCatalogProduct, int> previousStocks =
             new Dictionary<ShopCatalogProduct, int>(runtimeStocks); // 重置前库存。
+        string previousFailure = runtimeStockFailure;
 
         runtimeStocks.Clear();
+        runtimeStockFailure = null;
         InitializeRuntimeStocksFromCatalog();
         hasInitializedRuntimeStocks = true;
 
@@ -419,6 +425,7 @@ public class ShopTradeController : MonoBehaviour
 
         foreach (KeyValuePair<ShopCatalogProduct, int> pair in previousStocks)
             runtimeStocks[pair.Key] = pair.Value;
+        runtimeStockFailure = previousFailure;
     }
 
     /// <summary>
@@ -433,6 +440,8 @@ public class ShopTradeController : MonoBehaviour
             return false;
 
         InitializeRuntimeStocksIfNeeded();
+        if (!string.IsNullOrEmpty(runtimeStockFailure)) return false;
+        if (!TryValidateCachedStocks(out _)) return false;
         shopCatalog.EnsurePersistentIds();
 
         GameSaveData candidate = GameSaveService.Clone(GameSaveService.GetOrCreateData()); // 候选存档。
@@ -445,7 +454,7 @@ public class ShopTradeController : MonoBehaviour
         }
 
         WriteRuntimeStocksToSaveData(candidate);
-        return GameSaveService.TrySave(candidate);
+        return GameSaveService.TryCommitRuntimeData(candidate);
     }
 
     /// <summary>
@@ -455,6 +464,11 @@ public class ShopTradeController : MonoBehaviour
     /// <returns>购买检查结果。</returns>
     private ShopPurchaseResult EvaluatePurchase(ShopCatalogProduct product)
     {
+        InitializeRuntimeStocksIfNeeded();
+        if (!string.IsNullOrEmpty(runtimeStockFailure))
+            return CreateFailure(product, ShopPurchaseFailReason.InvalidProduct, runtimeStockFailure);
+        if (!TryValidateCachedStocks(out string cacheFailure))
+            return CreateFailure(product, ShopPurchaseFailReason.InvalidProduct, cacheFailure);
         if (product == null || !product.IsValid || product.PurchaseAmount <= 0)
             return CreateFailure(product, ShopPurchaseFailReason.InvalidProduct, "商品配置无效");
 
@@ -521,6 +535,7 @@ public class ShopTradeController : MonoBehaviour
     private void EnsureProductStock(ShopCatalogProduct product)
     {
         InitializeRuntimeStocksIfNeeded();
+        if (!string.IsNullOrEmpty(runtimeStockFailure)) return;
 
         if (product == null || product.InfiniteStock || runtimeStocks.ContainsKey(product))
             return;
@@ -537,6 +552,7 @@ public class ShopTradeController : MonoBehaviour
             return;
 
         runtimeStocks.Clear();
+        runtimeStockFailure = null;
 
         if (shopCatalog == null)
         {
@@ -550,10 +566,34 @@ public class ShopTradeController : MonoBehaviour
         GameSaveData data = GameSaveService.GetOrCreateData(); // 统一存档。
         GameSaveShopData savedShop = GameSaveService.FindShop(data, shopCatalog.CatalogId); // 当前商店存档。
 
+        if (savedShop != null && (shopCatalog.StockVersion > 0 || savedShop.stockVersion != 0))
+        {
+            if (!TryApplyCheckpointShop(CopyCheckpointStocks(savedShop), false, out runtimeStockFailure)) runtimeStocks.Clear();
+            hasInitializedRuntimeStocks = true;
+            return;
+        }
         if (savedShop != null)
             ApplySavedStocks(savedShop);
 
         hasInitializedRuntimeStocks = true;
+    }
+
+    private bool TryValidateCachedStocks(out string message)
+    {
+        message = string.Empty;
+        if (shopCatalog == null) return true;
+        var saved = GameSaveService.FindShop(GameSaveService.GetOrCreateData(), shopCatalog.CatalogId);
+        if (saved == null || (shopCatalog.StockVersion == 0 && saved.stockVersion == 0)) return true;
+        return TryValidateCheckpointShop(CopyCheckpointStocks(saved), out message);
+    }
+
+    private static TowerRunShopRecord CopyCheckpointStocks(GameSaveShopData source)
+    {
+        var record = new TowerRunShopRecord { catalogId = source.catalogId, stockVersion = source.stockVersion };
+        if (source.productStocks == null) record.productStocks = null;
+        else foreach (var stock in source.productStocks)
+            record.productStocks.Add(stock == null ? null : new TowerRunShopStockRecord { productId = stock.productId, quantity = stock.quantity });
+        return record;
     }
 
     /// <summary>
@@ -651,6 +691,7 @@ public class ShopTradeController : MonoBehaviour
         if (savedShop == null)
             return;
 
+        savedShop.stockVersion = shopCatalog.StockVersion;
         savedShop.productStocks.Clear();
 
         IReadOnlyList<ShopCatalogCategory> categories = shopCatalog.Categories; // 当前分类列表。
@@ -692,13 +733,18 @@ public class ShopTradeController : MonoBehaviour
             return false;
         }
 
-        if (shopCatalog == null || string.IsNullOrWhiteSpace(shopCatalog.CatalogId))
+        if (shopCatalog == null || string.IsNullOrWhiteSpace(shopCatalog.CatalogId) || shopCatalog.StockVersion < 0)
         {
             message = "商店缺少稳定 CatalogId。";
             return false;
         }
 
         InitializeRuntimeStocksIfNeeded();
+        if (!string.IsNullOrEmpty(runtimeStockFailure))
+        {
+            message = runtimeStockFailure;
+            return false;
+        }
         HashSet<string> productIds = new HashSet<string>(StringComparer.Ordinal);
         List<TowerRunShopStockRecord> captured = new List<TowerRunShopStockRecord>();
         IReadOnlyList<ShopCatalogCategory> categories = shopCatalog.Categories;
@@ -719,7 +765,8 @@ public class ShopTradeController : MonoBehaviour
                 if (product == null || product.InfiniteStock)
                     continue;
 
-                if (string.IsNullOrWhiteSpace(product.ProductId) || !productIds.Add(product.ProductId))
+                if (string.IsNullOrWhiteSpace(product.ProductId) || !productIds.Add(product.ProductId) ||
+                    product.IntroducedInStockVersion < 0 || product.IntroducedInStockVersion > shopCatalog.StockVersion)
                 {
                     message = "商店包含缺失或重复的稳定 ProductId。";
                     return false;
@@ -735,21 +782,39 @@ public class ShopTradeController : MonoBehaviour
 
         captured.Sort((left, right) => string.CompareOrdinal(left.productId, right.productId));
         destination.catalogId = shopCatalog.CatalogId;
+        destination.stockVersion = shopCatalog.StockVersion;
         destination.productStocks = captured;
         message = string.Empty;
         return true;
     }
 
     /// <summary>
-    /// 原子应用当前目录的正式检查点库存；未知或缺失商品会使恢复失败。
+    /// 原子恢复库存；旧版本仅补入之后新增的商品，当前版本缺项仍拒绝。
     /// </summary>
     internal bool TryApplyCheckpointShop(
         TowerRunShopRecord source,
         bool notify,
         out string message)
     {
+        if (!TryPrepareCheckpointShop(source, out var prepared, out message)) return false;
+        runtimeStocks.Clear();
+        foreach (var pair in prepared) runtimeStocks.Add(pair.Key, pair.Value);
+        hasInitializedRuntimeStocks = true;
+        runtimeStockFailure = null;
+        if (notify) OnTradeStateChanged?.Invoke();
+        return true;
+    }
+
+    internal bool TryValidateCheckpointShop(TowerRunShopRecord source, out string message)
+        => TryPrepareCheckpointShop(source, out _, out message);
+
+    private bool TryPrepareCheckpointShop(TowerRunShopRecord source,
+        out Dictionary<ShopCatalogProduct, int> prepared, out string message)
+    {
+        prepared = null;
         if (source == null || shopCatalog == null ||
-            !string.Equals(source.catalogId, shopCatalog.CatalogId, StringComparison.Ordinal))
+            !string.Equals(source.catalogId, shopCatalog.CatalogId, StringComparison.Ordinal) ||
+            source.stockVersion < 0 || source.stockVersion > shopCatalog.StockVersion)
         {
             message = "商店检查点与当前 CatalogId 不匹配。";
             return false;
@@ -776,7 +841,8 @@ public class ShopTradeController : MonoBehaviour
                     continue;
 
                 if (string.IsNullOrWhiteSpace(product.ProductId) ||
-                    productsById.ContainsKey(product.ProductId))
+                    productsById.ContainsKey(product.ProductId) || product.IntroducedInStockVersion < 0 ||
+                    product.IntroducedInStockVersion > shopCatalog.StockVersion)
                 {
                     message = "当前商店包含缺失或重复的稳定 ProductId。";
                     return false;
@@ -786,10 +852,9 @@ public class ShopTradeController : MonoBehaviour
             }
         }
 
-        Dictionary<ShopCatalogProduct, int> prepared =
-            new Dictionary<ShopCatalogProduct, int>();
+        prepared = new Dictionary<ShopCatalogProduct, int>();
 
-        if (source.productStocks == null || source.productStocks.Count != productsById.Count)
+        if (source.productStocks == null)
         {
             message = "商店检查点没有完整覆盖当前目录库存。";
             return false;
@@ -799,7 +864,7 @@ public class ShopTradeController : MonoBehaviour
         {
             TowerRunShopStockRecord stock = source.productStocks[i];
 
-            if (stock == null ||
+            if (stock == null || string.IsNullOrWhiteSpace(stock.productId) ||
                 !productsById.TryGetValue(stock.productId, out ShopCatalogProduct product) ||
                 prepared.ContainsKey(product) ||
                 stock.quantity < 0L ||
@@ -812,15 +877,16 @@ public class ShopTradeController : MonoBehaviour
             prepared.Add(product, (int)stock.quantity);
         }
 
-        runtimeStocks.Clear();
-
-        foreach (KeyValuePair<ShopCatalogProduct, int> pair in prepared)
-            runtimeStocks.Add(pair.Key, pair.Value);
-
-        hasInitializedRuntimeStocks = true;
-
-        if (notify)
-            OnTradeStateChanged?.Invoke();
+        foreach (ShopCatalogProduct product in productsById.Values)
+        {
+            if (prepared.ContainsKey(product)) continue;
+            if (product.IntroducedInStockVersion <= source.stockVersion)
+            {
+                message = "商店检查点没有完整覆盖该版本目录库存。";
+                return false;
+            }
+            prepared.Add(product, product.InitialStock);
+        }
 
         message = string.Empty;
         return true;
@@ -839,7 +905,8 @@ public class ShopTradeController : MonoBehaviour
 
         TowerRunShopRecord baseline = new TowerRunShopRecord
         {
-            catalogId = shopCatalog.CatalogId
+            catalogId = shopCatalog.CatalogId,
+            stockVersion = shopCatalog.StockVersion
         };
         HashSet<string> productIds = new HashSet<string>(StringComparer.Ordinal);
         IReadOnlyList<ShopCatalogCategory> categories = shopCatalog.Categories;

@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   catalogId: 7a5766ab799c438d86a405d2db8df2a7
   shopDisplayName: "\u6751\u5E84\u5546\u5E97"
+  stockVersion: 1
   categories:
   - categoryType: 0
     displayName: "\u98DF\u7269"
@@ -26,6 +27,28 @@ MonoBehaviour:
       purchaseAmount: 1
       infiniteStock: 0
       descriptionOverride: 
+    - productId: c21c72fd3d074a539bbdcfe15c2e5c02
+      reward: {fileID: 11400000, guid: 3b19eaca78009644992641704f48df96, type: 2}
+      unitPrice: 3
+      initialStock: 3
+      purchaseAmount: 1
+      infiniteStock: 0
+      descriptionOverride: 
+      iconOverride: {fileID: 21300000, guid: 6a07b002151c4ab79fc36c820e70531d, type: 3}
+      cardIconSize: 220
+      cardIconOffset: {x: -3, y: 9}
+      introducedInStockVersion: 1
+    - productId: b652aa83a7f94fbbb0ddd33dcf293e45
+      reward: {fileID: 11400000, guid: 1c03fba8aa5ce1d47b7b44c8113466d3, type: 2}
+      unitPrice: 8
+      initialStock: 3
+      purchaseAmount: 1
+      infiniteStock: 0
+      descriptionOverride: 
+      iconOverride: {fileID: 21300000, guid: 2d1fe6e1af16465d8ffcc7b6420fc7b4, type: 3}
+      cardIconSize: 220
+      cardIconOffset: {x: -14, y: 2}
+      introducedInStockVersion: 1
   - categoryType: 1
     displayName: "\u6B66\u5668"
     icon: {fileID: 0}

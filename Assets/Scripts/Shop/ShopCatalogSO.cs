@@ -73,6 +73,10 @@ public class ShopCatalogProduct
     /// 商店中显示的专用说明，留空时使用 RewardSO（奖励数据）的说明。
     /// </summary>
     [SerializeField, TextArea(2, 5)] private string descriptionOverride; // 商店专用说明。
+    [SerializeField] private Sprite iconOverride;
+    [SerializeField, Min(0)] private float cardIconSize;
+    [SerializeField] private Vector2 cardIconOffset;
+    [SerializeField, Min(0)] private int introducedInStockVersion;
 
     /// <summary>
     /// 对外提供商品持久化 ID，只读。
@@ -112,7 +116,10 @@ public class ShopCatalogProduct
     /// <summary>
     /// 获取商品显示图标。
     /// </summary>
-    public Sprite Icon => reward == null ? null : reward.itemIcon;
+    public Sprite Icon => iconOverride != null ? iconOverride : reward == null ? null : reward.itemIcon;
+    public float CardIconSize => Mathf.Max(0, cardIconSize);
+    public Vector2 CardIconOffset => cardIconOffset;
+    public int IntroducedInStockVersion => introducedInStockVersion;
 
     /// <summary>
     /// 获取商品说明文本。
@@ -133,6 +140,8 @@ public class ShopCatalogProduct
         unitPrice = Mathf.Max(0, unitPrice);
         initialStock = Mathf.Max(0, initialStock);
         purchaseAmount = Mathf.Max(1, purchaseAmount);
+        cardIconSize = Mathf.Max(0, cardIconSize);
+        introducedInStockVersion = Mathf.Max(0, introducedInStockVersion);
     }
 
     /// <summary>
@@ -244,6 +253,7 @@ public class ShopCatalogSO : ScriptableObject
     /// 当前商店的显示名称。
     /// </summary>
     [SerializeField] private string shopDisplayName = "Merchant Shop"; // 商店显示名称。
+    [SerializeField, Min(0)] private int stockVersion;
 
     /// <summary>
     /// 当前商店拥有的商品分类列表。
@@ -259,6 +269,7 @@ public class ShopCatalogSO : ScriptableObject
     /// 对外提供商店显示名称，只读。
     /// </summary>
     public string ShopDisplayName => shopDisplayName;
+    public int StockVersion => stockVersion;
 
     /// <summary>
     /// 对外提供所有商品分类，只读。
@@ -310,6 +321,7 @@ public class ShopCatalogSO : ScriptableObject
     /// </summary>
     private void OnValidate()
     {
+        stockVersion = Mathf.Max(0, stockVersion);
         EnsurePersistentId();
 
         if (string.IsNullOrWhiteSpace(shopDisplayName))
